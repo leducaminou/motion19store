@@ -1,0 +1,22 @@
+{
+  "name": "motion19store",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "vite build --watch",
+    "build": "vite build"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "vite": "^8.0.13"
+  },
+  "dependencies": {
+    "embla-carousel": "^8.6.0",
+    "embla-carousel-auto-scroll": "^8.6.0",
+    "img-comparison-slider": "^8.0.7"
+  }
+}

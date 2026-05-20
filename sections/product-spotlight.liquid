@@ -1,0 +1,701 @@
+{{ 'card.css' | asset_url | stylesheet_tag }}
+{%- comment -%} Product Spotlight — Motion19 — Universal Carousel v2 {%- endcomment -%}
+
+{%- liquid
+  assign sid = section.id
+
+  assign collection_handle  = section.settings.collection | default: 'all'
+  assign spotlight_products = collections[collection_handle].products
+  if spotlight_products == blank or spotlight_products.size == 0
+    assign spotlight_products = collections.all.products
+  endif
+
+  assign left_img   = section.settings.left_image
+  assign left_asset = section.settings.left_asset | default: 'hp-editorial-2.jpg'
+  assign use_asset  = false
+  if left_img == blank
+    assign use_asset = true
+  endif
+
+  assign left_mode = section.settings.left_mode | default: 'image'
+
+  assign bg_color     = section.settings.bg_color         | default: '#ffffff'
+  assign text_color   = section.settings.text_color       | default: '#0a0a0a'
+  assign title_color  = section.settings.title_color      | default: '#0a0a0a'
+  assign dot_active   = section.settings.dot_active_color  | default: '#0a0a0a'
+  assign dot_inactive = section.settings.dot_inactive_color | default: 'rgba(10,10,10,0.18)'
+  assign arrow_bg     = section.settings.arrow_bg          | default: 'rgba(0,0,0,0.25)'
+  assign arrow_color  = section.settings.arrow_color       | default: '#ffffff'
+
+  assign autoplay    = section.settings.autoplay_enabled   | default: false
+  assign ap_delay    = section.settings.autoplay_delay     | default: 4000
+  assign show_arr    = section.settings.show_arrows        | default: true
+  assign show_nav    = section.settings.show_dots          | default: true
+
+  assign pt_m = section.settings.padding_top_mobile    | default: 40
+  assign pb_m = section.settings.padding_bottom_mobile | default: 40
+  assign pt_d = section.settings.padding_top_desktop   | default: 52
+  assign pb_d = section.settings.padding_bottom_desktop | default: 52
+  assign mt   = section.settings.margin_top             | default: 0
+  assign mb   = section.settings.margin_bottom          | default: 0
+
+  assign left_images = section.blocks | where: 'type', 'carousel_image'
+  assign has_carousel_images = false
+  if left_images.size > 0 and left_mode == 'carousel'
+    assign has_carousel_images = true
+  endif
+-%}
+
+<section
+  id="sp-{{ sid }}"
+  class="sp"
+  aria-labelledby="sp-title-{{ sid }}"
+  style="
+    --sp-bg:          {{ bg_color }};
+    --sp-text:        {{ text_color }};
+    --sp-title:       {{ title_color }};
+    --sp-dot-active:  {{ dot_active }};
+    --sp-dot-inactive:{{ dot_inactive }};
+    --sp-arrow-bg:    {{ arrow_bg }};
+    --sp-arrow-color: {{ arrow_color }};
+    --sp-pt-m:        {{ pt_m }}px;
+    --sp-pb-m:        {{ pb_m }}px;
+    --sp-pt-d:        {{ pt_d }}px;
+    --sp-pb-d:        {{ pb_d }}px;
+    --sp-mt:          {{ mt }}px;
+    --sp-mb:          {{ mb }}px;
+  "
+>
+  <div class="sp__wrap">
+
+    {%- comment -%} ═══ COLONNE GAUCHE ═══ {%- endcomment -%}
+    <div class="sp__left">
+      {%- if has_carousel_images -%}
+        {%- comment -%} Left carousel mode {%- endcomment -%}
+        <div class="sp__left-carousel" id="sp-left-{{ sid }}">
+          <div class="sp__left-viewport" id="sp-left-vp-{{ sid }}">
+            <div class="sp__left-track" id="sp-left-track-{{ sid }}">
+              {%- for block in section.blocks -%}
+                {%- if block.type == 'carousel_image' -%}
+                  <div class="sp__left-slide" {{ block.shopify_attributes }}>
+                    {%- assign sl_img = block.settings.image -%}
+                    {%- if sl_img != blank -%}
+                      <img
+                        class="sp__left-img"
+                        src="{{ sl_img | image_url: width: 900 }}"
+                        srcset="{{ sl_img | image_url: width: 600 }} 600w, {{ sl_img | image_url: width: 900 }} 900w"
+                        sizes="(max-width:767px) 100vw, 50vw"
+                        alt="{{ sl_img.alt | default: section.settings.right_title | escape }}"
+                        loading="{% if forloop.first %}eager{% else %}lazy{% endif %}"
+                        width="{{ sl_img.width }}"
+                        height="{{ sl_img.height }}"
+                      >
+                    {%- else -%}
+                      <div class="sp__left-fallback" aria-hidden="true"></div>
+                    {%- endif -%}
+                    {%- if block.settings.caption != blank -%}
+                      <div class="sp__left-caption">{{ block.settings.caption }}</div>
+                    {%- endif -%}
+                  </div>
+                {%- endif -%}
+              {%- endfor -%}
+            </div>
+          </div>
+
+          {%- if show_arr and left_images.size > 1 -%}
+            <button class="sp__left-arrow sp__left-arrow--prev" id="sp-lprev-{{ sid }}" aria-label="Image précédente" type="button">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 18l-6-6 6-6"/></svg>
+            </button>
+            <button class="sp__left-arrow sp__left-arrow--next" id="sp-lnext-{{ sid }}" aria-label="Image suivante" type="button">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 18l6-6-6-6"/></svg>
+            </button>
+          {%- endif -%}
+
+          {%- if show_nav and left_images.size > 1 -%}
+            <div class="sp__left-dots" id="sp-ldots-{{ sid }}" role="tablist" aria-label="Position carousel"></div>
+          {%- endif -%}
+        </div>
+      {%- else -%}
+        {%- comment -%} Static image mode {%- endcomment -%}
+        <div class="sp__img-wrap">
+          {%- if use_asset -%}
+            <img class="sp__img" src="{{ left_asset | asset_url }}" alt="" loading="eager" decoding="async" width="900" height="1200">
+          {%- else -%}
+            <img
+              class="sp__img"
+              src="{{ left_img | image_url: width: 900 }}"
+              srcset="{{ left_img | image_url: width: 600 }} 600w, {{ left_img | image_url: width: 900 }} 900w"
+              sizes="(max-width:767px) 100vw, 50vw"
+              alt="{{ left_img.alt | default: '' | escape }}"
+              loading="eager"
+              decoding="async"
+              width="{{ left_img.width }}"
+              height="{{ left_img.height }}"
+            >
+          {%- endif -%}
+          <span class="sp__img-dot" aria-hidden="true"></span>
+        </div>
+      {%- endif -%}
+    </div>
+
+    {%- comment -%} ═══ COLONNE DROITE ═══ {%- endcomment -%}
+    <div class="sp__right" id="sp-right-{{ sid }}">
+      <h2 class="sp__right-title" id="sp-title-{{ sid }}">
+        {{- section.settings.right_title | default: 'Produits en vedette' -}}
+      </h2>
+
+      <div class="sp__list-viewport" id="sp-viewport-{{ sid }}">
+        <ul class="sp__list" id="sp-list-{{ sid }}" role="list">
+          {%- for product in spotlight_products -%}
+            {%- assign pimg   = product.featured_image -%}
+            {%- assign vprice = product.price -%}
+            {%- assign vcmp   = product.compare_at_price -%}
+            {%- assign vid    = product.variants.first.id -%}
+
+            <li class="sp__item" data-index="{{ forloop.index0 }}">
+              <div class="sp__item-top">
+                <div class="sp__item-rating" aria-label="4.8 étoiles sur 5">
+                  <span class="sp__stars" aria-hidden="true">
+                    <span class="sp__stars-bg">★★★★★</span>
+                    <span class="sp__stars-fill" style="width:96%">★★★★★</span>
+                  </span>
+                  <span class="sp__rating-val">4.8</span>
+                </div>
+              </div>
+              <div class="sp__item-body">
+                <div class="sp__thumb-wrap" aria-hidden="true">
+                  {%- if pimg != blank -%}
+                    <img class="sp__thumb" src="{{ pimg | image_url: width: 160 }}" alt="{{ pimg.alt | default: product.title | escape }}" loading="lazy" decoding="async" width="{{ pimg.width }}" height="{{ pimg.height }}">
+                  {%- else -%}
+                    <div class="sp__thumb-fallback">{{ 'product-1' | placeholder_svg_tag: 'sp__thumb-svg' }}</div>
+                  {%- endif -%}
+                </div>
+                <div class="sp__item-info">
+                  <p class="sp__item-name">
+                    <a href="{{ product.url }}" class="sp__item-link">{{- product.title | truncate: 46 -}}</a>
+                  </p>
+                  <p class="sp__item-meta">
+                    {%- if product.available -%}
+                      {%- if product.variants.size > 1 -%}{{ product.variants.size }} options disponibles
+                      {%- else -%}En stock{%- endif -%}
+                    {%- else -%}<span class="sp__item-meta--out">Rupture de stock</span>{%- endif -%}
+                  </p>
+                </div>
+                <div class="sp__item-right">
+                  <div class="sp__item-pricing">
+                    {%- if vcmp > vprice -%}<s class="sp__price-compare">{{ vcmp | money }}</s>{%- endif -%}
+                    <span class="sp__price">{{ vprice | money }}</span>
+                  </div>
+                  {%- if vcmp > vprice -%}<span class="sp__badge" aria-label="Meilleur vente">BEST SELLER</span>{%- endif -%}
+                  <div class="sp__item-actions">
+                    <a class="sp__btn sp__btn--info" href="{{ product.url }}" aria-label="Voir {{ product.title | escape }}">INFO</a>
+                    <button class="sp__btn sp__btn--atc" type="button" data-variant-id="{{ vid }}" {% unless product.available %}disabled aria-disabled="true"{% endunless %} aria-label="Ajouter {{ product.title | escape }} au panier">
+                      <svg class="sp__atc-icon sp__atc-icon--bag" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                        <path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/>
+                      </svg>
+                      <svg class="sp__atc-icon sp__atc-icon--check" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                        <polyline points="20 6 9 17 4 12"/>
+                      </svg>
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </li>
+          {%- else -%}
+            <li class="sp__empty">Aucun produit disponible.</li>
+          {%- endfor -%}
+        </ul>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<style>
+.sp {
+  --sp-radius: 10px;
+  --sp-blue:   #0787ea;
+  --sp-black:  #0a0a0a;
+  --sp-bg:     #f5f5f7;
+  --sp-border: #e8e8e8;
+  --sp-muted:  #888888;
+  --sp-star:   #f5a623;
+  --sp-ease:   cubic-bezier(0.4, 0, 0.2, 1);
+  --sp-pad:    24px;
+  --sp-sticky: 80px;
+  --sp-right-h: calc(100vh - var(--sp-sticky) - 80px);
+
+  padding: var(--sp-pt-d, 52px) 0 var(--sp-pb-d, 52px);
+  background: var(--sp-bg-section, #fff);
+  margin-top:    var(--sp-mt, 0);
+  margin-bottom: var(--sp-mb, 0);
+}
+@media (max-width: 767px) {
+  .sp { padding: var(--sp-pt-m, 40px) 0 var(--sp-pb-m, 40px); }
+}
+
+.sp__wrap {
+  display: flex;
+  gap: var(--sp-pad);
+  align-items: stretch;
+  height: var(--sp-right-h);
+  max-width: var(--container-width, 1400px);
+  margin: 0 auto;
+  padding: 0 var(--sp-pad);
+  position: sticky;
+  top: var(--sp-sticky);
+}
+
+/* ═══ COLONNE GAUCHE ═══ */
+.sp__left { flex: 1 1 0; min-width: 0; }
+
+/* Static image */
+.sp__img-wrap {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  border-radius: var(--sp-radius);
+  overflow: hidden;
+  background: var(--sp-bg);
+}
+.sp__img {
+  position: absolute; inset: 0;
+  width: 100%; height: 100%;
+  object-fit: cover; object-position: center;
+  display: block;
+  transition: transform 600ms var(--sp-ease);
+  will-change: transform;
+}
+@media (hover: hover) { .sp__img-wrap:hover .sp__img { transform: scale(1.03); } }
+.sp__img-dot {
+  position: absolute; top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+  width: 24px; height: 24px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.92);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.15), 0 0 0 1px rgba(255,255,255,0.5);
+  pointer-events: none; z-index: 2;
+}
+
+/* Left carousel */
+.sp__left-carousel {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  border-radius: var(--sp-radius);
+  overflow: hidden;
+  background: var(--sp-bg);
+}
+.sp__left-viewport {
+  overflow: hidden;
+  height: 100%;
+  cursor: grab;
+}
+.sp__left-viewport:active { cursor: grabbing; }
+.sp__left-track {
+  display: flex;
+  height: 100%;
+  will-change: transform;
+  transition: transform 0.6s cubic-bezier(0.23, 1, 0.32, 1);
+}
+.sp__left-slide {
+  flex: 0 0 100%;
+  position: relative;
+  height: 100%;
+  overflow: hidden;
+}
+.sp__left-img {
+  position: absolute; inset: 0;
+  width: 100%; height: 100%;
+  object-fit: cover; object-position: center;
+  display: block;
+  transition: transform 0.8s ease;
+}
+.sp__left-slide:hover .sp__left-img { transform: scale(1.04); }
+.sp__left-fallback { width: 100%; height: 100%; background: var(--sp-bg); }
+.sp__left-caption {
+  position: absolute; bottom: 0; left: 0; right: 0;
+  padding: 20px;
+  background: linear-gradient(to top, rgba(0,0,0,0.55), transparent);
+  color: #fff;
+  font-size: 0.85rem; font-weight: 500;
+  z-index: 2;
+}
+
+/* Arrows left carousel */
+.sp__left-arrow {
+  position: absolute; top: 50%;
+  transform: translateY(-50%);
+  width: 44px; height: 44px;
+  background: var(--sp-arrow-bg, rgba(0,0,0,0.25));
+  color: var(--sp-arrow-color, #fff);
+  border: none; border-radius: 50%;
+  cursor: pointer; z-index: 10;
+  display: flex; align-items: center; justify-content: center;
+  backdrop-filter: blur(4px);
+  transition: background 0.2s ease;
+}
+.sp__left-arrow:hover { background: rgba(0,0,0,0.5); }
+.sp__left-arrow--prev { left: 14px; }
+.sp__left-arrow--next { right: 14px; }
+.sp__left-arrow:focus-visible { outline: 2px solid #0787ea; outline-offset: 3px; }
+
+/* Dots left carousel */
+.sp__left-dots {
+  position: absolute; bottom: 16px; left: 50%;
+  transform: translateX(-50%);
+  display: flex; gap: 8px; z-index: 10;
+}
+.sp__left-dot {
+  width: 6px; height: 6px; padding: 0;
+  border: none; border-radius: 50%;
+  background: var(--sp-dot-inactive, rgba(255,255,255,0.45));
+  cursor: pointer;
+  transition: width 280ms ease, border-radius 280ms ease, background 280ms ease;
+}
+.sp__left-dot.is-active { width: 20px; border-radius: 3px; background: var(--sp-dot-active, #fff); }
+.sp__left-dot.is-hidden { display: none; }
+.sp__left-dot.is-small  { transform: scale(0.6); opacity: 0.5; }
+
+/* ═══ COLONNE DROITE ═══ */
+.sp__right {
+  flex: 1 1 0; min-width: 0;
+  height: 100%;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding-right: 6px;
+  scrollbar-width: thin;
+  scrollbar-color: var(--sp-border) transparent;
+}
+.sp__right::-webkit-scrollbar       { width: 4px; }
+.sp__right::-webkit-scrollbar-track { background: transparent; }
+.sp__right::-webkit-scrollbar-thumb { background: var(--sp-border); border-radius: 2px; }
+
+.sp__right-title {
+  font-family: var(--font-body, 'Inter', sans-serif);
+  font-size: clamp(1.2rem, 2.2vw, 1.6rem);
+  font-weight: 700; letter-spacing: -0.025em;
+  color: var(--sp-title, var(--sp-black));
+  margin: 0 0 20px;
+  position: sticky; top: 0;
+  background: var(--sp-bg-section, #fff);
+  padding-bottom: 12px; z-index: 2;
+}
+
+.sp__list {
+  list-style: none; margin: 0; padding: 0;
+  display: flex; flex-direction: column; gap: 10px;
+}
+
+.sp__item {
+  background: #fff;
+  border: 1.5px solid var(--sp-border);
+  border-radius: var(--sp-radius);
+  padding: 12px 14px;
+  opacity: 0; transform: translateX(10px);
+  transition: opacity 320ms var(--sp-ease), transform 320ms var(--sp-ease), border-color 200ms ease, box-shadow 200ms ease;
+}
+.sp__item.is-visible { opacity: 1; transform: translateX(0); }
+@media (hover: hover) {
+  .sp__item:hover { border-color: rgba(10,10,10,0.2); box-shadow: 0 2px 16px rgba(0,0,0,0.06); }
+}
+
+.sp__item-top { display: flex; justify-content: flex-end; margin-bottom: 8px; }
+.sp__item-rating { display: inline-flex; align-items: center; gap: 4px; }
+.sp__stars { position: relative; display: inline-block; font-size: 0.72rem; line-height: 1; user-select: none; }
+.sp__stars-bg   { color: #ddd; letter-spacing: 0.5px; display: block; }
+.sp__stars-fill { position: absolute; top: 0; left: 0; overflow: hidden; color: var(--sp-star); letter-spacing: 0.5px; white-space: nowrap; display: block; }
+.sp__rating-val { font-size: 0.68rem; font-weight: 700; color: var(--sp-black); }
+
+.sp__item-body { display: flex; align-items: center; gap: 12px; }
+
+.sp__thumb-wrap {
+  flex-shrink: 0; width: 60px; height: 60px;
+  border-radius: calc(var(--sp-radius) - 3px);
+  overflow: hidden;
+  background: var(--sp-bg); border: 1px solid var(--sp-border);
+}
+.sp__thumb { width: 100%; height: 100%; object-fit: cover; display: block; transition: transform 340ms var(--sp-ease); }
+@media (hover: hover) { .sp__item:hover .sp__thumb { transform: scale(1.08); } }
+.sp__thumb-fallback { width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; background: var(--sp-bg); }
+.sp__thumb-svg { width: 60%; height: 60%; opacity: 0.15; }
+
+.sp__item-info { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 3px; }
+.sp__item-name { margin: 0; font-size: 0.82rem; font-weight: 500; color: var(--sp-black); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.sp__item-link { color: inherit; text-decoration: none; }
+@media (hover: hover) { .sp__item-link:hover { color: var(--sp-blue); } }
+.sp__item-meta { margin: 0; font-size: 0.72rem; color: var(--sp-muted); }
+.sp__item-meta--out { color: #e53935; }
+
+.sp__item-right { flex-shrink: 0; display: flex; flex-direction: column; align-items: flex-end; gap: 6px; }
+.sp__item-pricing { display: flex; align-items: center; gap: 5px; }
+.sp__price { font-size: 0.88rem; font-weight: 700; color: var(--sp-blue); }
+.sp__price-compare { font-size: 0.72rem; color: var(--sp-muted); text-decoration: line-through; font-weight: 400; }
+.sp__badge { display: inline-block; font-size: 0.58rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--sp-blue); background: rgba(7,135,234,0.1); border-radius: 50px; padding: 2px 8px; white-space: nowrap; }
+
+.sp__item-actions { display: flex; align-items: center; gap: 6px; }
+.sp__btn--info {
+  display: inline-flex; align-items: center; justify-content: center;
+  padding: 5px 10px; font-size: 0.68rem; font-weight: 600; letter-spacing: 0.06em;
+  color: var(--sp-black); background: transparent;
+  border: 1.5px solid var(--sp-border); border-radius: 0.75rem;
+  text-decoration: none;
+  transition: border-color 180ms ease, color 180ms ease;
+}
+@media (hover: hover) { .sp__btn--info:hover { border-color: var(--sp-black); color: var(--sp-black); } }
+.sp__btn--info:focus-visible { outline: 2px solid var(--sp-blue); outline-offset: 2px; }
+.sp__btn--atc {
+  display: flex; align-items: center; justify-content: center;
+  width: 32px; height: 32px; border-radius: 50%;
+  background: var(--sp-blue); color: #fff; border: none;
+  cursor: pointer; transition: background 160ms ease, transform 200ms var(--sp-ease);
+}
+@media (hover: hover) { .sp__btn--atc:hover { background: #0672c7; } }
+.sp__btn--atc:active { transform: scale(0.92); }
+.sp__btn--atc:disabled { background: var(--sp-border); cursor: default; pointer-events: none; }
+.sp__btn--atc:focus-visible { outline: 2px solid var(--sp-blue); outline-offset: 3px; }
+.sp__atc-icon--check { display: none; }
+.sp__btn--atc.is-added .sp__atc-icon--bag   { display: none; }
+.sp__btn--atc.is-added .sp__atc-icon--check { display: block; }
+.sp__btn--atc.is-added { background: #22c55e; }
+
+.sp__empty { font-size: 0.85rem; color: var(--sp-muted); padding: 24px 0; text-align: center; }
+
+/* ── Mobile ── */
+@media (max-width: 767px) {
+  .sp__wrap {
+    flex-direction: column; height: auto;
+    position: static; padding: 0 16px; gap: 28px;
+  }
+  .sp__left { flex: none; width: 100%; }
+  .sp__img-wrap, .sp__left-carousel { height: 260px; }
+
+  .sp__right { flex: none; width: 100%; height: auto; overflow: visible; padding-right: 0; }
+  .sp__right-title { position: static; background: transparent; padding-bottom: 14px; }
+
+  .sp__list-viewport { overflow: hidden; cursor: grab; }
+  .sp__list-viewport:active { cursor: grabbing; }
+  .sp__list {
+    display: flex; flex-direction: row; gap: 12px;
+    padding: 0 0 10px;
+    touch-action: pan-y; user-select: none; -webkit-user-select: none;
+    will-change: transform;
+    transition: transform 0.5s cubic-bezier(0.23,1,0.32,1);
+  }
+  .sp__item {
+    flex: 0 0 76vw; min-width: 240px; height: auto;
+    padding: 0; overflow: hidden;
+  }
+  .sp__item-top    { padding: 10px 12px 4px; }
+  .sp__item-body   { flex-direction: column; align-items: stretch; gap: 8px; padding: 8px 12px 14px; }
+  .sp__thumb-wrap  { width: 100%; height: 140px; border-radius: calc(var(--sp-radius) - 1px) calc(var(--sp-radius) - 1px) 0 0; flex-shrink: 0; }
+  .sp__item-info   { width: 100%; }
+  .sp__item-right  { flex-direction: row; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 8px; }
+}
+</style>
+
+<script>
+(function () {
+  'use strict';
+  var sid       = '{{ sid }}';
+  var autoplay  = '{{ autoplay }}' === 'true';
+  var apDelay   = {{ ap_delay }};
+
+  function init() {
+    var section = document.getElementById('sp-' + sid);
+    if (!section) return;
+
+    var items    = Array.from(section.querySelectorAll('.sp__item'));
+    var viewport = document.getElementById('sp-viewport-' + sid);
+
+    /* ── Fade-in cards ── */
+    if ('IntersectionObserver' in window) {
+      var obs = new IntersectionObserver(function (entries) {
+        entries.forEach(function (entry) {
+          if (!entry.isIntersecting) return;
+          var el  = entry.target;
+          var idx = parseInt(el.dataset.index, 10) || 0;
+          setTimeout(function () { el.classList.add('is-visible'); }, Math.min(idx * 40, 300));
+          obs.unobserve(el);
+        });
+      }, { threshold: 0.08 });
+      items.forEach(function (item) { obs.observe(item); });
+    } else {
+      items.forEach(function (item) { item.classList.add('is-visible'); });
+    }
+
+    /* ── Mobile: drag list horizontally ── */
+    var mq = window.matchMedia('(max-width: 767px)');
+    var spList = document.getElementById('sp-list-' + sid);
+    var mobDrag = false, mobStartX = 0, mobDragX = 0, mobCurrent = 0, mobTotal = 0, mobTimer = null;
+
+    function getMobSnaps() {
+      if (!spList) return 0;
+      var children = Array.from(spList.children).filter(function (c) { return !c.classList.contains('sp__empty'); });
+      return children.length;
+    }
+
+    function mobGoTo(idx) {
+      if (!spList) return;
+      mobTotal = getMobSnaps();
+      mobCurrent = ((idx % mobTotal) + mobTotal) % mobTotal;
+      var itemW = spList.children[0] ? spList.children[0].offsetWidth : 0;
+      var gap   = 12;
+      spList.style.transform = 'translateX(-' + (mobCurrent * (itemW + gap)) + 'px)';
+    }
+
+    function startMobAutoplay() {
+      if (!autoplay || !mq.matches) return;
+      mobTimer = setInterval(function () { mobGoTo(mobCurrent + 1); }, apDelay);
+    }
+
+    if (viewport) {
+      viewport.addEventListener('mousedown', function (e) { mobDrag = true; mobStartX = e.clientX; clearInterval(mobTimer); spList.style.transition = 'none'; });
+      window.addEventListener('mousemove',   function (e) { if (!mobDrag || !mq.matches) return; mobDragX = e.clientX - mobStartX; var itemW = spList.children[0] ? spList.children[0].offsetWidth : 0; spList.style.transform = 'translateX(-' + (mobCurrent * (itemW + 12) - mobDragX) + 'px)'; });
+      window.addEventListener('mouseup', function () { if (!mobDrag) return; mobDrag = false; var threshold = viewport.offsetWidth * 0.18; if (mobDragX < -threshold) mobGoTo(mobCurrent + 1); else if (mobDragX > threshold) mobGoTo(mobCurrent - 1); else mobGoTo(mobCurrent); spList.style.transition = ''; clearInterval(mobTimer); startMobAutoplay(); });
+
+      viewport.addEventListener('touchstart', function (e) { mobDrag = true; mobStartX = e.touches[0].clientX; clearInterval(mobTimer); spList.style.transition = 'none'; }, { passive: true });
+      window.addEventListener('touchmove', function (e) { if (!mobDrag || !mq.matches) return; mobDragX = e.touches[0].clientX - mobStartX; var itemW = spList.children[0] ? spList.children[0].offsetWidth : 0; spList.style.transform = 'translateX(-' + (mobCurrent * (itemW + 12) - mobDragX) + 'px)'; }, { passive: true });
+      window.addEventListener('touchend', function () { if (!mobDrag) return; mobDrag = false; var threshold = 60; if (mobDragX < -threshold) mobGoTo(mobCurrent + 1); else if (mobDragX > threshold) mobGoTo(mobCurrent - 1); else mobGoTo(mobCurrent); spList.style.transition = ''; clearInterval(mobTimer); startMobAutoplay(); });
+    }
+
+    /* ── Left carousel ── */
+    var leftTrack = document.getElementById('sp-left-track-' + sid);
+    var leftVp    = document.getElementById('sp-left-vp-' + sid);
+    var lPrev     = document.getElementById('sp-lprev-' + sid);
+    var lNext     = document.getElementById('sp-lnext-' + sid);
+    var lDotsWrap = document.getElementById('sp-ldots-' + sid);
+
+    if (leftTrack) {
+      var lSlides  = Array.from(leftTrack.children);
+      var lTotal   = lSlides.length;
+      var lCurrent = 0;
+      var lDots    = [];
+      var lTimer   = null;
+
+      if (lDotsWrap) {
+        for (var i = 0; i < lTotal; i++) {
+          (function (idx) {
+            var btn = document.createElement('button');
+            btn.type = 'button';
+            btn.className = 'sp__left-dot' + (idx === 0 ? ' is-active' : '');
+            btn.setAttribute('role', 'tab');
+            btn.setAttribute('aria-label', 'Image ' + (idx + 1));
+            btn.addEventListener('click', function () { lGoTo(idx); lResetAutoplay(); });
+            lDotsWrap.appendChild(btn);
+            lDots.push(btn);
+          })(i);
+        }
+      }
+
+      function lGoTo(idx) {
+        lCurrent = ((idx % lTotal) + lTotal) % lTotal;
+        leftTrack.style.transform = 'translateX(-' + (lCurrent * 100) + '%)';
+        lDots.forEach(function (d, i) { d.classList.toggle('is-active', i === lCurrent); });
+      }
+      function lStartAutoplay() {
+        if (!autoplay || lTotal < 2) return;
+        lTimer = setInterval(function () { lGoTo(lCurrent + 1); }, apDelay);
+      }
+      function lResetAutoplay() { clearInterval(lTimer); lStartAutoplay(); }
+
+      if (lPrev) lPrev.addEventListener('click', function () { lGoTo(lCurrent - 1); lResetAutoplay(); });
+      if (lNext) lNext.addEventListener('click', function () { lGoTo(lCurrent + 1); lResetAutoplay(); });
+
+      lGoTo(0);
+      lStartAutoplay();
+    }
+
+    /* ── ATC ── */
+    section.addEventListener('click', function (e) {
+      var btn = e.target.closest('.sp__btn--atc');
+      if (!btn || btn.disabled) return;
+      var variantId = btn.dataset.variantId;
+      if (!variantId) return;
+      btn.disabled = true;
+      fetch(window.routes ? window.routes.cart_add_url : '/cart/add.js', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+        body: JSON.stringify({ id: parseInt(variantId, 10), quantity: 1 })
+      })
+        .then(function (r) { return r.json(); })
+        .then(function (data) {
+          if (data.status) { btn.disabled = false; return; }
+          btn.classList.add('is-added');
+          var counter = document.querySelector('[data-cart-count]');
+          if (counter) fetch('/cart.js').then(function (r) { return r.json(); }).then(function (c) { counter.textContent = c.item_count; });
+          setTimeout(function () { btn.classList.remove('is-added'); btn.disabled = false; }, 2000);
+        })
+        .catch(function () { btn.disabled = false; });
+    });
+  }
+
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init);
+  else init();
+  document.addEventListener('shopify:section:load', function (e) {
+    if (e.detail && e.detail.sectionId === sid) init();
+  });
+})();
+</script>
+
+{% schema %}
+{
+  "name": "Product Spotlight",
+  "tag": "section",
+  "class": "section-product-spotlight",
+  "settings": [
+    { "type": "header", "content": "Colonne gauche" },
+    { "type": "select", "id": "left_mode", "label": "Mode colonne gauche", "default": "image",
+      "options": [{ "value": "image", "label": "Image statique" }, { "value": "carousel", "label": "Carousel d'images" }] },
+    { "type": "image_picker", "id": "left_image", "label": "Image statique (médiathèque — prioritaire)" },
+    { "type": "select", "id": "left_asset", "label": "Image assets (si médiathèque vide)", "default": "hp-editorial-2.jpg",
+      "options": [
+        { "value": "hp-editorial-2.jpg", "label": "Editorial 2" }, { "value": "hp-editorial.jpg", "label": "Editorial 1" },
+        { "value": "hp-cta.jpg", "label": "CTA Banner" }, { "value": "hp-hero-1.jpg", "label": "Hero 1" },
+        { "value": "hp-hero-2.jpg", "label": "Hero 2" }, { "value": "hp-hero-3.jpg", "label": "Hero 3" }
+      ] },
+    { "type": "header", "content": "Carousel gauche — comportement" },
+    { "type": "checkbox", "id": "autoplay_enabled", "label": "Autoplay",     "default": false },
+    { "type": "range",    "id": "autoplay_delay",   "label": "Délai (ms)",   "min": 2000, "max": 9000, "step": 500, "default": 4000 },
+    { "type": "checkbox", "id": "show_arrows",      "label": "Flèches",      "default": true },
+    { "type": "checkbox", "id": "show_dots",        "label": "Dots",         "default": true },
+    { "type": "header", "content": "Colonne droite" },
+    { "type": "text",       "id": "right_title", "label": "Titre", "default": "Produits en vedette" },
+    { "type": "collection", "id": "collection",  "label": "Collection à afficher" },
+    { "type": "header", "content": "Couleurs" },
+    { "type": "color", "id": "bg_color",           "label": "Fond section",   "default": "#ffffff" },
+    { "type": "color", "id": "text_color",         "label": "Couleur texte",  "default": "#0a0a0a" },
+    { "type": "color", "id": "title_color",        "label": "Couleur titre",  "default": "#0a0a0a" },
+    { "type": "color", "id": "dot_active_color",   "label": "Dot actif",      "default": "#0a0a0a" },
+    { "type": "color", "id": "dot_inactive_color", "label": "Dot inactif",    "default": "rgba(10,10,10,0.18)" },
+    { "type": "color", "id": "arrow_bg",           "label": "Fond flèche",    "default": "rgba(0,0,0,0.25)" },
+    { "type": "color", "id": "arrow_color",        "label": "Couleur flèche", "default": "#ffffff" },
+    { "type": "header", "content": "Espacement" },
+    { "type": "range", "id": "padding_top_mobile",    "label": "Padding haut mobile",   "min": 0, "max": 120, "step": 4, "default": 40, "unit": "px" },
+    { "type": "range", "id": "padding_bottom_mobile", "label": "Padding bas mobile",    "min": 0, "max": 120, "step": 4, "default": 40, "unit": "px" },
+    { "type": "range", "id": "padding_top_desktop",   "label": "Padding haut desktop",  "min": 0, "max": 120, "step": 4, "default": 52, "unit": "px" },
+    { "type": "range", "id": "padding_bottom_desktop","label": "Padding bas desktop",   "min": 0, "max": 120, "step": 4, "default": 52, "unit": "px" },
+    { "type": "range", "id": "margin_top",    "label": "Marge haut", "min": 0, "max": 120, "step": 4, "default": 0, "unit": "px" },
+    { "type": "range", "id": "margin_bottom", "label": "Marge bas",  "min": 0, "max": 120, "step": 4, "default": 0, "unit": "px" },
+    { "type": "header", "content": "Visibilité" },
+    { "type": "checkbox", "id": "hide_on_mobile",  "label": "Masquer mobile",  "default": false },
+    { "type": "checkbox", "id": "hide_on_desktop", "label": "Masquer desktop", "default": false },
+    { "type": "header", "content": "Avancé" },
+    { "type": "text", "id": "custom_css", "label": "CSS personnalisé" }
+  ],
+  "blocks": [
+    {
+      "type": "carousel_image",
+      "name": "Image carousel gauche",
+      "settings": [
+        { "type": "image_picker", "id": "image",   "label": "Image" },
+        { "type": "text",         "id": "caption", "label": "Légende (optionnel)" }
+      ]
+    }
+  ],
+  "max_blocks": 8,
+  "presets": [
+    { "name": "Product Spotlight" }
+  ]
+}
+{% endschema %}

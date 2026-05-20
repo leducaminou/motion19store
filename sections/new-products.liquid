@@ -1,0 +1,928 @@
+{{ 'card.css' | asset_url | stylesheet_tag }}
+{%- comment -%}New Products — Motion19 — OS 2.0 v5.0{%- endcomment -%}
+{%- liquid
+  assign sid          = section.id
+  assign bg_color     = section.settings.bg_color              | default: '#f7f7f8'
+  assign card_bg      = section.settings.card_bg               | default: '#ffffff'
+  assign text_color   = section.settings.text_color            | default: '#0a0a0a'
+  assign max_w        = section.settings.max_width             | default: 1400
+  assign pt_m         = section.settings.padding_top_mobile    | default: 40
+  assign pb_m         = section.settings.padding_bottom_mobile | default: 36
+  assign pt_d         = section.settings.padding_top_desktop   | default: 52
+  assign pb_d         = section.settings.padding_bottom_desktop| default: 36
+  assign mt           = section.settings.margin_top            | default: 0
+  assign mb           = section.settings.margin_bottom         | default: 0
+  assign coll_handle  = section.settings.collection            | default: 'all'
+  assign show_compare = section.settings.show_compare_price
+  assign show_badge   = section.settings.show_badge
+  assign badge_text   = section.settings.badge_text            | default: 'Nouveau'
+  assign show_atc     = section.settings.show_atc
+  assign hide_mob     = section.settings.hide_on_mobile
+  assign hide_desk    = section.settings.hide_on_desktop
+  assign custom_css   = section.settings.custom_css
+  assign dot_active   = section.settings.dot_active_color      | default: '#0a0a0a'
+  assign dot_inactive = section.settings.dot_inactive_color    | default: 'rgba(10,10,10,0.18)'
+  assign arrow_color  = section.settings.arrow_color           | default: '#0a0a0a'
+  assign card_gap     = section.settings.card_gap              | default: 14
+  assign max_products = section.settings.max_products          | default: 12
+
+  assign products = collections[coll_handle].products
+  if products == blank or products.size == 0
+    assign products = collections.all.products
+  endif
+-%}
+
+<section
+  id="np-{{ sid }}"
+  class="np{% if hide_mob %} np--hide-mob{% endif %}{% if hide_desk %} np--hide-desk{% endif %}"
+  style="
+    --np-bg:          {{ bg_color }};
+    --np-card-bg:     {{ card_bg }};
+    --np-text:        {{ text_color }};
+    --np-maxw:        {{ max_w }}px;
+    --np-mt:          {{ mt }}px;
+    --np-mb:          {{ mb }}px;
+    --np-pt-m:        {{ pt_m }}px;
+    --np-pb-m:        {{ pb_m }}px;
+    --np-pt-d:        {{ pt_d }}px;
+    --np-pb-d:        {{ pb_d }}px;
+    --np-dot-active:  {{ dot_active }};
+    --np-dot-inactive:{{ dot_inactive }};
+    --np-arrow-color: {{ arrow_color }};
+    --np-gap:         {{ card_gap }}px;
+  "
+>
+  <div class="np__inner">
+
+    {%- comment -%}── Header ──{%- endcomment -%}
+    <div class="np__header">
+      <div class="np__header-text">
+        {%- if section.settings.eyebrow != blank -%}
+          <p class="np__eyebrow">{{ section.settings.eyebrow }}</p>
+        {%- endif -%}
+        {%- if section.settings.title != blank -%}
+          <h2 class="np__title">{{ section.settings.title }}</h2>
+        {%- endif -%}
+        {%- if section.settings.subtitle != blank -%}
+          <p class="np__subtitle">{{ section.settings.subtitle }}</p>
+        {%- endif -%}
+      </div>
+      {%- if section.settings.cta_label != blank -%}
+        <a class="np__header-link" href="{{ section.settings.cta_url | default: '/collections/all' }}">
+          {{ section.settings.cta_label }}
+          <svg width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+            <path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </a>
+      {%- endif -%}
+    </div>
+
+    {%- comment -%}══════════════════════════════════════════
+      BLOCK A — Desktop editorial (≥1024px only, via CSS)
+      Hero left + 6-product grid right
+    ══════════════════════════════════════════{%- endcomment -%}
+    <div class="np__desktop">
+      <div class="np__editorial">
+
+        {%- assign hero = products | first -%}
+        {%- if hero != blank -%}
+          {%- assign hero_img  = hero.featured_image -%}
+          {%- assign hero_img2 = hero.images[1] -%}
+          <article class="m19-card np__hero" aria-label="{{ hero.title | escape }}">
+            <a class="m19-card__media np__hero-media" href="{{ hero.url }}" tabindex="-1" aria-hidden="true">
+              {%- if hero_img != blank -%}
+                <img
+                  class="m19-card__img m19-card__img--primary"
+                  src="{{ hero_img | image_url: width: 800 }}"
+                  srcset="{{ hero_img | image_url: width: 500 }} 500w, {{ hero_img | image_url: width: 800 }} 800w, {{ hero_img | image_url: width: 1100 }} 1100w"
+                  sizes="40vw"
+                  alt="{{ hero_img.alt | default: hero.title | escape }}"
+                  loading="eager"
+                  fetchpriority="high"
+                  width="{{ hero_img.width }}"
+                  height="{{ hero_img.height }}"
+                >
+                {%- if hero_img2 != blank -%}
+                  <img
+                    class="m19-card__img m19-card__img--hover"
+                    src="{{ hero_img2 | image_url: width: 800 }}"
+                    alt=""
+                    loading="lazy"
+                    aria-hidden="true"
+                    width="{{ hero_img2.width }}"
+                    height="{{ hero_img2.height }}"
+                  >
+                {%- endif -%}
+              {%- else -%}
+                <div class="m19-card__media-fallback" aria-hidden="true"></div>
+              {%- endif -%}
+
+              {%- if show_badge -%}
+                <span class="m19-card__badge np__badge" aria-hidden="true">{{ badge_text }}</span>
+              {%- endif -%}
+
+              {%- if show_atc -%}
+                <button
+                  class="m19-card__action"
+                  type="button"
+                  data-variant-id="{{ hero.variants.first.id }}"
+                  aria-label="Ajouter {{ hero.title | escape }} au panier"
+                >
+                  <svg class="m19-card__action-icon m19-card__action-icon--bag" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/>
+                  </svg>
+                  <svg class="m19-card__action-icon m19-card__action-icon--check" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <polyline points="20 6 9 17 4 12"/>
+                  </svg>
+                </button>
+              {%- endif -%}
+            </a>
+            <div class="m19-card__body np__hero-body">
+              <a class="m19-card__name" href="{{ hero.url }}">{{ hero.title | truncate: 52 }}</a>
+              {%- if hero.description != blank -%}
+                <p class="m19-card__desc">{{ hero.description | strip_html | truncate: 100 }}</p>
+              {%- endif -%}
+              <div class="m19-card__pricing">
+                {%- if show_compare and hero.compare_at_price > hero.price -%}
+                  <s class="m19-card__price--compare">{{ hero.compare_at_price | money }}</s>
+                {%- endif -%}
+                <span class="m19-card__price">{{ hero.price | money }}</span>
+              </div>
+              <div class="np__hero-cta">
+                <a class="np__hero-cta-link" href="{{ hero.url }}">
+                  Voir plus
+                  <svg width="12" height="12" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                    <path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+                  </svg>
+                </a>
+                <button
+                  class="np__hero-atc"
+                  type="button"
+                  data-variant-id="{{ hero.variants.first.id }}"
+                  aria-label="Ajouter {{ hero.title | escape }} au panier"
+                >
+                  <svg class="m19-card__action-icon m19-card__action-icon--bag" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/>
+                  </svg>
+                  <svg class="m19-card__action-icon m19-card__action-icon--check" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <polyline points="20 6 9 17 4 12"/>
+                  </svg>
+                </button>
+              </div>
+            </div>
+          </article>
+        {%- endif -%}
+
+        <div class="np__grid">
+          {%- for product in products limit: 6 offset: 1 -%}
+            {%- assign p_img  = product.featured_image -%}
+            {%- assign p_img2 = product.images[1] -%}
+            <article class="np__sc" aria-label="{{ product.title | escape }}">
+              <div class="np__sc-body">
+                {%- if show_badge -%}
+                  {%- if product.compare_at_price > product.price -%}
+                    <span class="m19-card__badge np__badge" aria-hidden="true">Sale</span>
+                  {%- elsif product.tags contains 'new' or product.tags contains 'nouveau' -%}
+                    <span class="m19-card__badge np__badge" aria-hidden="true">New</span>
+                  {%- endif -%}
+                {%- endif -%}
+                <a class="np__sc-name" href="{{ product.url }}">{{ product.title | truncate: 38 }}</a>
+                <div class="np__sc-pricing">
+                  {%- if show_compare and product.compare_at_price > product.price -%}
+                    <s class="np__sc-compare">{{ product.compare_at_price | money }}</s>
+                  {%- endif -%}
+                  <span class="np__sc-price">{{ product.price | money }}</span>
+                </div>
+              </div>
+              <a class="np__sc-media" href="{{ product.url }}" aria-label="{{ product.title | escape }}" tabindex="-1">
+                {%- if p_img != blank -%}
+                  <img
+                    class="np__sc-img np__sc-img--primary"
+                    src="{{ p_img | image_url: width: 400 }}"
+                    srcset="{{ p_img | image_url: width: 280 }} 280w, {{ p_img | image_url: width: 400 }} 400w"
+                    sizes="18vw"
+                    alt="{{ p_img.alt | default: product.title | escape }}"
+                    loading="lazy"
+                    decoding="async"
+                    width="{{ p_img.width }}"
+                    height="{{ p_img.height }}"
+                  >
+                  {%- if p_img2 != blank -%}
+                    <img
+                      class="np__sc-img np__sc-img--hover"
+                      src="{{ p_img2 | image_url: width: 400 }}"
+                      alt=""
+                      loading="lazy"
+                      aria-hidden="true"
+                      width="{{ p_img2.width }}"
+                      height="{{ p_img2.height }}"
+                    >
+                  {%- endif -%}
+                {%- else -%}
+                  <div class="np__sc-fallback" aria-hidden="true"></div>
+                {%- endif -%}
+                {%- if show_atc -%}
+                  <button
+                    class="m19-card__action"
+                    type="button"
+                    data-variant-id="{{ product.variants.first.id }}"
+                    aria-label="Ajouter {{ product.title | escape }} au panier"
+                  >
+                    <svg class="m19-card__action-icon m19-card__action-icon--bag" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                      <path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/>
+                    </svg>
+                    <svg class="m19-card__action-icon m19-card__action-icon--check" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                      <polyline points="20 6 9 17 4 12"/>
+                    </svg>
+                  </button>
+                {%- endif -%}
+              </a>
+            </article>
+          {%- else -%}
+            <p class="np__empty">Aucun produit disponible.</p>
+          {%- endfor -%}
+        </div>
+
+      </div>
+    </div>
+
+    {%- comment -%}══════════════════════════════════════════
+      BLOCK B — Mobile + Tablet carousel (<1024px, via CSS)
+      Single Embla carousel — ALL products — fc__item structure
+    ══════════════════════════════════════════{%- endcomment -%}
+    <div class="np__carousel">
+      <div class="np__viewport-wrap">
+        <div class="np__viewport" id="np-viewport-{{ sid }}">
+          <ul class="np__track" id="np-track-{{ sid }}" role="list" aria-label="Produits">
+            {%- for product in products limit: max_products -%}
+              {%- assign img1 = product.featured_image -%}
+              {%- assign img2 = product.images[1] -%}
+              <li class="fc__item np__item">
+                <article class="m19-card" aria-label="{{ product.title | escape }}">
+                  <a class="m19-card__media m19-card__media--square" href="{{ product.url }}" tabindex="-1" aria-hidden="true">
+                    {%- if img1 != blank -%}
+                      <img
+                        class="m19-card__img m19-card__img--primary"
+                        src="{{ img1 | image_url: width: 600 }}"
+                        srcset="{{ img1 | image_url: width: 400 }} 400w, {{ img1 | image_url: width: 600 }} 600w, {{ img1 | image_url: width: 800 }} 800w"
+                        sizes="(max-width: 768px) calc((100vw - 32px) / 1.5), calc((100vw - 48px) / 3.5)"
+                        alt="{{ img1.alt | default: product.title | escape }}"
+                        loading="{% if forloop.index <= 3 %}eager{% else %}lazy{% endif %}"
+                        width="{{ img1.width }}"
+                        height="{{ img1.height }}"
+                      >
+                      {%- if img2 != blank -%}
+                        <img
+                          class="m19-card__img m19-card__img--hover"
+                          src="{{ img2 | image_url: width: 600 }}"
+                          alt="{{ img2.alt | default: product.title | escape }}"
+                          loading="lazy"
+                          width="{{ img2.width }}"
+                          height="{{ img2.height }}"
+                          aria-hidden="true"
+                        >
+                      {%- endif -%}
+                    {%- else -%}
+                      <div class="m19-card__media-fallback" aria-hidden="true"></div>
+                    {%- endif -%}
+
+                    {%- if show_badge -%}
+                      <span class="m19-card__badge np__badge" aria-hidden="true">{{ badge_text }}</span>
+                    {%- endif -%}
+
+                    {%- if show_atc -%}
+                      <button
+                        class="m19-card__action"
+                        type="button"
+                        data-variant-id="{{ product.variants.first.id }}"
+                        aria-label="Ajouter {{ product.title | escape }} au panier"
+                      >
+                        <svg class="m19-card__action-icon m19-card__action-icon--bag" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                          <path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/>
+                        </svg>
+                        <svg class="m19-card__action-icon m19-card__action-icon--check" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                          <polyline points="20 6 9 17 4 12"/>
+                        </svg>
+                      </button>
+                    {%- endif -%}
+                  </a>
+
+                  <div class="m19-card__body">
+                    <a class="m19-card__name" href="{{ product.url }}">{{ product.title | truncate: 40 }}</a>
+                    <div class="m19-card__pricing">
+                      {%- if show_compare and product.compare_at_price > product.price -%}
+                        <s class="m19-card__price--compare">{{ product.compare_at_price | money }}</s>
+                      {%- endif -%}
+                      <span class="m19-card__price">{{ product.price | money }}</span>
+                    </div>
+                  </div>
+                </article>
+              </li>
+            {%- else -%}
+              <li class="np__item-empty">Aucun produit disponible.</li>
+            {%- endfor -%}
+          </ul>
+        </div>
+      </div>
+
+      <div class="np__footer">
+        <div class="np__footer-left">
+          <div class="np__dots" id="np-dots-{{ sid }}" role="tablist" aria-label="Position carousel"></div>
+        </div>
+        <div class="np__footer-right">
+          <div class="np__arrows">
+            <button class="np__arrow" id="np-prev-{{ sid }}" type="button" aria-label="Précédent">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <polyline points="15 18 9 12 15 6"/>
+              </svg>
+            </button>
+            <button class="np__arrow" id="np-next-{{ sid }}" type="button" aria-label="Suivant">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <polyline points="9 18 15 12 9 6"/>
+              </svg>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+{%- if custom_css != blank -%}
+  <style>#shopify-section-{{ sid }}{ {{ custom_css }} }</style>
+{%- endif -%}
+
+<style>
+/* ═══════════════════════════════════════
+   NEW PRODUCTS v5.0 — Motion19
+   mobile-first | OS 2.0 | no display:contents | no hacks
+═══════════════════════════════════════ */
+
+/* ── Responsive pad + card-width tokens (not in inline style — media-query driven) ── */
+.np {
+  --np-pad:    16px;
+  --np-ease:   cubic-bezier(0.4, 0, 0.2, 1);
+  --np-card-w: calc((100vw - (2 * var(--np-pad)) - var(--np-gap, 14px)) / 1.5);
+}
+@media (min-width: 769px) {
+  .np {
+    --np-pad:    24px;
+    --np-card-w: calc((100vw - (2 * var(--np-pad)) - (2.5 * var(--np-gap, 14px))) / 3.5);
+  }
+}
+
+/* ── Visibility modifiers ── */
+.np--hide-mob { display: none !important; }
+@media (min-width: 1024px) {
+  .np--hide-mob  { display: block !important; }
+  .np--hide-desk { display: none !important; }
+}
+
+/* ── Section ── */
+.np {
+  background:     var(--np-bg, #f7f7f8);
+  color:          var(--np-text, #0a0a0a);
+  margin-top:     var(--np-mt, 0);
+  margin-bottom:  var(--np-mb, 0);
+  padding-top:    var(--np-pt-m, 40px);
+  padding-bottom: var(--np-pb-m, 36px);
+}
+@media (min-width: 1024px) {
+  .np {
+    padding-top:    var(--np-pt-d, 52px);
+    padding-bottom: var(--np-pb-d, 36px);
+  }
+}
+
+/* ── Inner ── */
+.np__inner {
+  max-width: var(--np-maxw, 1400px);
+  margin-inline: auto;
+}
+
+/* ── Header ── */
+.np__header {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+  padding: 0 var(--np-pad) 24px;
+}
+.np__header-text { display: flex; flex-direction: column; gap: 4px; }
+
+.np__eyebrow {
+  font-family: var(--font-body, 'Inter', sans-serif);
+  font-size: 0.68rem; font-weight: 600; letter-spacing: 0.16em;
+  text-transform: uppercase; color: #0787ea; margin: 0;
+}
+.np__title {
+  font-family: var(--font-body, 'Inter', sans-serif);
+  font-size: clamp(1.4rem, 3vw, 2.2rem); font-weight: 800;
+  letter-spacing: -0.03em; color: var(--np-text, #0a0a0a); margin: 0;
+}
+.np__subtitle {
+  font-family: var(--font-body, 'Inter', sans-serif);
+  font-size: 0.875rem; color: color-mix(in srgb, var(--np-text, #0a0a0a) 60%, transparent);
+  margin: 0; line-height: 1.55;
+}
+.np__header-link {
+  font-family: var(--font-body, 'Inter', sans-serif);
+  display: inline-flex; align-items: center; gap: 7px;
+  font-size: 0.78rem; font-weight: 600; letter-spacing: 0.03em;
+  text-decoration: none; color: var(--np-text, #0a0a0a);
+  white-space: nowrap; transition: color 180ms var(--np-ease);
+}
+.np__header-link svg { transition: transform 200ms var(--np-ease); }
+.np__header-link:hover { color: #0787ea; }
+.np__header-link:hover svg { transform: translateX(4px); }
+
+/* ══════════════════════════════════════
+   DESKTOP BLOCK — hidden <1024px
+══════════════════════════════════════ */
+.np__desktop { display: none; }
+
+@media (min-width: 1024px) {
+  .np__desktop {
+    display: block;
+    padding: 0 clamp(16px, 4vw, 48px);
+  }
+
+  /* Grid éditorial: hero gauche 5fr, grille droite 7fr */
+  .np__editorial {
+    display: grid;
+    grid-template-columns: 5fr 7fr;
+    gap: var(--np-gap, 14px);
+    align-items: stretch;
+  }
+
+  /* Hero */
+  .np__hero {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    background: var(--np-card-bg, #fff);
+    border-radius: 0.75rem;
+    overflow: hidden;
+  }
+  .np__hero-media {
+    flex: 1;
+    min-height: 340px;
+    aspect-ratio: unset !important;
+    display: block;
+    position: relative;
+    overflow: hidden;
+    background: var(--np-card-bg, #fff);
+  }
+  .np__hero-body {
+    padding: 16px 20px 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  /* 6-product grid: 2 cols × 3 rows */
+  .np__grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: repeat(3, 1fr);
+    gap: var(--np-gap, 14px);
+    height: 100%;
+  }
+}
+
+/* ── Desktop small cards (.np__sc) ── */
+.np__sc {
+  display: flex;
+  flex-direction: row;
+  border-radius: 0.75rem;
+  border: 1px solid rgba(10,10,10,0.07);
+  background: var(--np-card-bg, #fff);
+  overflow: hidden;
+  height: 100%;
+  transition: box-shadow 280ms var(--np-ease), border-color 280ms var(--np-ease), transform 280ms var(--np-ease);
+}
+@media (hover: hover) {
+  .np__sc:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 12px 40px rgba(0,0,0,.09), 0 2px 8px rgba(0,0,0,.05);
+    border-color: rgba(10,10,10,.11);
+  }
+}
+.np__sc-body {
+  flex: 1; min-width: 0;
+  padding: 12px 14px 12px 12px;
+  display: flex; flex-direction: column; justify-content: center; gap: 6px;
+  order: 2;
+}
+.np__sc-name {
+  font-family: var(--font-body, 'Inter', sans-serif);
+  font-size: .82rem; font-weight: 600; color: var(--np-text, #0a0a0a);
+  text-decoration: none; letter-spacing: -.01em; line-height: 1.3;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis; display: block;
+  transition: color 160ms var(--np-ease);
+}
+.np__sc-name:hover { color: #0787ea; }
+.np__sc-pricing {
+  display: flex; align-items: baseline; gap: 6px;
+  white-space: nowrap; overflow: hidden;
+}
+.np__sc-price   { font-family: var(--font-body,'Inter',sans-serif); font-size:.84rem; font-weight:700; color:var(--np-text,#0a0a0a); }
+.np__sc-compare { font-size:.73rem; font-weight:400; color:#aaa; text-decoration:line-through; }
+.np__sc-media {
+  flex: 0 0 38%; position: relative; overflow: hidden;
+  background: var(--np-card-bg, #fff); display: block; order: 1;
+}
+.np__sc-img {
+  position: absolute; inset: 0; width: 100%; height: 100%;
+  object-fit: contain; object-position: center; padding: 8px;
+  display: block; transition: opacity 300ms var(--np-ease);
+}
+.np__sc-img--hover { opacity: 0; }
+@media (hover: hover) {
+  .np__sc-media:hover .np__sc-img--primary { opacity: 0; }
+  .np__sc-media:hover .np__sc-img--hover   { opacity: 1; }
+}
+.np__sc-fallback { position: absolute; inset: 0; background: #f5f5f7; }
+.np__sc-media .m19-card__action { width: 32px; height: 32px; }
+
+/* ══════════════════════════════════════
+   CAROUSEL BLOCK — hidden ≥1024px
+   Identical structure to featured-carousel
+══════════════════════════════════════ */
+.np__carousel { display: block; }
+
+@media (min-width: 1024px) {
+  .np__carousel { display: none; }
+}
+
+/* Badge inside carousel cards — same as fc__badge */
+.np__carousel .np__badge {
+  background: #fff;
+  color: #0a0a0a;
+  border: 1px solid rgba(10,10,10,0.75);
+  border-radius: 0.75rem;
+  font-family: var(--font-body, 'Inter', sans-serif);
+  font-size: 8px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: none;
+  padding: 3px 7px;
+  line-height: 1;
+  box-shadow: none;
+  top: 10px;
+  left: 10px;
+}
+
+/* Viewport wrap — clip X, visible Y (same as fc) */
+.np__viewport-wrap {
+  overflow-x: clip;
+  overflow-y: visible;
+}
+
+/* Viewport */
+.np__viewport {
+  padding-left: var(--np-pad);
+  overflow-x: visible;
+  overflow-y: visible;
+  cursor: grab;
+  user-select: none;
+  -webkit-user-select: none;
+}
+.np__viewport:active { cursor: grabbing; }
+
+/* Track */
+.np__track {
+  display: flex;
+  gap: var(--np-gap, 14px);
+  padding-top: 20px;
+  padding-bottom: 28px;
+  padding-right: var(--np-pad);
+  padding-left: 0;
+  margin: 0;
+  list-style: none;
+}
+
+/* Items — same as fc__item */
+.np__item {
+  flex: 0 0 var(--np-card-w);
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+}
+.np__item .m19-card {
+  flex: 1;
+  height: 100%;
+  background: var(--np-card-bg, #fff);
+}
+
+/* ── Footer navigation (same as fc__footer) ── */
+.np__footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 18px var(--np-pad) 0;
+  gap: 16px;
+}
+
+/* Mobile ≤767px: hide dots, center arrows */
+@media (max-width: 767px) {
+  .np__footer       { justify-content: center; }
+  .np__footer-left  { display: none; }
+  .np__footer-right { margin: 0 auto; }
+}
+
+.np__footer-left  { display: flex; align-items: center; }
+.np__footer-right { display: flex; align-items: center; }
+
+/* Arrows */
+.np__arrows { display: flex; gap: 4px; }
+.np__arrow {
+  display: flex; align-items: center; justify-content: center;
+  width: 36px; height: 36px;
+  border-radius: 0.75rem; border: none; background: none;
+  color: var(--np-arrow-color, #0a0a0a);
+  cursor: pointer; padding: 0;
+  transition: background 180ms var(--np-ease);
+}
+.np__arrow:hover        { background: rgba(10,10,10,0.07); }
+.np__arrow:disabled     { opacity: 0.28; cursor: default; pointer-events: none; }
+.np__arrow:focus-visible { outline: 2px solid #0787ea; outline-offset: 2px; }
+
+/* Dots */
+.np__dots { display: flex; align-items: center; gap: 8px; }
+.np__dot {
+  width: 6px; height: 6px; padding: 0;
+  border: none; border-radius: 50%;
+  background: var(--np-dot-inactive, rgba(10,10,10,0.18));
+  cursor: pointer;
+  transition: width 280ms var(--np-ease), border-radius 280ms var(--np-ease),
+              background 280ms var(--np-ease), transform 280ms ease, opacity 280ms ease;
+}
+.np__dot--active { width: 21px; border-radius: 3px; background: var(--np-dot-active, #0a0a0a); }
+.np__dot--small  { transform: scale(0.6); opacity: 0.5; }
+.np__dot--hidden { display: none; }
+.np__dot:focus-visible { outline: 2px solid #0787ea; outline-offset: 2px; }
+
+.np__item-empty { padding: 24px; font-size: 0.875rem; color: #aaa; }
+.np__empty { grid-column: 1 / -1; text-align: center; color: #aaa; padding: 40px 0; font-size: 0.875rem; }
+
+/* ── Hero CTA row (desktop only) ── */
+.np__hero-cta {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 6px;
+}
+
+/* Voir plus — full pill, outline noir, hover fond noir texte blanc */
+.np__hero-cta-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 9px 20px;
+  font-family: var(--font-body, 'Inter', sans-serif);
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  border-radius: 999px;
+  border: 1.5px solid rgba(10,10,10,0.88);
+  background: transparent;
+  color: #0a0a0a;
+  text-decoration: none;
+  white-space: nowrap;
+  transition: background 180ms ease, color 180ms ease, border-color 180ms ease;
+}
+.np__hero-cta-link:hover {
+  background: #0a0a0a;
+  color: #fff;
+  border-color: #0a0a0a;
+}
+.np__hero-cta-link svg { transition: transform 200ms ease; }
+.np__hero-cta-link:hover svg { transform: translateX(3px); }
+
+/* ATC icon — toujours visible, hover effect */
+.np__hero-atc {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  background: #0a0a0a;
+  color: #fff;
+  border: none;
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: background 160ms ease, transform 160ms ease;
+}
+.np__hero-atc:hover  { background: #0787ea; }
+.np__hero-atc:active { transform: scale(0.92); }
+.np__hero-atc .m19-card__action-icon--check { display: none; }
+.np__hero-atc.is-added .m19-card__action-icon--bag   { display: none; }
+.np__hero-atc.is-added .m19-card__action-icon--check { display: block; }
+.np__hero-atc.is-added { background: #16a34a; }
+</style>
+
+<script>
+(function () {
+  'use strict';
+  var sid   = '{{ sid }}';
+  var embla = null;
+  var resizeTimer;
+
+  function isCarouselMode() {
+    return window.innerWidth < 1024;
+  }
+
+  function destroyEmbla() {
+    if (embla) { embla.destroy(); embla = null; }
+    var dotsWrap = document.getElementById('np-dots-' + sid);
+    if (dotsWrap) dotsWrap.innerHTML = '';
+  }
+
+  function initCarousel() {
+    if (embla) return;
+    var viewport = document.getElementById('np-viewport-' + sid);
+    if (!viewport || !window.EmblaCarousel) return;
+
+    embla = window.EmblaCarousel(viewport, {
+      loop:           true,
+      align:          'start',
+      slidesToScroll: 1,
+      dragFree:       false,
+      containScroll:  false
+    });
+
+    var dotsWrap = document.getElementById('np-dots-' + sid);
+    var btnPrev  = document.getElementById('np-prev-' + sid);
+    var btnNext  = document.getElementById('np-next-' + sid);
+    var dots     = [];
+
+    function buildDots() {
+      if (!dotsWrap) return;
+      dotsWrap.innerHTML = '';
+      dots = [];
+      embla.scrollSnapList().forEach(function (_, i) {
+        var btn = document.createElement('button');
+        btn.type = 'button';
+        btn.className = 'np__dot';
+        btn.setAttribute('role', 'tab');
+        btn.setAttribute('aria-label', 'Page ' + (i + 1));
+        btn.addEventListener('click', function () { embla.scrollTo(i); });
+        dotsWrap.appendChild(btn);
+        dots.push(btn);
+      });
+      updateDots();
+    }
+
+    function updateDots() {
+      var maxV = 5;
+      var idx  = embla.selectedScrollSnap();
+      dots.forEach(function (d, i) {
+        var active = i === idx;
+        d.className = 'np__dot' + (active ? ' np__dot--active' : '');
+        d.setAttribute('aria-selected', active ? 'true' : 'false');
+      });
+      if (dots.length > maxV) {
+        var half  = Math.floor(maxV / 2);
+        var start = Math.max(0, idx - half);
+        var end   = Math.min(dots.length, start + maxV);
+        if (end - start < maxV) start = Math.max(0, end - maxV);
+        dots.forEach(function (d, i) {
+          if (i < start || i >= end) {
+            if (i === start - 1 || i === end) d.classList.add('np__dot--small');
+            else d.classList.add('np__dot--hidden');
+          }
+        });
+      }
+    }
+
+    function showCards() {
+      var viewport = document.getElementById('np-viewport-' + sid);
+      if (viewport) viewport.querySelectorAll('.m19-card').forEach(function (c) { c.classList.add('is-visible'); });
+    }
+
+    embla.on('select', updateDots);
+    embla.on('reInit', buildDots);
+    embla.on('init',   showCards);
+    embla.on('reInit', showCards);
+    embla.on('select', showCards);
+    buildDots();
+    showCards();
+
+    if (btnPrev) btnPrev.addEventListener('click', function () { embla.scrollPrev(); });
+    if (btnNext) btnNext.addEventListener('click', function () { embla.scrollNext(); });
+  }
+
+  function handleResize() {
+    clearTimeout(resizeTimer);
+    resizeTimer = setTimeout(function () {
+      if (isCarouselMode()) {
+        if (!embla) initCarousel();
+        else embla.reInit();
+      } else {
+        destroyEmbla();
+      }
+    }, 150);
+  }
+
+  function atcFetch(btn) {
+    if (!btn || btn.disabled) return;
+    var id = btn.dataset.variantId;
+    if (!id) return;
+    btn.disabled = true;
+    fetch('/cart/add.js', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+      body: JSON.stringify({ id: parseInt(id, 10), quantity: 1 })
+    })
+      .then(function (r) { return r.json(); })
+      .then(function (d) {
+        if (d.status) { btn.disabled = false; return; }
+        btn.classList.add('is-added');
+        var counter = document.querySelector('[data-cart-count]');
+        if (counter) fetch('/cart.js').then(function (r) { return r.json(); }).then(function (c) { counter.textContent = c.item_count; });
+        setTimeout(function () { btn.classList.remove('is-added'); btn.disabled = false; }, 2200);
+      })
+      .catch(function () { btn.disabled = false; });
+  }
+
+  function init() {
+    var sec = document.getElementById('np-' + sid);
+    if (!sec) return;
+
+    if (isCarouselMode()) initCarousel();
+
+    window.addEventListener('resize', handleResize);
+
+    sec.addEventListener('click', function (e) {
+      var btn = e.target.closest('.m19-card__action, .np__hero-atc');
+      if (!btn) return;
+      e.preventDefault();
+      e.stopPropagation();
+      atcFetch(btn);
+    });
+  }
+
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init);
+  else init();
+  document.addEventListener('shopify:section:load', function (e) {
+    if (e.detail && e.detail.sectionId === sid) { destroyEmbla(); init(); }
+  });
+})();
+</script>
+
+{% schema %}
+{
+  "name": "New Products",
+  "tag": "section",
+  "class": "section-new-products",
+  "settings": [
+    { "type": "header", "content": "Collection" },
+    { "type": "collection", "id": "collection", "label": "Collection" },
+    { "type": "range", "id": "max_products", "label": "Nb max produits carousel", "min": 4, "max": 24, "step": 2, "default": 12 },
+    { "type": "header", "content": "En-tête" },
+    { "type": "text",     "id": "eyebrow",   "label": "Eyebrow" },
+    { "type": "text",     "id": "title",     "label": "Titre",      "default": "Nouveautés" },
+    { "type": "textarea", "id": "subtitle",  "label": "Sous-titre" },
+    { "type": "text",     "id": "cta_label", "label": "Lien header", "default": "Voir tout" },
+    { "type": "url",      "id": "cta_url",   "label": "URL lien header" },
+    { "type": "header", "content": "Cartes" },
+    { "type": "checkbox", "id": "show_compare_price", "label": "Afficher l'ancien prix", "default": true },
+    { "type": "checkbox", "id": "show_badge",         "label": "Afficher les badges",    "default": true },
+    { "type": "text",     "id": "badge_text",         "label": "Texte badge",            "default": "Nouveau" },
+    { "type": "checkbox", "id": "show_atc",           "label": "Bouton panier (hover)",  "default": true },
+    { "type": "header", "content": "Couleurs" },
+    { "type": "color", "id": "bg_color",   "label": "Fond section", "default": "#f7f7f8" },
+    { "type": "color", "id": "card_bg",    "label": "Fond cards",   "default": "#ffffff" },
+    { "type": "color", "id": "text_color", "label": "Couleur texte","default": "#0a0a0a" },
+    { "type": "header", "content": "Navigation carousel" },
+    { "type": "color", "id": "dot_active_color",   "label": "Dot actif",      "default": "#0a0a0a" },
+    { "type": "color", "id": "dot_inactive_color", "label": "Dot inactif",    "default": "rgba(10,10,10,0.18)" },
+    { "type": "color", "id": "arrow_color",        "label": "Couleur flèches","default": "#0a0a0a" },
+    { "type": "header", "content": "Layout" },
+    { "type": "range", "id": "max_width", "label": "Max-width (px)", "min": 960, "max": 1920, "step": 40, "default": 1400, "unit": "px" },
+    { "type": "range", "id": "card_gap",  "label": "Espacement cards (px)", "min": 4, "max": 40, "step": 2, "default": 14, "unit": "px" },
+    { "type": "header", "content": "Espacement" },
+    { "type": "range", "id": "padding_top_mobile",     "label": "Padding haut mobile",   "min": 0, "max": 160, "step": 4, "default": 40,  "unit": "px" },
+    { "type": "range", "id": "padding_bottom_mobile",  "label": "Padding bas mobile",    "min": 0, "max": 160, "step": 4, "default": 36,  "unit": "px" },
+    { "type": "range", "id": "padding_top_desktop",    "label": "Padding haut desktop",  "min": 0, "max": 160, "step": 4, "default": 52,  "unit": "px" },
+    { "type": "range", "id": "padding_bottom_desktop", "label": "Padding bas desktop",   "min": 0, "max": 160, "step": 4, "default": 36,  "unit": "px" },
+    { "type": "range", "id": "margin_top",    "label": "Marge haut", "min": 0, "max": 120, "step": 4, "default": 0, "unit": "px" },
+    { "type": "range", "id": "margin_bottom", "label": "Marge bas",  "min": 0, "max": 120, "step": 4, "default": 0, "unit": "px" },
+    { "type": "header", "content": "Visibilité" },
+    { "type": "checkbox", "id": "hide_on_mobile",  "label": "Masquer sur mobile",  "default": false },
+    { "type": "checkbox", "id": "hide_on_desktop", "label": "Masquer sur desktop", "default": false },
+    { "type": "header", "content": "Avancé" },
+    { "type": "textarea", "id": "custom_css", "label": "CSS personnalisé" }
+  ],
+  "presets": [
+    {
+      "name": "New Products",
+      "settings": { "title": "Nouveautés", "cta_label": "Voir tout" }
+    }
+  ]
+}
+{% endschema %}

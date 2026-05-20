@@ -1,0 +1,366 @@
+{%- comment -%}Hero — Motion19 — Universal Carousel Version{%- endcomment -%}
+
+{%- liquid
+  assign sid        = section.id
+  assign layout     = section.settings.layout            | default: 'full'
+  assign max_w      = section.settings.max_width         | default: 1440
+  assign bg_color   = section.settings.bg_color          | default: '#111111'
+  assign s_anim     = section.settings.section_animation | default: 'none'
+  assign hide_mob   = section.settings.hide_on_mobile    | default: false
+  assign hide_desk  = section.settings.hide_on_desktop   | default: false
+  assign custom_css = section.settings.custom_css
+
+  assign autoplay   = section.settings.autoplay_enabled  | default: true
+  assign ap_delay   = section.settings.autoplay_delay    | default: 4000
+  assign transition = section.settings.transition_type   | default: 'slide'
+  assign show_nav   = section.settings.show_nav          | default: true
+  assign nav_style  = section.settings.nav_style         | default: 'dots'
+  assign show_arr   = section.settings.show_arrows       | default: false
+  
+  assign pt_m  = section.settings.padding_top_mobile     | default: 0
+  assign pb_m  = section.settings.padding_bottom_mobile  | default: 0
+  assign pt_d  = section.settings.padding_top_desktop    | default: 0
+  assign pb_d  = section.settings.padding_bottom_desktop | default: 0
+  assign mt    = section.settings.margin_top             | default: 0
+  assign mb    = section.settings.margin_bottom          | default: 0
+
+  assign slide_count = section.blocks | size
+  assign first_block = section.blocks | first
+-%}
+
+{%- if first_block != blank -%}
+  {%- if first_block.settings.image_desktop != blank -%}
+    {%- assign _pre_d = first_block.settings.image_desktop | image_url: width: 1920 -%}
+  {%- else -%}
+    {%- assign _pre_d = 'hp-hero-1.jpg' | asset_url -%}
+  {%- endif -%}
+  <link rel="preload" as="image" href="{{ _pre_d }}" media="(min-width: 768px)">
+{%- endif -%}
+
+<section
+  id="hero-{{ sid }}"
+  class="hero hero--{{ layout }} hero--{{ transition }}{% if s_anim != 'none' %} hero--entrance-{{ s_anim }}{% endif %}{% if hide_mob %} hero--hide-mobile{% endif %}{% if hide_desk %} hero--hide-desktop{% endif %}"
+  aria-label="Hero Carousel"
+  style="
+    --hero-bg:   {{ bg_color }};
+    --hero-maxw: {{ max_w }}px;
+    --hero-mt:   {{ mt }}px;
+    --hero-mb:   {{ mb }}px;
+    --hero-pt-m: {{ pt_m }}px;
+    --hero-pb-m: {{ pb_m }}px;
+    --hero-pt-d: {{ pt_d }}px;
+    --hero-pb-d: {{ pb_d }}px;
+    --uc-ratio:  4 / 5;
+    --uc-dot-active: {{ section.settings.dot_active_color | default: '#f5f5f7' }};
+    --uc-dot-inactive: {{ section.settings.dot_inactive_color | default: 'rgba(255,255,255,0.3)' }};
+    --uc-arrow-bg: {{ section.settings.arrow_bg | default: 'rgba(0,0,0,0.28)' }};
+    --uc-arrow-color: {{ section.settings.arrow_color | default: '#fff' }};
+  "
+>
+  <div class="hero__container">
+    <div class="hero__viewport" id="viewport-{{ sid }}">
+      <div class="hero__track" id="track-{{ sid }}">
+        {%- for block in section.blocks -%}
+          {%- liquid
+            assign idx = forloop.index
+            assign img_d   = block.settings.image_desktop
+            assign img_m   = block.settings.image_mobile
+            assign focal   = block.settings.focal_point | default: 'center center'
+            assign vid_url = block.settings.video_url   | default: ''
+            assign cta_url = block.settings.cta_url     | default: '#'
+            
+            assign hl       = block.settings.headline
+            assign hl_color = block.settings.headline_color | default: '#f5f5f7'
+            assign sub      = block.settings.subheadline
+            assign sub_col  = block.settings.subheadline_color | default: 'rgba(245,245,247,0.8)'
+            assign align_h  = block.settings.align_h      | default: 'left'
+            assign align_v  = block.settings.align_v      | default: 'bottom'
+          -%}
+
+          <div class="hero__slide" {{ block.shopify_attributes }}>
+            <a href="{{ cta_url }}" class="hero__media-link" aria-label="{{ hl | escape }}">
+              {%- if vid_url != blank -%}
+                <video class="hero__video" src="{{ vid_url }}" autoplay muted loop playsinline style="object-position:{{ focal }};"></video>
+              {%- else -%}
+                {%- if img_d != blank -%}
+                  <picture>
+                    {%- assign src_mobile = img_m | default: img_d | image_url: width: 800 -%}
+                    <source media="(max-width:767px)" srcset="{{ src_mobile }}">
+                    <img class="hero__img" src="{{ img_d | image_url: width: 1920 }}" alt="{{ hl | escape }}" width="1920" height="1080" loading="{% if forloop.first %}eager{% else %}lazy{% endif %}" style="object-position:{{ focal }};">
+                  </picture>
+                {%- else -%}
+                  {%- assign _fb = 'hp-hero-' | append: idx | append: '.jpg' -%}
+                  <img class="hero__img" src="{{ _fb | asset_url }}" alt="Motion19" width="1920" height="1080" style="object-position:{{ focal }};">
+                {%- endif -%}
+              {%- endif -%}
+              <div class="hero__overlay" style="background: linear-gradient(to top, rgba(0,0,0,0.6) 0%, transparent 60%);"></div>
+            </a>
+
+            <div class="hero__content hero__content--h-{{ align_h }} hero__content--v-{{ align_v }}">
+              <div class="hero__inner">
+                {%- if hl != blank -%}
+                  <h2 class="hero__headline" style="color: {{ hl_color }};">{{ hl }}</h2>
+                {%- endif -%}
+                {%- if sub != blank -%}
+                  <p class="hero__sub" style="color: {{ sub_col }};">{{ sub }}</p>
+                {%- endif -%}
+                {%- if block.settings.cta_label != blank -%}
+                  <a href="{{ cta_url }}" class="hero__btn">{{ block.settings.cta_label }}</a>
+                {%- endif -%}
+              </div>
+            </div>
+          </div>
+        {%- endfor -%}
+      </div>
+    </div>
+
+    {%- comment -%} Pas de navigation (dots/flèches) sur le hero {%- endcomment -%}
+  </div>
+</section>
+
+<style>
+.hero {
+  background: var(--hero-bg);
+  margin: var(--hero-mt) 0 var(--hero-mb);
+  padding: var(--hero-pt-d) 0 var(--hero-pb-d);
+  overflow: hidden;
+}
+@media (max-width: 767px) {
+  .hero { padding: var(--hero-pt-m) 0 var(--hero-pb-m); }
+}
+
+.hero__container {
+  position: relative;
+  max-width: var(--hero-maxw);
+  margin: 0 auto;
+}
+
+.hero__viewport {
+  overflow: hidden;
+  cursor: grab;
+}
+.hero__viewport:active { cursor: grabbing; }
+
+.hero__track {
+  display: flex;
+  transition: transform 0.6s cubic-bezier(0.23, 1, 0.32, 1);
+  will-change: transform;
+}
+
+.hero__slide {
+  flex: 0 0 100%;
+  position: relative;
+  aspect-ratio: var(--uc-ratio);
+  overflow: hidden;
+}
+
+.hero__media-link {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.hero__img, .hero__video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.8s ease;
+}
+.hero__slide:hover .hero__img { transform: scale(1.05); }
+
+.hero__overlay {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 2;
+}
+
+.hero__content {
+  position: absolute;
+  inset: 0;
+  padding: 40px;
+  display: flex;
+  z-index: 3;
+  pointer-events: none;
+}
+.hero__content--h-left { justify-content: flex-start; text-align: left; }
+.hero__content--h-center { justify-content: center; text-align: center; }
+.hero__content--h-right { justify-content: flex-end; text-align: right; }
+
+.hero__content--v-top { align-items: flex-start; }
+.hero__content--v-center { align-items: center; }
+.hero__content--v-bottom { align-items: flex-end; }
+
+.hero__inner { pointer-events: auto; max-width: 500px; }
+
+.hero__headline {
+  font-family: var(--font-body, 'Inter', sans-serif);
+  font-size: clamp(2rem, 5vw, 4rem);
+  font-weight: 800;
+  margin: 0 0 1rem;
+  line-height: 1.1;
+}
+
+.hero__sub {
+  font-size: 1.1rem;
+  margin: 0 0 2rem;
+  opacity: 0.9;
+}
+
+.hero__btn {
+  display: inline-block;
+  padding: 12px 32px;
+  background: #fff;
+  color: #000;
+  text-decoration: none;
+  font-weight: 700;
+  border-radius: 999px;
+  transition: transform 0.2s ease;
+}
+.hero__btn:hover { transform: translateY(-2px); }
+
+/* Navigation */
+.hero__arrow {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 50px; height: 50px;
+  background: var(--uc-arrow-bg);
+  color: var(--uc-arrow-color);
+  border: none;
+  border-radius: 50%;
+  cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  z-index: 10;
+  backdrop-filter: blur(4px);
+}
+.hero__arrow--prev { left: 20px; }
+.hero__arrow--next { right: 20px; }
+
+.hero__dots {
+  position: absolute;
+  bottom: 30px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 10px;
+  z-index: 10;
+}
+
+.hero__dot {
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  background: var(--uc-dot-inactive);
+  border: none;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+.hero__dot.is-active {
+  width: 24px;
+  border-radius: 3px;
+  background: var(--uc-dot-active);
+}
+.hero__dot.is-hidden { display: none; }
+.hero__dot.is-small { transform: scale(0.6); opacity: 0.5; }
+</style>
+
+<script>
+(function() {
+  const sid = '{{ sid }}';
+  function init() {
+    const track = document.getElementById('track-' + sid);
+    if (!track) return;
+    const slides = Array.from(track.children);
+    const dots = Array.from(document.querySelectorAll('#dots-' + sid + ' .hero__dot'));
+    const btnPrev = document.getElementById('prev-' + sid);
+    const btnNext = document.getElementById('next-' + sid);
+    const total = slides.length;
+    let current = 0;
+    let timer = null;
+
+    function goTo(index) {
+      current = (index + total) % total;
+      track.style.transform = `translateX(-${current * 100}%)`;
+      dots.forEach((d, i) => {
+        d.classList.toggle('is-active', i === current);
+      });
+      updateDots();
+    }
+
+    function updateDots() {
+      const max = 5;
+      if (dots.length <= max) return;
+      dots.forEach((dot, i) => {
+        dot.classList.remove('is-hidden', 'is-small');
+        let start = Math.max(0, current - Math.floor(max / 2));
+        let end = Math.min(total, start + max);
+        if (end - start < max) start = Math.max(0, end - max);
+        if (i < start || i >= end) {
+          if (i === start - 1 || i === end) dot.classList.add('is-small');
+          else dot.classList.add('is-hidden');
+        }
+      });
+    }
+
+    if (btnPrev) btnPrev.addEventListener('click', () => { goTo(current - 1); resetAutoplay(); });
+    if (btnNext) btnNext.addEventListener('click', () => { goTo(current + 1); resetAutoplay(); });
+    dots.forEach(dot => dot.addEventListener('click', () => { goTo(parseInt(dot.dataset.index)); resetAutoplay(); }));
+
+    function startAutoplay() {
+      if ('{{ autoplay }}' === 'true') {
+        timer = setInterval(() => goTo(current + 1), {{ ap_delay }});
+      }
+    }
+    function resetAutoplay() { clearInterval(timer); startAutoplay(); }
+
+    startAutoplay();
+    updateDots();
+  }
+  document.addEventListener('DOMContentLoaded', init);
+  document.addEventListener('shopify:section:load', e => { if (e.detail.sectionId === sid) init(); });
+})();
+</script>
+
+{% schema %}
+{
+  "name": "Hero Universal",
+  "settings": [
+    { "type": "select", "id": "layout", "label": "Width", "default": "full", "options": [{ "value": "full", "label": "Full" }, { "value": "boxed", "label": "Boxed" }] },
+    { "type": "range", "id": "max_width", "label": "Max Width", "min": 1000, "max": 1600, "step": 50, "default": 1400 },
+    { "type": "color", "id": "bg_color", "label": "Background", "default": "#111" },
+    { "type": "checkbox", "id": "autoplay_enabled", "label": "Autoplay", "default": true },
+    { "type": "range", "id": "autoplay_delay", "label": "Delay", "min": 2000, "max": 8000, "step": 500, "default": 4000 },
+    { "type": "select", "id": "transition_type", "label": "Transition", "default": "slide", "options": [{ "value": "slide", "label": "Slide" }, { "value": "fade", "label": "Fade" }] },
+    { "type": "checkbox", "id": "show_nav", "label": "Show Dots", "default": true },
+    { "type": "checkbox", "id": "show_arrows", "label": "Show Arrows", "default": true },
+    { "type": "color", "id": "dot_active_color", "label": "Dot Active", "default": "#fff" },
+    { "type": "color", "id": "dot_inactive_color", "label": "Dot Inactive" },
+    { "type": "color", "id": "arrow_bg", "label": "Arrow BG" },
+    { "type": "color", "id": "arrow_color", "label": "Arrow Color", "default": "#fff" },
+    { "type": "range", "id": "padding_top_desktop", "label": "PT D", "default": 0, "min": 0, "max": 100 },
+    { "type": "range", "id": "padding_bottom_desktop", "label": "PB D", "default": 0, "min": 0, "max": 100 },
+    { "type": "range", "id": "padding_top_mobile", "label": "PT M", "default": 0, "min": 0, "max": 100 },
+    { "type": "range", "id": "padding_bottom_mobile", "label": "PB M", "default": 0, "min": 0, "max": 100 }
+  ],
+  "blocks": [
+    {
+      "type": "slide",
+      "name": "Slide",
+      "settings": [
+        { "type": "image_picker", "id": "image_desktop", "label": "Image D" },
+        { "type": "image_picker", "id": "image_mobile", "label": "Image M" },
+        { "type": "text", "id": "video_url", "label": "Video URL (.mp4)" },
+        { "type": "url", "id": "cta_url", "label": "Link" },
+        { "type": "text", "id": "headline", "label": "Headline", "default": "Title" },
+        { "type": "color", "id": "headline_color", "label": "Headline Color", "default": "#fff" },
+        { "type": "textarea", "id": "subheadline", "label": "Subheadline" },
+        { "type": "color", "id": "subheadline_color", "label": "Sub Color", "default": "#ccc" },
+        { "type": "text", "id": "cta_label", "label": "Button Text" },
+        { "type": "select", "id": "align_h", "label": "Align H", "default": "left", "options": [{ "value": "left", "label": "Left" }, { "value": "center", "label": "Center" }, { "value": "right", "label": "Right" }] },
+        { "type": "select", "id": "align_v", "label": "Align V", "default": "bottom", "options": [{ "value": "top", "label": "Top" }, { "value": "center", "label": "Center" }, { "value": "bottom", "label": "Bottom" }] }
+      ]
+    }
+  ],
+  "presets": [{ "name": "Hero Universal" }]
+}
+{% endschema %}

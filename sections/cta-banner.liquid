@@ -1,0 +1,572 @@
+{%- comment -%}CTA Banner — Motion19 — v2.0 modular{%- endcomment -%}
+{%- liquid
+  assign sid        = section.id
+  assign layout     = section.settings.layout    | default: 'full'
+  assign max_w      = section.settings.max_width | default: 1440
+  assign s_anim     = section.settings.section_animation | default: 'none'
+  assign hide_mob   = section.settings.hide_on_mobile    | default: false
+  assign hide_desk  = section.settings.hide_on_desktop   | default: false
+  assign custom_css = section.settings.custom_css
+  assign pt_m = section.settings.padding_top_mobile    | default: 0
+  assign pb_m = section.settings.padding_bottom_mobile | default: 0
+  assign pt_d = section.settings.padding_top_desktop   | default: 0
+  assign pb_d = section.settings.padding_bottom_desktop| default: 0
+  assign mt   = section.settings.margin_top    | default: 0
+  assign mb   = section.settings.margin_bottom | default: 0
+-%}
+
+<section
+  id="ctab-{{ sid }}"
+  class="ctab ctab--{{ layout }}{% if s_anim != 'none' %} ctab--entrance-{{ s_anim }}{% endif %}{% if hide_mob %} ctab--hide-mob{% endif %}{% if hide_desk %} ctab--hide-desk{% endif %}"
+  style="
+    --ctab-maxw: {{ max_w }}px;
+    --ctab-mt:   {{ mt }}px;
+    --ctab-mb:   {{ mb }}px;
+    --ctab-pt-m: {{ pt_m }}px;
+    --ctab-pb-m: {{ pb_m }}px;
+    --ctab-pt-d: {{ pt_d }}px;
+    --ctab-pb-d: {{ pb_d }}px;
+  "
+>
+  <div class="ctab__wrap">
+
+    {%- for block in section.blocks -%}
+      {%- liquid
+        assign img_d   = block.settings.image_desktop
+        assign img_m   = block.settings.image_mobile
+        assign focal   = block.settings.focal_point | default: 'center center'
+        assign vid_url = block.settings.video_url   | default: ''
+
+        assign ov_col = block.settings.overlay_color
+        assign ov_op  = block.settings.overlay_opacity | default: 46 | divided_by: 100.0
+        assign grad   = block.settings.gradient_style  | default: 'full'
+        assign ov_r = 0
+        assign ov_g = 0
+        assign ov_b = 0
+        if ov_col != blank
+          assign ov_r = ov_col.red
+          assign ov_g = ov_col.green
+          assign ov_b = ov_col.blue
+        endif
+
+        assign h_size   = block.settings.height    | default: 'medium'
+        assign h_mobile = block.settings.height_mobile | default: 520
+        assign c_align  = block.settings.content_align  | default: 'center'
+        assign c_valign = block.settings.content_valign | default: 'center'
+        assign cont_mw  = block.settings.content_max_width | default: 680
+
+        assign txt_col  = block.settings.text_color | default: '#ffffff'
+
+        assign ov_text  = block.settings.overline
+        assign ov_tcol  = block.settings.overline_color | default: ''
+        assign hl       = block.settings.title | default: 'Limited Time Offer'
+        assign hl_col   = block.settings.title_color | default: '#ffffff'
+        assign sub      = block.settings.subtitle
+        assign sub_col  = block.settings.subtitle_color | default: ''
+
+        assign cta_lbl  = block.settings.cta_label
+        assign cta_url  = block.settings.cta_url   | default: '/'
+        assign cta_sty  = block.settings.cta_style | default: 'outline-white'
+        assign cta_sz   = block.settings.cta_size  | default: 'md'
+        assign cta_rad  = block.settings.cta_radius | default: 2
+        assign cta2_lbl = block.settings.cta2_label
+        assign cta2_url = block.settings.cta2_url   | default: '#'
+        assign cta2_sty = block.settings.cta2_style | default: 'solid'
+
+        assign anim     = block.settings.animation      | default: 'fade-up'
+        assign blk_hide = block.settings.hide_on_mobile | default: false
+      -%}
+
+      {%- if img_d != blank -%}
+        {%- assign url_d = img_d | image_url: width: 1800 -%}
+      {%- else -%}
+        {%- assign url_d = 'hp-cta.jpg' | asset_url -%}
+      {%- endif -%}
+      {%- if img_m != blank -%}
+        {%- assign url_m = img_m | image_url: width: 800 -%}
+      {%- else -%}
+        {%- assign url_m = 'hp-cta-mobile.jpg' | asset_url -%}
+      {%- endif -%}
+
+      <div
+        class="ctab__banner ctab__banner--h-{{ h_size }} ctab__banner--av-{{ c_valign }} ctab__banner--ah-{{ c_align }} ctab__banner--anim-{{ anim }}{% if blk_hide %} ctab__banner--hide-mob{% endif %}"
+        {{ block.shopify_attributes }}
+        style="
+          --b-ov-r:   {{ ov_r }};
+          --b-ov-g:   {{ ov_g }};
+          --b-ov-b:   {{ ov_b }};
+          --b-ov-a:   {{ ov_op }};
+          --b-h-mob:  {{ h_mobile }}px;
+          --b-cont-mw:{{ cont_mw }}px;
+          --b-hl-col: {{ hl_col }};
+          --b-cta-r:  {{ cta_rad }}px;
+          {% if sub_col != blank  %}--b-sub-col: {{ sub_col }};{% endif %}
+          {% if ov_tcol != blank  %}--b-ov-tcol: {{ ov_tcol }};{% endif %}
+        "
+      >
+
+        <div class="ctab__media" aria-hidden="true">
+          {%- if vid_url != blank -%}
+            <video class="ctab__bg" src="{{ vid_url }}" autoplay muted loop playsinline style="object-position:{{ focal }};"></video>
+          {%- else -%}
+            <picture>
+              <source media="(max-width:767px)" srcset="{{ url_m }}">
+              <img class="ctab__bg" src="{{ url_d }}" alt="" loading="lazy" decoding="async" style="object-position:{{ focal }};">
+            </picture>
+          {%- endif -%}
+          <div class="ctab__overlay ctab__overlay--{{ grad }}" aria-hidden="true"></div>
+        </div>
+
+        <div class="ctab__content">
+          <div class="ctab__inner">
+
+            {%- if ov_text != blank -%}
+              <p class="ctab__overline"{% if ov_tcol != blank %} style="color:var(--b-ov-tcol);"{% endif %}>
+                <span class="ctab__overline-bar" aria-hidden="true"></span>{{ ov_text }}
+              </p>
+            {%- endif -%}
+
+            <h2 class="ctab__title">{{ hl }}</h2>
+
+            {%- if sub != blank -%}
+              <p class="ctab__sub">{{ sub }}</p>
+            {%- endif -%}
+
+            <div class="ctab__ctas">
+              {%- if cta_lbl != blank -%}
+                <a class="ctab__btn ctab__btn--{{ cta_sty }} ctab__btn--{{ cta_sz }}" href="{{ cta_url }}">
+                  <span>{{ cta_lbl }}</span>
+                  <svg width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                    <path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                  </svg>
+                </a>
+              {%- endif -%}
+              {%- if cta2_lbl != blank -%}
+                <a class="ctab__btn ctab__btn--{{ cta2_sty }} ctab__btn--{{ cta_sz }}" href="{{ cta2_url }}">
+                  <span>{{ cta2_lbl }}</span>
+                </a>
+              {%- endif -%}
+            </div>
+
+          </div>
+        </div>
+
+      </div>
+    {%- else -%}
+      <div class="ctab__banner ctab__banner--h-medium ctab__banner--av-center ctab__banner--ah-center ctab__banner--anim-fade-up"
+        style="--b-ov-r:0;--b-ov-g:0;--b-ov-b:0;--b-ov-a:.46;--b-h-mob:520px;--b-cont-mw:680px;--b-hl-col:#fff;--b-cta-r:2px;">
+        <div class="ctab__media" aria-hidden="true">
+          <picture>
+            <source media="(max-width:767px)" srcset="{{ 'hp-cta-mobile.jpg' | asset_url }}">
+            <img class="ctab__bg" src="{{ 'hp-cta.jpg' | asset_url }}" alt="" loading="lazy" decoding="async" style="object-position:center;">
+          </picture>
+          <div class="ctab__overlay ctab__overlay--full" aria-hidden="true"></div>
+        </div>
+        <div class="ctab__content">
+          <div class="ctab__inner">
+            <h2 class="ctab__title">Limited Time Offers</h2>
+            <p class="ctab__sub">Exceptional prices on exclusive stock. Don't miss your next acquisition.</p>
+            <div class="ctab__ctas">
+              <a class="ctab__btn ctab__btn--outline-white ctab__btn--md" href="/collections/all">
+                <span>Acheter maintenant</span>
+                <svg width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    {%- endfor -%}
+
+  </div>
+</section>
+
+{%- if custom_css != blank -%}
+  <style>#shopify-section-{{ sid }}{ {{ custom_css }} }</style>
+{%- endif -%}
+
+<style>
+/* ═══════════════════════════════════════════════
+   CTA BANNER v2.0 — Motion19
+═══════════════════════════════════════════════ */
+
+.ctab--hide-mob  { display: none !important; }
+@media (min-width: 768px) {
+  .ctab--hide-mob  { display: block !important; }
+  .ctab--hide-desk { display: none !important; }
+}
+@media (max-width: 767px) {
+  .ctab__banner--hide-mob { display: none !important; }
+}
+
+.ctab {
+  margin-top:    var(--ctab-mt, 0px);
+  margin-bottom: var(--ctab-mb, 0px);
+  padding-top:    var(--ctab-pt-m, 0px);
+  padding-bottom: var(--ctab-pb-m, 0px);
+  overflow: hidden;
+}
+@media (min-width: 768px) {
+  .ctab { padding-top: var(--ctab-pt-d, 0px); padding-bottom: var(--ctab-pb-d, 0px); }
+}
+
+.ctab--boxed .ctab__wrap {
+  max-width: var(--ctab-maxw, 1440px);
+  margin-inline: auto;
+}
+
+.ctab--entrance-fade-in  { animation: ctabFadeIn  .9s ease both; }
+.ctab--entrance-slide-up { animation: ctabSlideUp .8s cubic-bezier(.22,1,.36,1) both; }
+@keyframes ctabFadeIn  { from { opacity: 0; } to { opacity: 1; } }
+@keyframes ctabSlideUp { from { opacity: 0; transform: translateY(28px); } to { opacity: 1; transform: none; } }
+
+/* ── Banner ─────────────────────────────── */
+.ctab__banner {
+  position: relative;
+  overflow: hidden;
+  display: flex;
+}
+
+.ctab__banner--h-small  { min-height: 320px; }
+.ctab__banner--h-medium { min-height: var(--b-h-mob, 520px); }
+.ctab__banner--h-large  { min-height: 640px; }
+.ctab__banner--h-full   { min-height: 100svh; }
+
+@media (min-width: 768px) {
+  .ctab__banner--h-small  { min-height: 40vh; }
+  .ctab__banner--h-medium { min-height: 60vh; }
+  .ctab__banner--h-large  { min-height: 80vh; }
+  .ctab__banner--h-full   { min-height: 100vh; }
+}
+
+/* Vertical alignment */
+.ctab__banner--av-top    { align-items: flex-start; }
+.ctab__banner--av-center { align-items: center; }
+.ctab__banner--av-bottom { align-items: flex-end; }
+
+/* ── Media ──────────────────────────────── */
+.ctab__media {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+}
+
+.ctab__bg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transition: transform 800ms cubic-bezier(.4,0,.2,1);
+  will-change: transform;
+}
+@media (hover: hover) {
+  .ctab__banner:hover .ctab__bg { transform: scale(1.03); }
+}
+
+.ctab__overlay {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+.ctab__overlay--full   { background: rgba(var(--b-ov-r,0),var(--b-ov-g,0),var(--b-ov-b,0),var(--b-ov-a,.46)); }
+.ctab__overlay--bottom {
+  background: linear-gradient(
+    to top,
+    rgba(var(--b-ov-r,0),var(--b-ov-g,0),var(--b-ov-b,0),var(--b-ov-a,.6)) 0%,
+    rgba(var(--b-ov-r,0),var(--b-ov-g,0),var(--b-ov-b,0),calc(var(--b-ov-a,.6)*.3)) 50%,
+    transparent 100%
+  );
+}
+.ctab__overlay--top {
+  background: linear-gradient(
+    to bottom,
+    rgba(var(--b-ov-r,0),var(--b-ov-g,0),var(--b-ov-b,0),var(--b-ov-a,.6)) 0%,
+    transparent 60%
+  );
+}
+.ctab__overlay--left  { background: linear-gradient(to right, rgba(var(--b-ov-r,0),var(--b-ov-g,0),var(--b-ov-b,0),var(--b-ov-a,.65)) 0%, transparent 65%); }
+.ctab__overlay--right { background: linear-gradient(to left,  rgba(var(--b-ov-r,0),var(--b-ov-g,0),var(--b-ov-b,0),var(--b-ov-a,.65)) 0%, transparent 65%); }
+.ctab__overlay--none  { display: none; }
+
+/* ── Content ────────────────────────────── */
+.ctab__content {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  display: flex;
+  padding: clamp(40px,7vw,100px) clamp(20px,5vw,80px);
+}
+
+.ctab__banner--ah-left   .ctab__content { justify-content: flex-start; }
+.ctab__banner--ah-center .ctab__content { justify-content: center; }
+.ctab__banner--ah-right  .ctab__content { justify-content: flex-end; }
+
+.ctab__inner {
+  max-width: var(--b-cont-mw, 680px);
+  will-change: opacity, transform;
+}
+.ctab__banner--ah-center .ctab__inner { text-align: center; }
+.ctab__banner--ah-right  .ctab__inner { text-align: right; }
+
+/* Entry animations */
+.ctab__banner--anim-fade-up    .ctab__inner,
+.ctab__banner--anim-fade-down  .ctab__inner,
+.ctab__banner--anim-fade-left  .ctab__inner,
+.ctab__banner--anim-fade-right .ctab__inner,
+.ctab__banner--anim-fade       .ctab__inner,
+.ctab__banner--anim-zoom       .ctab__inner { opacity: 0; }
+.ctab__banner--anim-fade-up    .ctab__inner { transform: translateY(20px); }
+.ctab__banner--anim-fade-down  .ctab__inner { transform: translateY(-20px); }
+.ctab__banner--anim-fade-left  .ctab__inner { transform: translateX(20px); }
+.ctab__banner--anim-fade-right .ctab__inner { transform: translateX(-20px); }
+.ctab__banner--anim-zoom       .ctab__inner { transform: scale(.96); }
+
+.ctab__banner.is-visible .ctab__inner {
+  opacity: 1;
+  transform: none;
+  transition: opacity 500ms ease 80ms, transform 500ms cubic-bezier(.22,1,.36,1) 80ms;
+}
+.ctab__banner--anim-none .ctab__inner { opacity: 1; transform: none; transition: none; }
+
+/* ── Overline ──────────────────────────── */
+.ctab__overline {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  font-size: .68rem;
+  font-weight: 600;
+  letter-spacing: .18em;
+  text-transform: uppercase;
+  color: var(--b-ov-tcol, var(--color-primary, #0787ea));
+  margin: 0 0 14px;
+}
+.ctab__overline-bar { display: block; width: 22px; height: 1.5px; background: currentColor; flex-shrink: 0; }
+.ctab__banner--ah-center .ctab__overline { display: flex; justify-content: center; }
+.ctab__banner--ah-right  .ctab__overline { display: flex; justify-content: flex-end; }
+
+/* ── Title ─────────────────────────────── */
+.ctab__title {
+  font-family: var(--font-body, 'Inter', sans-serif);
+  font-size: clamp(1.9rem, 4.5vw, 3.6rem);
+  font-weight: 700;
+  line-height: 1.05;
+  letter-spacing: -.025em;
+  color: var(--b-hl-col, #fff);
+  margin: 0 0 16px;
+}
+
+/* ── Subtitle ──────────────────────────── */
+.ctab__sub {
+  font-size: clamp(.87rem, 1.4vw, 1.05rem);
+  font-weight: 400;
+  line-height: 1.65;
+  color: var(--b-sub-col, rgba(255,255,255,.8));
+  margin: 0 0 32px;
+  max-width: 52ch;
+}
+.ctab__banner--ah-center .ctab__sub,
+.ctab__banner--ah-right  .ctab__sub { max-width: unset; }
+
+/* ── CTAs ──────────────────────────────── */
+.ctab__ctas { display: flex; flex-wrap: wrap; gap: 10px; }
+.ctab__banner--ah-center .ctab__ctas { justify-content: center; }
+.ctab__banner--ah-right  .ctab__ctas { justify-content: flex-end; }
+
+/* ── Buttons ───────────────────────────── */
+.ctab__btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  font-weight: 600;
+  letter-spacing: .07em;
+  text-transform: uppercase;
+  text-decoration: none;
+  border-radius: var(--b-cta-r, 999px);
+  border: 1.5px solid transparent;
+  transition: background 200ms ease, color 200ms ease, border-color 200ms ease, transform 200ms ease, box-shadow 200ms ease;
+}
+.ctab__btn svg { flex-shrink: 0; transition: transform 200ms ease; }
+.ctab__btn:focus-visible { outline: 2px solid var(--color-primary,#0787ea); outline-offset: 3px; }
+.ctab__btn--sm { font-size: .72rem; padding: 11px 24px; }
+.ctab__btn--md { font-size: .8rem;  padding: 14px 32px; }
+.ctab__btn--lg { font-size: .9rem;  padding: 17px 40px; }
+
+.ctab__btn--outline-white { background: transparent; color: #fff; border-color: rgba(255,255,255,.7); }
+.ctab__btn--solid         { background: #f5f5f7; color: #0a0a0a; border-color: #f5f5f7; }
+.ctab__btn--primary       { background: var(--color-primary,#0787ea); color: #fff; border-color: var(--color-primary,#0787ea); }
+.ctab__btn--dark          { background: #0a0a0a; color: #f5f5f7; border-color: #0a0a0a; }
+
+@media (hover: hover) {
+  .ctab__btn--outline-white:hover { background: #fff; color: #0a0a0a; box-shadow: 0 6px 24px rgba(255,255,255,.18); transform: scale(1.02); }
+  .ctab__btn--solid:hover         { background: transparent; color: #fff; border-color: rgba(255,255,255,.7); transform: scale(1.02); }
+  .ctab__btn--primary:hover       { background: #0672c7; box-shadow: 0 8px 24px rgba(7,135,234,.4); transform: scale(1.02); }
+  .ctab__btn--dark:hover          { background: #1a1a1a; transform: scale(1.02); }
+  .ctab__btn:hover svg            { transform: translateX(4px); }
+}
+
+@media (max-width: 767px) {
+  .ctab__title { font-size: clamp(1.5rem, 7vw, 2.4rem); }
+  .ctab__sub   { font-size: .875rem; margin-bottom: 24px; }
+  .ctab__ctas  { flex-direction: column; gap: 8px; }
+  .ctab__banner--ah-center .ctab__ctas { align-items: center; }
+  .ctab__banner--ah-right  .ctab__ctas { align-items: flex-end; }
+  .ctab__btn--md { font-size: .78rem; padding: 13px 28px; }
+  .ctab__btn--lg { font-size: .82rem; padding: 14px 30px; }
+  .ctab__content { padding: clamp(32px,7vw,60px) clamp(20px,5vw,40px); }
+}
+</style>
+
+<script>
+(function () {
+  'use strict';
+  var sec = document.getElementById('ctab-{{ sid }}');
+  if (!sec) return;
+  var banners = Array.from(sec.querySelectorAll('.ctab__banner'));
+  if (!('IntersectionObserver' in window)) {
+    banners.forEach(function (b) { b.classList.add('is-visible'); });
+    return;
+  }
+  var obs = new IntersectionObserver(function (entries) {
+    entries.forEach(function (e) {
+      if (!e.isIntersecting) return;
+      e.target.classList.add('is-visible');
+      obs.unobserve(e.target);
+    });
+  }, { threshold: 0.08 });
+  banners.forEach(function (b) { obs.observe(b); });
+})();
+</script>
+
+{% schema %}
+{
+  "name": "CTA Banner",
+  "tag": "section",
+  "class": "section-cta-banner",
+  "settings": [
+    { "type": "header", "content": "Layout" },
+    { "type": "select", "id": "layout", "label": "Section width", "default": "full",
+      "options": [{ "value": "full", "label": "Full width" }, { "value": "boxed", "label": "Boxed" }] },
+    { "type": "range", "id": "max_width", "label": "Max width — boxed (px)", "min": 960, "max": 1920, "step": 40, "default": 1440, "unit": "px" },
+    { "type": "header", "content": "Spacing" },
+    { "type": "range", "id": "padding_top_mobile", "label": "Padding top — mobile (px)", "min": 0, "max": 160, "step": 4, "default": 0, "unit": "px" },
+    { "type": "range", "id": "padding_bottom_mobile", "label": "Padding bottom — mobile (px)", "min": 0, "max": 160, "step": 4, "default": 0, "unit": "px" },
+    { "type": "range", "id": "padding_top_desktop", "label": "Padding top — desktop (px)", "min": 0, "max": 160, "step": 4, "default": 0, "unit": "px" },
+    { "type": "range", "id": "padding_bottom_desktop", "label": "Padding bottom — desktop (px)", "min": 0, "max": 160, "step": 4, "default": 0, "unit": "px" },
+    { "type": "range", "id": "margin_top", "label": "Margin top (px)", "min": 0, "max": 120, "step": 4, "default": 0, "unit": "px" },
+    { "type": "range", "id": "margin_bottom", "label": "Margin bottom (px)", "min": 0, "max": 120, "step": 4, "default": 0, "unit": "px" },
+    { "type": "header", "content": "Animation" },
+    { "type": "select", "id": "section_animation", "label": "Section entrance", "default": "none",
+      "options": [{ "value": "none", "label": "None" }, { "value": "fade-in", "label": "Fade in" }, { "value": "slide-up", "label": "Slide up" }] },
+    { "type": "header", "content": "Visibility" },
+    { "type": "checkbox", "id": "hide_on_mobile", "label": "Hide on mobile", "default": false },
+    { "type": "checkbox", "id": "hide_on_desktop", "label": "Hide on desktop", "default": false },
+    { "type": "header", "content": "Advanced" },
+    { "type": "textarea", "id": "custom_css", "label": "Custom CSS", "info": "Applied to #shopify-section-ID" }
+  ],
+  "blocks": [
+    {
+      "type": "banner",
+      "name": "CTA Banner",
+      "settings": [
+        { "type": "header", "content": "Background" },
+        { "type": "image_picker", "id": "image_desktop", "label": "Image — desktop" },
+        { "type": "image_picker", "id": "image_mobile", "label": "Image — mobile" },
+        { "type": "select", "id": "focal_point", "label": "Focal point", "default": "center center",
+          "options": [
+            { "value": "top left", "label": "Top left" }, { "value": "top center", "label": "Top center" },
+            { "value": "top right", "label": "Top right" }, { "value": "center left", "label": "Center left" },
+            { "value": "center center", "label": "Center" }, { "value": "center right", "label": "Center right" },
+            { "value": "bottom left", "label": "Bottom left" }, { "value": "bottom center", "label": "Bottom center" },
+            { "value": "bottom right", "label": "Bottom right" }
+          ]
+        },
+        { "type": "text", "id": "video_url", "label": "Video URL (.mp4)", "info": "Overrides image" },
+        { "type": "header", "content": "Overlay" },
+        { "type": "color", "id": "overlay_color", "label": "Overlay color", "default": "#000000" },
+        { "type": "range", "id": "overlay_opacity", "label": "Overlay opacity (%)", "min": 0, "max": 90, "step": 5, "default": 45, "unit": "%" },
+        { "type": "select", "id": "gradient_style", "label": "Gradient style", "default": "full",
+          "options": [
+            { "value": "full", "label": "Full (solid)" }, { "value": "bottom", "label": "Bottom fade" },
+            { "value": "top", "label": "Top fade" }, { "value": "left", "label": "Left fade" },
+            { "value": "right", "label": "Right fade" }, { "value": "none", "label": "None" }
+          ]
+        },
+        { "type": "header", "content": "Height" },
+        { "type": "select", "id": "height", "label": "Banner height", "default": "medium",
+          "options": [
+            { "value": "small", "label": "Small (~40vh)" }, { "value": "medium", "label": "Medium (~60vh)" },
+            { "value": "large", "label": "Large (~80vh)" }, { "value": "full", "label": "Full screen" }
+          ]
+        },
+        { "type": "range", "id": "height_mobile", "label": "Mobile min-height (px)", "min": 280, "max": 800, "step": 20, "default": 520, "unit": "px" },
+        { "type": "header", "content": "Content position" },
+        { "type": "select", "id": "content_align", "label": "Horizontal alignment", "default": "center",
+          "options": [{ "value": "left", "label": "Left" }, { "value": "center", "label": "Center" }, { "value": "right", "label": "Right" }] },
+        { "type": "select", "id": "content_valign", "label": "Vertical alignment", "default": "center",
+          "options": [{ "value": "top", "label": "Top" }, { "value": "center", "label": "Center" }, { "value": "bottom", "label": "Bottom" }] },
+        { "type": "range", "id": "content_max_width", "label": "Content max width (px)", "min": 360, "max": 1200, "step": 20, "default": 680, "unit": "px" },
+        { "type": "header", "content": "Overline" },
+        { "type": "text", "id": "overline", "label": "Overline text" },
+        { "type": "color", "id": "overline_color", "label": "Overline color" },
+        { "type": "header", "content": "Title" },
+        { "type": "text", "id": "title", "label": "Title", "default": "Limited Time Offers" },
+        { "type": "color", "id": "title_color", "label": "Title color", "default": "#ffffff" },
+        { "type": "header", "content": "Subtitle" },
+        { "type": "textarea", "id": "subtitle", "label": "Subtitle", "default": "Exceptional prices on exclusive stock. Don't miss your next acquisition." },
+        { "type": "color", "id": "subtitle_color", "label": "Subtitle color" },
+        { "type": "header", "content": "Primary button" },
+        { "type": "text", "id": "cta_label", "label": "Button text", "default": "Acheter maintenant" },
+        { "type": "url", "id": "cta_url", "label": "Link" },
+        { "type": "select", "id": "cta_style", "label": "Style", "default": "outline-white",
+          "options": [
+            { "value": "outline-white", "label": "Outline white" }, { "value": "solid", "label": "Solid (white bg)" },
+            { "value": "primary", "label": "Primary (brand)" }, { "value": "dark", "label": "Dark (black)" }
+          ]
+        },
+        { "type": "select", "id": "cta_size", "label": "Size", "default": "md",
+          "options": [{ "value": "sm", "label": "Small" }, { "value": "md", "label": "Medium" }, { "value": "lg", "label": "Large" }] },
+        { "type": "range", "id": "cta_radius", "label": "Button radius (px)", "min": 0, "max": 40, "step": 1, "default": 2, "unit": "px" },
+        { "type": "header", "content": "Secondary button (optional)" },
+        { "type": "text", "id": "cta2_label", "label": "Button text" },
+        { "type": "url", "id": "cta2_url", "label": "Link" },
+        { "type": "select", "id": "cta2_style", "label": "Style", "default": "solid",
+          "options": [
+            { "value": "outline-white", "label": "Outline white" }, { "value": "solid", "label": "Solid" },
+            { "value": "primary", "label": "Primary" }, { "value": "dark", "label": "Dark" }
+          ]
+        },
+        { "type": "header", "content": "Animation" },
+        { "type": "select", "id": "animation", "label": "Content animation", "default": "fade-up",
+          "options": [
+            { "value": "none", "label": "None" }, { "value": "fade", "label": "Fade" },
+            { "value": "fade-up", "label": "Fade + slide up" }, { "value": "fade-down", "label": "Fade + slide down" },
+            { "value": "fade-left", "label": "Fade + slide left" }, { "value": "fade-right", "label": "Fade + slide right" },
+            { "value": "zoom", "label": "Zoom" }
+          ]
+        },
+        { "type": "header", "content": "Visibility" },
+        { "type": "checkbox", "id": "hide_on_mobile", "label": "Hide on mobile", "default": false }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "CTA Banner",
+      "blocks": [
+        {
+          "type": "banner",
+          "settings": {
+            "title": "Limited Time Offers",
+            "subtitle": "Exceptional prices on exclusive stock. Don't miss your next acquisition.",
+            "cta_label": "Acheter maintenant",
+            "cta_style": "outline-white",
+            "height": "medium",
+            "animation": "fade-up"
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

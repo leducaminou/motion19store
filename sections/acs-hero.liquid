@@ -1,0 +1,464 @@
+{%- comment -%} ACS Hero — Motion19 OS 2.0 — Collections Page Hero {%- endcomment -%}
+
+{%- liquid
+  assign sid        = section.id
+  assign img_d      = section.settings.image_desktop
+  assign img_m      = section.settings.image_mobile
+  assign focal      = section.settings.focal_point  | default: 'center center'
+  assign vid_url    = section.settings.video_url    | default: ''
+  assign height     = section.settings.height       | default: 'large'
+  assign h_mob      = section.settings.height_mobile | default: 600
+  assign c_align    = section.settings.content_align | default: 'center'
+  assign cont_mw    = section.settings.content_max_width | default: 760
+
+  assign ov_col     = section.settings.overlay_color
+  assign ov_op      = section.settings.overlay_opacity | default: 50 | divided_by: 100.0
+  assign ov_r = 0
+  assign ov_g = 0
+  assign ov_b = 0
+  if ov_col != blank
+    assign ov_r = ov_col.red
+    assign ov_g = ov_col.green
+    assign ov_b = ov_col.blue
+  endif
+  assign grad_style = section.settings.gradient_style | default: 'bottom'
+
+  assign bg_overlay_2 = section.settings.bg_color_bottom | default: '#0a0a0a'
+
+  assign eyebrow    = section.settings.eyebrow
+  assign title      = section.settings.title    | default: 'Tout l'équipement des créateurs modernes'
+  assign subtitle   = section.settings.subtitle | default: 'Caméras, audio, éclairage, streaming, podcast et studio professionnel pour les créateurs nouvelle génération.'
+
+  assign cta1_lbl   = section.settings.cta1_label | default: 'Explorer les collections'
+  assign cta1_url   = section.settings.cta1_url   | default: '/collections/all'
+  assign cta1_style = section.settings.cta1_style  | default: 'outline-white'
+  assign cta2_lbl   = section.settings.cta2_label | default: 'Voir les setups'
+  assign cta2_url   = section.settings.cta2_url   | default: '/collections/all'
+  assign cta2_style = section.settings.cta2_style  | default: 'solid'
+  assign cta_radius = section.settings.cta_radius  | default: 2
+
+  assign show_scroll = section.settings.show_scroll_hint | default: true
+  assign anim_speed  = section.settings.animation_speed  | default: 'normal'
+-%}
+
+{%- if img_d != blank -%}
+  {%- assign bg_url_d = img_d | image_url: width: 1800 -%}
+{%- else -%}
+  {%- assign bg_url_d = 'hp-hero-1.jpg' | asset_url -%}
+{%- endif -%}
+{%- if img_m != blank -%}
+  {%- assign bg_url_m = img_m | image_url: width: 800 -%}
+{%- else -%}
+  {%- assign bg_url_m = 'hp-hero-1-mobile.jpg' | asset_url -%}
+{%- endif -%}
+
+<section
+  id="acsh-{{ sid }}"
+  class="acsh acsh--h-{{ height }} acsh--align-{{ c_align }} acsh--speed-{{ anim_speed }}"
+  aria-labelledby="acsh-title-{{ sid }}"
+  style="
+    --acsh-ov-r:    {{ ov_r }};
+    --acsh-ov-g:    {{ ov_g }};
+    --acsh-ov-b:    {{ ov_b }};
+    --acsh-ov-a:    {{ ov_op }};
+    --acsh-h-mob:   {{ h_mob }}px;
+    --acsh-cont-mw: {{ cont_mw }}px;
+    --acsh-cta-r:   {{ cta_radius }}px;
+    --acsh-focal:   {{ focal }};
+  "
+>
+  {%- comment -%} Background {%- endcomment -%}
+  <div class="acsh__media" aria-hidden="true">
+    {%- if vid_url != blank -%}
+      <video class="acsh__bg" src="{{ vid_url }}" autoplay muted loop playsinline></video>
+    {%- else -%}
+      <picture>
+        <source media="(max-width:767px)" srcset="{{ bg_url_m }}">
+        <img
+          class="acsh__bg"
+          src="{{ bg_url_d }}"
+          alt=""
+          loading="eager"
+          fetchpriority="high"
+          decoding="async"
+        >
+      </picture>
+    {%- endif -%}
+    <div class="acsh__overlay acsh__overlay--{{ grad_style }}" aria-hidden="true"></div>
+  </div>
+
+  {%- comment -%} Glow decorative {%- endcomment -%}
+  <div class="acsh__glow" aria-hidden="true"></div>
+
+  {%- comment -%} Content {%- endcomment -%}
+  <div class="acsh__content">
+    <div class="acsh__inner" id="acsh-inner-{{ sid }}">
+
+      {%- if eyebrow != blank -%}
+        <p class="acsh__overline">
+          <span class="acsh__overline-bar" aria-hidden="true"></span>
+          {{ eyebrow }}
+        </p>
+      {%- endif -%}
+
+      <h1 class="acsh__title" id="acsh-title-{{ sid }}">{{ title }}</h1>
+
+      {%- if subtitle != blank -%}
+        <p class="acsh__sub">{{ subtitle }}</p>
+      {%- endif -%}
+
+      <div class="acsh__ctas">
+        {%- if cta1_lbl != blank -%}
+          <a class="acsh__btn acsh__btn--{{ cta1_style }}" href="{{ cta1_url }}">
+            <span>{{ cta1_lbl }}</span>
+            <svg width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+              <path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </a>
+        {%- endif -%}
+        {%- if cta2_lbl != blank -%}
+          <a class="acsh__btn acsh__btn--{{ cta2_style }}" href="{{ cta2_url }}">
+            <span>{{ cta2_lbl }}</span>
+          </a>
+        {%- endif -%}
+      </div>
+
+    </div>
+  </div>
+
+  {%- if show_scroll -%}
+    <div class="acsh__scroll-hint" aria-hidden="true">
+      <div class="acsh__scroll-line"></div>
+      <span class="acsh__scroll-label">Scroll</span>
+    </div>
+  {%- endif -%}
+
+</section>
+
+<style>
+/* ═══════════════════════════════════════════
+   ACS Hero — acsh
+   ═══════════════════════════════════════════ */
+.acsh {
+  --acsh-ease:     cubic-bezier(0.4, 0, 0.2, 1);
+  --acsh-ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  min-height: var(--acsh-h-mob, 600px);
+}
+@media (min-width: 768px) {
+  .acsh--h-small  { min-height: 55vh; }
+  .acsh--h-medium { min-height: 72vh; }
+  .acsh--h-large  { min-height: 86vh; }
+  .acsh--h-full   { min-height: 100svh; }
+}
+
+/* Media */
+.acsh__media {
+  position: absolute; inset: 0; z-index: 0;
+}
+.acsh__bg {
+  position: absolute; inset: 0;
+  width: 100%; height: 100%;
+  object-fit: cover;
+  object-position: var(--acsh-focal, center center);
+  display: block;
+  transition: transform 900ms var(--acsh-ease);
+  will-change: transform;
+}
+
+/* Overlay */
+.acsh__overlay { position: absolute; inset: 0; }
+.acsh__overlay--full {
+  background: rgba(var(--acsh-ov-r,0),var(--acsh-ov-g,0),var(--acsh-ov-b,0),var(--acsh-ov-a,.5));
+}
+.acsh__overlay--bottom {
+  background: linear-gradient(
+    to top,
+    rgba(var(--acsh-ov-r,0),var(--acsh-ov-g,0),var(--acsh-ov-b,0),0.88) 0%,
+    rgba(var(--acsh-ov-r,0),var(--acsh-ov-g,0),var(--acsh-ov-b,0),0.55) 40%,
+    rgba(var(--acsh-ov-r,0),var(--acsh-ov-g,0),var(--acsh-ov-b,0),0.12) 100%
+  );
+}
+.acsh__overlay--center {
+  background: radial-gradient(ellipse at center,
+    rgba(var(--acsh-ov-r,0),var(--acsh-ov-g,0),var(--acsh-ov-b,0),0.2) 0%,
+    rgba(var(--acsh-ov-r,0),var(--acsh-ov-g,0),var(--acsh-ov-b,0),0.75) 100%
+  );
+}
+.acsh__overlay--left {
+  background: linear-gradient(to right,
+    rgba(var(--acsh-ov-r,0),var(--acsh-ov-g,0),var(--acsh-ov-b,0),0.82) 0%,
+    rgba(var(--acsh-ov-r,0),var(--acsh-ov-g,0),var(--acsh-ov-b,0),0.2) 70%,
+    transparent 100%
+  );
+}
+
+/* Glow */
+.acsh__glow {
+  position: absolute; z-index: 1; pointer-events: none;
+  width: 600px; height: 600px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(7,135,234,0.18) 0%, transparent 70%);
+  top: -100px; right: -100px;
+  filter: blur(40px);
+  animation: acshGlowPulse 6s ease-in-out infinite alternate;
+}
+@keyframes acshGlowPulse {
+  from { opacity: 0.6; transform: scale(1); }
+  to   { opacity: 1;   transform: scale(1.15); }
+}
+
+/* Content */
+.acsh__content {
+  position: relative; z-index: 2;
+  width: 100%;
+  display: flex;
+  padding: clamp(48px,8vw,120px) clamp(16px,5vw,80px);
+}
+.acsh--align-left   .acsh__content { justify-content: flex-start; }
+.acsh--align-center .acsh__content { justify-content: center; }
+.acsh--align-right  .acsh__content { justify-content: flex-end; }
+
+.acsh__inner {
+  max-width: var(--acsh-cont-mw, 760px);
+  will-change: opacity, transform;
+}
+.acsh--align-center .acsh__inner { text-align: center; }
+.acsh--align-right  .acsh__inner { text-align: right; }
+
+/* Entrance animation */
+.acsh__inner {
+  opacity: 0;
+  transform: translateY(24px);
+}
+.acsh__inner.is-visible {
+  opacity: 1;
+  transform: translateY(0);
+  transition: opacity 700ms var(--acsh-ease-out), transform 700ms var(--acsh-ease-out);
+}
+.acsh--speed-slow   .acsh__inner.is-visible { transition-duration: 1100ms; }
+.acsh--speed-fast   .acsh__inner.is-visible { transition-duration: 480ms; }
+
+/* Overline */
+.acsh__overline {
+  display: inline-flex; align-items: center; gap: 10px;
+  font-size: 0.68rem; font-weight: 600;
+  letter-spacing: 0.18em; text-transform: uppercase;
+  color: #0787ea; margin: 0 0 16px;
+}
+.acsh__overline-bar { display: block; width: 22px; height: 1.5px; background: currentColor; flex-shrink: 0; }
+.acsh--align-center .acsh__overline { display: flex; justify-content: center; }
+.acsh--align-right  .acsh__overline { display: flex; justify-content: flex-end; }
+
+/* Title */
+.acsh__title {
+  font-family: var(--font-body, 'Inter', sans-serif);
+  font-size: clamp(2rem, 5.5vw, 4.2rem);
+  font-weight: 800;
+  line-height: 1.0;
+  letter-spacing: -0.03em;
+  color: #fff;
+  margin: 0 0 20px;
+}
+
+/* Subtitle */
+.acsh__sub {
+  font-size: clamp(0.9rem, 1.5vw, 1.1rem);
+  font-weight: 400; line-height: 1.65;
+  color: rgba(255,255,255,0.78);
+  margin: 0 0 36px;
+  max-width: 54ch;
+}
+.acsh--align-center .acsh__sub,
+.acsh--align-right  .acsh__sub { max-width: unset; }
+
+/* CTAs */
+.acsh__ctas { display: flex; flex-wrap: wrap; gap: 10px; }
+.acsh--align-center .acsh__ctas { justify-content: center; }
+.acsh--align-right  .acsh__ctas { justify-content: flex-end; }
+
+/* Buttons */
+.acsh__btn {
+  display: inline-flex; align-items: center; gap: 9px;
+  font-weight: 600; font-size: 0.82rem;
+  letter-spacing: 0.07em; text-transform: uppercase;
+  text-decoration: none;
+  padding: 14px 32px;
+  border-radius: var(--acsh-cta-r, 2px);
+  border: 1.5px solid transparent;
+  transition: background 200ms ease, color 200ms ease, border-color 200ms ease, transform 200ms ease, box-shadow 200ms ease;
+}
+.acsh__btn svg { flex-shrink: 0; transition: transform 200ms ease; }
+.acsh__btn:hover svg { transform: translateX(4px); }
+.acsh__btn:focus-visible { outline: 2px solid #0787ea; outline-offset: 3px; }
+
+.acsh__btn--outline-white { background: transparent; color: #fff; border-color: rgba(255,255,255,0.7); }
+.acsh__btn--solid         { background: rgba(245,245,247,0.95); color: #0a0a0a; border-color: transparent; }
+.acsh__btn--primary       { background: #0787ea; color: #fff; border-color: #0787ea; }
+.acsh__btn--dark          { background: #0a0a0a; color: #f5f5f7; border-color: #0a0a0a; }
+
+@media (hover: hover) {
+  .acsh__btn--outline-white:hover { background: #fff; color: #0a0a0a; box-shadow: 0 6px 24px rgba(255,255,255,.2); transform: scale(1.02); }
+  .acsh__btn--solid:hover         { background: #0787ea; color: #fff; transform: scale(1.02); }
+  .acsh__btn--primary:hover       { background: #0672c7; box-shadow: 0 8px 24px rgba(7,135,234,.4); transform: scale(1.02); }
+  .acsh__btn--dark:hover          { background: #1a1a1a; transform: scale(1.02); }
+}
+
+/* Scroll hint */
+.acsh__scroll-hint {
+  position: absolute; bottom: 28px; left: 50%; transform: translateX(-50%);
+  z-index: 2; display: flex; flex-direction: column; align-items: center; gap: 6px;
+  opacity: 0.55; transition: opacity 200ms ease;
+}
+.acsh__scroll-hint:hover { opacity: 0.9; }
+.acsh__scroll-line {
+  width: 1.5px; height: 36px;
+  background: linear-gradient(to bottom, rgba(255,255,255,0) 0%, rgba(255,255,255,0.8) 100%);
+  animation: acshScrollBounce 1.8s ease-in-out infinite;
+}
+@keyframes acshScrollBounce {
+  0%,100% { transform: scaleY(1); opacity: 0.5; }
+  50%      { transform: scaleY(1.3); opacity: 1; }
+}
+.acsh__scroll-label { font-size: 0.6rem; font-weight: 600; letter-spacing: 0.16em; text-transform: uppercase; color: rgba(255,255,255,0.7); }
+
+@media (max-width: 767px) {
+  .acsh__title  { font-size: clamp(1.7rem, 8vw, 2.8rem); }
+  .acsh__sub    { font-size: 0.88rem; margin-bottom: 28px; }
+  .acsh__ctas   { flex-direction: column; gap: 8px; }
+  .acsh--align-center .acsh__ctas { align-items: center; }
+  .acsh__btn    { padding: 13px 28px; font-size: 0.78rem; }
+  .acsh__content { padding: 48px 16px 56px; }
+  .acsh__scroll-hint { display: none; }
+}
+</style>
+
+<script>
+(function () {
+  'use strict';
+  var sec   = document.getElementById('acsh-{{ sid }}');
+  if (!sec) return;
+  var inner = document.getElementById('acsh-inner-{{ sid }}');
+  if (!inner) return;
+
+  function reveal() {
+    requestAnimationFrame(function () { inner.classList.add('is-visible'); });
+  }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', reveal);
+  else reveal();
+
+  document.addEventListener('shopify:section:load', function (e) {
+    if (e.detail && e.detail.sectionId === '{{ sid }}') reveal();
+  });
+})();
+</script>
+
+{% schema %}
+{
+  "name": "ACS — Hero Collections",
+  "tag": "section",
+  "class": "section-acs-hero",
+  "settings": [
+    { "type": "header", "content": "Image de fond" },
+    { "type": "image_picker", "id": "image_desktop", "label": "Image desktop" },
+    { "type": "image_picker", "id": "image_mobile",  "label": "Image mobile" },
+    { "type": "select", "id": "focal_point", "label": "Point focal", "default": "center center",
+      "options": [
+        {"value":"top left",     "label":"Haut gauche"},
+        {"value":"top center",   "label":"Haut centre"},
+        {"value":"top right",    "label":"Haut droite"},
+        {"value":"center left",  "label":"Milieu gauche"},
+        {"value":"center center","label":"Centre"},
+        {"value":"center right", "label":"Milieu droite"},
+        {"value":"bottom left",  "label":"Bas gauche"},
+        {"value":"bottom center","label":"Bas centre"},
+        {"value":"bottom right", "label":"Bas droite"}
+      ]
+    },
+    { "type": "text", "id": "video_url", "label": "URL vidéo .mp4 (remplace image)" },
+    { "type": "header", "content": "Overlay" },
+    { "type": "color", "id": "overlay_color", "label": "Couleur overlay", "default": "#000000" },
+    { "type": "range", "id": "overlay_opacity", "label": "Opacité overlay (%)", "min": 0, "max": 85, "step": 5, "default": 50, "unit": "%" },
+    { "type": "select", "id": "gradient_style", "label": "Style gradient", "default": "bottom",
+      "options": [
+        {"value":"full",   "label":"Plein (solide)"},
+        {"value":"bottom", "label":"Dégradé bas"},
+        {"value":"center", "label":"Dégradé radial"},
+        {"value":"left",   "label":"Dégradé gauche"}
+      ]
+    },
+    { "type": "header", "content": "Hauteur" },
+    { "type": "select", "id": "height", "label": "Hauteur desktop", "default": "large",
+      "options": [
+        {"value":"small",  "label":"Petit (~55vh)"},
+        {"value":"medium", "label":"Moyen (~72vh)"},
+        {"value":"large",  "label":"Grand (~86vh)"},
+        {"value":"full",   "label":"Plein écran"}
+      ]
+    },
+    { "type": "range", "id": "height_mobile", "label": "Hauteur min mobile (px)", "min": 360, "max": 900, "step": 20, "default": 600, "unit": "px" },
+    { "type": "header", "content": "Contenu" },
+    { "type": "text",     "id": "eyebrow",  "label": "Overline / Eyebrow" },
+    { "type": "text",     "id": "title",    "label": "Titre", "default": "Tout l'équipement des créateurs modernes" },
+    { "type": "textarea", "id": "subtitle", "label": "Sous-titre", "default": "Caméras, audio, éclairage, streaming, podcast et studio professionnel pour les créateurs nouvelle génération." },
+    { "type": "header", "content": "Position contenu" },
+    { "type": "select", "id": "content_align", "label": "Alignement horizontal", "default": "center",
+      "options": [
+        {"value":"left",   "label":"Gauche"},
+        {"value":"center", "label":"Centre"},
+        {"value":"right",  "label":"Droite"}
+      ]
+    },
+    { "type": "range", "id": "content_max_width", "label": "Largeur max contenu (px)", "min": 400, "max": 1200, "step": 20, "default": 760, "unit": "px" },
+    { "type": "header", "content": "Bouton principal" },
+    { "type": "text", "id": "cta1_label", "label": "Texte bouton 1", "default": "Explorer les collections" },
+    { "type": "url",  "id": "cta1_url",   "label": "Lien bouton 1" },
+    { "type": "select", "id": "cta1_style", "label": "Style bouton 1", "default": "outline-white",
+      "options": [
+        {"value":"outline-white","label":"Outline blanc"},
+        {"value":"solid",        "label":"Blanc solide"},
+        {"value":"primary",      "label":"Bleu primaire"},
+        {"value":"dark",         "label":"Noir"}
+      ]
+    },
+    { "type": "header", "content": "Bouton secondaire" },
+    { "type": "text", "id": "cta2_label", "label": "Texte bouton 2", "default": "Voir les setups" },
+    { "type": "url",  "id": "cta2_url",   "label": "Lien bouton 2" },
+    { "type": "select", "id": "cta2_style", "label": "Style bouton 2", "default": "solid",
+      "options": [
+        {"value":"outline-white","label":"Outline blanc"},
+        {"value":"solid",        "label":"Blanc solide"},
+        {"value":"primary",      "label":"Bleu primaire"},
+        {"value":"dark",         "label":"Noir"}
+      ]
+    },
+    { "type": "range", "id": "cta_radius", "label": "Rayon boutons (px)", "min": 0, "max": 40, "step": 1, "default": 2, "unit": "px" },
+    { "type": "header", "content": "Animations" },
+    { "type": "select", "id": "animation_speed", "label": "Vitesse animation", "default": "normal",
+      "options": [
+        {"value":"fast",   "label":"Rapide"},
+        {"value":"normal", "label":"Normal"},
+        {"value":"slow",   "label":"Lent"}
+      ]
+    },
+    { "type": "checkbox", "id": "show_scroll_hint", "label": "Indicateur scroll", "default": true }
+  ],
+  "presets": [
+    {
+      "name": "ACS — Hero Collections",
+      "settings": {
+        "title": "Tout l'équipement des créateurs modernes",
+        "subtitle": "Caméras, audio, éclairage, streaming, podcast et studio professionnel pour les créateurs nouvelle génération.",
+        "eyebrow": "Motion19 Store",
+        "cta1_label": "Explorer les collections",
+        "cta2_label": "Voir les setups",
+        "height": "large",
+        "gradient_style": "bottom"
+      }
+    }
+  ]
+}
+{% endschema %}

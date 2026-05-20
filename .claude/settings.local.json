@@ -1,0 +1,33 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(shopify version *)",
+      "Bash(shopify theme *)",
+      "Bash(magick --version)",
+      "Bash(convert --version)",
+      "Bash(python -c \"from PIL import Image; print\\('Pillow OK'\\)\")",
+      "Bash(python3 -c \"from PIL import Image; print\\('Pillow OK'\\)\")",
+      "Bash(python *)",
+      "Bash(grep -E \"\\\\.\\(css|js\\)$\")",
+      "Bash(grep -E \"\\\\.liquid$\")",
+      "Bash(cat shopify.theme.toml)",
+      "Bash(ls .shopify)",
+      "Bash(echo \"EXIT:$?\")",
+      "Bash(grep -E \"\\\\.\\(js\\)$\")",
+      "WebFetch(domain:unpkg.com)",
+      "Bash(curl -s \"https://unpkg.com/embla-carousel-auto-scroll@8.3.0/embla-carousel-auto-scroll.umd.js\")",
+      "Bash(grep -E \"\\\\.\\(liquid|js|jsx|css|scss\\)$\")",
+      "Bash(node *)",
+      "Bash(xxd \"D:/Motion 19/motion19store/sections/editorial-banner.liquid\")",
+      "Bash(grep -n \"^  comment$\\\\|^  endcomment$\\\\|^comment$\\\\|^endcomment$\\\\|^ *comment *$\\\\|^ *endcomment *$\" \"D:/Motion 19/motion19store/sections/editorial-banner.liquid\")",
+      "WebFetch(domain:www.npmjs.com)",
+      "Bash(curl -s \"https://registry.npmjs.org/embla-carousel\")",
+      "Bash(curl -s \"https://registry.npmjs.org/embla-carousel/latest\")",
+      "Bash(npm run *)",
+      "WebFetch(domain:raw.githubusercontent.com)",
+      "WebFetch(domain:www.embla-carousel.com)",
+      "Bash(grep -E '\\\\.\\(css|js\\)$')",
+      "Bash(git config *)"
+    ]
+  }
+}

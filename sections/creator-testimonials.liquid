@@ -1,0 +1,699 @@
+{{ 'card.css' | asset_url | stylesheet_tag }}
+{{ 'embla-carousel-auto-scroll.js' | asset_url | script_tag }}
+{%- comment -%}Creator Testimonials — Motion19 — OS 2.0 v2.2{%- endcomment -%}
+
+{%- liquid
+  assign sid = section.id
+
+  assign bg_color      = section.settings.bg_color       | default: '#f7f7f8'
+  assign eyebrow_color = section.settings.eyebrow_color  | default: '#0787ea'
+  assign eyebrow_fw    = section.settings.eyebrow_fw     | default: '600'
+  assign title_color   = section.settings.title_color    | default: '#0a0a0a'
+  assign title_fw      = section.settings.title_fw       | default: '800'
+  assign title_sz_d    = section.settings.title_sz_desktop | default: 36
+  assign title_sz_m    = section.settings.title_sz_mobile  | default: 24
+  assign body_color    = section.settings.body_color     | default: 'rgba(10,10,10,0.55)'
+  assign body_fs_d     = section.settings.body_fs_desktop | default: 15
+  assign body_fs_m     = section.settings.body_fs_mobile  | default: 14
+  assign body_fw       = section.settings.body_fw        | default: '400'
+  assign body_lh       = section.settings.body_lh        | default: '1.6'
+  assign body_mw       = section.settings.body_max_width | default: 52
+
+  assign pt_m  = section.settings.padding_top_mobile    | default: 52
+  assign pb_m  = section.settings.padding_bottom_mobile | default: 40
+  assign pt_d  = section.settings.padding_top_desktop   | default: 72
+  assign pb_d  = section.settings.padding_bottom_desktop| default: 52
+  assign mt    = section.settings.margin_top            | default: 0
+  assign mb    = section.settings.margin_bottom         | default: 0
+  assign gap_d = section.settings.gap_desktop           | default: 14
+  assign gap_m = section.settings.gap_mobile            | default: 12
+  assign max_w = section.settings.max_width             | default: 1400
+-%}
+
+<section
+  id="ct-{{ sid }}"
+  class="ct"
+  aria-labelledby="ct-title-{{ sid }}"
+  style="
+    --ct-bg:          {{ bg_color }};
+    --ct-eyebrow:     {{ eyebrow_color }};
+    --ct-eyebrow-fw:  {{ eyebrow_fw }};
+    --ct-title:       {{ title_color }};
+    --ct-title-fw:    {{ title_fw }};
+    --ct-title-sz-d:  {{ title_sz_d }}px;
+    --ct-title-sz-m:  {{ title_sz_m }}px;
+    --ct-body-color:  {{ body_color }};
+    --ct-body-fs-d:   {{ body_fs_d }}px;
+    --ct-body-fs-m:   {{ body_fs_m }}px;
+    --ct-body-fw:     {{ body_fw }};
+    --ct-body-lh:     {{ body_lh }};
+    --ct-body-mw:     {{ body_mw }}ch;
+    --ct-pt-m:        {{ pt_m }}px;
+    --ct-pb-m:        {{ pb_m }}px;
+    --ct-pt-d:        {{ pt_d }}px;
+    --ct-pb-d:        {{ pb_d }}px;
+    --ct-mt:          {{ mt }}px;
+    --ct-mb:          {{ mb }}px;
+    --ct-gap-m:       {{ gap_m }}px;
+    --ct-gap-d:       {{ gap_d }}px;
+    --ct-max-w:       {{ max_w }}px;
+  "
+>
+  <div class="ct__inner">
+
+    {%- comment -%} ── Header ── {%- endcomment -%}
+    <div class="ct__header ct__header--{{ section.settings.header_align | default: 'left' }}">
+      {%- if section.settings.eyebrow != blank -%}
+        <span class="ct__eyebrow">{{ section.settings.eyebrow }}</span>
+      {%- endif -%}
+      <h2 class="ct__title" id="ct-title-{{ sid }}">
+        {{- section.settings.title | default: 'Ce que disent nos créateurs' -}}
+      </h2>
+      {%- if section.settings.subtitle != blank -%}
+        <p class="ct__subtitle">{{ section.settings.subtitle }}</p>
+      {%- endif -%}
+    </div>
+
+    {%- comment -%} ── Carousel ── {%- endcomment -%}
+    <div class="ct__viewport-wrap">
+      <div class="ct__viewport" id="ct-viewport-{{ sid }}">
+        <ul class="ct__track" id="ct-track-{{ sid }}" role="list">
+
+        {%- liquid
+          assign ct_has_content = false
+          for block in section.blocks
+            if block.settings.testimonial != blank
+              assign ct_has_content = true
+              break
+            endif
+          endfor
+        -%}
+
+        {%- if ct_has_content -%}
+          {%- for block in section.blocks -%}
+            {%- if block.settings.testimonial != blank -%}
+              <li class="ct__item" {{ block.shopify_attributes }}>
+                <article class="ct__card m19-card is-visible">
+                  <div class="ct__avatar-wrap">
+                    {%- if block.settings.photo != blank -%}
+                      <img
+                        src="{{ block.settings.photo | image_url: width: 160, height: 160, crop: 'center' }}"
+                        alt="{{ block.settings.name | default: 'Créateur' | escape }}"
+                        width="64" height="64" loading="lazy" decoding="async"
+                      >
+                    {%- else -%}
+                      <div class="ct__avatar-fallback" aria-hidden="true">
+                        <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>
+                      </div>
+                    {%- endif -%}
+                  </div>
+                  <div class="ct__quote-mark" aria-hidden="true">&ldquo;</div>
+                  <blockquote class="ct__quote">
+                    <p class="ct__quote-text">{{ block.settings.testimonial }}</p>
+                  </blockquote>
+                  <hr class="ct__divider" aria-hidden="true">
+                  <div class="ct__creator">
+                    <span class="ct__creator-name">{{ block.settings.name }}</span>
+                    <span class="ct__creator-role">{{ block.settings.role }}</span>
+                  </div>
+                </article>
+              </li>
+            {%- endif -%}
+          {%- endfor -%}
+        {%- else -%}
+
+          <li class="ct__item">
+            <article class="ct__card m19-card is-visible">
+              <div class="ct__avatar-wrap"><div class="ct__avatar-fallback" aria-hidden="true"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg></div></div>
+              <div class="ct__quote-mark" aria-hidden="true">&ldquo;</div>
+              <blockquote class="ct__quote"><p class="ct__quote-text">Le micro Blue Yeti commandé chez Motion19 a totalement transformé la qualité audio de mes vidéos. Livraison en 24h, emballage impeccable et un SAV réactif. Je ne commande plus ailleurs pour mon matériel de studio.</p></blockquote>
+              <hr class="ct__divider" aria-hidden="true">
+              <div class="ct__creator"><span class="ct__creator-name">Alex Dubois</span><span class="ct__creator-role">Créateur YouTube — 280K</span></div>
+            </article>
+          </li>
+
+          <li class="ct__item">
+            <article class="ct__card m19-card is-visible">
+              <div class="ct__avatar-wrap"><div class="ct__avatar-fallback" aria-hidden="true"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg></div></div>
+              <div class="ct__quote-mark" aria-hidden="true">&ldquo;</div>
+              <blockquote class="ct__quote"><p class="ct__quote-text">Interface Focusrite Scarlett 2i2 reçue en parfait état, très bien emballée. Le son de mon podcast a pris une toute autre dimension depuis. Je recommande Motion19 à tous les créateurs sérieux.</p></blockquote>
+              <hr class="ct__divider" aria-hidden="true">
+              <div class="ct__creator"><span class="ct__creator-name">Marie Laurent</span><span class="ct__creator-role">Podcasteuse</span></div>
+            </article>
+          </li>
+
+          <li class="ct__item">
+            <article class="ct__card m19-card is-visible">
+              <div class="ct__avatar-wrap"><div class="ct__avatar-fallback" aria-hidden="true"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg></div></div>
+              <div class="ct__quote-mark" aria-hidden="true">&ldquo;</div>
+              <blockquote class="ct__quote"><p class="ct__quote-text">J'ai équipé toute ma cabine de streaming chez Motion19 : micro, bras articulé, carte son. Le rapport qualité/prix est imbattable et les conseils via le chat sont vraiment utiles pour bien choisir.</p></blockquote>
+              <hr class="ct__divider" aria-hidden="true">
+              <div class="ct__creator"><span class="ct__creator-name">Tom Petitjean</span><span class="ct__creator-role">Streamer Twitch — Partner</span></div>
+            </article>
+          </li>
+
+          <li class="ct__item">
+            <article class="ct__card m19-card is-visible">
+              <div class="ct__avatar-wrap"><div class="ct__avatar-fallback" aria-hidden="true"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg></div></div>
+              <div class="ct__quote-mark" aria-hidden="true">&ldquo;</div>
+              <blockquote class="ct__quote"><p class="ct__quote-text">Deux panneaux LED Elgato reçus en deux jours. La différence sur mes shootings produit est impressionnante. Emballage soigné, rien n'était abîmé. Service client vraiment au top.</p></blockquote>
+              <hr class="ct__divider" aria-hidden="true">
+              <div class="ct__creator"><span class="ct__creator-name">Léa Martin</span><span class="ct__creator-role">Photographe & vidéaste</span></div>
+            </article>
+          </li>
+
+          <li class="ct__item">
+            <article class="ct__card m19-card is-visible">
+              <div class="ct__avatar-wrap"><div class="ct__avatar-fallback" aria-hidden="true"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg></div></div>
+              <div class="ct__quote-mark" aria-hidden="true">&ldquo;</div>
+              <blockquote class="ct__quote"><p class="ct__quote-text">Rode NT-USB Mini pour mes interviews terrain, qualité pro pour un budget maîtrisé. Le service client m'a aidé à choisir le bon modèle. C'est rare de trouver ce niveau de conseil en ligne.</p></blockquote>
+              <hr class="ct__divider" aria-hidden="true">
+              <div class="ct__creator"><span class="ct__creator-name">Julien Roy</span><span class="ct__creator-role">Vidéaste freelance</span></div>
+            </article>
+          </li>
+
+          <li class="ct__item">
+            <article class="ct__card m19-card is-visible">
+              <div class="ct__avatar-wrap"><div class="ct__avatar-fallback" aria-hidden="true"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg></div></div>
+              <div class="ct__quote-mark" aria-hidden="true">&ldquo;</div>
+              <blockquote class="ct__quote"><p class="ct__quote-text">Mon ring light et mon trépied de chez Motion19 sont mes meilleurs investissements de l'année. Le rendu de mes vidéos est devenu vraiment professionnel, mes abonnés l'ont remarqué immédiatement.</p></blockquote>
+              <hr class="ct__divider" aria-hidden="true">
+              <div class="ct__creator"><span class="ct__creator-name">Camille Nguyen</span><span class="ct__creator-role">Créatrice TikTok — 1.2M</span></div>
+            </article>
+          </li>
+
+          <li class="ct__item">
+            <article class="ct__card m19-card is-visible">
+              <div class="ct__avatar-wrap"><div class="ct__avatar-fallback" aria-hidden="true"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg></div></div>
+              <div class="ct__quote-mark" aria-hidden="true">&ldquo;</div>
+              <blockquote class="ct__quote"><p class="ct__quote-text">Écran BenQ de monitoring reçu parfaitement calibré à la livraison. En moins de 48h à domicile. Prix imbattable comparé aux autres boutiques spécialisées que j'avais consultées.</p></blockquote>
+              <hr class="ct__divider" aria-hidden="true">
+              <div class="ct__creator"><span class="ct__creator-name">Baptiste Morel</span><span class="ct__creator-role">Monteur & coloriste</span></div>
+            </article>
+          </li>
+
+          <li class="ct__item">
+            <article class="ct__card m19-card is-visible">
+              <div class="ct__avatar-wrap"><div class="ct__avatar-fallback" aria-hidden="true"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg></div></div>
+              <div class="ct__quote-mark" aria-hidden="true">&ldquo;</div>
+              <blockquote class="ct__quote"><p class="ct__quote-text">La webcam Logitech Brio 4K a changé la perception de mes formations en ligne. Image nette, couleurs naturelles sans réglage. Commande simple et livraison rapide chez Motion19.</p></blockquote>
+              <hr class="ct__divider" aria-hidden="true">
+              <div class="ct__creator"><span class="ct__creator-name">Sarah Leclerc</span><span class="ct__creator-role">Coach en ligne & formatrice</span></div>
+            </article>
+          </li>
+
+          <li class="ct__item">
+            <article class="ct__card m19-card is-visible">
+              <div class="ct__avatar-wrap"><div class="ct__avatar-fallback" aria-hidden="true"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg></div></div>
+              <div class="ct__quote-mark" aria-hidden="true">&ldquo;</div>
+              <blockquote class="ct__quote"><p class="ct__quote-text">Interface Audient iD4 commandée un dimanche soir, reçue le mardi matin. Son cristallin pour mes enregistrements guitare et voix. Motion19 est ma boutique de référence désormais.</p></blockquote>
+              <hr class="ct__divider" aria-hidden="true">
+              <div class="ct__creator"><span class="ct__creator-name">Kevin Marchand</span><span class="ct__creator-role">Guitariste & créateur musical</span></div>
+            </article>
+          </li>
+
+          <li class="ct__item">
+            <article class="ct__card m19-card is-visible">
+              <div class="ct__avatar-wrap"><div class="ct__avatar-fallback" aria-hidden="true"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg></div></div>
+              <div class="ct__quote-mark" aria-hidden="true">&ldquo;</div>
+              <blockquote class="ct__quote"><p class="ct__quote-text">Zoom H5 et ses accessoires reçus rapidement. La qualité d'enregistrement en terrain est irréprochable pour mes reportages. Très bonne communication de Motion19 tout au long de la commande.</p></blockquote>
+              <hr class="ct__divider" aria-hidden="true">
+              <div class="ct__creator"><span class="ct__creator-name">Inès Fortier</span><span class="ct__creator-role">Journaliste & podcasteuse</span></div>
+            </article>
+          </li>
+
+          <li class="ct__item">
+            <article class="ct__card m19-card is-visible">
+              <div class="ct__avatar-wrap"><div class="ct__avatar-fallback" aria-hidden="true"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg></div></div>
+              <div class="ct__quote-mark" aria-hidden="true">&ldquo;</div>
+              <blockquote class="ct__quote"><p class="ct__quote-text">Setup complet acheté en une seule commande : micro, bras articulé, carte son, caméra. Tout est arrivé bien protégé dans un seul colis. Motion19 comprend vraiment les besoins des créateurs.</p></blockquote>
+              <hr class="ct__divider" aria-hidden="true">
+              <div class="ct__creator"><span class="ct__creator-name">Romain Duval</span><span class="ct__creator-role">Streamer & esportif</span></div>
+            </article>
+          </li>
+
+          <li class="ct__item">
+            <article class="ct__card m19-card is-visible">
+              <div class="ct__avatar-wrap"><div class="ct__avatar-fallback" aria-hidden="true"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg></div></div>
+              <div class="ct__quote-mark" aria-hidden="true">&ldquo;</div>
+              <blockquote class="ct__quote"><p class="ct__quote-text">Le Godox SL60W est parfait pour mes vidéos en intérieur. Lumière douce, facilement réglable et très naturelle à l'image. Livraison express et emballage impeccable, je suis fan de Motion19.</p></blockquote>
+              <hr class="ct__divider" aria-hidden="true">
+              <div class="ct__creator"><span class="ct__creator-name">Chloé Bernard</span><span class="ct__creator-role">Influenceuse lifestyle — 450K</span></div>
+            </article>
+          </li>
+
+        {%- endif -%}
+
+        </ul>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<style>
+/* ═══════════════════════════════════════════════════════
+   Creator Testimonials — ct — Motion19 OS 2.0 v2.1
+   ═══════════════════════════════════════════════════════ */
+
+.ct {
+  --ct-pad:    16px;
+  --ct-ease:   cubic-bezier(0.4, 0, 0.2, 1);
+  /* Ultra mobile <400px : 1 card + spacing */
+  --ct-card-w: calc(100vw - (2 * var(--ct-pad)) - 8px);
+
+  background:    var(--ct-bg, #f7f7f8);
+  margin-top:    var(--ct-mt, 0);
+  margin-bottom: var(--ct-mb, 0);
+}
+
+/* Mobile 400px+ : 1.5 cards */
+@media (min-width: 400px) {
+  .ct { --ct-card-w: calc((100vw - (2 * var(--ct-pad)) - (0.5 * var(--ct-gap-m, 12px))) / 1.5); }
+}
+/* Tablette 640px+ : 2.5 cards */
+@media (min-width: 640px) {
+  .ct {
+    --ct-pad:    24px;
+    --ct-card-w: calc((100vw - (2 * var(--ct-pad)) - (1.5 * var(--ct-gap-d, 14px))) / 2.5);
+  }
+}
+/* Desktop 1024px+ : 3.5 cards */
+@media (min-width: 1024px) {
+  .ct {
+    --ct-pad:    40px;
+    --ct-card-w: calc((min(100vw, var(--ct-max-w, 1400px)) - (2 * var(--ct-pad)) - (2.5 * var(--ct-gap-d, 14px))) / 3.5);
+  }
+}
+/* Grand écran 1280px+ : 4.5 cards */
+@media (min-width: 1280px) {
+  .ct {
+    --ct-card-w: calc((min(100vw, var(--ct-max-w, 1400px)) - (2 * var(--ct-pad)) - (3.5 * var(--ct-gap-d, 14px))) / 4.5);
+  }
+}
+
+/* ── Inner — identique fc__inner ── */
+.ct__inner {
+  max-width: var(--ct-max-w, 1400px);
+  margin: 0 auto;
+  padding-top:    var(--ct-pt-m, 40px);
+  padding-bottom: var(--ct-pb-m, 36px);
+}
+@media (min-width: 769px) {
+  .ct__inner {
+    padding-top:    var(--ct-pt-d, 52px);
+    padding-bottom: var(--ct-pb-d, 36px);
+  }
+}
+
+/* ── Header ── */
+.ct__header {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 0 var(--ct-pad) 24px;
+}
+.ct__header--center { align-items: center; text-align: center; }
+.ct__header--left   { align-items: flex-start; }
+.ct__header--right  { align-items: flex-end; text-align: right; }
+
+/* ── Eyebrow — identique np__eyebrow / fc__eyebrow ── */
+.ct__eyebrow {
+  font-family: var(--font-body, 'Inter', sans-serif);
+  font-size: 0.68rem;
+  font-weight: var(--ct-eyebrow-fw, 600);
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--ct-eyebrow, #0787ea);
+  margin: 0 0 5px;
+}
+
+/* ── Titre — identique np__title / fc__title ── */
+.ct__title {
+  font-family: var(--font-body, 'Inter', sans-serif);
+  font-size: var(--ct-title-sz-m, 24px);
+  font-weight: var(--ct-title-fw, 800);
+  letter-spacing: -0.035em;
+  line-height: 1.1;
+  color: var(--ct-title, #0a0a0a);
+  margin: 0;
+  position: relative;
+  padding-bottom: 16px;
+}
+@media (min-width: 769px) {
+  .ct__title { font-size: var(--ct-title-sz-d, 36px); }
+}
+.ct__title::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 36px;
+  height: 3px;
+  background: var(--ct-eyebrow, #0787ea);
+  border-radius: 2px;
+}
+
+/* ── Subtitle — identique np__subtitle / fc__subtitle ── */
+.ct__subtitle {
+  font-family: var(--font-body, 'Inter', sans-serif);
+  font-size: var(--ct-body-fs-m, 14px);
+  font-weight: var(--ct-body-fw, 400);
+  line-height: var(--ct-body-lh, 1.6);
+  color: var(--ct-body-color, rgba(10,10,10,0.55));
+  max-width: var(--ct-body-mw, 52ch);
+  margin: 12px 0 0;
+}
+@media (min-width: 769px) {
+  .ct__subtitle { font-size: var(--ct-body-fs-d, 15px); }
+}
+
+
+/* Cards toujours visibles — pas de dépendance JS pour l'affichage */
+.ct .m19-card {
+  opacity: 1;
+  transform: none;
+}
+
+/* ── Viewport wrap — identique fc__viewport-wrap ── */
+.ct__viewport-wrap {
+  overflow-x: clip;
+  overflow-y: visible;
+}
+
+.ct__viewport {
+  padding-left: var(--ct-pad);
+  overflow-x: visible;
+  overflow-y: visible;
+  cursor: grab;
+  user-select: none;
+  -webkit-user-select: none;
+}
+.ct__viewport:active { cursor: grabbing; }
+
+/* ── Track — identique fc__track ── */
+.ct__track {
+  display: flex;
+  gap: var(--ct-gap-m, 12px);
+  padding-top: 20px;
+  padding-bottom: 28px;
+  padding-right: var(--ct-pad);
+  padding-left: 0;
+  margin: 0;
+  list-style: none;
+}
+@media (min-width: 769px) {
+  .ct__track { gap: var(--ct-gap-d, 14px); }
+}
+
+/* ── Item ── */
+.ct__item {
+  flex: 0 0 var(--ct-card-w);
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ── Card ── */
+.ct__card {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 28px 22px 22px;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  overflow: visible;
+}
+
+/* ── Avatar ── */
+.ct__avatar-wrap {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  overflow: hidden;
+  flex-shrink: 0;
+  margin-bottom: 20px;
+  border: 1.5px solid rgba(10,10,10,0.08);
+  background: #f0f0f0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.ct__avatar-wrap img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  display: block;
+  border-radius: 50%;
+}
+.ct__avatar-fallback {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: rgba(10,10,10,0.3);
+}
+
+/* ── Quote mark ── */
+.ct__quote-mark {
+  font-size: 4rem;
+  line-height: 0.7;
+  color: rgba(10,10,10,0.10);
+  font-family: Georgia, 'Times New Roman', serif;
+  font-weight: 700;
+  margin-bottom: 14px;
+  align-self: flex-start;
+  user-select: none;
+}
+
+/* ── Quote text ── */
+.ct__quote { margin: 0; flex: 1; display: flex; align-items: flex-start; }
+.ct__quote-text {
+  font-size: 0.875rem;
+  line-height: 1.72;
+  color: #555555;
+  font-style: italic;
+  margin: 0;
+  text-align: center;
+  display: -webkit-box;
+  -webkit-line-clamp: 6;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* ── Divider ── */
+.ct__divider {
+  border: none;
+  border-top: 1px solid rgba(10,10,10,0.07);
+  width: 100%;
+  margin: 20px 0 16px;
+  flex-shrink: 0;
+}
+
+/* ── Creator footer — name left / role right ── */
+.ct__creator {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  width: 100%;
+  gap: 8px;
+  min-width: 0;
+}
+.ct__creator-name {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  font-size: 0.8rem;
+  font-weight: 600;
+  font-style: italic;
+  color: #0a0a0a;
+  letter-spacing: -0.01em;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  min-width: 0;
+  flex-shrink: 1;
+}
+.ct__creator-role {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  font-size: 0.72rem;
+  font-weight: 400;
+  font-style: italic;
+  color: #999999;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  flex-shrink: 2;
+  min-width: 0;
+  text-align: right;
+}
+</style>
+
+<script>
+(function () {
+  'use strict';
+  var sid = '{{ sid }}';
+
+  function mount() {
+    var viewport = document.getElementById('ct-viewport-' + sid);
+    if (!viewport || viewport.dataset.emblaReady === '1') return;
+    viewport.dataset.emblaReady = '1';
+
+    var plugins = [];
+    if (window.EmblaCarouselAutoScroll) {
+      plugins.push(window.EmblaCarouselAutoScroll({
+        direction:         'forward',
+        speed:             0.6,
+        startDelay:        0,
+        playOnInit:        true,
+        stopOnMouseEnter:  true,
+        stopOnInteraction: false,
+        stopOnFocusIn:     false
+      }));
+    }
+
+    var embla = window.EmblaCarousel(viewport, {
+      loop:          true,
+      align:         'start',
+      dragFree:      false,
+      containScroll: false,
+      skipSnaps:     false
+    }, plugins);
+
+    viewport.querySelectorAll('.ct__card').forEach(function (c) {
+      c.classList.add('is-visible');
+    });
+    embla.on('reInit', function () {
+      viewport.querySelectorAll('.ct__card').forEach(function (c) {
+        c.classList.add('is-visible');
+      });
+    });
+  }
+
+  /* Poll until both EmblaCarousel (bundle.js, fin de body) et
+     EmblaCarouselAutoScroll (chargé en tête de section) sont dispos. */
+  function waitAndMount() {
+    var elapsed = 0;
+    var limit   = 5000;
+    var step    = 60;
+
+    (function poll() {
+      if (window.EmblaCarousel && window.EmblaCarouselAutoScroll) {
+        mount();
+      } else if (elapsed < limit) {
+        elapsed += step;
+        setTimeout(poll, step);
+      } else if (window.EmblaCarousel) {
+        mount(); /* fallback sans autoscroll si plugin introuvable */
+      }
+    }());
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', waitAndMount);
+  } else {
+    waitAndMount();
+  }
+
+  document.addEventListener('shopify:section:load', function (e) {
+    if (e.detail && e.detail.sectionId === sid) {
+      var vp = document.getElementById('ct-viewport-' + sid);
+      if (vp) delete vp.dataset.emblaReady;
+      waitAndMount();
+    }
+  });
+})();
+</script>
+
+{% schema %}
+{
+  "name": "Creator Testimonials",
+  "tag": "section",
+  "class": "section-creator-testimonials",
+  "settings": [
+    { "type": "header", "content": "── Eyebrow" },
+    { "type": "text",  "id": "eyebrow",      "label": "Texte eyebrow",     "default": "Avis clients" },
+    { "type": "color", "id": "eyebrow_color","label": "Couleur eyebrow",   "default": "#0787ea" },
+    {
+      "type": "select", "id": "eyebrow_fw", "label": "Graisse eyebrow", "default": "600",
+      "options": [
+        { "value": "400", "label": "Regular" }, { "value": "500", "label": "Medium" },
+        { "value": "600", "label": "SemiBold" }, { "value": "700", "label": "Bold" }
+      ]
+    },
+    { "type": "header", "content": "── Titre" },
+    { "type": "text",  "id": "title",          "label": "Titre",              "default": "Ce que disent nos créateurs" },
+    { "type": "color", "id": "title_color",    "label": "Couleur titre",      "default": "#0a0a0a" },
+    { "type": "range", "id": "title_sz_desktop","label": "Taille desktop (px)","min": 20, "max": 72, "step": 2, "default": 36, "unit": "px" },
+    { "type": "range", "id": "title_sz_mobile", "label": "Taille mobile (px)", "min": 16, "max": 48, "step": 2, "default": 24, "unit": "px" },
+    {
+      "type": "select", "id": "title_fw", "label": "Graisse titre", "default": "800",
+      "options": [
+        { "value": "600", "label": "SemiBold 600" }, { "value": "700", "label": "Bold 700" },
+        { "value": "800", "label": "ExtraBold 800" }
+      ]
+    },
+    { "type": "header", "content": "── Description" },
+    { "type": "textarea", "id": "subtitle", "label": "Description" },
+    { "type": "color",  "id": "body_color",      "label": "Couleur texte" },
+    { "type": "range",  "id": "body_fs_desktop", "label": "Taille desktop (px)", "min": 12, "max": 24, "step": 1, "default": 15, "unit": "px" },
+    { "type": "range",  "id": "body_fs_mobile",  "label": "Taille mobile (px)",  "min": 12, "max": 20, "step": 1, "default": 14, "unit": "px" },
+    {
+      "type": "select", "id": "body_fw", "label": "Graisse", "default": "400",
+      "options": [
+        { "value": "300", "label": "Light" }, { "value": "400", "label": "Regular" },
+        { "value": "500", "label": "Medium" }
+      ]
+    },
+    {
+      "type": "select", "id": "body_lh", "label": "Interligne", "default": "1.6",
+      "options": [
+        { "value": "1.4", "label": "Compact" }, { "value": "1.55", "label": "Normal" },
+        { "value": "1.6", "label": "Aéré" }, { "value": "1.72", "label": "Très aéré" }
+      ]
+    },
+    { "type": "range", "id": "body_max_width", "label": "Largeur max (ch)", "min": 20, "max": 80, "step": 2, "default": 52 },
+    {
+      "type": "select", "id": "header_align", "label": "Alignement header", "default": "left",
+      "options": [
+        { "value": "left",   "label": "Gauche" },
+        { "value": "center", "label": "Centre" },
+        { "value": "right",  "label": "Droite" }
+      ]
+    },
+    { "type": "header", "content": "Fond" },
+    { "type": "color", "id": "bg_color", "label": "Couleur fond", "default": "#f7f7f8" },
+    { "type": "header", "content": "Layout" },
+    { "type": "range", "id": "max_width", "label": "Largeur max (px)", "min": 960, "max": 1920, "step": 40, "default": 1400 },
+    { "type": "header", "content": "Espacement" },
+    { "type": "range", "id": "padding_top_mobile",     "label": "Padding haut mobile",  "min": 0, "max": 160, "step": 4, "default": 40,  "unit": "px" },
+    { "type": "range", "id": "padding_bottom_mobile",  "label": "Padding bas mobile",   "min": 0, "max": 160, "step": 4, "default": 36,  "unit": "px" },
+    { "type": "range", "id": "padding_top_desktop",    "label": "Padding haut desktop", "min": 0, "max": 160, "step": 4, "default": 52,  "unit": "px" },
+    { "type": "range", "id": "padding_bottom_desktop", "label": "Padding bas desktop",  "min": 0, "max": 160, "step": 4, "default": 36,  "unit": "px" },
+    { "type": "range", "id": "margin_top",    "label": "Marge haut", "min": 0, "max": 120, "step": 4, "default": 0,  "unit": "px" },
+    { "type": "range", "id": "margin_bottom", "label": "Marge bas",  "min": 0, "max": 120, "step": 4, "default": 0,  "unit": "px" },
+    { "type": "range", "id": "gap_desktop",   "label": "Espacement cards desktop", "min": 4, "max": 40, "step": 2, "default": 14, "unit": "px" },
+    { "type": "range", "id": "gap_mobile",    "label": "Espacement cards mobile",  "min": 4, "max": 32, "step": 2, "default": 12, "unit": "px" }
+  ],
+  "blocks": [
+    {
+      "type": "testimonial",
+      "name": "Témoignage",
+      "settings": [
+        { "type": "image_picker", "id": "photo",       "label": "Photo créateur" },
+        { "type": "text",         "id": "name",        "label": "Nom",        "default": "Alex Dubois" },
+        { "type": "text",         "id": "role",        "label": "Rôle",       "default": "Créateur YouTube" },
+        { "type": "textarea",     "id": "testimonial", "label": "Témoignage", "default": "Qualité exceptionnelle, expédition rapide. Mon setup a complètement changé depuis que j'utilise ce matériel. Je recommande à tous les créateurs sérieux." }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Creator Testimonials",
+      "settings": {
+        "eyebrow": "Avis clients",
+        "title": "Ce que disent nos créateurs",
+        "subtitle": "Des centaines de créateurs nous font confiance pour leur setup audiovisuel."
+      }
+    }
+  ]
+}
+{% endschema %}

@@ -1,0 +1,323 @@
+<!doctype html>
+<html class="no-js" lang="{{ request.locale.iso_code }}">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <meta name="theme-color" content="#0787ea">
+    <link rel="canonical" href="{{ canonical_url }}">
+    <link rel="preconnect" href="https://cdn.shopify.com" crossorigin>
+
+    {%- if settings.favicon != blank -%}
+      <link rel="icon" type="image/png" href="{{ settings.favicon | image_url: width: 32, height: 32 }}">
+    {%- endif -%}
+
+    <title>
+      {{ page_title }}
+      {%- if current_tags %} &ndash; tagged "{{ current_tags | join: ', ' }}"{% endif -%}
+      {%- if current_page != 1 %} &ndash; Page {{ current_page }}{% endif -%}
+      {%- unless page_title contains shop.name %} &ndash; {{ shop.name }}{% endunless -%}
+    </title>
+
+    {% if page_description %}
+      <meta name="description" content="{{ page_description | escape }}">
+    {% endif %}
+
+    {% comment %} {% render 'meta-tags' %} {% endcomment %}
+
+    {{ content_for_header }}
+
+    <!-- Swiper CSS — loaded globally (homepage + product page) -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css">
+
+    <!-- Typography -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Inter:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    >
+
+    <style>
+      :root {
+        /* ── Couleurs — dynamiques via settings_schemas ── */
+        --color-primary:       {{ settings.color_primary       | default: '#0787ea' }};
+        --color-primary-hover: {{ settings.color_primary_hover | default: '#0672c7' }};
+        --color-text:          {{ settings.color_text          | default: '#1a1a1a' }};
+        --color-text-light:    {{ settings.color_text_light    | default: '#666666' }};
+        --color-bg:            {{ settings.color_bg            | default: '#ffffff' }};
+        --color-bg-soft:       {{ settings.color_bg_soft       | default: '#f7f7f8' }};
+        --color-bg-dark:       {{ settings.color_bg_dark       | default: '#0a0a0a' }};
+        --color-bg-muted:      #f0f0f1;
+        --color-border:        {{ settings.color_border        | default: '#e5e5e5' }};
+
+        /* ── Typographie ── */
+        --font-heading: '{{ settings.font_heading_family | default: 'Outfit' }}', sans-serif;
+        --font-body:    '{{ settings.font_body_family    | default: 'Inter' }}',  sans-serif;
+        --font-body-size: {{ settings.font_body_size | default: 15 }}px;
+
+        /* ── Conteneur ── */
+        --container-width:   {{ settings.container_max_width | default: 1400 }}px;
+        --container-padding: {{ settings.container_padding   | default: 20 }}px;
+
+        /* ── Boutons ── */
+        --btn-primary-bg:       {{ settings.btn_primary_bg         | default: '#0787ea' }};
+        --btn-primary-text:     {{ settings.btn_primary_text       | default: '#ffffff' }};
+        --btn-primary-hover-bg: {{ settings.btn_primary_hover_bg   | default: '#0672c7' }};
+        --btn-outline-border:   {{ settings.btn_outline_border     | default: '#1a1a1a' }};
+        --btn-outline-text:     {{ settings.btn_outline_text       | default: '#1a1a1a' }};
+        --btn-radius:           {{ settings.btn_radius             | default: 3 }}px;
+
+        /* ── Espacement sections global ── */
+        --section-pt-mobile:  {{ settings.section_pt_mobile  | default: 48 }}px;
+        --section-pb-mobile:  {{ settings.section_pb_mobile  | default: 48 }}px;
+        --section-pt-desktop: {{ settings.section_pt_desktop | default: 72 }}px;
+        --section-pb-desktop: {{ settings.section_pb_desktop | default: 72 }}px;
+      }
+
+      /* ── Respect de prefers-reduced-motion ── */
+      {%- if settings.reduce_motion_respect != false -%}
+      @media (prefers-reduced-motion: reduce) {
+        *, *::before, *::after {
+          animation-duration: 0.01ms !important;
+          animation-iteration-count: 1 !important;
+          transition-duration: 0.01ms !important;
+        }
+      }
+      {%- endif -%}
+
+      *,
+      *::before,
+      *::after {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        font-family: var(--font-body);
+        font-size: 16px;
+        line-height: 1.5;
+        color: var(--color-text);
+        background-color: var(--color-bg);
+        -webkit-font-smoothing: antialiased;
+      }
+
+      h1,
+      h2,
+      h3,
+      h4,
+      h5,
+      h6 {
+        font-family: var(--font-heading);
+        margin: 0;
+        font-weight: 700;
+      }
+
+      .container {
+        max-width: var(--container-width);
+        margin: 0 auto;
+        padding: 0 var(--container-padding);
+      }
+
+      main {
+        min-height: 80vh;
+      }
+
+      /* ── Séparateur visuel entre sections blanches ─── */
+      .section-featured-carousel + .section-category-recommendations,
+      .section-category-recommendations + .section-new-products {
+        border-top: 1px solid #e8e8e8;
+      }
+
+      /* ── Titres de section — ligne accent ─── */
+      .fc__title,
+      .np__title,
+      .bj__title,
+      .rc__title {
+        position: relative;
+        padding-bottom: 16px;
+      }
+
+      .fc__title::after,
+      .np__title::after,
+      .rc__title::after,
+      .bj__title::after {
+        content: '';
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        width: 36px;
+        height: 3px;
+        background: #0787ea;
+        border-radius: 2px;
+      }
+
+      /* bo__title sur fond noir — ligne blanche */
+      .bo__title {
+        position: relative;
+        padding-bottom: 16px;
+      }
+      .bo__title::after {
+        content: '';
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        width: 36px;
+        height: 3px;
+        background: rgba(255, 255, 255, 0.35);
+        border-radius: 2px;
+      }
+
+      /* ── Section fade-in animation ─── */
+      @keyframes m19FadeUp {
+        from { opacity: 0; transform: translateY(18px); }
+        to   { opacity: 1; transform: translateY(0); }
+      }
+
+      .m19-animate {
+        opacity: 0;
+        transform: translateY(18px);
+      }
+      .m19-animate.is-visible {
+        animation: m19FadeUp 0.55s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+      }
+
+      /* Base layout helper classes */
+      .visually-hidden {
+        position: absolute !important;
+        overflow: hidden;
+        clip: rect(0 0 0 0);
+        height: 1px;
+        width: 1px;
+        margin: -1px;
+        padding: 0;
+        border: 0;
+      }
+    </style>
+
+    {% comment %} {{ 'base.css' | asset_url | stylesheet_tag }} {% endcomment %}
+  </head>
+
+  <body class="template-{{ template | replace: '.', ' ' | truncatewords: 1, '' | handle }}">
+    <a class="skip-to-content-link visually-hidden" href="#MainContent"> Skip to content </a>
+
+    {% section 'header' %}
+
+    <main id="MainContent" class="content-for-layout focus-none" role="main" tabindex="-1">
+      {{ content_for_layout }}
+    </main>
+
+    {% section 'footer' %}
+
+    <ul hidden>
+      <li id="a11y-refresh-page-message">Refreshing the page will cause you to lose any changes.</li>
+    </ul>
+
+    <script>
+      window.shopUrl = '{{ request.origin }}';
+      window.routes = {
+        cart_add_url: '{{ routes.cart_add_url }}',
+        cart_change_url: '{{ routes.cart_change_url }}',
+        cart_update_url: '{{ routes.cart_update_url }}',
+        cart_url: '{{ routes.cart_url }}',
+        predictive_search_url: '{{ routes.predictive_search_url }}',
+      };
+    </script>
+
+    <script>
+      /* ── Shared add-to-cart helper ── */
+      window.M19Cart = (function () {
+        function updateBadge(count) {
+          var badge = document.querySelector('[data-cart-count]');
+          if (!badge) return;
+          badge.textContent = count;
+          if (count > 0) {
+            badge.classList.remove('header__cart-badge--hidden');
+          } else {
+            badge.classList.add('header__cart-badge--hidden');
+          }
+          badge.classList.remove('bump');
+          void badge.offsetWidth; /* reflow to restart animation */
+          badge.classList.add('bump');
+        }
+
+        function refreshBadge() {
+          fetch('/cart.js')
+            .then(function (r) { return r.json(); })
+            .then(function (c) { updateBadge(c.item_count); })
+            .catch(function () {});
+        }
+
+        function addToCart(btn, prefix) {
+          if (!btn || btn.disabled) return;
+          var variantId = btn.dataset.variantId;
+          if (!variantId) return;
+
+          btn.disabled = true;
+          btn.classList.add(prefix + '__atc--loading');
+
+          fetch('/cart/add.js', {
+            method:  'POST',
+            headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+            body:    JSON.stringify({ id: parseInt(variantId, 10), quantity: 1 })
+          })
+          .then(function (r) { return r.json(); })
+          .then(function (data) {
+            btn.classList.remove(prefix + '__atc--loading');
+            if (data.status) {
+              /* API error (e.g. out of stock) */
+              btn.disabled = false;
+              return;
+            }
+            btn.classList.add('is-added');
+            refreshBadge();
+            setTimeout(function () {
+              btn.classList.remove('is-added');
+              btn.disabled = false;
+            }, 2000);
+          })
+          .catch(function () {
+            btn.classList.remove(prefix + '__atc--loading');
+            btn.disabled = false;
+          });
+        }
+
+        return { addToCart: addToCart, refreshBadge: refreshBadge };
+      })();
+    </script>
+
+    <script>
+      (function () {
+        /* ── Sticky header glassmorphism ── */
+        var header = document.querySelector('.site-header');
+        if (header) {
+          function onScroll() {
+            header.classList.toggle('is-scrolled', window.scrollY > 10);
+          }
+          window.addEventListener('scroll', onScroll, { passive: true });
+          onScroll();
+        }
+
+        /* ── Section fade-in on scroll ── */
+        if ('IntersectionObserver' in window) {
+          var fadeEls = document.querySelectorAll('.m19-animate');
+          if (fadeEls.length) {
+            var fadeObs = new IntersectionObserver(function (entries) {
+              entries.forEach(function (entry) {
+                if (!entry.isIntersecting) return;
+                entry.target.classList.add('is-visible');
+                fadeObs.unobserve(entry.target);
+              });
+            }, { threshold: 0.08 });
+            fadeEls.forEach(function (el) { fadeObs.observe(el); });
+          }
+        } else {
+          document.querySelectorAll('.m19-animate').forEach(function (el) {
+            el.classList.add('is-visible');
+          });
+        }
+      })();
+    </script>
+    {{ 'bundle.js' | asset_url | script_tag }}
+  </body>
+</html>

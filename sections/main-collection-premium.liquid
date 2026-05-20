@@ -1,0 +1,1825 @@
+{{ 'card.css' | asset_url | stylesheet_tag }}
+{%- comment -%} Main Collection Premium — Motion19 OS 2.0 {%- endcomment -%}
+
+{%- liquid
+  assign sid = section.id
+
+  assign container_width  = section.settings.container_width  | default: 1400
+  assign content_width    = section.settings.content_width    | default: 1200
+  assign card_radius      = section.settings.card_radius      | default: 12
+  assign btn_radius       = section.settings.btn_radius       | default: 3
+  assign anim_speed       = section.settings.animation_speed  | default: 'normal'
+  assign cols_desk        = section.settings.columns_desktop  | default: 3
+  assign cols_tab         = section.settings.columns_tablet   | default: 2
+  assign cols_mob         = section.settings.columns_mobile   | default: 1
+  assign img_ratio        = section.settings.image_ratio      | default: 'portrait'
+  assign hover_effect     = section.settings.hover_effect     | default: 'zoom'
+  assign show_vendor      = section.settings.show_vendor      | default: false
+  assign show_badge       = section.settings.show_badge       | default: true
+  assign show_atc         = section.settings.show_quick_add   | default: true
+  assign show_rating      = section.settings.show_rating      | default: false
+  assign show_variants    = section.settings.show_variants    | default: false
+  assign pagination_type  = section.settings.pagination_type  | default: 'loadmore'
+  assign products_per_page = section.settings.products_per_page | default: 12
+  assign show_hero        = section.settings.show_hero        | default: true
+  assign show_filters     = section.settings.show_filters     | default: true
+  assign show_brands      = section.settings.show_brands      | default: true
+  assign show_guide       = section.settings.show_guide       | default: false
+  assign sidebar_width    = section.settings.sidebar_width    | default: 260
+  assign gap              = section.settings.grid_gap         | default: 20
+
+  assign hero_height      = section.settings.hero_height      | default: 'medium'
+  assign hero_h_mob       = section.settings.hero_height_mobile | default: 500
+  assign hero_align       = section.settings.hero_content_align | default: 'left'
+  assign hero_grad        = section.settings.hero_gradient_style | default: 'left'
+  assign hero_ov_op       = section.settings.hero_overlay_opacity | default: 55 | divided_by: 100.0
+  assign hero_show_stats  = section.settings.hero_show_stats  | default: true
+  assign hero_show_bread  = section.settings.hero_show_breadcrumb | default: true
+  assign hero_cta_label   = section.settings.hero_cta_label
+  assign hero_cta_url     = section.settings.hero_cta_url
+  assign hero_cta_style   = section.settings.hero_cta_style   | default: 'outline-white'
+
+  assign accent_color     = section.settings.accent_color     | default: '#0787ea'
+  assign text_color       = section.settings.text_color       | default: '#1a1a1a'
+  assign bg_color         = section.settings.bg_color         | default: '#ffffff'
+  assign card_bg          = section.settings.card_bg_color    | default: '#ffffff'
+  assign sticky_bg        = section.settings.sticky_bar_bg    | default: 'rgba(255,255,255,0.88)'
+
+  assign filter_menu_handle = section.settings.filter_menu
+
+  assign img_ratio_css = '3/4'
+  if img_ratio == 'square'
+    assign img_ratio_css = '1/1'
+  elsif img_ratio == 'landscape'
+    assign img_ratio_css = '4/3'
+  endif
+
+  assign collection_title = collection.title | default: 'Tous nos produits'
+  assign collection_desc  = collection.description | default: ''
+  assign collection_count = collection.products_count | default: 0
+
+  if collection.image != blank
+    assign hero_img_url = collection.image | image_url: width: 1800
+    assign hero_img_m   = collection.image | image_url: width: 800
+  else
+    assign hero_img_url = 'hp-hero-1.jpg' | asset_url
+    assign hero_img_m   = 'hp-hero-1-mobile.jpg' | asset_url
+  endif
+
+  assign current_url = request.path
+  assign current_sort = collection.sort_by | default: collection.default_sort_by
+-%}
+
+<div
+  id="mcp-{{ sid }}"
+  class="mcp mcp--speed-{{ anim_speed }}"
+  style="
+    --mcp-accent: {{ accent_color }};
+    --mcp-text: {{ text_color }};
+    --mcp-bg: {{ bg_color }};
+    --mcp-card-bg: {{ card_bg }};
+    --mcp-sticky-bg: {{ sticky_bg }};
+    --mcp-radius: {{ card_radius }}px;
+    --mcp-btn-radius: {{ btn_radius }}px;
+    --mcp-container: {{ container_width }}px;
+    --mcp-content: {{ content_width }}px;
+    --mcp-sidebar: {{ sidebar_width }}px;
+    --mcp-cols-desk: {{ cols_desk }};
+    --mcp-cols-tab: {{ cols_tab }};
+    --mcp-cols-mob: {{ cols_mob }};
+    --mcp-gap: {{ gap }}px;
+    --mcp-ratio: {{ img_ratio_css }};
+    --mcp-hero-h-mob: {{ hero_h_mob }}px;
+  "
+>
+
+{%- comment -%}━━━━━━━━━━━━━━━━━━━ 1. HERO ━━━━━━━━━━━━━━━━━━━{%- endcomment -%}
+{%- if show_hero -%}
+<section class="mcp__hero mcp__hero--h-{{ hero_height }} mcp__hero--align-{{ hero_align }}" aria-label="{{ collection_title | escape }}">
+  <div class="mcp__hero-media" aria-hidden="true">
+    <picture>
+      <source media="(max-width:767px)" srcset="{{ hero_img_m }}">
+      <img class="mcp__hero-bg" src="{{ hero_img_url }}" alt="" loading="eager" fetchpriority="high" decoding="async">
+    </picture>
+    <div class="mcp__hero-overlay mcp__hero-overlay--{{ hero_grad }}" style="--ov-a:{{ hero_ov_op }};"></div>
+  </div>
+  <div class="mcp__hero-glow" aria-hidden="true"></div>
+  <div class="mcp__hero-content">
+    <div class="mcp__hero-inner" id="mcp-hero-inner-{{ sid }}">
+      {%- if hero_show_bread -%}
+        <nav class="mcp__breadcrumb" aria-label="Fil d'Ariane">
+          <a class="mcp__breadcrumb-link" href="/">Accueil</a>
+          <span class="mcp__breadcrumb-sep" aria-hidden="true">/</span>
+          <a class="mcp__breadcrumb-link" href="/collections">Collections</a>
+          {%- if collection.title != blank -%}
+            <span class="mcp__breadcrumb-sep" aria-hidden="true">/</span>
+            <span class="mcp__breadcrumb-current">{{ collection_title }}</span>
+          {%- endif -%}
+        </nav>
+      {%- endif -%}
+
+      <h1 class="mcp__hero-title">{{ collection_title }}</h1>
+
+      {%- if collection_desc != blank -%}
+        <p class="mcp__hero-desc">{{ collection_desc | strip_html | truncate: 180 }}</p>
+      {%- else -%}
+        <p class="mcp__hero-desc">{{ section.settings.hero_fallback_desc | default: 'Découvrez notre sélection de matériel audiovisuel premium pour les créateurs de contenu nouvelle génération.' }}</p>
+      {%- endif -%}
+
+      {%- if hero_show_stats -%}
+        <div class="mcp__hero-stats">
+          <div class="mcp__hero-stat">
+            <span class="mcp__hero-stat-num">{{ collection_count }}</span>
+            <span class="mcp__hero-stat-label">{{ section.settings.stat_products_label | default: 'produits' }}</span>
+          </div>
+          {%- if section.settings.stat_2_value != blank -%}
+            <div class="mcp__hero-stat-sep" aria-hidden="true"></div>
+            <div class="mcp__hero-stat">
+              <span class="mcp__hero-stat-num">{{ section.settings.stat_2_value }}</span>
+              <span class="mcp__hero-stat-label">{{ section.settings.stat_2_label | default: 'marques' }}</span>
+            </div>
+          {%- endif -%}
+          {%- if section.settings.stat_3_value != blank -%}
+            <div class="mcp__hero-stat-sep" aria-hidden="true"></div>
+            <div class="mcp__hero-stat">
+              <span class="mcp__hero-stat-num">{{ section.settings.stat_3_value }}</span>
+              <span class="mcp__hero-stat-label">{{ section.settings.stat_3_label | default: 'experts' }}</span>
+            </div>
+          {%- endif -%}
+        </div>
+      {%- endif -%}
+
+      {%- if hero_cta_label != blank -%}
+        <div class="mcp__hero-ctas">
+          <a class="mcp__hero-btn mcp__hero-btn--{{ hero_cta_style }}" href="{{ hero_cta_url | default: '#mcp-grid' }}">
+            <span>{{ hero_cta_label }}</span>
+            <svg width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </a>
+        </div>
+      {%- endif -%}
+    </div>
+  </div>
+  <div class="mcp__hero-scroll" aria-hidden="true">
+    <div class="mcp__hero-scroll-line"></div>
+    <span class="mcp__hero-scroll-label">Scroll</span>
+  </div>
+</section>
+{%- endif -%}
+
+{%- comment -%}━━━━━━━━━━━━━━━━━━━ 2. STICKY BAR ━━━━━━━━━━━━━━━━━━━{%- endcomment -%}
+<div class="mcp__sticky" id="mcp-sticky-{{ sid }}" role="toolbar" aria-label="Barre de contrôle collection">
+  <div class="mcp__sticky-inner">
+    <div class="mcp__sticky-left">
+      <button class="mcp__filter-toggle" id="mcp-filter-btn-{{ sid }}" aria-expanded="false" aria-controls="mcp-sidebar-{{ sid }}" aria-label="Ouvrir les filtres">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="4" y1="6" x2="20" y2="6"/><line x1="8" y1="12" x2="16" y2="12"/><line x1="11" y1="18" x2="13" y2="18"/></svg>
+        <span>{{ section.settings.filter_btn_label | default: 'Filtres' }}</span>
+        <span class="mcp__filter-count" id="mcp-filter-count-{{ sid }}" aria-live="polite" hidden>0</span>
+      </button>
+      <span class="mcp__product-count" id="mcp-count-{{ sid }}" aria-live="polite">
+        {{ collection_count }} {{ section.settings.stat_products_label | default: 'produits' }}
+      </span>
+    </div>
+    <div class="mcp__sticky-center">
+      {%- if section.settings.nav_menu != blank -%}
+        {%- assign nav_menu = linklists[section.settings.nav_menu] -%}
+        {%- if nav_menu.links.size > 0 -%}
+          <nav class="mcp__quick-nav" aria-label="Navigation rapide catégories">
+            <div class="mcp__quick-nav-scroll">
+              {%- for link in nav_menu.links -%}
+                <a class="mcp__quick-nav-link{% if link.active %} is-active{% endif %}" href="{{ link.url }}">{{ link.title }}</a>
+              {%- endfor -%}
+            </div>
+          </nav>
+        {%- endif -%}
+      {%- endif -%}
+    </div>
+    <div class="mcp__sticky-right">
+      <div class="mcp__sort-wrap">
+        <label class="sr-only" for="mcp-sort-{{ sid }}">{{ section.settings.sort_label | default: 'Trier par' }}</label>
+        <select class="mcp__sort" id="mcp-sort-{{ sid }}" name="sort_by" aria-label="{{ section.settings.sort_label | default: 'Trier par' }}">
+          {%- assign sort_options = collection.sort_options -%}
+          {%- for opt in sort_options -%}
+            <option value="{{ opt.value }}"{% if opt.value == current_sort %} selected{% endif %}>{{ opt.name }}</option>
+          {%- endfor -%}
+        </select>
+        <svg class="mcp__sort-chevron" width="12" height="12" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M4 6l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </div>
+      <div class="mcp__view-btns" role="group" aria-label="Mode d'affichage">
+        <button class="mcp__view-btn is-active" data-view="grid" aria-label="Vue grille" aria-pressed="true">
+          <svg width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true"><rect x="1" y="1" width="6" height="6" rx="1" stroke="currentColor" stroke-width="1.5"/><rect x="9" y="1" width="6" height="6" rx="1" stroke="currentColor" stroke-width="1.5"/><rect x="1" y="9" width="6" height="6" rx="1" stroke="currentColor" stroke-width="1.5"/><rect x="9" y="9" width="6" height="6" rx="1" stroke="currentColor" stroke-width="1.5"/></svg>
+        </button>
+        <button class="mcp__view-btn" data-view="list" aria-label="Vue liste" aria-pressed="false">
+          <svg width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true"><line x1="1" y1="4" x2="15" y2="4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><line x1="1" y1="8" x2="15" y2="8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><line x1="1" y1="12" x2="15" y2="12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+{%- comment -%}━━━━━━━━━━━━━━━━━━━ 3. LAYOUT (sidebar + grid) ━━━━━━━━━━━━━━━━━━━{%- endcomment -%}
+<div class="mcp__layout" id="mcp-layout-{{ sid }}">
+  <div class="mcp__layout-inner">
+
+    {%- comment -%} SIDEBAR FILTERS {%- endcomment -%}
+    {%- if show_filters -%}
+    <aside
+      class="mcp__sidebar"
+      id="mcp-sidebar-{{ sid }}"
+      aria-label="Filtres"
+      aria-hidden="true"
+      hidden
+    >
+      <div class="mcp__sidebar-header">
+        <span class="mcp__sidebar-title">{{ section.settings.filter_panel_title | default: 'Filtres' }}</span>
+        <button class="mcp__sidebar-close" aria-label="Fermer les filtres" id="mcp-sidebar-close-{{ sid }}">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+      </div>
+
+      <div class="mcp__sidebar-body">
+        {%- comment -%} Active filters {%- endcomment -%}
+        {%- if collection.filters.size > 0 -%}
+          {%- assign has_active = false -%}
+          {%- for filter in collection.filters -%}
+            {%- if filter.active_values.size > 0 or filter.min_value.value or filter.max_value.value -%}
+              {%- assign has_active = true -%}
+            {%- endif -%}
+          {%- endfor -%}
+          {%- if has_active -%}
+            <div class="mcp__active-filters" id="mcp-active-filters-{{ sid }}">
+              <div class="mcp__active-filters-header">
+                <span class="mcp__active-filters-label">Filtres actifs</span>
+                <a href="{{ collection.url }}" class="mcp__clear-all">Tout effacer</a>
+              </div>
+              <div class="mcp__active-filters-list">
+                {%- for filter in collection.filters -%}
+                  {%- for v in filter.active_values -%}
+                    <a href="{{ v.url_to_remove }}" class="mcp__active-pill" aria-label="Retirer le filtre {{ v.label }}">
+                      {{ v.label }}
+                      <svg width="10" height="10" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M4 4l8 8M12 4l-8 8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+                    </a>
+                  {%- endfor -%}
+                {%- endfor -%}
+              </div>
+            </div>
+          {%- endif -%}
+        {%- endif -%}
+
+        {%- comment -%} Shopify native filters {%- endcomment -%}
+        {%- if collection.filters.size > 0 -%}
+          {%- for filter in collection.filters -%}
+            <div class="mcp__filter-group" id="mcp-fg-{{ sid }}-{{ forloop.index }}">
+              <button
+                class="mcp__filter-group-head"
+                aria-expanded="true"
+                aria-controls="mcp-fg-body-{{ sid }}-{{ forloop.index }}"
+              >
+                <span class="mcp__filter-group-label">{{ filter.label }}</span>
+                {%- if filter.active_values.size > 0 -%}
+                  <span class="mcp__filter-group-badge">{{ filter.active_values.size }}</span>
+                {%- endif -%}
+                <svg class="mcp__filter-chevron" width="12" height="12" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M4 6l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              </button>
+              <div class="mcp__filter-group-body" id="mcp-fg-body-{{ sid }}-{{ forloop.index }}">
+                {%- case filter.type -%}
+                  {%- when 'boolean', 'list' -%}
+                    <ul class="mcp__filter-list" role="list">
+                      {%- for value in filter.values -%}
+                        <li class="mcp__filter-item">
+                          <label class="mcp__filter-label{% if value.active %} is-active{% endif %}">
+                            <input
+                              class="mcp__filter-cb sr-only"
+                              type="checkbox"
+                              name="{{ value.param_name }}"
+                              value="{{ value.value }}"
+                              {% if value.active %}checked{% endif %}
+                              {% if value.count == 0 and value.active == false %}disabled{% endif %}
+                              form="mcp-filter-form-{{ sid }}"
+                            >
+                            <span class="mcp__filter-check" aria-hidden="true"></span>
+                            {%- if filter.label == 'Couleur' or filter.label == 'Color' or filter.label == 'Couleurs' -%}
+                              <span class="mcp__color-swatch" style="background:{{ value.value | downcase }};"></span>
+                            {%- endif -%}
+                            <span class="mcp__filter-value-label">{{ value.label }}</span>
+                            <span class="mcp__filter-count">({{ value.count }})</span>
+                          </label>
+                        </li>
+                      {%- endfor -%}
+                    </ul>
+                  {%- when 'price_range' -%}
+                    {%- assign min_price = filter.range_min | divided_by: 100.0 -%}
+                    {%- assign max_price = filter.range_max | divided_by: 100.0 -%}
+                    {%- assign cur_min   = filter.min_value.value | default: filter.range_min | divided_by: 100.0 -%}
+                    {%- assign cur_max   = filter.max_value.value | default: filter.range_max | divided_by: 100.0 -%}
+                    <div class="mcp__price-range" data-min="{{ min_price }}" data-max="{{ max_price }}">
+                      <div class="mcp__price-range-track">
+                        <div class="mcp__price-range-fill" id="mcp-range-fill-{{ sid }}-{{ forloop.index }}"></div>
+                        <input
+                          class="mcp__price-range-input mcp__price-range-input--min"
+                          type="range"
+                          name="{{ filter.min_value.param_name }}"
+                          min="{{ min_price }}"
+                          max="{{ max_price }}"
+                          value="{{ cur_min }}"
+                          step="1"
+                          form="mcp-filter-form-{{ sid }}"
+                          aria-label="Prix minimum"
+                        >
+                        <input
+                          class="mcp__price-range-input mcp__price-range-input--max"
+                          type="range"
+                          name="{{ filter.max_value.param_name }}"
+                          min="{{ min_price }}"
+                          max="{{ max_price }}"
+                          value="{{ cur_max }}"
+                          step="1"
+                          form="mcp-filter-form-{{ sid }}"
+                          aria-label="Prix maximum"
+                        >
+                      </div>
+                      <div class="mcp__price-range-vals">
+                        <span class="mcp__price-range-label" id="mcp-price-min-{{ sid }}-{{ forloop.index }}">{{ cur_min | money_without_trailing_zeros }}</span>
+                        <span class="mcp__price-range-label" id="mcp-price-max-{{ sid }}-{{ forloop.index }}">{{ cur_max | money_without_trailing_zeros }}</span>
+                      </div>
+                    </div>
+                {%- endcase -%}
+              </div>
+            </div>
+          {%- endfor -%}
+        {%- else -%}
+          {%- comment -%} Manual filter blocks from schema {%- endcomment -%}
+          {%- for block in section.blocks -%}
+            {%- if block.type == 'filter_group' -%}
+              <div class="mcp__filter-group" {{ block.shopify_attributes }}>
+                <button class="mcp__filter-group-head" aria-expanded="true" aria-controls="mcp-fg-block-{{ block.id }}">
+                  <span class="mcp__filter-group-label">{{ block.settings.label | default: 'Filtre' }}</span>
+                  <svg class="mcp__filter-chevron" width="12" height="12" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M4 6l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                </button>
+                <div class="mcp__filter-group-body" id="mcp-fg-block-{{ block.id }}">
+                  {%- assign filter_vals = block.settings.values | split: ',' -%}
+                  <ul class="mcp__filter-list" role="list">
+                    {%- for val in filter_vals -%}
+                      {%- assign val_clean = val | strip -%}
+                      <li class="mcp__filter-item">
+                        <label class="mcp__filter-label">
+                          <input class="mcp__filter-cb sr-only" type="checkbox" name="filter.p.tag" value="{{ val_clean }}">
+                          <span class="mcp__filter-check" aria-hidden="true"></span>
+                          <span class="mcp__filter-value-label">{{ val_clean }}</span>
+                        </label>
+                      </li>
+                    {%- endfor -%}
+                  </ul>
+                </div>
+              </div>
+            {%- endif -%}
+          {%- endfor -%}
+        {%- endif -%}
+      </div>
+
+      <div class="mcp__sidebar-footer">
+        <button class="mcp__sidebar-apply" id="mcp-apply-{{ sid }}" form="mcp-filter-form-{{ sid }}" type="submit">
+          {{ section.settings.filter_apply_label | default: 'Voir les résultats' }}
+        </button>
+      </div>
+    </aside>
+    {%- endif -%}
+
+    <form id="mcp-filter-form-{{ sid }}" method="get" action="{{ collection.url }}">
+      {%- if section.settings.sort_by_hidden != blank -%}
+        <input type="hidden" name="sort_by" value="{{ current_sort }}">
+      {%- endif -%}
+    </form>
+
+    {%- comment -%} MOBILE DRAWER OVERLAY {%- endcomment -%}
+    <div class="mcp__drawer-overlay" id="mcp-overlay-{{ sid }}" aria-hidden="true" tabindex="-1"></div>
+
+    {%- comment -%}━━━━━━━━━━━━━━━━━━━ MAIN CONTENT ━━━━━━━━━━━━━━━━━━━{%- endcomment -%}
+    <main class="mcp__main" id="mcp-grid" tabindex="-1">
+
+      {%- comment -%} PRODUCT GRID {%- endcomment -%}
+      <div
+        class="mcp__grid mcp__grid--{{ hover_effect }}"
+        id="mcp-product-grid-{{ sid }}"
+        aria-label="Grille de produits"
+      >
+        {%- assign editorial_blocks = '' -%}
+        {%- for block in section.blocks -%}
+          {%- if block.type == 'editorial_banner' -%}
+            {%- assign editorial_blocks = editorial_blocks | append: block.id | append: ':' | append: block.settings.insert_after_product | append: ',' -%}
+          {%- endif -%}
+        {%- endfor -%}
+
+        {%- paginate collection.products by products_per_page -%}
+          {%- for product in collection.products -%}
+            {%- comment -%} Insert editorial banners before matching product index {%- endcomment -%}
+            {%- for block in section.blocks -%}
+              {%- if block.type == 'editorial_banner' -%}
+                {%- assign insert_after = block.settings.insert_after_product | default: 6 | plus: 0 -%}
+                {%- if forloop.index == insert_after -%}
+                  <div class="mcp__editorial" {{ block.shopify_attributes }}
+                    style="
+                      --eb-bg: {{ block.settings.bg_color | default: '#0a0a0a' }};
+                      --eb-text: {{ block.settings.text_color | default: '#ffffff' }};
+                      --eb-accent: {{ block.settings.accent_color | default: '#0787ea' }};
+                    "
+                  >
+                    {%- if block.settings.image != blank -%}
+                      <img class="mcp__editorial-bg" src="{{ block.settings.image | image_url: width: 1200 }}" alt="" loading="lazy">
+                    {%- endif -%}
+                    <div class="mcp__editorial-overlay"></div>
+                    <div class="mcp__editorial-content">
+                      {%- if block.settings.eyebrow != blank -%}
+                        <span class="mcp__editorial-eyebrow">{{ block.settings.eyebrow }}</span>
+                      {%- endif -%}
+                      <h3 class="mcp__editorial-title">{{ block.settings.title | default: 'Le setup parfait pour YouTube' }}</h3>
+                      {%- if block.settings.desc != blank -%}
+                        <p class="mcp__editorial-desc">{{ block.settings.desc }}</p>
+                      {%- endif -%}
+                      {%- if block.settings.cta_label != blank -%}
+                        <a class="mcp__editorial-cta" href="{{ block.settings.cta_url | default: '#' }}">
+                          {{ block.settings.cta_label }}
+                          <svg width="13" height="13" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                        </a>
+                      {%- endif -%}
+                    </div>
+                  </div>
+                {%- endif -%}
+              {%- endif -%}
+            {%- endfor -%}
+
+            {%- comment -%} PRODUCT CARD {%- endcomment -%}
+            {%- assign p = product -%}
+            {%- assign p_img  = p.featured_image -%}
+            {%- assign p_img2 = p.images[1] -%}
+            {%- assign sale_pct = 0 -%}
+            {%- if p.compare_at_price > p.price -%}
+              {%- assign diff = p.compare_at_price | minus: p.price -%}
+              {%- assign sale_pct = diff | times: 100 | divided_by: p.compare_at_price -%}
+            {%- endif -%}
+
+            <article
+              class="mcp__card m19-card"
+              style="transition-delay: {{ forloop.index0 | modulo: cols_desk | times: 60 }}ms;"
+              aria-label="{{ p.title | escape }}"
+            >
+              <a class="m19-card__media m19-card__media--{{ img_ratio }}" href="{{ p.url }}" tabindex="-1" aria-hidden="true">
+                {%- if p_img != blank -%}
+                  <img
+                    class="m19-card__img m19-card__img--primary"
+                    src="{{ p_img | image_url: width: 600 }}"
+                    srcset="{{ p_img | image_url: width: 300 }} 300w, {{ p_img | image_url: width: 600 }} 600w, {{ p_img | image_url: width: 900 }} 900w"
+                    sizes="(max-width:599px) 100vw, (max-width:1023px) 50vw, {{ 100 | divided_by: cols_desk }}vw"
+                    alt="{{ p_img.alt | default: p.title | escape }}"
+                    loading="lazy"
+                    decoding="async"
+                    width="{{ p_img.width }}"
+                    height="{{ p_img.height }}"
+                  >
+                  {%- if p_img2 != blank and hover_effect == 'swap' -%}
+                    <img
+                      class="m19-card__img m19-card__img--hover"
+                      src="{{ p_img2 | image_url: width: 600 }}"
+                      alt=""
+                      loading="lazy"
+                      decoding="async"
+                      aria-hidden="true"
+                    >
+                  {%- endif -%}
+                {%- else -%}
+                  <div class="m19-card__media-fallback" aria-hidden="true"></div>
+                {%- endif -%}
+
+                {%- if show_badge -%}
+                  {%- if p.available == false -%}
+                    <span class="m19-card__badge m19-card__badge--sale">{{ section.settings.badge_oos | default: 'Épuisé' }}</span>
+                  {%- elsif sale_pct >= 5 -%}
+                    <span class="m19-card__badge m19-card__badge--sale">-{{ sale_pct }}%</span>
+                  {%- elsif p.tags contains 'nouveau' or p.tags contains 'new' -%}
+                    <span class="m19-card__badge m19-card__badge--new">{{ section.settings.badge_new | default: 'Nouveau' }}</span>
+                  {%- endif -%}
+                {%- endif -%}
+
+                {%- if show_atc and p.available -%}
+                  <button
+                    class="m19-card__action mcp__atc-icon"
+                    type="button"
+                    data-product-id="{{ p.id }}"
+                    data-variant-id="{{ p.selected_or_first_available_variant.id }}"
+                    aria-label="Ajouter {{ p.title | escape }} au panier"
+                  >
+                    <svg class="m19-card__action-icon m19-card__action-icon--bag" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>
+                    <svg class="m19-card__action-icon m19-card__action-icon--check" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>
+                  </button>
+                {%- endif -%}
+              </a>
+
+              <div class="m19-card__body">
+                {%- if show_vendor and p.vendor != blank -%}
+                  <p class="m19-card__vendor">{{ p.vendor }}</p>
+                {%- endif -%}
+
+                <h3 class="m19-card__name">
+                  <a href="{{ p.url }}">{{ p.title }}</a>
+                </h3>
+
+                {%- if show_rating -%}
+                  <div class="mcp__rating" aria-label="Note produit">
+                    <span class="mcp__rating-stars" aria-hidden="true">★★★★★</span>
+                  </div>
+                {%- endif -%}
+
+                <div class="m19-card__pricing">
+                  <span class="m19-card__price{% if sale_pct >= 5 %} m19-card__price--sale{% endif %}">
+                    {{ p.price | money }}
+                  </span>
+                  {%- if p.compare_at_price > p.price -%}
+                    <s class="m19-card__price--compare">{{ p.compare_at_price | money }}</s>
+                  {%- endif -%}
+                </div>
+
+                {%- if show_variants and p.variants.size > 1 -%}
+                  <div class="mcp__variants" aria-label="Variantes disponibles">
+                    {%- for v in p.variants limit: 4 -%}
+                      <button class="mcp__variant-dot{% if forloop.first %} is-selected{% endif %}" data-variant-id="{{ v.id }}" aria-label="{{ v.title }}" title="{{ v.title }}"></button>
+                    {%- endfor -%}
+                    {%- if p.variants.size > 4 -%}
+                      <span class="mcp__variant-more">+{{ p.variants.size | minus: 4 }}</span>
+                    {%- endif -%}
+                  </div>
+                {%- endif -%}
+
+                {%- if show_atc and p.available -%}
+                  <button
+                    class="m19-card__quick-add mcp__atc-text"
+                    type="button"
+                    data-product-id="{{ p.id }}"
+                    data-variant-id="{{ p.selected_or_first_available_variant.id }}"
+                    aria-label="Ajouter {{ p.title | escape }} au panier"
+                  >{{ section.settings.atc_label | default: 'Ajouter au panier' }}</button>
+                {%- endif -%}
+              </div>
+            </article>
+          {%- endfor -%}
+
+          {%- comment -%}━━━ PAGINATION ━━━{%- endcomment -%}
+          {%- if paginate.pages > 1 -%}
+            {%- if pagination_type == 'loadmore' -%}
+              <div class="mcp__loadmore-wrap" id="mcp-loadmore-wrap-{{ sid }}">
+                <button class="mcp__loadmore" id="mcp-loadmore-{{ sid }}" data-next-url="{{ paginate.next.url }}" aria-label="Charger plus de produits">
+                  <span class="mcp__loadmore-label">{{ section.settings.loadmore_label | default: 'Charger plus' }}</span>
+                  <span class="mcp__loadmore-info">{{ paginate.current_offset | plus: paginate.page_size | at_most: paginate.items }} / {{ paginate.items }}</span>
+                </button>
+              </div>
+            {%- elsif pagination_type == 'pagination' -%}
+              <nav class="mcp__pagination" aria-label="Pagination">
+                {%- if paginate.previous -%}
+                  <a class="mcp__page-btn" href="{{ paginate.previous.url }}" aria-label="Page précédente">
+                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M10 4L6 8l4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                  </a>
+                {%- endif -%}
+                {%- for part in paginate.parts -%}
+                  {%- if part.is_link -%}
+                    <a class="mcp__page-num" href="{{ part.url }}" aria-label="Page {{ part.title }}">{{ part.title }}</a>
+                  {%- elsif part.title == paginate.current_page -%}
+                    <span class="mcp__page-num is-current" aria-current="page">{{ part.title }}</span>
+                  {%- else -%}
+                    <span class="mcp__page-ellipsis">…</span>
+                  {%- endif -%}
+                {%- endfor -%}
+                {%- if paginate.next -%}
+                  <a class="mcp__page-btn" href="{{ paginate.next.url }}" aria-label="Page suivante">
+                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M6 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                  </a>
+                {%- endif -%}
+              </nav>
+            {%- endif -%}
+          {%- endif -%}
+        {%- endpaginate -%}
+      </div>
+
+    </main>
+  </div>
+</div>
+
+{%- comment -%}━━━━━━━━━━━━━━━━━━━ 4. BRANDS CAROUSEL ━━━━━━━━━━━━━━━━━━━{%- endcomment -%}
+{%- if show_brands -%}
+<div class="mcp__brands" aria-label="{{ section.settings.brands_title | default: 'Nos marques' }}">
+  <div class="mcp__brands-inner">
+    {%- if section.settings.brands_title != blank -%}
+      <p class="mcp__brands-label">{{ section.settings.brands_title }}</p>
+    {%- endif -%}
+    <div class="mcp__brands-track" aria-hidden="true">
+      {%- assign brand_loop_count = 2 -%}
+      {%- for i in (1..brand_loop_count) -%}
+        {%- for block in section.blocks -%}
+          {%- if block.type == 'brand' -%}
+            <div class="mcp__brand-item" {{ block.shopify_attributes }}>
+              {%- if block.settings.logo != blank -%}
+                <img src="{{ block.settings.logo | image_url: width: 160 }}" alt="{{ block.settings.name | default: '' | escape }}" loading="lazy" width="80" height="30">
+              {%- else -%}
+                <span class="mcp__brand-name">{{ block.settings.name | default: 'Brand' }}</span>
+              {%- endif -%}
+            </div>
+          {%- endif -%}
+        {%- endfor -%}
+        {%- if section.blocks | where: 'type', 'brand' | size == 0 -%}
+          {%- assign default_brands = 'Sony,DJI,Rode,Canon,Elgato,Shure,Blackmagic,Logitech' | split: ',' -%}
+          {%- for brand in default_brands -%}
+            <div class="mcp__brand-item"><span class="mcp__brand-name">{{ brand }}</span></div>
+          {%- endfor -%}
+        {%- endif -%}
+      {%- endfor -%}
+    </div>
+  </div>
+</div>
+{%- endif -%}
+
+{%- comment -%}━━━━━━━━━━━━━━━━━━━ 5. GUIDE / CONTENT ━━━━━━━━━━━━━━━━━━━{%- endcomment -%}
+{%- if show_guide -%}
+  {%- for block in section.blocks -%}
+    {%- if block.type == 'guide_block' -%}
+      <div class="mcp__guide" {{ block.shopify_attributes }}>
+        <div class="mcp__guide-inner">
+          <div class="mcp__guide-header">
+            {%- if block.settings.eyebrow != blank -%}
+              <span class="mcp__guide-eyebrow">{{ block.settings.eyebrow }}</span>
+            {%- endif -%}
+            <h2 class="mcp__guide-title">{{ block.settings.title | default: 'Guides & Conseils' }}</h2>
+            {%- if block.settings.subtitle != blank -%}
+              <p class="mcp__guide-sub">{{ block.settings.subtitle }}</p>
+            {%- endif -%}
+          </div>
+          {%- if block.settings.content != blank -%}
+            <div class="mcp__guide-content rte">{{ block.settings.content }}</div>
+          {%- endif -%}
+          {%- if block.settings.faq != blank -%}
+            <div class="mcp__faq">
+              {%- assign faq_items = block.settings.faq | newline_to_br | split: '<br />' -%}
+              {%- for item in faq_items -%}
+                {%- if item contains '::' -%}
+                  {%- assign parts = item | split: '::' -%}
+                  <details class="mcp__faq-item">
+                    <summary class="mcp__faq-q">{{ parts[0] | strip }}</summary>
+                    <div class="mcp__faq-a">{{ parts[1] | strip }}</div>
+                  </details>
+                {%- endif -%}
+              {%- endfor -%}
+            </div>
+          {%- endif -%}
+        </div>
+      </div>
+    {%- endif -%}
+  {%- endfor -%}
+{%- endif -%}
+
+</div>
+
+<style>
+/* ══════════════════════════════════════════════════════════
+   MCP — Main Collection Premium — Motion19 OS 2.0
+   Prefix: mcp
+   ══════════════════════════════════════════════════════════ */
+
+.sr-only {
+  position: absolute; width: 1px; height: 1px;
+  padding: 0; margin: -1px; overflow: hidden;
+  clip: rect(0,0,0,0); white-space: nowrap; border: 0;
+}
+
+.mcp {
+  --mcp-ease:     cubic-bezier(0.4, 0, 0.2, 1);
+  --mcp-ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --mcp-ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+  background: var(--mcp-bg, #fff);
+  color: var(--mcp-text, #1a1a1a);
+}
+
+/* ── HERO ──────────────────────────────────────────────── */
+.mcp__hero {
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  min-height: var(--mcp-hero-h-mob, 500px);
+}
+@media (min-width: 768px) {
+  .mcp__hero--small  { min-height: 45vh; }
+  .mcp__hero--medium { min-height: 65vh; }
+  .mcp__hero--large  { min-height: 80vh; }
+  .mcp__hero--full   { min-height: 100svh; }
+}
+
+.mcp__hero-media { position: absolute; inset: 0; z-index: 0; }
+.mcp__hero-bg {
+  position: absolute; inset: 0;
+  width: 100%; height: 100%;
+  object-fit: cover; object-position: center;
+  display: block;
+}
+.mcp__hero-overlay { position: absolute; inset: 0; }
+.mcp__hero-overlay--full { background: rgba(0,0,0,var(--ov-a,.55)); }
+.mcp__hero-overlay--bottom {
+  background: linear-gradient(to top, rgba(0,0,0,calc(var(--ov-a,.55)*1.6)) 0%, rgba(0,0,0,calc(var(--ov-a,.55)*0.9)) 35%, rgba(0,0,0,calc(var(--ov-a,.55)*0.3)) 100%);
+}
+.mcp__hero-overlay--left {
+  background: linear-gradient(to right, rgba(0,0,0,calc(var(--ov-a,.55)*1.5)) 0%, rgba(0,0,0,calc(var(--ov-a,.55)*0.5)) 55%, transparent 100%);
+}
+.mcp__hero-overlay--center {
+  background: radial-gradient(ellipse at center, rgba(0,0,0,calc(var(--ov-a,.55)*0.4)) 0%, rgba(0,0,0,calc(var(--ov-a,.55)*1.2)) 100%);
+}
+
+.mcp__hero-glow {
+  position: absolute; z-index: 1; pointer-events: none;
+  width: 700px; height: 700px; border-radius: 50%;
+  background: radial-gradient(circle, rgba(7,135,234,0.15) 0%, transparent 70%);
+  top: -150px; right: -150px; filter: blur(50px);
+  animation: mcpGlowPulse 7s ease-in-out infinite alternate;
+}
+@keyframes mcpGlowPulse { from { opacity: 0.5; transform: scale(1); } to { opacity: 1; transform: scale(1.2); } }
+
+.mcp__hero-content {
+  position: relative; z-index: 2; width: 100%;
+  padding: clamp(60px,10vw,140px) clamp(16px,5vw,80px) clamp(60px,8vw,120px);
+}
+.mcp__hero--align-center .mcp__hero-content { display: flex; flex-direction: column; align-items: center; text-align: center; }
+.mcp__hero--align-right  .mcp__hero-content { display: flex; flex-direction: column; align-items: flex-end; text-align: right; }
+
+.mcp__hero-inner {
+  max-width: 680px;
+  opacity: 0; transform: translateY(20px);
+  will-change: opacity, transform;
+}
+.mcp__hero-inner.is-visible {
+  opacity: 1; transform: translateY(0);
+  transition: opacity 700ms var(--mcp-ease-out), transform 700ms var(--mcp-ease-out);
+}
+.mcp--speed-fast .mcp__hero-inner.is-visible  { transition-duration: 450ms; }
+.mcp--speed-slow .mcp__hero-inner.is-visible  { transition-duration: 1100ms; }
+.mcp__hero--align-center .mcp__hero-inner { max-width: 760px; }
+
+.mcp__breadcrumb {
+  display: inline-flex; align-items: center; gap: 6px; flex-wrap: wrap;
+  margin-bottom: 18px;
+}
+.mcp__breadcrumb-link {
+  font-size: 0.72rem; font-weight: 500; color: rgba(255,255,255,0.65);
+  text-decoration: none; transition: color 150ms ease;
+}
+.mcp__breadcrumb-link:hover { color: #fff; }
+.mcp__breadcrumb-sep { font-size: 0.7rem; color: rgba(255,255,255,0.35); }
+.mcp__breadcrumb-current { font-size: 0.72rem; font-weight: 600; color: rgba(255,255,255,0.9); }
+
+.mcp__hero-title {
+  font-family: var(--font-body, 'Inter', sans-serif);
+  font-size: clamp(2.2rem, 6vw, 5rem);
+  font-weight: 800; line-height: 1.0; letter-spacing: -0.04em;
+  color: #fff; margin: 0 0 18px;
+}
+
+.mcp__hero-desc {
+  font-size: clamp(0.9rem, 1.5vw, 1.05rem);
+  font-weight: 400; line-height: 1.65;
+  color: rgba(255,255,255,0.75); margin: 0 0 28px;
+  max-width: 52ch;
+}
+
+.mcp__hero-stats {
+  display: flex; align-items: center; gap: 20px; flex-wrap: wrap;
+  margin-bottom: 32px;
+}
+.mcp__hero-stat { display: flex; flex-direction: column; gap: 2px; }
+.mcp__hero-stat-num {
+  font-size: 1.6rem; font-weight: 800; color: #fff; line-height: 1;
+}
+.mcp__hero-stat-label {
+  font-size: 0.65rem; font-weight: 500; letter-spacing: 0.1em;
+  text-transform: uppercase; color: rgba(255,255,255,0.55);
+}
+.mcp__hero-stat-sep {
+  width: 1px; height: 32px;
+  background: rgba(255,255,255,0.2);
+}
+
+.mcp__hero-ctas { display: flex; gap: 10px; flex-wrap: wrap; }
+.mcp__hero--align-center .mcp__hero-ctas { justify-content: center; }
+
+.mcp__hero-btn {
+  display: inline-flex; align-items: center; gap: 8px;
+  font-size: 0.8rem; font-weight: 600;
+  letter-spacing: 0.07em; text-transform: uppercase;
+  padding: 13px 28px; border-radius: var(--mcp-btn-radius, 3px);
+  border: 1.5px solid transparent;
+  text-decoration: none;
+  transition: background 180ms ease, color 180ms ease, border-color 180ms ease, transform 180ms ease;
+}
+.mcp__hero-btn svg { flex-shrink: 0; transition: transform 180ms ease; }
+.mcp__hero-btn:hover svg { transform: translateX(3px); }
+.mcp__hero-btn--outline-white { background: transparent; color: #fff; border-color: rgba(255,255,255,0.6); }
+.mcp__hero-btn--outline-white:hover { background: #fff; color: #0a0a0a; }
+.mcp__hero-btn--solid { background: rgba(245,245,247,0.95); color: #0a0a0a; }
+.mcp__hero-btn--solid:hover { background: var(--mcp-accent, #0787ea); color: #fff; transform: scale(1.02); }
+.mcp__hero-btn--primary { background: var(--mcp-accent, #0787ea); color: #fff; border-color: var(--mcp-accent, #0787ea); }
+.mcp__hero-btn--primary:hover { filter: brightness(1.1); transform: scale(1.02); }
+.mcp__hero-btn--dark { background: #0a0a0a; color: #f5f5f7; }
+.mcp__hero-btn--dark:hover { background: #1a1a1a; transform: scale(1.02); }
+
+.mcp__hero-scroll {
+  position: absolute; bottom: 24px; left: 50%; transform: translateX(-50%);
+  z-index: 2; display: flex; flex-direction: column; align-items: center; gap: 6px;
+  opacity: 0.5; transition: opacity 200ms ease;
+}
+.mcp__hero-scroll:hover { opacity: 0.9; }
+.mcp__hero-scroll-line {
+  width: 1.5px; height: 32px;
+  background: linear-gradient(to bottom, transparent, rgba(255,255,255,0.8));
+  animation: mcpScrollBounce 2s ease-in-out infinite;
+}
+@keyframes mcpScrollBounce { 0%,100%{transform:scaleY(1);opacity:.5} 50%{transform:scaleY(1.4);opacity:1} }
+.mcp__hero-scroll-label { font-size: 0.58rem; font-weight: 600; letter-spacing: 0.15em; text-transform: uppercase; color: rgba(255,255,255,0.65); }
+
+@media (max-width: 767px) {
+  .mcp__hero-title { letter-spacing: -0.03em; }
+  .mcp__hero-stats { gap: 14px; }
+  .mcp__hero-stat-num { font-size: 1.3rem; }
+  .mcp__hero-scroll { display: none; }
+  .mcp__hero-btn { padding: 12px 22px; }
+}
+
+/* ── STICKY BAR ────────────────────────────────────────── */
+.mcp__sticky {
+  position: sticky; top: 0; z-index: 120;
+  background: var(--mcp-sticky-bg, rgba(255,255,255,0.88));
+  backdrop-filter: saturate(180%) blur(14px);
+  -webkit-backdrop-filter: saturate(180%) blur(14px);
+  border-bottom: 1px solid rgba(10,10,10,0.07);
+  transition: box-shadow 250ms var(--mcp-ease);
+}
+.mcp__sticky.is-scrolled { box-shadow: 0 2px 24px rgba(0,0,0,0.06); }
+
+.mcp__sticky-inner {
+  max-width: var(--mcp-container, 1400px);
+  margin: 0 auto;
+  padding: 0 clamp(12px,3vw,40px);
+  height: 56px;
+  display: flex; align-items: center; gap: 12px;
+}
+
+.mcp__sticky-left  { display: flex; align-items: center; gap: 12px; flex-shrink: 0; }
+.mcp__sticky-right { display: flex; align-items: center; gap: 8px; flex-shrink: 0; margin-left: auto; }
+.mcp__sticky-center { flex: 1; min-width: 0; overflow: hidden; }
+
+.mcp__filter-toggle {
+  display: inline-flex; align-items: center; gap: 7px;
+  font-size: 0.78rem; font-weight: 600; letter-spacing: 0.04em;
+  background: none; border: 1px solid rgba(10,10,10,0.14); border-radius: var(--mcp-btn-radius, 3px);
+  color: var(--mcp-text, #1a1a1a); padding: 7px 13px; cursor: pointer;
+  transition: background 150ms ease, border-color 150ms ease, color 150ms ease;
+  white-space: nowrap;
+}
+.mcp__filter-toggle:hover { background: var(--mcp-text, #1a1a1a); color: #fff; border-color: var(--mcp-text, #1a1a1a); }
+.mcp__filter-toggle.is-active { background: var(--mcp-text, #1a1a1a); color: #fff; border-color: var(--mcp-text, #1a1a1a); }
+.mcp__filter-count {
+  background: var(--mcp-accent, #0787ea); color: #fff;
+  font-size: 0.62rem; font-weight: 700; min-width: 18px; height: 18px;
+  border-radius: 100px; padding: 0 5px;
+  display: inline-flex; align-items: center; justify-content: center;
+}
+
+.mcp__product-count { font-size: 0.75rem; color: #888; white-space: nowrap; }
+
+.mcp__quick-nav { width: 100%; overflow: hidden; }
+.mcp__quick-nav-scroll {
+  display: flex; gap: 4px; overflow-x: auto; scrollbar-width: none;
+  padding: 0 4px;
+}
+.mcp__quick-nav-scroll::-webkit-scrollbar { display: none; }
+.mcp__quick-nav-link {
+  white-space: nowrap; font-size: 0.75rem; font-weight: 500;
+  padding: 5px 12px; border-radius: 100px;
+  border: 1px solid rgba(10,10,10,0.1);
+  color: var(--mcp-text, #1a1a1a); text-decoration: none;
+  transition: background 150ms ease, color 150ms ease, border-color 150ms ease;
+  flex-shrink: 0;
+}
+.mcp__quick-nav-link:hover,
+.mcp__quick-nav-link.is-active {
+  background: var(--mcp-text, #1a1a1a); color: #fff; border-color: var(--mcp-text, #1a1a1a);
+}
+
+.mcp__sort-wrap {
+  position: relative; display: flex; align-items: center;
+}
+.mcp__sort {
+  appearance: none; -webkit-appearance: none;
+  font-size: 0.75rem; font-weight: 500; color: var(--mcp-text, #1a1a1a);
+  background: none; border: 1px solid rgba(10,10,10,0.12);
+  border-radius: var(--mcp-btn-radius, 3px); padding: 6px 28px 6px 10px;
+  cursor: pointer; transition: border-color 150ms ease;
+}
+.mcp__sort:hover { border-color: rgba(10,10,10,0.3); }
+.mcp__sort-chevron {
+  position: absolute; right: 8px; top: 50%; transform: translateY(-50%);
+  pointer-events: none; color: #888;
+}
+
+.mcp__view-btns { display: flex; gap: 2px; }
+.mcp__view-btn {
+  width: 32px; height: 32px; border-radius: 6px;
+  display: flex; align-items: center; justify-content: center;
+  background: none; border: 1px solid transparent;
+  cursor: pointer; color: #aaa; transition: all 150ms ease;
+}
+.mcp__view-btn:hover { color: var(--mcp-text, #1a1a1a); border-color: rgba(10,10,10,0.12); }
+.mcp__view-btn.is-active { color: var(--mcp-text, #1a1a1a); background: rgba(10,10,10,0.04); border-color: rgba(10,10,10,0.12); }
+
+@media (max-width: 599px) {
+  .mcp__sticky-center { display: none; }
+  .mcp__product-count { display: none; }
+  .mcp__sticky-inner { gap: 8px; }
+}
+
+/* ── LAYOUT ────────────────────────────────────────────── */
+.mcp__layout { width: 100%; }
+.mcp__layout-inner {
+  max-width: var(--mcp-container, 1400px);
+  margin: 0 auto;
+  padding: 0 clamp(12px,3vw,40px);
+  display: flex; gap: 32px;
+  align-items: flex-start;
+  padding-top: 32px; padding-bottom: 80px;
+}
+
+/* ── SIDEBAR ───────────────────────────────────────────── */
+.mcp__sidebar {
+  width: var(--mcp-sidebar, 260px);
+  flex-shrink: 0;
+  position: sticky; top: 72px;
+  max-height: calc(100vh - 80px);
+  overflow-y: auto; scrollbar-width: thin;
+  scrollbar-color: rgba(10,10,10,0.15) transparent;
+  background: var(--mcp-bg, #fff);
+}
+.mcp__sidebar:not([hidden]) { display: flex; flex-direction: column; }
+
+.mcp__sidebar-header {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 0 16px; border-bottom: 1px solid rgba(10,10,10,0.07);
+  margin-bottom: 16px;
+}
+.mcp__sidebar-title { font-size: 0.85rem; font-weight: 700; }
+.mcp__sidebar-close {
+  display: flex; align-items: center; justify-content: center;
+  width: 30px; height: 30px; border-radius: 50%; border: none;
+  background: none; cursor: pointer; color: #666;
+  transition: background 150ms ease, color 150ms ease;
+}
+.mcp__sidebar-close:hover { background: rgba(10,10,10,0.06); color: #1a1a1a; }
+
+/* Desktop: show sidebar permanently */
+@media (min-width: 1024px) {
+  .mcp__sidebar { display: flex !important; flex-direction: column; }
+  .mcp__sidebar-close { display: none; }
+  .mcp__filter-toggle svg { display: none; }
+}
+/* Mobile/tablet: drawer */
+@media (max-width: 1023px) {
+  .mcp__sidebar {
+    position: fixed; inset: 0 0 0 auto;
+    width: min(320px, 90vw);
+    z-index: 500;
+    padding: 20px;
+    transform: translateX(100%);
+    transition: transform 350ms var(--mcp-ease-out), box-shadow 350ms ease;
+    box-shadow: none;
+  }
+  .mcp__sidebar:not([hidden]) {
+    transform: translateX(0);
+    box-shadow: -20px 0 60px rgba(0,0,0,0.15);
+  }
+  .mcp__drawer-overlay {
+    display: block;
+    position: fixed; inset: 0; z-index: 490;
+    background: rgba(0,0,0,0.45);
+    backdrop-filter: blur(3px);
+    opacity: 0; pointer-events: none;
+    transition: opacity 300ms ease;
+  }
+  .mcp__drawer-overlay.is-active { opacity: 1; pointer-events: auto; }
+  .mcp__layout-inner { padding-top: 24px; }
+}
+
+.mcp__sidebar-body { flex: 1; overflow-y: auto; padding-right: 4px; }
+.mcp__sidebar-footer {
+  padding-top: 16px; border-top: 1px solid rgba(10,10,10,0.07);
+  margin-top: 8px;
+}
+.mcp__sidebar-apply {
+  width: 100%; padding: 12px; font-size: 0.8rem; font-weight: 700;
+  letter-spacing: 0.06em; text-transform: uppercase;
+  background: var(--mcp-text, #1a1a1a); color: #fff; border: none;
+  border-radius: var(--mcp-btn-radius, 3px); cursor: pointer;
+  transition: background 150ms ease;
+}
+.mcp__sidebar-apply:hover { background: var(--mcp-accent, #0787ea); }
+
+/* Active filters */
+.mcp__active-filters { margin-bottom: 16px; padding-bottom: 16px; border-bottom: 1px solid rgba(10,10,10,0.07); }
+.mcp__active-filters-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
+.mcp__active-filters-label { font-size: 0.72rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; color: #888; }
+.mcp__clear-all { font-size: 0.72rem; font-weight: 600; color: var(--mcp-accent, #0787ea); text-decoration: none; }
+.mcp__clear-all:hover { text-decoration: underline; }
+.mcp__active-filters-list { display: flex; flex-wrap: wrap; gap: 6px; }
+.mcp__active-pill {
+  display: inline-flex; align-items: center; gap: 5px;
+  font-size: 0.7rem; font-weight: 500;
+  padding: 4px 10px 4px 10px;
+  background: rgba(7,135,234,0.08); color: var(--mcp-accent, #0787ea);
+  border: 1px solid rgba(7,135,234,0.2); border-radius: 100px;
+  text-decoration: none; transition: background 150ms ease;
+}
+.mcp__active-pill:hover { background: rgba(7,135,234,0.15); }
+
+/* Filter groups */
+.mcp__filter-group { border-bottom: 1px solid rgba(10,10,10,0.07); }
+.mcp__filter-group:last-of-type { border-bottom: none; }
+
+.mcp__filter-group-head {
+  width: 100%; display: flex; align-items: center; justify-content: space-between;
+  gap: 8px; padding: 13px 0; background: none; border: none; cursor: pointer;
+  font-size: 0.82rem; font-weight: 600; color: var(--mcp-text, #1a1a1a);
+  text-align: left;
+}
+.mcp__filter-group-badge {
+  font-size: 0.6rem; font-weight: 700; min-width: 16px; height: 16px;
+  background: var(--mcp-accent, #0787ea); color: #fff;
+  border-radius: 100px; padding: 0 4px;
+  display: inline-flex; align-items: center; justify-content: center;
+}
+.mcp__filter-chevron {
+  margin-left: auto; flex-shrink: 0; color: #aaa;
+  transition: transform 250ms var(--mcp-ease);
+}
+.mcp__filter-group-head[aria-expanded="true"] .mcp__filter-chevron { transform: rotate(180deg); }
+
+.mcp__filter-group-body { overflow: hidden; transition: max-height 280ms var(--mcp-ease); padding-bottom: 8px; }
+.mcp__filter-group-head[aria-expanded="false"] + .mcp__filter-group-body { max-height: 0 !important; padding-bottom: 0; }
+
+.mcp__filter-list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 3px; }
+.mcp__filter-item { min-height: 30px; }
+.mcp__filter-label {
+  display: flex; align-items: center; gap: 8px;
+  font-size: 0.8rem; font-weight: 400; color: var(--mcp-text, #1a1a1a);
+  cursor: pointer; padding: 4px 0;
+  transition: color 130ms ease;
+}
+.mcp__filter-label:hover { color: var(--mcp-accent, #0787ea); }
+.mcp__filter-label.is-active { color: var(--mcp-accent, #0787ea); }
+.mcp__filter-check {
+  width: 16px; height: 16px; flex-shrink: 0;
+  border: 1.5px solid rgba(10,10,10,0.2); border-radius: 3px;
+  display: flex; align-items: center; justify-content: center;
+  transition: background 130ms ease, border-color 130ms ease;
+}
+.mcp__filter-cb:checked + .mcp__filter-check {
+  background: var(--mcp-accent, #0787ea); border-color: var(--mcp-accent, #0787ea);
+}
+.mcp__filter-cb:checked + .mcp__filter-check::after {
+  content: '';
+  width: 8px; height: 4px;
+  border-left: 1.5px solid #fff; border-bottom: 1.5px solid #fff;
+  transform: rotate(-45deg) translateY(-1px);
+  display: block;
+}
+.mcp__color-swatch {
+  width: 14px; height: 14px; border-radius: 50%;
+  border: 1px solid rgba(10,10,10,0.1); flex-shrink: 0;
+}
+.mcp__filter-value-label { flex: 1; }
+.mcp__filter-count { font-size: 0.68rem; color: #aaa; margin-left: auto; }
+
+/* Price range */
+.mcp__price-range { padding: 8px 0 4px; }
+.mcp__price-range-track { position: relative; height: 32px; display: flex; align-items: center; }
+.mcp__price-range-fill {
+  position: absolute; height: 3px;
+  background: var(--mcp-accent, #0787ea); border-radius: 2px; pointer-events: none;
+}
+.mcp__price-range-input {
+  position: absolute; width: 100%;
+  -webkit-appearance: none; appearance: none;
+  height: 3px; background: transparent; pointer-events: auto; cursor: pointer;
+}
+.mcp__price-range-input::-webkit-slider-thumb {
+  -webkit-appearance: none; width: 18px; height: 18px;
+  background: #fff; border: 2px solid var(--mcp-accent, #0787ea);
+  border-radius: 50%; cursor: pointer; box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+.mcp__price-range-input::-webkit-slider-runnable-track {
+  background: rgba(10,10,10,0.1); height: 3px; border-radius: 2px;
+}
+.mcp__price-range-vals {
+  display: flex; justify-content: space-between; margin-top: 8px;
+}
+.mcp__price-range-label { font-size: 0.78rem; font-weight: 600; color: var(--mcp-text, #1a1a1a); }
+
+/* ── MAIN GRID ─────────────────────────────────────────── */
+.mcp__main { flex: 1; min-width: 0; }
+
+.mcp__grid {
+  display: grid;
+  grid-template-columns: repeat(var(--mcp-cols-mob, 1), 1fr);
+  gap: var(--mcp-gap, 20px);
+}
+@media (min-width: 600px) {
+  .mcp__grid { grid-template-columns: repeat(var(--mcp-cols-tab, 2), 1fr); }
+}
+@media (min-width: 1024px) {
+  .mcp__grid { grid-template-columns: repeat(var(--mcp-cols-desk, 3), 1fr); }
+}
+
+/* List view */
+.mcp__grid--list-view { grid-template-columns: 1fr !important; }
+.mcp__grid--list-view .m19-card { flex-direction: row; }
+.mcp__grid--list-view .m19-card__media {
+  width: 160px; flex-shrink: 0; aspect-ratio: 1/1 !important;
+}
+.mcp__grid--list-view .m19-card__body { flex: 1; padding: 16px 20px; }
+@media (max-width: 599px) {
+  .mcp__grid--list-view .m19-card__media { width: 110px; }
+}
+
+/* Card override for collection */
+.mcp__card .m19-card__media {
+  border-radius: var(--mcp-radius, 12px) var(--mcp-radius, 12px) 0 0;
+  aspect-ratio: var(--mcp-ratio, 3/4);
+}
+.mcp__card {
+  border-radius: var(--mcp-radius, 12px);
+  background: var(--mcp-card-bg, #fff);
+}
+.mcp__card .m19-card__img { object-fit: contain; }
+
+/* Hover effects on grid level */
+.mcp__grid--zoom   .mcp__card:hover .m19-card__img--primary { transform: scale(1.06); }
+.mcp__grid--fade   .mcp__card:hover .m19-card__img--primary { opacity: 0.75; }
+.mcp__grid--swap   .mcp__card:hover .m19-card__img--primary { opacity: 0; }
+.mcp__grid--swap   .mcp__card:hover .m19-card__img--hover   { opacity: 1; }
+
+/* Rating */
+.mcp__rating { display: flex; align-items: center; gap: 4px; }
+.mcp__rating-stars { font-size: 0.72rem; color: #f59e0b; letter-spacing: -1px; }
+
+/* Variants */
+.mcp__variants { display: flex; gap: 5px; align-items: center; flex-wrap: wrap; }
+.mcp__variant-dot {
+  width: 18px; height: 18px; border-radius: 50%;
+  background: #e5e5e5; border: 2px solid transparent; cursor: pointer;
+  transition: border-color 140ms ease, transform 140ms ease;
+}
+.mcp__variant-dot.is-selected,
+.mcp__variant-dot:hover { border-color: var(--mcp-accent, #0787ea); transform: scale(1.15); }
+.mcp__variant-more { font-size: 0.68rem; color: #aaa; font-weight: 500; }
+
+/* ── EDITORIAL BANNER ──────────────────────────────────── */
+.mcp__editorial {
+  grid-column: 1 / -1;
+  position: relative; overflow: hidden;
+  border-radius: var(--mcp-radius, 12px);
+  min-height: 200px;
+  display: flex; align-items: center;
+  background: var(--eb-bg, #0a0a0a);
+}
+@media (min-width: 768px) { .mcp__editorial { min-height: 240px; } }
+
+.mcp__editorial-bg {
+  position: absolute; inset: 0; width: 100%; height: 100%;
+  object-fit: cover; display: block;
+  transition: transform 700ms var(--mcp-ease);
+}
+.mcp__editorial:hover .mcp__editorial-bg { transform: scale(1.03); }
+.mcp__editorial-overlay {
+  position: absolute; inset: 0;
+  background: linear-gradient(to right, rgba(0,0,0,0.75) 0%, rgba(0,0,0,0.3) 60%, transparent 100%);
+}
+.mcp__editorial-content {
+  position: relative; z-index: 1;
+  padding: clamp(24px,4vw,48px);
+  max-width: 480px;
+}
+.mcp__editorial-eyebrow {
+  display: block; font-size: 0.65rem; font-weight: 700;
+  letter-spacing: 0.18em; text-transform: uppercase;
+  color: var(--eb-accent, #0787ea); margin-bottom: 10px;
+}
+.mcp__editorial-title {
+  font-size: clamp(1.3rem, 3vw, 2rem); font-weight: 800;
+  letter-spacing: -0.03em; color: var(--eb-text, #fff);
+  line-height: 1.1; margin: 0 0 12px;
+}
+.mcp__editorial-desc {
+  font-size: 0.88rem; color: rgba(255,255,255,0.75);
+  line-height: 1.6; margin: 0 0 20px;
+}
+.mcp__editorial-cta {
+  display: inline-flex; align-items: center; gap: 7px;
+  font-size: 0.78rem; font-weight: 700; letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--eb-text, #fff); text-decoration: none;
+  border-bottom: 1.5px solid currentColor; padding-bottom: 2px;
+  transition: color 150ms ease, gap 150ms ease;
+}
+.mcp__editorial-cta:hover { color: var(--eb-accent, #0787ea); gap: 10px; }
+
+/* ── LOAD MORE / PAGINATION ────────────────────────────── */
+.mcp__loadmore-wrap {
+  grid-column: 1 / -1;
+  display: flex; justify-content: center; padding: 40px 0 0;
+}
+.mcp__loadmore {
+  display: flex; flex-direction: column; align-items: center; gap: 4px;
+  padding: 14px 40px; font-size: 0.8rem; font-weight: 700;
+  letter-spacing: 0.06em; text-transform: uppercase;
+  background: none; border: 1.5px solid rgba(10,10,10,0.15);
+  border-radius: var(--mcp-btn-radius, 3px);
+  color: var(--mcp-text, #1a1a1a); cursor: pointer;
+  transition: background 180ms ease, color 180ms ease, border-color 180ms ease;
+}
+.mcp__loadmore:hover { background: var(--mcp-text, #1a1a1a); color: #fff; border-color: var(--mcp-text, #1a1a1a); }
+.mcp__loadmore.is-loading { opacity: 0.6; pointer-events: none; }
+.mcp__loadmore-info { font-size: 0.67rem; font-weight: 400; opacity: 0.55; text-transform: none; letter-spacing: 0; }
+
+.mcp__pagination {
+  grid-column: 1 / -1;
+  display: flex; align-items: center; justify-content: center; gap: 6px;
+  padding: 40px 0 0; flex-wrap: wrap;
+}
+.mcp__page-num, .mcp__page-btn {
+  display: flex; align-items: center; justify-content: center;
+  min-width: 36px; height: 36px; border-radius: 6px;
+  font-size: 0.82rem; font-weight: 600;
+  border: 1px solid rgba(10,10,10,0.12);
+  color: var(--mcp-text, #1a1a1a); text-decoration: none;
+  transition: background 150ms ease, color 150ms ease, border-color 150ms ease;
+  padding: 0 4px;
+}
+.mcp__page-num:hover, .mcp__page-btn:hover { background: var(--mcp-text, #1a1a1a); color: #fff; border-color: var(--mcp-text, #1a1a1a); }
+.mcp__page-num.is-current { background: var(--mcp-accent, #0787ea); color: #fff; border-color: var(--mcp-accent, #0787ea); }
+.mcp__page-ellipsis { color: #aaa; font-size: 0.85rem; padding: 0 4px; }
+
+/* ── BRANDS ────────────────────────────────────────────── */
+.mcp__brands {
+  overflow: hidden;
+  border-top: 1px solid rgba(10,10,10,0.07);
+  padding: 28px 0;
+}
+.mcp__brands-inner {
+  max-width: var(--mcp-container, 1400px);
+  margin: 0 auto;
+  padding: 0 clamp(12px,3vw,40px);
+  display: flex; align-items: center; gap: 20px;
+}
+.mcp__brands-label {
+  font-size: 0.65rem; font-weight: 700; letter-spacing: 0.15em;
+  text-transform: uppercase; color: #aaa; white-space: nowrap; flex-shrink: 0;
+}
+.mcp__brands-track {
+  display: flex; align-items: center; gap: 40px;
+  animation: mcpBrandsScroll 25s linear infinite;
+  will-change: transform;
+}
+@media (prefers-reduced-motion: reduce) {
+  .mcp__brands-track { animation: none; flex-wrap: wrap; }
+}
+@keyframes mcpBrandsScroll { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
+.mcp__brand-item {
+  flex-shrink: 0; display: flex; align-items: center;
+  opacity: 0.45; transition: opacity 200ms ease;
+  filter: grayscale(1);
+}
+.mcp__brand-item:hover { opacity: 0.85; filter: grayscale(0); }
+.mcp__brand-item img { height: 22px; width: auto; object-fit: contain; display: block; }
+.mcp__brand-name {
+  font-size: 0.82rem; font-weight: 700; letter-spacing: 0.03em;
+  color: var(--mcp-text, #1a1a1a); white-space: nowrap;
+}
+
+/* ── GUIDE / FAQ ───────────────────────────────────────── */
+.mcp__guide {
+  background: #f7f7f8;
+  padding: clamp(48px,6vw,80px) 0;
+}
+.mcp__guide-inner {
+  max-width: var(--mcp-content, 1200px); margin: 0 auto;
+  padding: 0 clamp(16px,4vw,60px);
+}
+.mcp__guide-header { margin-bottom: 36px; }
+.mcp__guide-eyebrow {
+  display: inline-block; font-size: 0.68rem; font-weight: 700;
+  letter-spacing: 0.18em; text-transform: uppercase;
+  color: var(--mcp-accent, #0787ea); margin-bottom: 10px;
+}
+.mcp__guide-title {
+  font-size: clamp(1.4rem, 3vw, 2.2rem); font-weight: 800;
+  letter-spacing: -0.03em; margin: 0 0 10px;
+}
+.mcp__guide-sub { font-size: 0.95rem; color: #666; line-height: 1.65; margin: 0; }
+.mcp__guide-content { font-size: 0.93rem; line-height: 1.7; color: #444; }
+.mcp__faq { margin-top: 28px; display: flex; flex-direction: column; gap: 8px; }
+.mcp__faq-item {
+  border: 1px solid rgba(10,10,10,0.08); border-radius: 10px;
+  overflow: hidden;
+}
+.mcp__faq-q {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 14px 18px; font-size: 0.88rem; font-weight: 600;
+  cursor: pointer; list-style: none;
+}
+.mcp__faq-q::-webkit-details-marker { display: none; }
+.mcp__faq-q::after { content: '+'; font-size: 1.2rem; font-weight: 300; color: #aaa; flex-shrink: 0; transition: transform 200ms ease; }
+.mcp__faq-item[open] .mcp__faq-q::after { transform: rotate(45deg); }
+.mcp__faq-a { padding: 0 18px 14px; font-size: 0.85rem; line-height: 1.7; color: #555; }
+
+/* ── REDUCED MOTION ─────────────────────────────────────── */
+@media (prefers-reduced-motion: reduce) {
+  .mcp__hero-inner, .m19-card { transition-duration: 0.01ms !important; animation-duration: 0.01ms !important; }
+  .mcp__hero-glow { animation: none; }
+}
+
+/* ── HIDE SIDEBAR ON DESKTOP IN LAYOUT WHEN SHOW_FILTERS = FALSE ── */
+.mcp__layout-inner:not(:has(.mcp__sidebar)) .mcp__main { width: 100%; }
+</style>
+
+<script>
+(function () {
+  'use strict';
+  var sid = '{{ sid }}';
+  var wrap = document.getElementById('mcp-' + sid);
+  if (!wrap) return;
+
+  var sticky   = document.getElementById('mcp-sticky-' + sid);
+  var sidebar  = document.getElementById('mcp-sidebar-' + sid);
+  var filterBtn  = document.getElementById('mcp-filter-btn-' + sid);
+  var closeBtn   = document.getElementById('mcp-sidebar-close-' + sid);
+  var overlay    = document.getElementById('mcp-overlay-' + sid);
+  var sortSel    = document.getElementById('mcp-sort-' + sid);
+  var heroInner  = document.getElementById('mcp-hero-inner-' + sid);
+  var grid       = document.getElementById('mcp-product-grid-' + sid);
+  var loadMoreWrap = document.getElementById('mcp-loadmore-wrap-' + sid);
+  var loadMoreBtn  = document.getElementById('mcp-loadmore-' + sid);
+
+  /* ── Hero reveal ── */
+  if (heroInner) {
+    requestAnimationFrame(function () { heroInner.classList.add('is-visible'); });
+  }
+
+  /* ── Sticky bar shadow on scroll ── */
+  if (sticky) {
+    var lastY = 0;
+    window.addEventListener('scroll', function () {
+      var y = window.scrollY;
+      sticky.classList.toggle('is-scrolled', y > 50);
+      lastY = y;
+    }, { passive: true });
+  }
+
+  /* ── Sidebar open/close ── */
+  function openSidebar() {
+    if (!sidebar) return;
+    sidebar.hidden = false;
+    sidebar.removeAttribute('aria-hidden');
+    if (filterBtn) filterBtn.setAttribute('aria-expanded', 'true');
+    if (filterBtn) filterBtn.classList.add('is-active');
+    if (overlay) overlay.classList.add('is-active');
+    document.body.style.overflow = 'hidden';
+    sidebar.focus();
+  }
+  function closeSidebar() {
+    if (!sidebar) return;
+    var isDesktop = window.innerWidth >= 1024;
+    if (isDesktop) return;
+    sidebar.hidden = true;
+    sidebar.setAttribute('aria-hidden', 'true');
+    if (filterBtn) filterBtn.setAttribute('aria-expanded', 'false');
+    if (filterBtn) filterBtn.classList.remove('is-active');
+    if (overlay) overlay.classList.remove('is-active');
+    document.body.style.overflow = '';
+    if (filterBtn) filterBtn.focus();
+  }
+
+  if (filterBtn) filterBtn.addEventListener('click', function () {
+    var isDesktop = window.innerWidth >= 1024;
+    if (isDesktop) {
+      var nowHidden = sidebar && sidebar.hidden;
+      if (nowHidden) {
+        sidebar.hidden = false;
+        filterBtn.classList.add('is-active');
+      } else {
+        sidebar.hidden = true;
+        filterBtn.classList.remove('is-active');
+      }
+    } else {
+      openSidebar();
+    }
+  });
+  if (closeBtn) closeBtn.addEventListener('click', closeSidebar);
+  if (overlay)  overlay.addEventListener('click', closeSidebar);
+
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape') closeSidebar();
+  });
+
+  /* ── Desktop: sidebar always visible ── */
+  function initSidebarDesktop() {
+    if (!sidebar) return;
+    if (window.innerWidth >= 1024) {
+      sidebar.hidden = false;
+      sidebar.removeAttribute('aria-hidden');
+      document.body.style.overflow = '';
+    }
+  }
+  initSidebarDesktop();
+  window.addEventListener('resize', initSidebarDesktop);
+
+  /* ── Filter accordion ── */
+  wrap.addEventListener('click', function (e) {
+    var head = e.target.closest('.mcp__filter-group-head');
+    if (!head) return;
+    var expanded = head.getAttribute('aria-expanded') === 'true';
+    var body = document.getElementById(head.getAttribute('aria-controls'));
+    head.setAttribute('aria-expanded', String(!expanded));
+    if (body) {
+      if (expanded) {
+        body.style.maxHeight = body.scrollHeight + 'px';
+        requestAnimationFrame(function () { body.style.maxHeight = '0'; });
+      } else {
+        body.style.maxHeight = body.scrollHeight + 'px';
+        body.addEventListener('transitionend', function handler() {
+          body.style.maxHeight = '';
+          body.removeEventListener('transitionend', handler);
+        });
+      }
+    }
+  });
+
+  /* ── Sort change ── */
+  if (sortSel) {
+    sortSel.addEventListener('change', function () {
+      var url = new URL(window.location.href);
+      url.searchParams.set('sort_by', sortSel.value);
+      window.location.href = url.toString();
+    });
+  }
+
+  /* ── View toggle (grid/list) ── */
+  var viewBtns = wrap.querySelectorAll('.mcp__view-btn');
+  viewBtns.forEach(function (btn) {
+    btn.addEventListener('click', function () {
+      var view = btn.dataset.view;
+      viewBtns.forEach(function (b) {
+        b.classList.toggle('is-active', b === btn);
+        b.setAttribute('aria-pressed', String(b === btn));
+      });
+      if (grid) {
+        grid.classList.toggle('mcp__grid--list-view', view === 'list');
+      }
+    });
+  });
+
+  /* ── Card reveal on scroll ── */
+  if ('IntersectionObserver' in window && grid) {
+    var cardObs = new IntersectionObserver(function (entries) {
+      entries.forEach(function (e) {
+        if (!e.isIntersecting) return;
+        e.target.classList.add('is-visible');
+        cardObs.unobserve(e.target);
+      });
+    }, { threshold: 0.06 });
+    Array.from(grid.querySelectorAll('.m19-card')).forEach(function (c) { cardObs.observe(c); });
+  } else if (grid) {
+    Array.from(grid.querySelectorAll('.m19-card')).forEach(function (c) { c.classList.add('is-visible'); });
+  }
+
+  /* ── Quick Add (icon button + text button) ── */
+  function doAtc(btn, variantId) {
+    if (btn.dataset.loading) return;
+    btn.dataset.loading = '1';
+    var label = btn.querySelector('.pg__atc-label') || btn;
+    var origText = btn.tagName === 'BUTTON' && btn.classList.contains('m19-card__quick-add') ? btn.textContent : null;
+    if (origText) btn.textContent = '…';
+
+    fetch('/cart/add.js', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'X-Requested-With': 'XMLHttpRequest' },
+      body: JSON.stringify({ id: variantId, quantity: 1 })
+    })
+    .then(function (r) { return r.json(); })
+    .then(function () {
+      btn.classList.add('is-added');
+      if (origText) btn.textContent = '✓ Ajouté';
+      if (typeof M19Cart !== 'undefined') M19Cart.updateBadge();
+      setTimeout(function () {
+        btn.classList.remove('is-added');
+        if (origText) btn.textContent = origText;
+        delete btn.dataset.loading;
+      }, 2000);
+    })
+    .catch(function () {
+      if (origText) btn.textContent = 'Erreur';
+      setTimeout(function () {
+        if (origText) btn.textContent = origText;
+        delete btn.dataset.loading;
+      }, 2000);
+    });
+  }
+
+  if (grid) {
+    grid.addEventListener('click', function (e) {
+      var btn = e.target.closest('.mcp__atc-icon, .mcp__atc-text');
+      if (!btn) return;
+      e.preventDefault();
+      doAtc(btn, btn.dataset.variantId);
+    });
+  }
+
+  /* ── Price range UI ── */
+  wrap.querySelectorAll('.mcp__price-range').forEach(function (pr) {
+    var minInput = pr.querySelector('.mcp__price-range-input--min');
+    var maxInput = pr.querySelector('.mcp__price-range-input--max');
+    var fill     = pr.querySelector('.mcp__price-range-fill');
+    var minVal   = pr.querySelector('[id*="price-min"]');
+    var maxVal   = pr.querySelector('[id*="price-max"]');
+
+    function updateRange() {
+      var min = parseFloat(minInput.min), max = parseFloat(maxInput.max);
+      var lo  = parseFloat(minInput.value), hi = parseFloat(maxInput.value);
+      if (lo > hi) { var t = lo; lo = hi; hi = t; }
+      var leftPct  = ((lo - min) / (max - min)) * 100;
+      var rightPct = ((hi - min) / (max - min)) * 100;
+      if (fill) { fill.style.left = leftPct + '%'; fill.style.width = (rightPct - leftPct) + '%'; }
+      if (minVal) minVal.textContent = lo.toLocaleString('fr-FR', { style: 'currency', currency: 'EUR', maximumFractionDigits: 0 });
+      if (maxVal) maxVal.textContent = hi.toLocaleString('fr-FR', { style: 'currency', currency: 'EUR', maximumFractionDigits: 0 });
+    }
+    if (minInput && maxInput) {
+      minInput.addEventListener('input', updateRange);
+      maxInput.addEventListener('input', updateRange);
+      updateRange();
+    }
+  });
+
+  /* ── Filter form auto submit on checkbox ── */
+  var filterForm = document.getElementById('mcp-filter-form-' + sid);
+  if (filterForm) {
+    filterForm.addEventListener('change', function (e) {
+      if (e.target.type === 'checkbox') {
+        filterForm.submit();
+      }
+    });
+  }
+
+  /* ── Active filter count badge ── */
+  var countBadge = document.getElementById('mcp-filter-count-' + sid);
+  if (countBadge) {
+    var activeCount = wrap.querySelectorAll('.mcp__active-pill').length;
+    if (activeCount > 0) {
+      countBadge.textContent = activeCount;
+      countBadge.hidden = false;
+    }
+  }
+
+  /* ── Load More ── */
+  if (loadMoreBtn) {
+    loadMoreBtn.addEventListener('click', function () {
+      var nextUrl = loadMoreBtn.dataset.nextUrl;
+      if (!nextUrl) return;
+      loadMoreBtn.classList.add('is-loading');
+      loadMoreBtn.querySelector('.mcp__loadmore-label').textContent = 'Chargement…';
+
+      fetch(nextUrl, { headers: { 'X-Requested-With': 'XMLHttpRequest' } })
+      .then(function (r) { return r.text(); })
+      .then(function (html) {
+        var parser = new DOMParser();
+        var doc = parser.parseFromString(html, 'text/html');
+        var newGrid = doc.getElementById('mcp-product-grid-' + sid);
+        if (newGrid) {
+          var newCards = Array.from(newGrid.querySelectorAll('.m19-card'));
+          newCards.forEach(function (card) {
+            grid.insertBefore(card, loadMoreWrap);
+          });
+          if ('IntersectionObserver' in window) {
+            newCards.forEach(function (c) { cardObs.observe(c); });
+          } else {
+            newCards.forEach(function (c) { c.classList.add('is-visible'); });
+          }
+        }
+        var newLoadMore = doc.getElementById('mcp-loadmore-' + sid);
+        if (newLoadMore && newLoadMore.dataset.nextUrl) {
+          loadMoreBtn.dataset.nextUrl = newLoadMore.dataset.nextUrl;
+          loadMoreBtn.classList.remove('is-loading');
+          loadMoreBtn.querySelector('.mcp__loadmore-label').textContent = '{{ section.settings.loadmore_label | default: "Charger plus" | escape }}';
+          var newInfo = newLoadMore.querySelector('.mcp__loadmore-info');
+          var info = loadMoreBtn.querySelector('.mcp__loadmore-info');
+          if (newInfo && info) info.textContent = newInfo.textContent;
+        } else {
+          if (loadMoreWrap) loadMoreWrap.remove();
+        }
+      })
+      .catch(function () {
+        loadMoreBtn.classList.remove('is-loading');
+        loadMoreBtn.querySelector('.mcp__loadmore-label').textContent = '{{ section.settings.loadmore_label | default: "Charger plus" | escape }}';
+      });
+    });
+  }
+
+  /* ── Shopify section editor events ── */
+  document.addEventListener('shopify:section:load', function (e) {
+    if (e.detail && e.detail.sectionId === sid) {
+      if (heroInner) requestAnimationFrame(function () { heroInner.classList.add('is-visible'); });
+      initSidebarDesktop();
+    }
+  });
+
+})();
+</script>
+
+{% schema %}
+{
+  "name": "Collection Premium",
+  "tag": "section",
+  "class": "section-main-collection-premium",
+  "settings": [
+    { "type": "header", "content": "━━ GLOBAL ━━" },
+    { "type": "range",  "id": "container_width",  "label": "Largeur container (px)", "min": 960, "max": 1920, "step": 40, "default": 1400, "unit": "px" },
+    { "type": "range",  "id": "content_width",    "label": "Largeur contenu (px)",   "min": 800, "max": 1600, "step": 40, "default": 1200, "unit": "px" },
+    { "type": "range",  "id": "sidebar_width",    "label": "Largeur sidebar filtres (px)", "min": 200, "max": 360, "step": 10, "default": 260, "unit": "px" },
+    { "type": "range",  "id": "grid_gap",         "label": "Espacement grille (px)", "min": 8, "max": 48, "step": 4, "default": 20, "unit": "px" },
+    { "type": "select", "id": "animation_speed",  "label": "Vitesse animations", "default": "normal",
+      "options": [{"value":"fast","label":"Rapide"},{"value":"normal","label":"Normale"},{"value":"slow","label":"Lente"}]
+    },
+    { "type": "header", "content": "━━ COULEURS ━━" },
+    { "type": "color", "id": "accent_color",    "label": "Couleur accentuation", "default": "#0787ea" },
+    { "type": "color", "id": "text_color",      "label": "Couleur texte",        "default": "#1a1a1a" },
+    { "type": "color", "id": "bg_color",        "label": "Fond page",            "default": "#ffffff" },
+    { "type": "color", "id": "card_bg_color",   "label": "Fond cartes",          "default": "#ffffff" },
+    { "type": "color", "id": "sticky_bar_bg",   "label": "Fond barre sticky",    "default": "rgba(255,255,255,0.88)" },
+    { "type": "range", "id": "card_radius",     "label": "Rayon cartes (px)",    "min": 0, "max": 32, "step": 2, "default": 12, "unit": "px" },
+    { "type": "range", "id": "btn_radius",      "label": "Rayon boutons (px)",   "min": 0, "max": 40, "step": 1, "default": 3,  "unit": "px" },
+
+    { "type": "header", "content": "━━ HERO COLLECTION ━━" },
+    { "type": "checkbox", "id": "show_hero",              "label": "Afficher hero",                 "default": true },
+    { "type": "select",   "id": "hero_height",            "label": "Hauteur desktop", "default": "medium",
+      "options": [{"value":"small","label":"Petit (~45vh)"},{"value":"medium","label":"Moyen (~65vh)"},{"value":"large","label":"Grand (~80vh)"},{"value":"full","label":"Plein écran"}]
+    },
+    { "type": "range",    "id": "hero_height_mobile",     "label": "Hauteur mobile (px)", "min": 320, "max": 800, "step": 20, "default": 500, "unit": "px" },
+    { "type": "select",   "id": "hero_content_align",     "label": "Alignement contenu", "default": "left",
+      "options": [{"value":"left","label":"Gauche"},{"value":"center","label":"Centre"},{"value":"right","label":"Droite"}]
+    },
+    { "type": "select",   "id": "hero_gradient_style",    "label": "Style overlay", "default": "left",
+      "options": [{"value":"full","label":"Solide"},{"value":"bottom","label":"Bas"},{"value":"left","label":"Gauche"},{"value":"center","label":"Radial"}]
+    },
+    { "type": "range",    "id": "hero_overlay_opacity",   "label": "Opacité overlay (%)", "min": 0, "max": 90, "step": 5, "default": 55, "unit": "%" },
+    { "type": "checkbox", "id": "hero_show_stats",        "label": "Afficher statistiques", "default": true },
+    { "type": "checkbox", "id": "hero_show_breadcrumb",   "label": "Afficher fil d'Ariane", "default": true },
+    { "type": "text",     "id": "hero_fallback_desc",     "label": "Description fallback" },
+    { "type": "text",     "id": "hero_cta_label",         "label": "CTA hero — texte" },
+    { "type": "url",      "id": "hero_cta_url",           "label": "CTA hero — lien" },
+    { "type": "select",   "id": "hero_cta_style",         "label": "CTA hero — style", "default": "outline-white",
+      "options": [{"value":"outline-white","label":"Outline blanc"},{"value":"solid","label":"Blanc solide"},{"value":"primary","label":"Bleu"},{"value":"dark","label":"Noir"}]
+    },
+    { "type": "header", "content": "Stats hero" },
+    { "type": "text",  "id": "stat_products_label", "label": "Label produits",  "default": "produits" },
+    { "type": "text",  "id": "stat_2_value",         "label": "Stat 2 — valeur" },
+    { "type": "text",  "id": "stat_2_label",         "label": "Stat 2 — label",  "default": "marques" },
+    { "type": "text",  "id": "stat_3_value",         "label": "Stat 3 — valeur" },
+    { "type": "text",  "id": "stat_3_label",         "label": "Stat 3 — label",  "default": "créateurs" },
+
+    { "type": "header", "content": "━━ BARRE STICKY ━━" },
+    { "type": "text",    "id": "filter_btn_label", "label": "Texte bouton filtres", "default": "Filtres" },
+    { "type": "text",    "id": "sort_label",        "label": "Label tri",           "default": "Trier par" },
+    { "type": "link_list", "id": "nav_menu",        "label": "Menu navigation rapide (optionnel)" },
+
+    { "type": "header", "content": "━━ FILTRES ━━" },
+    { "type": "checkbox",  "id": "show_filters",        "label": "Afficher panneau filtres", "default": true },
+    { "type": "text",      "id": "filter_panel_title",  "label": "Titre panneau",  "default": "Filtres" },
+    { "type": "text",      "id": "filter_apply_label",  "label": "Texte bouton appliquer", "default": "Voir les résultats" },
+    { "type": "link_list", "id": "filter_menu",         "label": "Menu filtres (génère les groupes)" },
+
+    { "type": "header", "content": "━━ GRILLE PRODUITS ━━" },
+    { "type": "range",  "id": "columns_desktop", "label": "Colonnes desktop",  "min": 2, "max": 5, "step": 1, "default": 3 },
+    { "type": "range",  "id": "columns_tablet",  "label": "Colonnes tablette", "min": 1, "max": 3, "step": 1, "default": 2 },
+    { "type": "range",  "id": "columns_mobile",  "label": "Colonnes mobile",   "min": 1, "max": 2, "step": 1, "default": 1 },
+    { "type": "select", "id": "image_ratio",     "label": "Ratio image", "default": "portrait",
+      "options": [{"value":"square","label":"Carré 1:1"},{"value":"portrait","label":"Portrait 3:4"},{"value":"landscape","label":"Paysage 4:3"}]
+    },
+    { "type": "select", "id": "hover_effect",    "label": "Effet hover image", "default": "zoom",
+      "options": [{"value":"none","label":"Aucun"},{"value":"zoom","label":"Zoom"},{"value":"fade","label":"Fade"},{"value":"swap","label":"Image 2"}]
+    },
+    { "type": "range",  "id": "products_per_page", "label": "Produits par page", "min": 8, "max": 48, "step": 4, "default": 12 },
+
+    { "type": "header", "content": "Infos cartes" },
+    { "type": "checkbox", "id": "show_vendor",    "label": "Marque / vendor",   "default": false },
+    { "type": "checkbox", "id": "show_badge",     "label": "Badges",            "default": true },
+    { "type": "checkbox", "id": "show_quick_add", "label": "Bouton ajout panier","default": true },
+    { "type": "checkbox", "id": "show_rating",    "label": "Note (décoratif)",   "default": false },
+    { "type": "checkbox", "id": "show_variants",  "label": "Sélecteur variantes","default": false },
+
+    { "type": "header", "content": "Textes cartes" },
+    { "type": "text", "id": "atc_label",   "label": "Texte ATC",         "default": "Ajouter au panier" },
+    { "type": "text", "id": "badge_new",   "label": "Badge Nouveau",     "default": "Nouveau" },
+    { "type": "text", "id": "badge_oos",   "label": "Badge Épuisé",      "default": "Épuisé" },
+
+    { "type": "header", "content": "━━ PAGINATION ━━" },
+    { "type": "select", "id": "pagination_type", "label": "Type pagination", "default": "loadmore",
+      "options": [{"value":"loadmore","label":"Load More"},{"value":"pagination","label":"Pagination classique"},{"value":"infinite","label":"Infinite scroll (bientôt)"}]
+    },
+    { "type": "text", "id": "loadmore_label", "label": "Texte Load More", "default": "Charger plus" },
+
+    { "type": "header", "content": "━━ MARQUES ━━" },
+    { "type": "checkbox", "id": "show_brands",    "label": "Afficher carousel marques", "default": true },
+    { "type": "text",     "id": "brands_title",   "label": "Label marques",             "default": "Nos marques" },
+
+    { "type": "header", "content": "━━ GUIDE / FAQ ━━" },
+    { "type": "checkbox", "id": "show_guide", "label": "Afficher section guide", "default": false }
+  ],
+  "blocks": [
+    {
+      "type": "editorial_banner",
+      "name": "Bannière éditoriale",
+      "settings": [
+        { "type": "image_picker", "id": "image",              "label": "Image fond" },
+        { "type": "text",         "id": "eyebrow",            "label": "Overline" },
+        { "type": "text",         "id": "title",              "label": "Titre",       "default": "Le setup parfait pour YouTube" },
+        { "type": "textarea",     "id": "desc",               "label": "Description" },
+        { "type": "text",         "id": "cta_label",          "label": "CTA texte" },
+        { "type": "url",          "id": "cta_url",            "label": "CTA lien" },
+        { "type": "range",        "id": "insert_after_product","label": "Insérer après le produit N°", "min": 2, "max": 40, "step": 1, "default": 6 },
+        { "type": "color",        "id": "bg_color",           "label": "Fond fallback",   "default": "#0a0a0a" },
+        { "type": "color",        "id": "text_color",         "label": "Couleur texte",   "default": "#ffffff" },
+        { "type": "color",        "id": "accent_color",       "label": "Couleur accent",  "default": "#0787ea" }
+      ]
+    },
+    {
+      "type": "filter_group",
+      "name": "Groupe filtre manuel",
+      "settings": [
+        { "type": "text",     "id": "label",  "label": "Nom du groupe", "default": "Type" },
+        { "type": "textarea", "id": "values", "label": "Valeurs séparées par virgule", "default": "Débutant, Intermédiaire, Pro" }
+      ]
+    },
+    {
+      "type": "brand",
+      "name": "Marque",
+      "settings": [
+        { "type": "image_picker", "id": "logo", "label": "Logo marque" },
+        { "type": "text",         "id": "name", "label": "Nom marque", "default": "Brand" },
+        { "type": "url",          "id": "url",  "label": "Lien" }
+      ]
+    },
+    {
+      "type": "guide_block",
+      "name": "Guide / FAQ",
+      "settings": [
+        { "type": "text",     "id": "eyebrow",  "label": "Eyebrow" },
+        { "type": "text",     "id": "title",    "label": "Titre",    "default": "Guides & Conseils" },
+        { "type": "textarea", "id": "subtitle", "label": "Sous-titre" },
+        { "type": "richtext", "id": "content",  "label": "Contenu riche" },
+        { "type": "textarea", "id": "faq",      "label": "FAQ (format: Question::Réponse, une par ligne)" }
+      ]
+    }
+  ],
+  "max_blocks": 30,
+  "presets": [
+    {
+      "name": "Collection Premium",
+      "settings": {
+        "show_hero": true,
+        "hero_height": "medium",
+        "show_filters": true,
+        "show_brands": true,
+        "columns_desktop": 3,
+        "columns_tablet": 2,
+        "columns_mobile": 1,
+        "pagination_type": "loadmore"
+      },
+      "blocks": [
+        {
+          "type": "editorial_banner",
+          "settings": {
+            "title": "Le setup parfait pour YouTube",
+            "eyebrow": "Setup du moment",
+            "desc": "Caméra, micro, éclairage et accessoires — tout ce qu'il vous faut pour démarrer.",
+            "cta_label": "Voir le setup",
+            "insert_after_product": 6
+          }
+        },
+        { "type": "brand", "settings": { "name": "Sony" } },
+        { "type": "brand", "settings": { "name": "DJI" } },
+        { "type": "brand", "settings": { "name": "Rode" } },
+        { "type": "brand", "settings": { "name": "Canon" } },
+        { "type": "brand", "settings": { "name": "Elgato" } },
+        { "type": "brand", "settings": { "name": "Shure" } },
+        { "type": "brand", "settings": { "name": "Blackmagic" } }
+      ]
+    }
+  ]
+}
+{% endschema %}

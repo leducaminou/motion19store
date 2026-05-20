@@ -1,0 +1,579 @@
+{{ 'card.css' | asset_url | stylesheet_tag }}
+{%- comment -%} ACS Collections Nav — Motion19 OS 2.0 — Universe / Creator / Setup {%- endcomment -%}
+
+{%- liquid
+  assign sid          = section.id
+  assign bg_color     = section.settings.bg_color      | default: '#ffffff'
+  assign text_color   = section.settings.text_color    | default: '#0a0a0a'
+  assign title_color  = section.settings.title_color   | default: '#0a0a0a'
+  assign eyebrow_col  = section.settings.eyebrow_color | default: '#0787ea'
+  assign pt_m         = section.settings.padding_top_mobile    | default: 48
+  assign pb_m         = section.settings.padding_bottom_mobile | default: 56
+  assign pt_d         = section.settings.padding_top_desktop   | default: 64
+  assign pb_d         = section.settings.padding_bottom_desktop | default: 64
+  assign mt           = section.settings.margin_top    | default: 0
+  assign mb           = section.settings.margin_bottom | default: 0
+  assign max_w        = section.settings.section_max_width | default: 1400
+  assign cols_m       = section.settings.columns_mobile  | default: 1
+  assign cols_t       = section.settings.columns_tablet  | default: 2
+  assign cols_d       = section.settings.columns_desktop | default: 3
+  assign aspect_m     = section.settings.aspect_mobile  | default: '4/3'
+  assign aspect_t     = section.settings.aspect_tablet  | default: '3/2'
+  assign aspect_d     = section.settings.aspect_desktop | default: '3/2'
+  assign card_radius  = section.settings.card_radius | default: 12
+  assign header_align = section.settings.header_align  | default: 'left'
+  assign sep_enabled  = section.settings.separator_enabled | default: false
+  assign sep_style    = section.settings.separator_style   | default: 'line'
+  assign sep_text     = section.settings.separator_text
+-%}
+
+<section
+  id="acsnav-{{ sid }}"
+  class="acsnav m19-animate"
+  aria-labelledby="acsnav-title-{{ sid }}"
+  style="
+    --acsnav-bg:       {{ bg_color }};
+    --acsnav-text:     {{ text_color }};
+    --acsnav-title:    {{ title_color }};
+    --acsnav-eyebrow:  {{ eyebrow_col }};
+    --acsnav-pt-m:     {{ pt_m }}px;
+    --acsnav-pb-m:     {{ pb_m }}px;
+    --acsnav-pt-d:     {{ pt_d }}px;
+    --acsnav-pb-d:     {{ pb_d }}px;
+    --acsnav-mt:       {{ mt }}px;
+    --acsnav-mb:       {{ mb }}px;
+    --acsnav-max-w:    {{ max_w }}px;
+    --acsnav-cols-m:   {{ cols_m }};
+    --acsnav-cols-t:   {{ cols_t }};
+    --acsnav-cols-d:   {{ cols_d }};
+    --acsnav-aspect-m: {{ aspect_m }};
+    --acsnav-aspect-t: {{ aspect_t }};
+    --acsnav-aspect-d: {{ aspect_d }};
+    --acsnav-radius:   {{ card_radius }}px;
+  "
+>
+  <div class="acsnav__inner">
+
+    <div class="acsnav__header acsnav__header--{{ header_align }}">
+      <div class="acsnav__header-text">
+        {%- if section.settings.eyebrow != blank -%}
+          <span class="acsnav__eyebrow">{{ section.settings.eyebrow }}</span>
+        {%- endif -%}
+        <h2 class="acsnav__title" id="acsnav-title-{{ sid }}">
+          {{- section.settings.title | default: 'Explorer par univers' -}}
+        </h2>
+        {%- if section.settings.subtitle != blank -%}
+          <p class="acsnav__subtitle">{{ section.settings.subtitle }}</p>
+        {%- endif -%}
+      </div>
+      {%- if section.settings.cta_label != blank -%}
+        <a class="acsnav__view-all" href="{{ section.settings.cta_url | default: '/collections/all' }}">
+          {{ section.settings.cta_label }}
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+        </a>
+      {%- endif -%}
+    </div>
+
+    {%- if sep_enabled -%}
+      <div class="acsnav__sep acsnav__sep--{{ sep_style }}" aria-hidden="true">
+        {%- if sep_text != blank -%}<span class="acsnav__sep-text">{{ sep_text }}</span>{%- endif -%}
+      </div>
+    {%- endif -%}
+
+    <ul class="acsnav__grid" role="list">
+      {%- if section.blocks.size > 0 -%}
+        {%- for block in section.blocks -%}
+          {%- liquid
+            assign card_img   = block.settings.image
+            assign card_title = block.settings.title | default: 'Collection'
+            assign card_desc  = block.settings.description
+            assign card_url   = block.settings.url | default: '/collections/all'
+            assign card_badge = block.settings.badge
+            assign card_price = block.settings.price_estimate
+            assign card_count = block.settings.item_count
+            assign overlay_op = block.settings.overlay_opacity | default: 45 | divided_by: 100.0
+          -%}
+          <li class="acsnav__item" {{ block.shopify_attributes }}>
+            <a class="acsnav__card" href="{{ card_url }}" aria-label="{{ card_title | escape }}">
+              <div class="acsnav__card-media" aria-hidden="true">
+                {%- if card_img != blank -%}
+                  <img
+                    class="acsnav__card-img"
+                    src="{{ card_img | image_url: width: 800 }}"
+                    srcset="{{ card_img | image_url: width: 400 }} 400w, {{ card_img | image_url: width: 800 }} 800w, {{ card_img | image_url: width: 1200 }} 1200w"
+                    sizes="(max-width:599px) 90vw, (max-width:1023px) 45vw, 30vw"
+                    alt="{{ card_img.alt | default: card_title | escape }}"
+                    loading="lazy"
+                    width="{{ card_img.width }}"
+                    height="{{ card_img.height }}"
+                  >
+                {%- else -%}
+                  <div class="acsnav__card-placeholder" aria-hidden="true"></div>
+                {%- endif -%}
+                <div class="acsnav__card-overlay" aria-hidden="true" style="--ov-a:{{ overlay_op }};"></div>
+              </div>
+
+              {%- if card_badge != blank -%}
+                <span class="acsnav__card-badge" aria-hidden="true">{{ card_badge }}</span>
+              {%- endif -%}
+
+              <div class="acsnav__card-content">
+                <div class="acsnav__card-info">
+                  <span class="acsnav__card-title">{{ card_title }}</span>
+                  {%- if card_desc != blank -%}
+                    <span class="acsnav__card-desc">{{ card_desc }}</span>
+                  {%- endif -%}
+                  {%- if card_price != blank or card_count != blank -%}
+                    <div class="acsnav__card-meta">
+                      {%- if card_price != blank -%}
+                        <span class="acsnav__card-price">{{ card_price }}</span>
+                      {%- endif -%}
+                      {%- if card_count != blank -%}
+                        <span class="acsnav__card-count">{{ card_count }}</span>
+                      {%- endif -%}
+                    </div>
+                  {%- endif -%}
+                </div>
+                <span class="acsnav__card-btn" aria-hidden="true">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+                </span>
+              </div>
+            </a>
+          </li>
+        {%- endfor -%}
+      {%- else -%}
+        {%- for i in (1..6) -%}
+          <li class="acsnav__item">
+            <a class="acsnav__card" href="/collections/all" aria-label="Collection {{ i }}">
+              <div class="acsnav__card-media" aria-hidden="true">
+                <div class="acsnav__card-placeholder"></div>
+                <div class="acsnav__card-overlay" style="--ov-a:0.45;"></div>
+              </div>
+              <div class="acsnav__card-content">
+                <div class="acsnav__card-info">
+                  <span class="acsnav__card-title">Collection {{ i }}</span>
+                </div>
+                <span class="acsnav__card-btn" aria-hidden="true">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+                </span>
+              </div>
+            </a>
+          </li>
+        {%- endfor -%}
+      {%- endif -%}
+    </ul>
+
+  </div>
+</section>
+
+<style>
+.acsnav {
+  --acsnav-pad:      16px;
+  --acsnav-gap:      14px;
+  --acsnav-ease:     cubic-bezier(0.4, 0, 0.2, 1);
+  --acsnav-ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+
+  background: var(--acsnav-bg, #ffffff);
+  color: var(--acsnav-text, #0a0a0a);
+  margin-top: var(--acsnav-mt, 0);
+  margin-bottom: var(--acsnav-mb, 0);
+}
+@media (min-width: 768px)  { .acsnav { --acsnav-pad: 24px; } }
+@media (min-width: 1024px) { .acsnav { --acsnav-pad: 40px; --acsnav-gap: 16px; } }
+
+.acsnav__inner {
+  max-width: var(--acsnav-max-w, 1400px);
+  margin: 0 auto;
+  padding: var(--acsnav-pt-m, 48px) var(--acsnav-pad) var(--acsnav-pb-m, 56px);
+}
+@media (min-width: 768px) {
+  .acsnav__inner {
+    padding-top:    var(--acsnav-pt-d, 64px);
+    padding-bottom: var(--acsnav-pb-d, 64px);
+  }
+}
+
+/* Header */
+.acsnav__header {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+  margin-bottom: 28px;
+}
+.acsnav__header--center { flex-direction: column; align-items: center; text-align: center; }
+.acsnav__header--right  { flex-direction: column; align-items: flex-end; text-align: right; }
+@media (max-width: 767px) {
+  .acsnav__header { flex-direction: column; align-items: flex-start; gap: 12px; margin-bottom: 20px; }
+}
+
+.acsnav__header-text { display: flex; flex-direction: column; gap: 4px; }
+
+.acsnav__eyebrow {
+  font-size: 0.7rem; font-weight: 600;
+  letter-spacing: 0.16em; text-transform: uppercase;
+  color: var(--acsnav-eyebrow, #0787ea);
+}
+
+.acsnav__title {
+  font-family: var(--font-body, 'Inter', sans-serif);
+  font-size: clamp(1.4rem, 3vw, 2.2rem);
+  font-weight: 800; letter-spacing: -0.03em;
+  color: var(--acsnav-title, #0a0a0a);
+  margin: 0;
+  position: relative;
+  padding-bottom: 10px;
+}
+.acsnav__title::after {
+  content: '';
+  position: absolute;
+  bottom: 0; left: 0;
+  width: 36px; height: 3px;
+  background: #0787ea;
+  border-radius: 2px;
+}
+.acsnav__header--center .acsnav__title::after { left: 50%; transform: translateX(-50%); }
+.acsnav__header--right  .acsnav__title::after { left: auto; right: 0; }
+
+.acsnav__subtitle {
+  font-size: 0.875rem;
+  color: color-mix(in srgb, var(--acsnav-text, #0a0a0a) 60%, transparent);
+  margin: 0; max-width: 52ch; line-height: 1.55;
+}
+
+.acsnav__view-all {
+  display: inline-flex; align-items: center; gap: 5px;
+  flex-shrink: 0;
+  font-size: 0.78rem; font-weight: 600;
+  color: var(--acsnav-text, #0a0a0a);
+  text-decoration: none;
+  border-bottom: 1.5px solid currentColor;
+  padding-bottom: 1px;
+  white-space: nowrap;
+  transition: color 160ms ease;
+}
+.acsnav__view-all:hover { color: #0787ea; }
+.acsnav__view-all svg   { transition: transform 200ms var(--acsnav-ease); }
+.acsnav__view-all:hover svg { transform: translateX(3px); }
+
+/* Separator */
+.acsnav__sep {
+  display: flex; align-items: center; gap: 16px;
+  margin-bottom: 20px;
+  color: color-mix(in srgb, var(--acsnav-text, #0a0a0a) 30%, transparent);
+  font-size: 0.72rem; letter-spacing: 0.08em; text-transform: uppercase;
+}
+.acsnav__sep--line::before,
+.acsnav__sep--line::after   { content: ''; flex: 1; height: 1px; background: currentColor; }
+.acsnav__sep--dashed::before,
+.acsnav__sep--dashed::after { content: ''; flex: 1; height: 1px; border-top: 1px dashed currentColor; }
+
+/* Grid */
+.acsnav__grid {
+  display: grid;
+  grid-template-columns: repeat(var(--acsnav-cols-m, 1), 1fr);
+  gap: var(--acsnav-gap);
+  list-style: none;
+  margin: 0; padding: 0;
+}
+@media (min-width: 600px)  { .acsnav__grid { grid-template-columns: repeat(var(--acsnav-cols-t, 2), 1fr); } }
+@media (min-width: 1024px) { .acsnav__grid { grid-template-columns: repeat(var(--acsnav-cols-d, 3), 1fr); } }
+
+/* Item animation */
+.acsnav__item {
+  opacity: 0;
+  transform: translateY(12px);
+  transition: opacity 380ms var(--acsnav-ease), transform 380ms var(--acsnav-ease);
+}
+.acsnav__item.is-visible { opacity: 1; transform: translateY(0); }
+.acsnav__item:nth-child(2) { transition-delay: 55ms; }
+.acsnav__item:nth-child(3) { transition-delay: 110ms; }
+.acsnav__item:nth-child(4) { transition-delay: 165ms; }
+.acsnav__item:nth-child(5) { transition-delay: 220ms; }
+.acsnav__item:nth-child(6) { transition-delay: 275ms; }
+.acsnav__item:nth-child(7) { transition-delay: 330ms; }
+
+/* Card */
+.acsnav__card {
+  display: block;
+  position: relative;
+  border-radius: var(--acsnav-radius, 12px);
+  overflow: hidden;
+  text-decoration: none;
+  color: #fff;
+  aspect-ratio: var(--acsnav-aspect-m, 4/3);
+  background: #1a1a1a;
+  cursor: pointer;
+  transition: transform 360ms var(--acsnav-ease-out), box-shadow 360ms var(--acsnav-ease);
+}
+@media (min-width: 600px)  { .acsnav__card { aspect-ratio: var(--acsnav-aspect-t, 3/2); } }
+@media (min-width: 1024px) { .acsnav__card { aspect-ratio: var(--acsnav-aspect-d, 3/2); } }
+
+@media (hover: hover) {
+  .acsnav__card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 20px 56px rgba(0,0,0,0.18), 0 4px 12px rgba(0,0,0,0.1);
+  }
+}
+.acsnav__card:focus-visible { outline: 2px solid #0787ea; outline-offset: 3px; }
+
+/* Media */
+.acsnav__card-media {
+  position: absolute; inset: 0; z-index: 0;
+}
+.acsnav__card-img {
+  position: absolute; inset: 0;
+  width: 100%; height: 100%;
+  object-fit: cover; object-position: center;
+  display: block;
+  transition: transform 600ms var(--acsnav-ease);
+  will-change: transform;
+}
+@media (hover: hover) {
+  .acsnav__card:hover .acsnav__card-img { transform: scale(1.07); }
+}
+.acsnav__card-placeholder {
+  position: absolute; inset: 0;
+  background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+}
+.acsnav__card-overlay {
+  position: absolute; inset: 0;
+  background: linear-gradient(
+    to top,
+    rgba(0,0,0,calc(var(--ov-a, 0.45) * 1.5)) 0%,
+    rgba(0,0,0,calc(var(--ov-a, 0.45) * 0.6)) 45%,
+    rgba(0,0,0,calc(var(--ov-a, 0.45) * 0.15)) 100%
+  );
+  transition: opacity 400ms var(--acsnav-ease);
+}
+@media (hover: hover) {
+  .acsnav__card:hover .acsnav__card-overlay { opacity: 1.2; }
+}
+
+/* Badge */
+.acsnav__card-badge {
+  position: absolute; top: 12px; left: 12px; z-index: 2;
+  background: rgba(255,255,255,0.14);
+  backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+  color: #fff; border: 1px solid rgba(255,255,255,0.25);
+  font-size: 0.62rem; font-weight: 700;
+  letter-spacing: 0.1em; text-transform: uppercase;
+  padding: 4px 10px; border-radius: 100px;
+}
+
+/* Content */
+.acsnav__card-content {
+  position: absolute; bottom: 0; left: 0; right: 0; z-index: 1;
+  display: flex; align-items: flex-end; justify-content: space-between;
+  gap: 12px; padding: 16px 16px 18px;
+  transition: padding 300ms var(--acsnav-ease);
+}
+@media (min-width: 768px) { .acsnav__card-content { padding: 18px 20px 22px; } }
+@media (hover: hover) {
+  .acsnav__card:hover .acsnav__card-content { padding-bottom: 26px; }
+}
+
+.acsnav__card-info { display: flex; flex-direction: column; gap: 5px; min-width: 0; }
+
+.acsnav__card-title {
+  font-family: var(--font-body, 'Inter', sans-serif);
+  font-size: clamp(1.0rem, 2vw, 1.35rem);
+  font-weight: 700; letter-spacing: -0.02em; line-height: 1.2;
+  color: #fff;
+  text-shadow: 0 1px 6px rgba(0,0,0,0.4);
+  display: block;
+}
+
+.acsnav__card-desc {
+  font-size: 0.78rem; color: rgba(255,255,255,0.78);
+  line-height: 1.5;
+  display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
+}
+
+.acsnav__card-meta { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; margin-top: 2px; }
+
+.acsnav__card-price {
+  font-size: 0.72rem; font-weight: 700; color: #fff;
+  background: rgba(7,135,234,0.9);
+  padding: 3px 9px; border-radius: 100px;
+}
+.acsnav__card-count { font-size: 0.7rem; color: rgba(255,255,255,0.65); font-weight: 500; }
+
+.acsnav__card-btn {
+  flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center;
+  width: 34px; height: 34px; border-radius: 50%;
+  background: rgba(255,255,255,0.14);
+  backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+  border: 1px solid rgba(255,255,255,0.3);
+  color: #fff;
+  transition: background 240ms var(--acsnav-ease), border-color 240ms var(--acsnav-ease), transform 300ms var(--acsnav-ease-out);
+}
+@media (hover: hover) {
+  .acsnav__card:hover .acsnav__card-btn {
+    background: #0787ea; border-color: #0787ea; transform: scale(1.12);
+  }
+}
+</style>
+
+<script>
+(function () {
+  'use strict';
+  var sec = document.getElementById('acsnav-{{ sid }}');
+  if (!sec) return;
+  var items = Array.from(sec.querySelectorAll('.acsnav__item'));
+  if (!items.length) return;
+  if ('IntersectionObserver' in window) {
+    var obs = new IntersectionObserver(function (entries) {
+      entries.forEach(function (e) {
+        if (!e.isIntersecting) return;
+        e.target.classList.add('is-visible');
+        obs.unobserve(e.target);
+      });
+    }, { threshold: 0.08 });
+    items.forEach(function (item) { obs.observe(item); });
+  } else {
+    items.forEach(function (item) { item.classList.add('is-visible'); });
+  }
+})();
+</script>
+
+{% schema %}
+{
+  "name": "ACS — Navigation Collections",
+  "tag": "section",
+  "class": "section-acs-collections-nav",
+  "settings": [
+    { "type": "header", "content": "En-tête" },
+    { "type": "text",     "id": "eyebrow",  "label": "Label eyebrow" },
+    { "type": "text",     "id": "title",    "label": "Titre",    "default": "Explorer par univers" },
+    { "type": "textarea", "id": "subtitle", "label": "Sous-titre" },
+    { "type": "select",   "id": "header_align", "label": "Alignement", "default": "left",
+      "options": [
+        { "value": "left",   "label": "Gauche" },
+        { "value": "center", "label": "Centre" },
+        { "value": "right",  "label": "Droite" }
+      ]
+    },
+    { "type": "text", "id": "cta_label", "label": "Texte lien Voir tout" },
+    { "type": "url",  "id": "cta_url",   "label": "Lien Voir tout" },
+    { "type": "header", "content": "Séparateur" },
+    { "type": "checkbox", "id": "separator_enabled", "label": "Afficher séparateur", "default": false },
+    { "type": "text",     "id": "separator_text",    "label": "Texte séparateur" },
+    { "type": "select",   "id": "separator_style",   "label": "Style", "default": "line",
+      "options": [
+        { "value": "line",   "label": "Ligne" },
+        { "value": "dashed", "label": "Tirets" }
+      ]
+    },
+    { "type": "header", "content": "Grille" },
+    { "type": "range", "id": "columns_mobile",  "label": "Colonnes mobile (<600px)",  "min": 1, "max": 2, "step": 1, "default": 1 },
+    { "type": "range", "id": "columns_tablet",  "label": "Colonnes tablette (≥600px)", "min": 2, "max": 4, "step": 1, "default": 2 },
+    { "type": "range", "id": "columns_desktop", "label": "Colonnes desktop (≥1024px)", "min": 2, "max": 6, "step": 1, "default": 3 },
+    { "type": "header", "content": "Ratio des cartes" },
+    { "type": "select", "id": "aspect_mobile",  "label": "Ratio mobile",  "default": "4/3",
+      "options": [
+        {"value":"1/1",  "label":"Carré (1:1)"},
+        {"value":"4/3",  "label":"Paysage (4:3)"},
+        {"value":"3/2",  "label":"Paysage (3:2)"},
+        {"value":"16/9", "label":"Large (16:9)"},
+        {"value":"3/4",  "label":"Portrait (3:4)"},
+        {"value":"4/5",  "label":"Portrait (4:5)"}
+      ]
+    },
+    { "type": "select", "id": "aspect_tablet",  "label": "Ratio tablette", "default": "3/2",
+      "options": [
+        {"value":"1/1",  "label":"Carré (1:1)"},
+        {"value":"4/3",  "label":"Paysage (4:3)"},
+        {"value":"3/2",  "label":"Paysage (3:2)"},
+        {"value":"16/9", "label":"Large (16:9)"},
+        {"value":"3/4",  "label":"Portrait (3:4)"},
+        {"value":"4/5",  "label":"Portrait (4:5)"}
+      ]
+    },
+    { "type": "select", "id": "aspect_desktop", "label": "Ratio desktop",  "default": "3/2",
+      "options": [
+        {"value":"1/1",  "label":"Carré (1:1)"},
+        {"value":"4/3",  "label":"Paysage (4:3)"},
+        {"value":"3/2",  "label":"Paysage (3:2)"},
+        {"value":"16/9", "label":"Large (16:9)"},
+        {"value":"3/4",  "label":"Portrait (3:4)"},
+        {"value":"4/5",  "label":"Portrait (4:5)"}
+      ]
+    },
+    { "type": "range", "id": "card_radius", "label": "Rayon cartes (px)", "min": 0, "max": 32, "step": 2, "default": 12, "unit": "px" },
+    { "type": "header", "content": "Couleurs" },
+    { "type": "color", "id": "bg_color",      "label": "Fond section",   "default": "#ffffff" },
+    { "type": "color", "id": "text_color",    "label": "Couleur texte",  "default": "#0a0a0a" },
+    { "type": "color", "id": "title_color",   "label": "Couleur titres", "default": "#0a0a0a" },
+    { "type": "color", "id": "eyebrow_color", "label": "Couleur eyebrow","default": "#0787ea" },
+    { "type": "header", "content": "Conteneur" },
+    { "type": "range", "id": "section_max_width", "label": "Largeur max (px)", "min": 960, "max": 1920, "step": 40, "default": 1400, "unit": "px" },
+    { "type": "header", "content": "Espacement" },
+    { "type": "range", "id": "padding_top_mobile",     "label": "Padding haut mobile",  "min": 0, "max": 120, "step": 4, "default": 48, "unit": "px" },
+    { "type": "range", "id": "padding_bottom_mobile",  "label": "Padding bas mobile",   "min": 0, "max": 120, "step": 4, "default": 56, "unit": "px" },
+    { "type": "range", "id": "padding_top_desktop",    "label": "Padding haut desktop", "min": 0, "max": 120, "step": 4, "default": 64, "unit": "px" },
+    { "type": "range", "id": "padding_bottom_desktop", "label": "Padding bas desktop",  "min": 0, "max": 120, "step": 4, "default": 64, "unit": "px" },
+    { "type": "range", "id": "margin_top",    "label": "Marge haut", "min": 0, "max": 120, "step": 4, "default": 0, "unit": "px" },
+    { "type": "range", "id": "margin_bottom", "label": "Marge bas",  "min": 0, "max": 120, "step": 4, "default": 0, "unit": "px" },
+    { "type": "header", "content": "Visibilité" },
+    { "type": "checkbox", "id": "hide_on_mobile",  "label": "Masquer mobile",  "default": false },
+    { "type": "checkbox", "id": "hide_on_desktop", "label": "Masquer desktop", "default": false }
+  ],
+  "blocks": [
+    {
+      "type": "card",
+      "name": "Carte collection",
+      "settings": [
+        { "type": "image_picker", "id": "image",           "label": "Image" },
+        { "type": "text",         "id": "title",           "label": "Titre",       "default": "Collection" },
+        { "type": "textarea",     "id": "description",     "label": "Description" },
+        { "type": "url",          "id": "url",             "label": "Lien" },
+        { "type": "text",         "id": "badge",           "label": "Badge (optionnel)" },
+        { "type": "text",         "id": "price_estimate",  "label": "Prix estimé (ex: À partir de 299€)" },
+        { "type": "text",         "id": "item_count",      "label": "Nb articles (ex: 48 produits)" },
+        { "type": "range",        "id": "overlay_opacity", "label": "Opacité overlay (%)", "min": 10, "max": 80, "step": 5, "default": 45, "unit": "%" }
+      ]
+    }
+  ],
+  "max_blocks": 12,
+  "presets": [
+    {
+      "name": "Navigation Univers",
+      "settings": { "title": "Explorer par univers", "eyebrow": "Collections", "subtitle": "Trouvez le matériel qui correspond à votre style de création." },
+      "blocks": [
+        { "type": "card", "settings": { "title": "Caméras & Vidéo",  "description": "Appareils photo, caméras cinéma et accessoires vidéo" } },
+        { "type": "card", "settings": { "title": "Audio & Podcast",  "description": "Micros, interfaces audio et matériel broadcast" } },
+        { "type": "card", "settings": { "title": "Éclairage Studio", "description": "LED panels, RGB, softbox et lumières continues" } },
+        { "type": "card", "settings": { "title": "Streaming & Live", "description": "Capturers, greenscreen, équipement live" } },
+        { "type": "card", "settings": { "title": "Mobile Creator",   "description": "Gimbals, trépieds et accessoires smartphone" } },
+        { "type": "card", "settings": { "title": "Accessoires",      "description": "Sacs, batteries, câbles et essentiels" } }
+      ]
+    },
+    {
+      "name": "Shop by Creator",
+      "settings": { "title": "Pour quel créateur êtes-vous ?", "eyebrow": "Trouver votre profil" },
+      "blocks": [
+        { "type": "card", "settings": { "title": "YouTube Creator", "description": "Setup complet pour la création vidéo YouTube" } },
+        { "type": "card", "settings": { "title": "Streamer",        "description": "Matériel optimisé pour le live et le gaming" } },
+        { "type": "card", "settings": { "title": "Podcaster",       "description": "Audio professionnel pour votre podcast" } },
+        { "type": "card", "settings": { "title": "Filmmaker",       "description": "Équipement cinéma pour vos projets vidéo" } },
+        { "type": "card", "settings": { "title": "TikTok Creator",  "description": "Matériel pour des contenus courts et percutants" } },
+        { "type": "card", "settings": { "title": "Beatmaker",       "description": "Studio home recording et production musicale" } }
+      ]
+    },
+    {
+      "name": "Shop by Setup",
+      "settings": { "title": "Choisissez votre setup", "eyebrow": "Setups complets", "columns_desktop": 3, "columns_tablet": 2 },
+      "blocks": [
+        { "type": "card", "settings": { "title": "Setup Débutant",      "price_estimate": "À partir de 299€",  "item_count": "5 articles" } },
+        { "type": "card", "settings": { "title": "Setup Creator Pro",   "price_estimate": "À partir de 799€",  "item_count": "8 articles" } },
+        { "type": "card", "settings": { "title": "Studio Premium",      "price_estimate": "À partir de 2499€", "item_count": "12 articles" } },
+        { "type": "card", "settings": { "title": "Setup Streaming RGB", "price_estimate": "À partir de 599€",  "item_count": "7 articles" } },
+        { "type": "card", "settings": { "title": "Setup Podcast",       "price_estimate": "À partir de 399€",  "item_count": "4 articles" } }
+      ]
+    }
+  ]
+}
+{% endschema %}

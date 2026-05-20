@@ -1,0 +1,33 @@
+# Dépendances
+node_modules/
+
+# Build
+dist/
+.cache/
+
+# Fichiers de travail locaux
+*.txt
+*.PNG
+*.png
+claude-prompt.txt
+prompt.txt
+prompt2.txt
+COMMAND
+
+# Shopify CLI
+.shopify/
+
+# OS
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Éditeurs
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Logs
+*.log
+npm-debug.log*

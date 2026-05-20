@@ -1,0 +1,526 @@
+{%- comment -%} Editorial Banner — Motion19 — 2/3 noir + 1/3 image {%- endcomment -%}
+
+{%- render 'section-settings', section: section, prefix: 'eb2' -%}
+
+{%- liquid
+  assign has_picker_img = false
+  if section.settings.image != blank
+    assign has_picker_img = true
+  endif
+  assign asset_file = section.settings.asset_image | default: 'hp-cta-2.jpg'
+-%}
+
+<section
+  class="eb"
+  id="eb-{{ section.id }}"
+  aria-labelledby="eb-title-{{ section.id }}"
+>
+  <div class="eb__inner">
+    {%- comment -%} ── Col gauche 2/3 — fond noir ── {%- endcomment -%}
+    <div class="eb__col eb__col--text">
+      <h2 class="eb__title" id="eb-title-{{ section.id }}">
+        {{- section.settings.title | default: 'Pack Créateur de Contenu' -}}
+      </h2>
+
+      {%- if section.settings.subtitle != blank -%}
+        <p class="eb__subtitle">{{- section.settings.subtitle -}}</p>
+      {%- else -%}
+        <p class="eb__subtitle">
+          Tout ce dont vous avez besoin pour créer du contenu professionnel — objectifs, stabilisateurs, éclairage et
+          accessoires réunis dans un pack exclusif à prix réduit.
+        </p>
+      {%- endif -%}
+
+      {%- if section.settings.cta_text != blank -%}
+        <a
+          class="eb__cta"
+          href="{{ section.settings.cta_url | default: '#' }}"
+          {% if section.settings.cta_url == blank %}
+            aria-disabled="true"
+          {% endif %}
+        >
+          <span class="eb__cta-label">{{- section.settings.cta_text | default: 'DÉCOUVRIR LE PACK' -}}</span>
+          <span class="eb__cta-icon" aria-hidden="true">
+            <svg
+              width="14"
+              height="14"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2.5"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <line x1="5" y1="12" x2="19" y2="12"/>
+              <polyline points="12 5 19 12 12 19"/>
+            </svg>
+          </span>
+        </a>
+      {%- endif -%}
+    </div>
+
+    {%- comment -%} ── Col droite 1/3 — image ── {%- endcomment -%}
+    <div class="eb__col eb__col--media" aria-hidden="true">
+      <div class="eb__media-inner">
+        {%- if has_picker_img -%}
+          <img
+            class="eb__img"
+            src="{{ section.settings.image | image_url: width: 900 }}"
+            srcset="
+              {{ section.settings.image | image_url: width: 480 }} 480w,
+              {{ section.settings.image | image_url: width: 700 }} 700w,
+              {{ section.settings.image | image_url: width: 900 }} 900w
+            "
+            sizes="(max-width: 767px) 100vw, 34vw"
+            alt="{{ section.settings.image.alt | default: '' | escape }}"
+            loading="lazy"
+            decoding="async"
+            width="{{ section.settings.image.width }}"
+            height="{{ section.settings.image.height }}"
+          >
+        {%- else -%}
+          <img
+            class="eb__img"
+            src="{{ asset_file | asset_url }}"
+            alt=""
+            loading="lazy"
+            decoding="async"
+            width="900"
+            height="1200"
+          >
+        {%- endif -%}
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  /* ── Tokens locaux (scopés .eb) ───────────────────── */
+  .eb {
+    --eb-black: #0a0a0a;
+    --eb-white: #ffffff;
+    --eb-blue: #0787ea;
+    --eb-muted: rgba(255, 255, 255, 0.52);
+    --eb-ease: cubic-bezier(0.4, 0, 0.2, 1);
+    --eb-h: 96vh;
+    --eb-pad-x: clamp(24px, 5.5vw, 88px);
+    --eb-pad-y: clamp(40px, 7vw, 100px);
+  }
+
+  /* ── Section full-width ───────────────────────────── */
+  .eb {
+    width: 100%;
+    overflow: hidden;
+  }
+
+  /* ── Grille 2fr / 1fr ─────────────────────────────── */
+  .eb__inner {
+    display: grid;
+    grid-template-columns: 1fr; /* mobile : empilé, hauteur libre */
+  }
+
+  @media (min-width: 768px) {
+    .eb__inner {
+      grid-template-columns: 1fr 1fr; /* 50% / 50% */
+      height: var(--eb-h);
+      max-height: var(--eb-h);
+    }
+  }
+
+  /* ═══════════════════════════════════════════════════
+     COLONNE TEXTE — fond noir
+  ═══════════════════════════════════════════════════ */
+  .eb__col--text {
+    position: relative;
+    background: var(--eb-black);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: var(--eb-pad-y) var(--eb-pad-x);
+    overflow: hidden;
+    z-index: 0;
+  }
+
+  /* Texture dots (imperceptible, profondeur) */
+  .eb__col--text::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image: radial-gradient(circle, rgba(255, 255, 255, 0.028) 1px, transparent 1px);
+    background-size: 24px 24px;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* Halo bleu — coin bas gauche */
+  .eb__col--text::after {
+    content: '';
+    position: absolute;
+    bottom: -100px;
+    left: -60px;
+    width: 380px;
+    height: 380px;
+    background: radial-gradient(circle, rgba(7, 135, 234, 0.13) 0%, transparent 68%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* ── Eyebrow ──────────────────────────────────────── */
+  .eb__eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    font-family: var(--font-body, 'Inter', sans-serif);
+    font-size: 0.66rem;
+    font-weight: 600;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--eb-blue);
+    margin-bottom: 16px;
+    position: relative;
+    z-index: 1;
+
+    opacity: 0;
+    transform: translateY(10px);
+    transition: opacity 420ms var(--eb-ease), transform 420ms var(--eb-ease);
+  }
+
+  .eb__eyebrow::before {
+    content: '';
+    display: block;
+    width: 22px;
+    height: 1.5px;
+    background: var(--eb-blue);
+    flex-shrink: 0;
+  }
+
+  /* ── Titre ────────────────────────────────────────── */
+  .eb__title {
+    font-family: var(--font-body, 'Inter', sans-serif);
+    font-size: clamp(1.9rem, 4vw, 3.5rem);
+    font-weight: 800;
+    line-height: 1.05;
+    letter-spacing: -0.038em;
+    color: var(--eb-white);
+    margin: 0 0 20px;
+    position: relative;
+    z-index: 1;
+
+    opacity: 0;
+    transform: translateY(16px);
+    transition: opacity 500ms var(--eb-ease) 70ms, transform 500ms var(--eb-ease) 70ms;
+  }
+
+  /* ── Sous-titre ───────────────────────────────────── */
+  .eb__subtitle {
+    font-family: var(--font-body, 'Inter', sans-serif);
+    font-size: clamp(0.87rem, 1.25vw, 1rem);
+    font-weight: 400;
+    line-height: 1.72;
+    color: var(--eb-muted);
+    margin: 0 0 38px;
+    max-width: 46ch;
+    position: relative;
+    z-index: 1;
+
+    opacity: 0;
+    transform: translateY(16px);
+    transition: opacity 500ms var(--eb-ease) 150ms, transform 500ms var(--eb-ease) 150ms;
+  }
+
+  /* ── CTA — fond blanc, hover bleu ────────────────── */
+  .eb__cta {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    align-self: flex-start;
+    background: var(--eb-white);
+    color: var(--eb-black);
+    text-decoration: none;
+    font-family: var(--font-body, 'Inter', sans-serif);
+    font-size: 0.82rem;
+    font-weight: 600;
+    letter-spacing: 0.025em;
+    padding: 14px 26px;
+    border-radius: 999px;
+    position: relative;
+    z-index: 1;
+
+    opacity: 0;
+    transform: translateY(16px);
+    transition: opacity 500ms var(--eb-ease) 230ms, transform 500ms var(--eb-ease) 230ms, background 200ms ease,
+      color 200ms ease, box-shadow 200ms ease;
+    will-change: transform;
+  }
+
+  .eb__cta-icon {
+    display: flex;
+    align-items: center;
+    flex-shrink: 0;
+    transition: transform 200ms var(--eb-ease);
+  }
+
+  @media (hover: hover) {
+    .eb__cta:hover {
+      background: var(--eb-blue);
+      color: var(--eb-white);
+      box-shadow: 0 8px 32px rgba(7, 135, 234, 0.36);
+    }
+    .eb__cta:hover .eb__cta-icon {
+      transform: translateX(4px);
+    }
+  }
+
+  .eb__cta:focus-visible {
+    outline: 2px solid var(--eb-blue);
+    outline-offset: 3px;
+  }
+
+  /* ═══════════════════════════════════════════════════
+     COLONNE IMAGE
+  ═══════════════════════════════════════════════════ */
+  .eb__col--media {
+    position: relative;
+    overflow: hidden;
+    min-height: 300px;
+    background: #111;
+  }
+
+  @media (max-width: 767px) {
+    .eb__col--media {
+      order: -1; /* image en premier sur mobile */
+      min-height: 260px;
+    }
+    .eb__col--text {
+      padding: clamp(32px, 7vw, 56px) clamp(20px, 6vw, 40px);
+    }
+    .eb__title {
+      font-size: clamp(1.8rem, 7.5vw, 2.8rem);
+    }
+    .eb__subtitle {
+      font-size: .875rem;
+      max-width: 100%;
+      margin-bottom: 28px;
+    }
+    .eb__cta {
+      width: 100%;
+      justify-content: center;
+    }
+  }
+
+  .eb__media-inner {
+    position: absolute;
+    inset: 0;
+    overflow: hidden;
+  }
+
+  .eb__img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+    display: block;
+    transition: transform 720ms var(--eb-ease);
+    will-change: transform;
+  }
+
+  @media (hover: hover) {
+    .eb:hover .eb__img {
+      transform: scale(1.042);
+    }
+  }
+
+  /* Vignette légère sur l'image */
+  .eb__col--media::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to right, rgba(10, 10, 10, 0.22) 0%, transparent 30%),
+      linear-gradient(to top, rgba(0, 0, 0, 0.15) 0%, transparent 40%);
+    pointer-events: none;
+    z-index: 1;
+  }
+
+  /* ── Révélation IntersectionObserver ─────────────── */
+  .eb.is-visible .eb__eyebrow,
+  .eb.is-visible .eb__title,
+  .eb.is-visible .eb__subtitle,
+  .eb.is-visible .eb__cta {
+    opacity: 1;
+    transform: translateY(0);
+  }
+</style>
+
+<script>
+  (function () {
+    'use strict';
+    var el = document.getElementById('eb-{{ section.id }}');
+    if (!el) return;
+    if (!('IntersectionObserver' in window)) {
+      el.classList.add('is-visible');
+      return;
+    }
+    var obs = new IntersectionObserver(
+      function (entries) {
+        entries.forEach(function (e) {
+          if (!e.isIntersecting) return;
+          e.target.classList.add('is-visible');
+          obs.unobserve(e.target);
+        });
+      },
+      { threshold: 0.08 }
+    );
+    obs.observe(el);
+  })();
+</script>
+
+{% schema %}
+{
+  "name": "Editorial Banner",
+  "tag": "section",
+  "class": "section-editorial-banner",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Colonne texte"
+    },
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Titre",
+      "default": "Pack Créateur de Contenu"
+    },
+    {
+      "type": "textarea",
+      "id": "subtitle",
+      "label": "Sous-titre",
+      "default": "Tout ce dont vous avez besoin pour créer du contenu professionnel — objectifs, stabilisateurs, éclairage et accessoires réunis dans un pack exclusif à prix réduit."
+    },
+    {
+      "type": "text",
+      "id": "cta_text",
+      "label": "Texte du CTA",
+      "default": "DÉCOUVRIR LE PACK"
+    },
+    {
+      "type": "url",
+      "id": "cta_url",
+      "label": "Lien du CTA"
+    },
+    {
+      "type": "header",
+      "content": "Colonne image — Mobile first"
+    },
+    {
+      "type": "image_picker",
+      "id": "image",
+      "label": "Image (médiathèque Shopify) — prioritaire"
+    },
+    {
+      "type": "select",
+      "id": "asset_image",
+      "label": "Image assets (fallback)",
+      "default": "hp-cta-2.jpg",
+      "options": [
+        { "value": "hp-cta-2.jpg",       "label": "CTA 2 (défaut)" },
+        { "value": "hp-editorial.jpg",   "label": "Editorial 1" },
+        { "value": "hp-editorial-2.jpg", "label": "Editorial 2" },
+        { "value": "hp-cta.jpg",         "label": "CTA Banner" },
+        { "value": "hp-hero-1.jpg",      "label": "Hero 1" },
+        { "value": "hp-hero-2.jpg",      "label": "Hero 2" },
+        { "value": "hp-hero-3.jpg",      "label": "Hero 3" },
+        { "value": "hp-cat-photo.jpg",   "label": "Photo" },
+        { "value": "hp-cat-drone.jpg",   "label": "Drone" },
+        { "value": "hp-cat-video.jpg",   "label": "Vidéo" }
+      ]
+    },
+    {
+      "type": "header",
+      "content": "Hauteur — Mobile first"
+    },
+    {
+      "type": "range",
+      "id": "image_height_mobile",
+      "label": "Hauteur image mobile (px)",
+      "min": 160,
+      "max": 500,
+      "step": 20,
+      "default": 260,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "section_height_desktop",
+      "label": "Hauteur section desktop (vh)",
+      "min": 30,
+      "max": 100,
+      "step": 5,
+      "default": 95,
+      "unit": "vh"
+    },
+    {
+      "type": "header",
+      "content": "Espacement — Mobile first"
+    },
+    {
+      "type": "range",
+      "id": "padding_top_mobile",
+      "label": "Padding haut mobile (px)",
+      "min": 0,
+      "max": 120,
+      "step": 4,
+      "default": 0,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom_mobile",
+      "label": "Padding bas mobile (px)",
+      "min": 0,
+      "max": 120,
+      "step": 4,
+      "default": 0,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "padding_top_desktop",
+      "label": "Padding haut desktop (px)",
+      "min": 0,
+      "max": 120,
+      "step": 4,
+      "default": 0,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom_desktop",
+      "label": "Padding bas desktop (px)",
+      "min": 0,
+      "max": 120,
+      "step": 4,
+      "default": 0,
+      "unit": "px"
+    },
+    { "type": "range", "id": "margin_top", "label": "Marge haut section (px)", "min": 0, "max": 120, "step": 4, "default": 0, "unit": "px" },
+    { "type": "range", "id": "margin_bottom", "label": "Marge bas section (px)", "min": 0, "max": 120, "step": 4, "default": 0, "unit": "px" },
+    { "type": "header", "content": "✨ Animation" },
+    { "type": "select", "id": "animation_type", "label": "Animation au scroll", "default": "fade-up", "options": [
+        { "value": "none", "label": "Aucune" }, { "value": "fade", "label": "Fade" },
+        { "value": "fade-up", "label": "Fade + slide haut" }, { "value": "zoom", "label": "Zoom" }
+    ]},
+    { "type": "header", "content": "👁️ Visibilité" },
+    { "type": "checkbox", "id": "hide_on_mobile", "label": "Masquer sur mobile", "default": false },
+    { "type": "checkbox", "id": "hide_on_desktop", "label": "Masquer sur desktop", "default": false },
+    { "type": "header", "content": "⚙️ Avancé" },
+    { "type": "text", "id": "custom_css", "label": "CSS personnalisé", "info": "Appliqué sur #shopify-section-ID" }
+  ],
+  "presets": [
+    {
+      "name": "CTA Banner Split"
+    }
+  ]
+}
+{% endschema %}

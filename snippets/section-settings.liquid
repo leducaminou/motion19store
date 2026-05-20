@@ -1,0 +1,212 @@
+{%- comment -%}
+  Universal section settings injector — Motion19
+  Usage: {% render 'section-settings', section: section, prefix: 'sec' %}
+  Reads: bg_color, bg_image, bg_video, bg_overlay_color, bg_overlay_opacity,
+         layout_width, padding_top_mobile, padding_bottom_mobile,
+         padding_top_desktop, padding_bottom_desktop,
+         margin_top, margin_bottom,
+         animation_type, hide_on_mobile, hide_on_desktop,
+         custom_css
+{%- endcomment -%}
+
+{%- liquid
+  assign p = prefix | default: 'sec'
+  assign sid = section.id
+
+  assign bg_color        = section.settings.bg_color        | default: ''
+  assign bg_image        = section.settings.bg_image
+  assign bg_video        = section.settings.bg_video_url    | default: ''
+  assign overlay_color   = section.settings.bg_overlay_color | default: '#000000'
+  assign overlay_opacity = section.settings.bg_overlay_opacity | default: 0 | divided_by: 100.0
+  assign layout_width    = section.settings.layout_width    | default: 'boxed'
+  assign pt_mob          = section.settings.padding_top_mobile    | default: 60
+  assign pb_mob          = section.settings.padding_bottom_mobile | default: 60
+  assign pt_dsk          = section.settings.padding_top_desktop   | default: 80
+  assign pb_dsk          = section.settings.padding_bottom_desktop | default: 80
+  assign mt              = section.settings.margin_top      | default: 0
+  assign mb              = section.settings.margin_bottom   | default: 0
+  assign anim            = section.settings.animation_type  | default: 'none'
+  assign hide_mob        = section.settings.hide_on_mobile  | default: false
+  assign hide_dsk        = section.settings.hide_on_desktop | default: false
+  assign custom_css      = section.settings.custom_css      | default: ''
+
+  assign overlay_hex = overlay_color | remove: '#'
+  assign or = overlay_hex | slice: 0, 2 | prepend: '0x' | times: 1
+  assign og = overlay_hex | slice: 2, 2 | prepend: '0x' | times: 1
+  assign ob = overlay_hex | slice: 4, 2 | prepend: '0x' | times: 1
+-%}
+
+<style>
+  /* ── Section {{ sid }} — injected by section-settings ── */
+  #shopify-section-{{ sid }} {
+    margin-top:    {{ mt }}px;
+    margin-bottom: {{ mb }}px;
+    {%- if hide_mob %}
+    {%- endif %}
+    {%- if bg_color != '' %}
+    --ss-bg: {{ bg_color }};
+    background-color: var(--ss-bg);
+    {%- endif %}
+    {%- if bg_image != blank %}
+    background-image: url('{{ bg_image | image_url: width: 1920 }}');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    {%- endif %}
+    position: relative;
+  }
+
+  {%- if hide_mob %}
+  @media (max-width: 767px) {
+    #shopify-section-{{ sid }} { display: none !important; }
+  }
+  {%- endif %}
+
+  {%- if hide_dsk %}
+  @media (min-width: 768px) {
+    #shopify-section-{{ sid }} { display: none !important; }
+  }
+  {%- endif %}
+
+  /* ── Inner wrapper padding ── */
+  .ss-wrap--{{ sid }} {
+    padding-top:    {{ pt_mob }}px;
+    padding-bottom: {{ pb_mob }}px;
+  }
+
+  @media (min-width: 768px) {
+    .ss-wrap--{{ sid }} {
+      padding-top:    {{ pt_dsk }}px;
+      padding-bottom: {{ pb_dsk }}px;
+    }
+  }
+
+  /* ── Layout width ── */
+  {%- if layout_width == 'full' %}
+  .ss-container--{{ sid }} {
+    width: 100%;
+    max-width: 100%;
+    padding-left: 0;
+    padding-right: 0;
+  }
+  {%- elsif layout_width == 'wide' %}
+  .ss-container--{{ sid }} {
+    width: 100%;
+    max-width: 1600px;
+    margin-left: auto;
+    margin-right: auto;
+    padding-left: clamp(16px, 3vw, 48px);
+    padding-right: clamp(16px, 3vw, 48px);
+  }
+  {%- else %}
+  .ss-container--{{ sid }} {
+    width: 100%;
+    max-width: var(--container-width, 1400px);
+    margin-left: auto;
+    margin-right: auto;
+    padding-left: clamp(16px, 2.5vw, 40px);
+    padding-right: clamp(16px, 2.5vw, 40px);
+  }
+  {%- endif %}
+
+  /* ── Background overlay ── */
+  {%- if overlay_opacity > 0 %}
+  #shopify-section-{{ sid }}::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: {{ overlay_color }};
+    opacity: {{ overlay_opacity }};
+    pointer-events: none;
+    z-index: 0;
+  }
+  #shopify-section-{{ sid }} > * { position: relative; z-index: 1; }
+  {%- endif %}
+
+  /* ── Animations ── */
+  {%- if anim == 'fade' %}
+  #shopify-section-{{ sid }} .ss-animate {
+    opacity: 0;
+    transition: opacity 600ms cubic-bezier(0.4,0,0.2,1);
+  }
+  #shopify-section-{{ sid }}.ss-in .ss-animate { opacity: 1; }
+  {%- elsif anim == 'fade-up' %}
+  #shopify-section-{{ sid }} .ss-animate {
+    opacity: 0;
+    transform: translateY(24px);
+    transition: opacity 560ms cubic-bezier(0.4,0,0.2,1), transform 560ms cubic-bezier(0.4,0,0.2,1);
+  }
+  #shopify-section-{{ sid }}.ss-in .ss-animate { opacity: 1; transform: translateY(0); }
+  {%- elsif anim == 'fade-down' %}
+  #shopify-section-{{ sid }} .ss-animate {
+    opacity: 0;
+    transform: translateY(-24px);
+    transition: opacity 560ms cubic-bezier(0.4,0,0.2,1), transform 560ms cubic-bezier(0.4,0,0.2,1);
+  }
+  #shopify-section-{{ sid }}.ss-in .ss-animate { opacity: 1; transform: translateY(0); }
+  {%- elsif anim == 'slide-left' %}
+  #shopify-section-{{ sid }} .ss-animate {
+    opacity: 0;
+    transform: translateX(32px);
+    transition: opacity 500ms ease, transform 500ms ease;
+  }
+  #shopify-section-{{ sid }}.ss-in .ss-animate { opacity: 1; transform: translateX(0); }
+  {%- elsif anim == 'slide-right' %}
+  #shopify-section-{{ sid }} .ss-animate {
+    opacity: 0;
+    transform: translateX(-32px);
+    transition: opacity 500ms ease, transform 500ms ease;
+  }
+  #shopify-section-{{ sid }}.ss-in .ss-animate { opacity: 1; transform: translateX(0); }
+  {%- elsif anim == 'zoom' %}
+  #shopify-section-{{ sid }} .ss-animate {
+    opacity: 0;
+    transform: scale(0.94);
+    transition: opacity 500ms ease, transform 500ms ease;
+  }
+  #shopify-section-{{ sid }}.ss-in .ss-animate { opacity: 1; transform: scale(1); }
+  {%- endif %}
+
+  /* ── Staggered children delay ── */
+  {%- if anim != 'none' %}
+  #shopify-section-{{ sid }} .ss-animate:nth-child(1) { transition-delay: 0ms; }
+  #shopify-section-{{ sid }} .ss-animate:nth-child(2) { transition-delay: 80ms; }
+  #shopify-section-{{ sid }} .ss-animate:nth-child(3) { transition-delay: 160ms; }
+  #shopify-section-{{ sid }} .ss-animate:nth-child(4) { transition-delay: 240ms; }
+  #shopify-section-{{ sid }} .ss-animate:nth-child(5) { transition-delay: 320ms; }
+  #shopify-section-{{ sid }} .ss-animate:nth-child(6) { transition-delay: 400ms; }
+  {%- endif %}
+
+  {%- if custom_css != blank %}
+  /* ── Custom CSS — section {{ sid }} ── */
+  #shopify-section-{{ sid }} { {{ custom_css }} }
+  {%- endif %}
+</style>
+
+{%- if bg_video != blank -%}
+<div class="ss-video-bg" aria-hidden="true" style="position:absolute;inset:0;overflow:hidden;z-index:0;pointer-events:none;">
+  <video
+    autoplay muted loop playsinline
+    style="width:100%;height:100%;object-fit:cover;display:block;"
+    src="{{ bg_video }}"
+  ></video>
+</div>
+{%- endif -%}
+
+{%- if anim != 'none' -%}
+<script>
+(function(){
+  var sid = 'shopify-section-{{ sid }}';
+  var el = document.getElementById(sid);
+  if (!el) return;
+  if (!('IntersectionObserver' in window)) { el.classList.add('ss-in'); return; }
+  new IntersectionObserver(function(entries, obs){
+    entries.forEach(function(e){
+      if (!e.isIntersecting) return;
+      e.target.classList.add('ss-in');
+      obs.unobserve(e.target);
+    });
+  }, { threshold: 0.08 }).observe(el);
+})();
+</script>
+{%- endif -%}

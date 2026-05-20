@@ -1,0 +1,703 @@
+{%- comment -%} Blog Journal — Motion19 {%- endcomment -%}
+
+{%- render 'section-settings', section: section, prefix: 'bj' -%}
+
+{%- assign blog_handle = section.settings.blog | default: 'news' -%}
+{%- assign journal = blogs[blog_handle] -%}
+{%- assign all_articles = journal.articles -%}
+{%- assign featured_art = all_articles[0] -%}
+{%- assign other_arts = all_articles -%}
+
+<section
+  class="bj m19-animate"
+  id="bj-{{ section.id }}"
+  aria-labelledby="bj-title-{{ section.id }}"
+>
+  <div class="bj__header">
+    <div class="bj__header-text">
+      <h2 class="bj__title" id="bj-title-{{ section.id }}">
+        {{- section.settings.title | default: 'Read the Journal' -}}
+      </h2>
+      <p class="bj__subtitle">
+        {%- if section.settings.subtitle != blank -%}
+          {{- section.settings.subtitle -}}
+        {%- else -%}
+          Conseils d'experts de vrais créateurs sur le matériel, les voyages &amp; tout ce qui est créatif.
+        {%- endif -%}
+      </p>
+    </div>
+    <a class="bj__view-all" href="{{ journal.url | default: '/blogs/news' }}">
+      Voir tout
+      <svg
+        width="13"
+        height="13"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        aria-hidden="true"
+      >
+        <line x1="5" y1="12" x2="19" y2="12"/>
+        <polyline points="12 5 19 12 12 19"/>
+      </svg>
+    </a>
+  </div>
+
+  <div class="bj__body">
+    {%- comment -%} Gauche — article vedette {%- endcomment -%}
+    <div class="bj__left">
+      {%- if featured_art != blank -%}
+        <a class="bj__feat-card" href="{{ featured_art.url }}">
+          <div class="bj__feat-img-wrap">
+            {%- if featured_art.image != blank -%}
+              <img
+                class="bj__feat-img"
+                src="{{ featured_art.image | image_url: width: 800 }}"
+                srcset="{{ featured_art.image | image_url: width: 400 }} 400w, {{ featured_art.image | image_url: width: 800 }} 800w"
+                sizes="(max-width: 767px) 90vw, 45vw"
+                alt="{{ featured_art.image.alt | default: featured_art.title | escape }}"
+                loading="eager"
+                fetchpriority="high"
+                width="{{ featured_art.image.width }}"
+                height="{{ featured_art.image.height }}"
+              >
+            {%- else -%}
+              <div class="bj__feat-fallback" aria-hidden="true"></div>
+            {%- endif -%}
+          </div>
+          <div class="bj__feat-info">
+            {%- if featured_art.tags.first != blank -%}
+              <span class="bj__feat-tag">{{ featured_art.tags.first }}</span>
+            {%- endif -%}
+            <h3 class="bj__feat-name">{{ featured_art.title }}</h3>
+            {%- if featured_art.excerpt != blank -%}
+              <p class="bj__feat-excerpt">{{ featured_art.excerpt | strip_html | truncate: 120 }}</p>
+            {%- endif -%}
+            <p class="bj__feat-meta">
+              {{ featured_art.author }} &middot; {{ featured_art.published_at | date: '%b %d, %Y' }}
+            </p>
+          </div>
+        </a>
+      {%- else -%}
+        <div class="bj__feat-empty">Aucun article trouvé.</div>
+      {%- endif -%}
+    </div>
+
+    {%- comment -%} Droite — liste d'articles {%- endcomment -%}
+    <div class="bj__right" id="bj-right-{{ section.id }}">
+      <ul class="bj__list" role="list">
+        {%- for article in other_arts limit: 6 -%}
+          {%- unless forloop.first -%}
+            <li class="bj__item" data-index="{{ forloop.index0 }}">
+              <a class="bj__card" href="{{ article.url }}" aria-label="{{ article.title | escape }}">
+                <div class="bj__card-img-wrap">
+                  {%- if article.image != blank -%}
+                    <img
+                      class="bj__card-img"
+                      src="{{ article.image | image_url: width: 200 }}"
+                      alt="{{ article.image.alt | default: article.title | escape }}"
+                      loading="lazy"
+                      width="{{ article.image.width }}"
+                      height="{{ article.image.height }}"
+                    >
+                  {%- else -%}
+                    <div class="bj__card-fallback" aria-hidden="true"></div>
+                  {%- endif -%}
+                </div>
+
+                <div class="bj__card-info">
+                  {%- if article.tags.first != blank -%}
+                    <span class="bj__card-tag">{{ article.tags.first }}</span>
+                  {%- endif -%}
+                  <p class="bj__card-title">{{ article.title | truncate: 60 }}</p>
+                  <p class="bj__card-meta">
+                    {{ article.author }} &middot; {{ article.published_at | date: '%b %d, %Y' }}
+                  </p>
+                </div>
+
+                <span class="bj__card-arrow" aria-hidden="true">
+                  <svg
+                    width="14"
+                    height="14"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  >
+                    <line x1="5" y1="12" x2="19" y2="12"/>
+                    <polyline points="12 5 19 12 12 19"/>
+                  </svg>
+                </span>
+              </a>
+            </li>
+          {%- endunless -%}
+        {%- else -%}
+          <li class="bj__empty">Aucun article disponible.</li>
+        {%- endfor -%}
+      </ul>
+    </div>
+  </div>
+</section>
+
+<style>
+  /* ── Variables ──────────────────────────────────────── */
+  .bj {
+    --bj-radius: 12px;
+    --bj-blue: #0787ea;
+    --bj-black: #0a0a0a;
+    --bj-card-bg: #ebebea;
+    --bj-muted: #7a7a7a;
+    --bj-ease: cubic-bezier(0.4, 0, 0.2, 1);
+    --bj-pad: 24px;
+  }
+
+  /* ── Section ────────────────────────────────────────── */
+  .section-blog-journal {
+    background: var(--color-bg-soft, #f7f7f8);
+  }
+
+  .bj {
+    padding: 56px 0;
+  }
+
+  /* ── Header ─────────────────────────────────────────── */
+  .bj__header {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 16px;
+    padding: 0 var(--bj-pad) 32px;
+    max-width: var(--container-width, 1400px);
+    margin: 0 auto;
+  }
+
+  .bj__header-text {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .bj__title {
+    font-family: var(--font-body, 'Inter', sans-serif);
+    font-size: clamp(1.6rem, 3vw, 2.2rem);
+    font-weight: 800;
+    letter-spacing: -0.03em;
+    color: var(--bj-black);
+    margin: 0;
+  }
+
+  .bj__subtitle {
+    font-family: var(--font-body, 'Inter', sans-serif);
+    font-size: 0.82rem;
+    color: var(--bj-muted);
+    margin: 0;
+    max-width: 56ch;
+  }
+
+  .bj__view-all {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    flex-shrink: 0;
+    font-family: var(--font-body, 'Inter', sans-serif);
+    font-size: 0.78rem;
+    font-weight: 600;
+    color: var(--bj-black);
+    text-decoration: none;
+    border-bottom: 1.5px solid var(--bj-black);
+    padding-bottom: 1px;
+    transition: color 160ms ease, border-color 160ms ease;
+  }
+
+  .bj__view-all:hover {
+    color: var(--bj-blue);
+    border-color: var(--bj-blue);
+  }
+  .bj__view-all svg {
+    transition: transform 200ms var(--bj-ease);
+  }
+  .bj__view-all:hover svg {
+    transform: translateX(3px);
+  }
+
+  /* ── Body — 2 colonnes ──────────────────────────────── */
+  .bj__body {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    max-width: var(--container-width, 1400px);
+    margin: 0 auto;
+    padding: 0 var(--bj-pad);
+    align-items: start;
+  }
+
+  /* ── Card vedette ────────────────────────────────────── */
+  .bj__feat-card {
+    display: block;
+    text-decoration: none;
+    color: inherit;
+    background: var(--bj-card-bg);
+    border-radius: var(--bj-radius);
+    overflow: hidden;
+    transition: transform 240ms var(--bj-ease), box-shadow 240ms var(--bj-ease);
+  }
+
+  @media (hover: hover) {
+    .bj__feat-card:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 12px 32px rgba(0, 0, 0, 0.08);
+    }
+    .bj__feat-card:hover .bj__feat-img {
+      transform: scale(1.04);
+    }
+  }
+
+  .bj__feat-card:focus-visible {
+    outline: 2px solid var(--bj-blue);
+    outline-offset: 2px;
+  }
+
+  /* Image vedette */
+  .bj__feat-img-wrap {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 4 / 3;
+    overflow: hidden;
+    border-radius: var(--bj-radius) var(--bj-radius) 0 0;
+    background: #d8d8d6;
+  }
+
+  .bj__feat-img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+    display: block;
+    transition: transform 600ms var(--bj-ease);
+    will-change: transform;
+  }
+
+  .bj__feat-fallback {
+    position: absolute;
+    inset: 0;
+    background: #d0d0ce;
+  }
+
+  /* Info vedette */
+  .bj__feat-info {
+    padding: 18px 20px 22px;
+    display: flex;
+    flex-direction: column;
+    gap: 7px;
+  }
+
+  .bj__feat-tag {
+    font-family: var(--font-body, 'Inter', sans-serif);
+    font-size: 0.65rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--bj-muted);
+  }
+
+  .bj__feat-name {
+    margin: 0;
+    font-family: var(--font-body, 'Inter', sans-serif);
+    font-size: clamp(0.95rem, 1.5vw, 1.2rem);
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    line-height: 1.25;
+    color: var(--bj-black);
+  }
+
+  .bj__feat-excerpt {
+    margin: 0;
+    font-family: var(--font-body, 'Inter', sans-serif);
+    font-size: 0.8rem;
+    line-height: 1.6;
+    color: var(--bj-muted);
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  .bj__feat-meta {
+    margin: 0;
+    font-family: var(--font-body, 'Inter', sans-serif);
+    font-size: 0.72rem;
+    color: var(--bj-muted);
+  }
+
+  .bj__feat-empty {
+    padding: 48px 24px;
+    font-size: 0.85rem;
+    color: var(--bj-muted);
+    background: var(--bj-card-bg);
+    border-radius: var(--bj-radius);
+    text-align: center;
+  }
+
+  /* ── Colonne droite ──────────────────────────────────── */
+  .bj__right {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .bj__list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  /* Animation d'entrée */
+  .bj__item {
+    opacity: 0;
+    transform: translateY(8px);
+    transition: opacity 320ms var(--bj-ease), transform 320ms var(--bj-ease);
+  }
+
+  .bj__item.is-visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  .bj__item:nth-child(1) {
+    transition-delay: 0ms;
+  }
+  .bj__item:nth-child(2) {
+    transition-delay: 60ms;
+  }
+  .bj__item:nth-child(3) {
+    transition-delay: 120ms;
+  }
+  .bj__item:nth-child(4) {
+    transition-delay: 180ms;
+  }
+  .bj__item:nth-child(5) {
+    transition-delay: 240ms;
+  }
+
+  /* ── Card article ────────────────────────────────────── */
+  .bj__card {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 14px;
+    background: var(--bj-card-bg);
+    border-radius: var(--bj-radius);
+    text-decoration: none;
+    color: inherit;
+    transition: transform 200ms var(--bj-ease), box-shadow 200ms var(--bj-ease);
+  }
+
+  @media (hover: hover) {
+    .bj__card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.07);
+    }
+    .bj__card:hover .bj__card-img {
+      transform: scale(1.06);
+    }
+    .bj__card:hover .bj__card-arrow {
+      opacity: 1;
+      transform: translateX(0);
+    }
+  }
+
+  .bj__card:focus-visible {
+    outline: 2px solid var(--bj-blue);
+    outline-offset: 2px;
+  }
+
+  /* Vignette — position:absolute pour contourner height:auto global */
+  .bj__card-img-wrap {
+    flex-shrink: 0;
+    position: relative;
+    width: 88px;
+    height: 72px;
+    border-radius: 0.75rem;
+    overflow: hidden;
+    background: #d8d8d6;
+  }
+
+  .bj__card-img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+    display: block;
+    transition: transform 380ms var(--bj-ease);
+  }
+
+  .bj__card-fallback {
+    position: absolute;
+    inset: 0;
+    background: #d0d0ce;
+  }
+
+  /* Texte */
+  .bj__card-info {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .bj__card-tag {
+    font-family: var(--font-body, 'Inter', sans-serif);
+    font-size: 0.62rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--bj-blue);
+  }
+
+  .bj__card-title {
+    margin: 0;
+    font-family: var(--font-body, 'Inter', sans-serif);
+    font-size: 0.82rem;
+    font-weight: 600;
+    color: var(--bj-black);
+    line-height: 1.35;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  .bj__card-meta {
+    margin: 0;
+    font-family: var(--font-body, 'Inter', sans-serif);
+    font-size: 0.68rem;
+    color: var(--bj-muted);
+  }
+
+  /* Flèche */
+  .bj__card-arrow {
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    background: rgba(7, 135, 234, 0.1);
+    color: var(--bj-blue);
+    opacity: 0;
+    transform: translateX(-4px);
+    transition: opacity 200ms var(--bj-ease), transform 200ms var(--bj-ease);
+  }
+
+  .bj__empty {
+    font-family: var(--font-body, 'Inter', sans-serif);
+    font-size: 0.85rem;
+    color: var(--bj-muted);
+    padding: 24px;
+    background: var(--bj-card-bg);
+    border-radius: var(--bj-radius);
+  }
+
+  /* ── Mobile ─────────────────────────────────────────── */
+  @media (max-width: 767px) {
+    .bj {
+      padding: 48px 0 52px;
+    }
+
+    .bj__header {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 12px;
+      padding: 0 16px 28px;
+    }
+
+    .bj__body {
+      grid-template-columns: 1fr;
+      gap: 20px;
+      padding: 0 16px;
+    }
+
+    .bj__feat-img-wrap {
+      aspect-ratio: 4 / 3;
+    }
+
+    .bj__feat-info {
+      padding: 20px 18px 24px;
+    }
+
+    .bj__feat-name {
+      font-size: 1.1rem;
+    }
+
+    .bj__card-arrow {
+      display: none;
+    }
+
+    .bj__list {
+      gap: 12px;
+    }
+
+    .bj__card {
+      padding: 14px;
+    }
+  }
+</style>
+
+<script>
+  (function () {
+    'use strict';
+
+    var section = document.getElementById('bj-{{ section.id }}');
+    if (!section) return;
+
+    var items = Array.from(section.querySelectorAll('.bj__item'));
+
+    if ('IntersectionObserver' in window) {
+      var obs = new IntersectionObserver(
+        function (entries) {
+          entries.forEach(function (e) {
+            if (!e.isIntersecting) return;
+            var el = e.target;
+            var idx = parseInt(el.dataset.index, 10) || 0;
+            setTimeout(function () {
+              el.classList.add('is-visible');
+            }, Math.min(idx * 60, 300));
+            obs.unobserve(el);
+          });
+        },
+        { threshold: 0.06 }
+      );
+      items.forEach(function (item) {
+        obs.observe(item);
+      });
+    } else {
+      items.forEach(function (item) {
+        item.classList.add('is-visible');
+      });
+    }
+  })();
+</script>
+
+{% schema %}
+{
+  "name": "Blog Journal",
+  "tag": "section",
+  "class": "section-blog-journal",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Contenu"
+    },
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Titre",
+      "default": "Nos conseils"
+    },
+    {
+      "type": "textarea",
+      "id": "subtitle",
+      "label": "Sous-titre",
+      "default": "Conseils d'experts de vrais créateurs sur le matériel, les voyages & tout ce qui est créatif."
+    },
+    {
+      "type": "text",
+      "id": "view_all_text",
+      "label": "Texte \"Voir tout\"",
+      "default": "Voir tout"
+    },
+    {
+      "type": "blog",
+      "id": "blog",
+      "label": "Blog à afficher"
+    },
+    {
+      "type": "range",
+      "id": "articles_count",
+      "label": "Nombre d'articles dans la liste",
+      "min": 2,
+      "max": 8,
+      "step": 1,
+      "default": 5
+    },
+    {
+      "type": "header",
+      "content": "Fond de section"
+    },
+    {
+      "type": "color",
+      "id": "bg_color",
+      "label": "Couleur de fond",
+      "default": "#f7f7f8"
+    },
+    {
+      "type": "header",
+      "content": "Espacement — Mobile first"
+    },
+    {
+      "type": "range",
+      "id": "padding_top_mobile",
+      "label": "Padding haut mobile (px)",
+      "min": 0,
+      "max": 120,
+      "step": 4,
+      "default": 48,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom_mobile",
+      "label": "Padding bas mobile (px)",
+      "min": 0,
+      "max": 120,
+      "step": 4,
+      "default": 52,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "padding_top_desktop",
+      "label": "Padding haut desktop (px)",
+      "min": 0,
+      "max": 120,
+      "step": 4,
+      "default": 56,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom_desktop",
+      "label": "Padding bas desktop (px)",
+      "min": 0,
+      "max": 120,
+      "step": 4,
+      "default": 56,
+      "unit": "px"
+    },
+    { "type": "range", "id": "margin_top", "label": "Marge haut section (px)", "min": 0, "max": 120, "step": 4, "default": 0, "unit": "px" },
+    { "type": "range", "id": "margin_bottom", "label": "Marge bas section (px)", "min": 0, "max": 120, "step": 4, "default": 0, "unit": "px" },
+    { "type": "header", "content": "✨ Animation" },
+    { "type": "select", "id": "animation_type", "label": "Animation au scroll", "default": "fade-up", "options": [
+        { "value": "none", "label": "Aucune" }, { "value": "fade", "label": "Fade" },
+        { "value": "fade-up", "label": "Fade + slide haut" }, { "value": "zoom", "label": "Zoom" }
+    ]},
+    { "type": "header", "content": "👁️ Visibilité" },
+    { "type": "checkbox", "id": "hide_on_mobile", "label": "Masquer sur mobile", "default": false },
+    { "type": "checkbox", "id": "hide_on_desktop", "label": "Masquer sur desktop", "default": false },
+    { "type": "header", "content": "⚙️ Avancé" },
+    { "type": "text", "id": "custom_css", "label": "CSS personnalisé", "info": "Appliqué sur #shopify-section-ID" }
+  ],
+  "presets": [{ "name": "Blog Journal" }]
+}
+{% endschema %}

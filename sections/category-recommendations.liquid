@@ -1,0 +1,424 @@
+{%- comment -%} Category Recommendations — Motion19 {%- endcomment -%}
+
+{%- render 'section-settings', section: section, prefix: 'rc' -%}
+
+{%- assign cols_mobile  = section.settings.columns_mobile  | default: 1 -%}
+{%- assign cols_tablet  = section.settings.columns_tablet  | default: 2 -%}
+{%- assign cols_desktop = section.settings.columns_desktop | default: 3 -%}
+
+<section
+  class="rc m19-animate"
+  id="rc-section"
+  aria-labelledby="rc-title"
+  style="
+    --rc-cols-mobile:  {{ cols_mobile }};
+    --rc-cols-tablet:  {{ cols_tablet }};
+    --rc-cols-desktop: {{ cols_desktop }};
+    --rc-aspect-mobile:  {{ section.settings.aspect_mobile  | default: '4/3' }};
+    --rc-aspect-tablet:  {{ section.settings.aspect_tablet  | default: '3/2' }};
+    --rc-aspect-desktop: {{ section.settings.aspect_desktop | default: '3/2' }};
+    --rc-bg:     {{ section.settings.bg_color | default: '#ffffff' }};
+    --rc-pt-mobile:  {{ section.settings.padding_top_mobile  | default: 48 }}px;
+    --rc-pb-mobile:  {{ section.settings.padding_bottom_mobile  | default: 56 }}px;
+    --rc-pt-desktop: {{ section.settings.padding_top_desktop | default: 64 }}px;
+    --rc-pb-desktop: {{ section.settings.padding_bottom_desktop | default: 64 }}px;
+  "
+>
+  <div class="rc__header">
+    <h2 class="rc__title" id="rc-title">
+      {{- section.settings.title | default: 'Nos recommandations' -}}
+    </h2>
+    {%- if section.settings.subtitle != blank -%}
+      <p class="rc__subtitle">{{ section.settings.subtitle }}</p>
+    {%- endif -%}
+  </div>
+
+  <ul class="rc__grid" role="list">
+    {%- for block in section.blocks -%}
+      {%- assign card_img   = block.settings.image -%}
+      {%- assign card_label = block.settings.label | default: 'Catégorie' -%}
+      {%- assign card_url   = block.settings.url | default: '#' -%}
+      {%- assign card_alt   = card_label | escape -%}
+
+      <li class="rc__item" {{ block.shopify_attributes }}>
+        <a class="m19-card m19-card--cat" href="{{ card_url }}" aria-label="{{ card_alt }}"
+          style="--m19-cat-aspect: var(--rc-aspect-mobile, 4/3);">
+          <div class="m19-card__cat-bg" aria-hidden="true">
+            {%- if card_img != blank -%}
+              <img src="{{ card_img | image_url: width: 800 }}" alt="" class="m19-card__cat-img" loading="lazy" width="{{ card_img.width }}" height="{{ card_img.height }}">
+            {%- else -%}
+              <div class="m19-card__cat-placeholder"></div>
+            {%- endif -%}
+          </div>
+          <div class="m19-card__cat-overlay" aria-hidden="true"></div>
+          <div class="m19-card__cat-content">
+            <span class="m19-card__cat-label">{{ card_label }}</span>
+            <span class="m19-card__cat-btn" aria-hidden="true">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/>
+              </svg>
+            </span>
+          </div>
+        </a>
+      </li>
+    {%- endfor -%}
+  </ul>
+</section>
+
+<style>
+  /* ── Variables ─────────────────────────────────── */
+  .rc {
+    --rc-gap:    16px;
+    --rc-pad:    16px;
+    --rc-radius: 10px;
+    --rc-blue:   #0787ea;
+    --rc-black:  #0a0a0a;
+    --rc-ease:   cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  /* ── Wrapper ────────────────────────────────────── */
+  .rc {
+    padding: var(--rc-pt-mobile, 48px) 0 var(--rc-pb-mobile, 56px);
+    background: var(--rc-bg, #fff);
+  }
+
+  @media (min-width: 768px) {
+    .rc {
+      padding: var(--rc-pt-desktop, 64px) 0 var(--rc-pb-desktop, 64px);
+      --rc-pad: 24px;
+    }
+  }
+
+  /* ── Header ─────────────────────────────────────── */
+  .rc__header {
+    padding: 0 var(--rc-pad) 20px;
+    max-width: var(--container-width, 1400px);
+    margin: 0 auto;
+  }
+
+  @media (min-width: 768px) {
+    .rc__header { padding-bottom: 24px; }
+  }
+
+  .rc__title {
+    font-family: var(--font-body, 'Inter', sans-serif);
+    font-size: clamp(1.4rem, 3vw, 2.2rem);
+    font-weight: 800;
+    letter-spacing: -0.03em;
+    color: var(--rc-black);
+    margin: 0 0 6px;
+  }
+
+  .rc__subtitle {
+    font-family: var(--font-body, 'Inter', sans-serif);
+    font-size: 0.875rem;
+    color: #777;
+    margin: 0;
+    line-height: 1.55;
+  }
+
+  /* ── Grille — mobile-first ───────────────────────── */
+  .rc__grid {
+    display: grid;
+    grid-template-columns: repeat(var(--rc-cols-mobile, 1), 1fr);
+    gap: var(--rc-gap);
+    padding: 0 var(--rc-pad);
+    max-width: var(--container-width, 1400px);
+    margin: 0 auto;
+    list-style: none;
+  }
+
+  @media (min-width: 600px) {
+    .rc__grid { grid-template-columns: repeat(var(--rc-cols-tablet, 2), 1fr); }
+  }
+
+  @media (min-width: 1024px) {
+    .rc__grid { grid-template-columns: repeat(var(--rc-cols-desktop, 3), 1fr); }
+  }
+
+  /* ── Item — fade-in en cascade ───────────────────── */
+  .rc__item {
+    opacity: 0;
+    transform: translateY(12px);
+    transition: opacity 380ms var(--rc-ease), transform 380ms var(--rc-ease);
+  }
+
+  .rc__item.is-visible { opacity: 1; transform: translateY(0); }
+
+  .rc__item:nth-child(2) { transition-delay: 50ms; }
+  .rc__item:nth-child(3) { transition-delay: 100ms; }
+  .rc__item:nth-child(4) { transition-delay: 150ms; }
+  .rc__item:nth-child(5) { transition-delay: 200ms; }
+  .rc__item:nth-child(6) { transition-delay: 250ms; }
+  .rc__item:nth-child(7) { transition-delay: 300ms; }
+  .rc__item:nth-child(8) { transition-delay: 350ms; }
+
+  /* ── Responsive aspect-ratio for .m19-card--cat items ── */
+  .rc__item .m19-card--cat {
+    --m19-cat-aspect: var(--rc-aspect-mobile, 4/3);
+    --m19-cat-radius: var(--rc-radius, 10px);
+    aspect-ratio: var(--rc-aspect-mobile, 4/3);
+  }
+
+  @media (min-width: 600px) {
+    .rc__item .m19-card--cat { aspect-ratio: var(--rc-aspect-tablet, 3/2); }
+  }
+
+  @media (min-width: 1024px) {
+    .rc__item .m19-card--cat { aspect-ratio: var(--rc-aspect-desktop, 3/2); }
+  }
+
+  /* Larger label font in full section context */
+  .rc__item .m19-card__cat-label {
+    font-size: clamp(1.1rem, 2.2vw, 1.6rem);
+  }
+
+  .rc__item .m19-card__cat-content {
+    padding: 14px 14px 16px;
+  }
+
+  .rc__item .m19-card__cat-btn {
+    width: 34px;
+    height: 34px;
+  }
+</style>
+
+<script>
+  (function () {
+    'use strict';
+
+    var section = document.getElementById('rc-section');
+    if (!section) return;
+
+    var items = Array.from(section.querySelectorAll('.rc__item'));
+    if (!items.length) return;
+
+    if ('IntersectionObserver' in window) {
+      var obs = new IntersectionObserver(
+        function (entries) {
+          entries.forEach(function (entry) {
+            if (!entry.isIntersecting) return;
+            entry.target.classList.add('is-visible');
+            obs.unobserve(entry.target);
+          });
+        },
+        { threshold: 0.08 }
+      );
+      items.forEach(function (item) { obs.observe(item); });
+    } else {
+      items.forEach(function (item) { item.classList.add('is-visible'); });
+    }
+  })();
+</script>
+
+{% schema %}
+{
+  "name": "Category Recommendations",
+  "tag": "section",
+  "class": "section-category-recommendations",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Texte d'en-tête"
+    },
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Titre de la section",
+      "default": "Explorez par univers"
+    },
+    {
+      "type": "textarea",
+      "id": "subtitle",
+      "label": "Sous-titre (optionnel)"
+    },
+    {
+      "type": "header",
+      "content": "Fond de section"
+    },
+    {
+      "type": "color",
+      "id": "bg_color",
+      "label": "Couleur de fond",
+      "default": "#ffffff"
+    },
+    {
+      "type": "header",
+      "content": "Grille — Mobile first"
+    },
+    {
+      "type": "range",
+      "id": "columns_mobile",
+      "label": "Colonnes mobile < 600px",
+      "min": 1,
+      "max": 3,
+      "step": 1,
+      "default": 1
+    },
+    {
+      "type": "range",
+      "id": "columns_tablet",
+      "label": "Colonnes tablette ≥ 600px",
+      "min": 1,
+      "max": 3,
+      "step": 1,
+      "default": 2
+    },
+    {
+      "type": "range",
+      "id": "columns_desktop",
+      "label": "Colonnes desktop ≥ 1024px",
+      "min": 2,
+      "max": 6,
+      "step": 1,
+      "default": 3
+    },
+    {
+      "type": "header",
+      "content": "Ratio des cartes — Mobile first"
+    },
+    {
+      "type": "select",
+      "id": "aspect_mobile",
+      "label": "Ratio mobile",
+      "default": "4/3",
+      "options": [
+        { "value": "1/1",  "label": "Carré (1:1)" },
+        { "value": "4/3",  "label": "Paysage (4:3)" },
+        { "value": "3/2",  "label": "Paysage (3:2)" },
+        { "value": "16/9", "label": "Large (16:9)" },
+        { "value": "3/4",  "label": "Portrait (3:4)" },
+        { "value": "2/3",  "label": "Portrait (2:3)" }
+      ]
+    },
+    {
+      "type": "select",
+      "id": "aspect_tablet",
+      "label": "Ratio tablette",
+      "default": "3/2",
+      "options": [
+        { "value": "1/1",  "label": "Carré (1:1)" },
+        { "value": "4/3",  "label": "Paysage (4:3)" },
+        { "value": "3/2",  "label": "Paysage (3:2)" },
+        { "value": "16/9", "label": "Large (16:9)" },
+        { "value": "3/4",  "label": "Portrait (3:4)" },
+        { "value": "2/3",  "label": "Portrait (2:3)" }
+      ]
+    },
+    {
+      "type": "select",
+      "id": "aspect_desktop",
+      "label": "Ratio desktop",
+      "default": "3/2",
+      "options": [
+        { "value": "1/1",  "label": "Carré (1:1)" },
+        { "value": "4/3",  "label": "Paysage (4:3)" },
+        { "value": "3/2",  "label": "Paysage (3:2)" },
+        { "value": "16/9", "label": "Large (16:9)" },
+        { "value": "3/4",  "label": "Portrait (3:4)" },
+        { "value": "2/3",  "label": "Portrait (2:3)" }
+      ]
+    },
+    {
+      "type": "header",
+      "content": "Espacements — Mobile first"
+    },
+    {
+      "type": "range",
+      "id": "padding_top_mobile",
+      "label": "Padding haut mobile (px)",
+      "min": 0,
+      "max": 120,
+      "step": 4,
+      "default": 48,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom_mobile",
+      "label": "Padding bas mobile (px)",
+      "min": 0,
+      "max": 120,
+      "step": 4,
+      "default": 56,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "padding_top_desktop",
+      "label": "Padding haut desktop (px)",
+      "min": 0,
+      "max": 120,
+      "step": 4,
+      "default": 64,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom_desktop",
+      "label": "Padding bas desktop (px)",
+      "min": 0,
+      "max": 120,
+      "step": 4,
+      "default": 64,
+      "unit": "px"
+    },
+    { "type": "range", "id": "margin_top", "label": "Marge haut section (px)", "min": 0, "max": 120, "step": 4, "default": 0, "unit": "px" },
+    { "type": "range", "id": "margin_bottom", "label": "Marge bas section (px)", "min": 0, "max": 120, "step": 4, "default": 0, "unit": "px" },
+    { "type": "header", "content": "✨ Animation" },
+    { "type": "select", "id": "animation_type", "label": "Animation au scroll", "default": "fade-up", "options": [
+        { "value": "none", "label": "Aucune" }, { "value": "fade", "label": "Fade" },
+        { "value": "fade-up", "label": "Fade + slide haut" }, { "value": "zoom", "label": "Zoom" }
+    ]},
+    { "type": "header", "content": "👁️ Visibilité" },
+    { "type": "checkbox", "id": "hide_on_mobile", "label": "Masquer sur mobile", "default": false },
+    { "type": "checkbox", "id": "hide_on_desktop", "label": "Masquer sur desktop", "default": false },
+    { "type": "header", "content": "⚙️ Avancé" },
+    { "type": "text", "id": "custom_css", "label": "CSS personnalisé", "info": "Appliqué sur #shopify-section-ID" }
+  ],
+  "blocks": [
+    {
+      "type": "card",
+      "name": "Carte catégorie",
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Image de la carte"
+        },
+        {
+          "type": "text",
+          "id": "label",
+          "label": "Titre de la catégorie",
+          "default": "Photographie"
+        },
+        {
+          "type": "textarea",
+          "id": "description",
+          "label": "Description courte (visible tablette/desktop)",
+          "info": "Optionnel — s'affiche sous le titre sur tablette et desktop"
+        },
+        {
+          "type": "url",
+          "id": "url",
+          "label": "Lien de la collection"
+        }
+      ]
+    }
+  ],
+  "max_blocks": 12,
+  "presets": [
+    {
+      "name": "Category Recommendations",
+      "blocks": [
+        { "type": "card", "settings": { "label": "Photographie" } },
+        { "type": "card", "settings": { "label": "Vidéo" } },
+        { "type": "card", "settings": { "label": "Podcast" } },
+        { "type": "card", "settings": { "label": "Drone" } },
+        { "type": "card", "settings": { "label": "Stabilisateur" } },
+        { "type": "card", "settings": { "label": "Éclairage" } }
+      ]
+    }
+  ]
+}
+{% endschema %}

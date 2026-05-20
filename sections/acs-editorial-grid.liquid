@@ -1,0 +1,492 @@
+{{ 'card.css' | asset_url | stylesheet_tag }}
+{%- comment -%} ACS Editorial Grid — Motion19 OS 2.0 — Asymmetric magazine grid {%- endcomment -%}
+
+{%- liquid
+  assign sid         = section.id
+  assign bg_color    = section.settings.bg_color    | default: '#0a0a0a'
+  assign text_color  = section.settings.text_color  | default: '#ffffff'
+  assign title_color = section.settings.title_color | default: '#ffffff'
+  assign eyebrow_col = section.settings.eyebrow_color | default: '#0787ea'
+  assign pt_m        = section.settings.padding_top_mobile    | default: 48
+  assign pb_m        = section.settings.padding_bottom_mobile | default: 56
+  assign pt_d        = section.settings.padding_top_desktop   | default: 64
+  assign pb_d        = section.settings.padding_bottom_desktop | default: 64
+  assign mt          = section.settings.margin_top    | default: 0
+  assign mb          = section.settings.margin_bottom | default: 0
+  assign max_w       = section.settings.section_max_width | default: 1400
+  assign card_radius = section.settings.card_radius | default: 12
+  assign gap_size    = section.settings.gap_size    | default: 14
+  assign header_align = section.settings.header_align | default: 'left'
+-%}
+
+<section
+  id="acsgrid-{{ sid }}"
+  class="acsgrid m19-animate"
+  aria-labelledby="acsgrid-title-{{ sid }}"
+  style="
+    --acsgrid-bg:      {{ bg_color }};
+    --acsgrid-text:    {{ text_color }};
+    --acsgrid-title:   {{ title_color }};
+    --acsgrid-eyebrow: {{ eyebrow_col }};
+    --acsgrid-pt-m:    {{ pt_m }}px;
+    --acsgrid-pb-m:    {{ pb_m }}px;
+    --acsgrid-pt-d:    {{ pt_d }}px;
+    --acsgrid-pb-d:    {{ pb_d }}px;
+    --acsgrid-mt:      {{ mt }}px;
+    --acsgrid-mb:      {{ mb }}px;
+    --acsgrid-max-w:   {{ max_w }}px;
+    --acsgrid-radius:  {{ card_radius }}px;
+    --acsgrid-gap:     {{ gap_size }}px;
+  "
+>
+  <div class="acsgrid__inner">
+
+    <div class="acsgrid__header acsgrid__header--{{ header_align }}">
+      <div class="acsgrid__header-text">
+        {%- if section.settings.eyebrow != blank -%}
+          <span class="acsgrid__eyebrow">{{ section.settings.eyebrow }}</span>
+        {%- endif -%}
+        <h2 class="acsgrid__title" id="acsgrid-title-{{ sid }}">
+          {{- section.settings.title | default: 'Toutes les collections' -}}
+        </h2>
+        {%- if section.settings.subtitle != blank -%}
+          <p class="acsgrid__subtitle">{{ section.settings.subtitle }}</p>
+        {%- endif -%}
+      </div>
+      {%- if section.settings.cta_label != blank -%}
+        <a class="acsgrid__view-all" href="{{ section.settings.cta_url | default: '/collections/all' }}">
+          {{ section.settings.cta_label }}
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+        </a>
+      {%- endif -%}
+    </div>
+
+    {%- comment -%} Asymmetric magazine mosaic {%- endcomment -%}
+    <div class="acsgrid__mosaic" role="list">
+      {%- if section.blocks.size > 0 -%}
+        {%- for block in section.blocks -%}
+          {%- liquid
+            assign card_img   = block.settings.image
+            assign card_title = block.settings.title | default: 'Collection'
+            assign card_desc  = block.settings.description
+            assign card_url   = block.settings.url | default: '/collections/all'
+            assign card_size  = block.settings.card_size | default: 'normal'
+            assign card_badge = block.settings.badge
+            assign overlay_op = block.settings.overlay_opacity | default: 45 | divided_by: 100.0
+          -%}
+          <div class="acsgrid__cell acsgrid__cell--{{ card_size }}" role="listitem" {{ block.shopify_attributes }}>
+            <a class="acsgrid__card" href="{{ card_url }}" aria-label="{{ card_title | escape }}">
+              <div class="acsgrid__card-media" aria-hidden="true">
+                {%- if card_img != blank -%}
+                  <img
+                    class="acsgrid__card-img"
+                    src="{{ card_img | image_url: width: 1000 }}"
+                    srcset="{{ card_img | image_url: width: 400 }} 400w, {{ card_img | image_url: width: 700 }} 700w, {{ card_img | image_url: width: 1000 }} 1000w"
+                    sizes="(max-width:767px) 90vw, (max-width:1023px) 45vw, 30vw"
+                    alt="{{ card_img.alt | default: card_title | escape }}"
+                    loading="lazy"
+                    width="{{ card_img.width }}"
+                    height="{{ card_img.height }}"
+                  >
+                {%- else -%}
+                  <div class="acsgrid__card-placeholder"></div>
+                {%- endif -%}
+                <div class="acsgrid__card-overlay" style="--ov-a:{{ overlay_op }};"></div>
+                <div class="acsgrid__card-glow" aria-hidden="true"></div>
+              </div>
+
+              {%- if card_badge != blank -%}
+                <span class="acsgrid__card-badge">{{ card_badge }}</span>
+              {%- endif -%}
+
+              <div class="acsgrid__card-content">
+                <div class="acsgrid__card-info">
+                  <span class="acsgrid__card-title">{{ card_title }}</span>
+                  {%- if card_desc != blank -%}
+                    <span class="acsgrid__card-desc">{{ card_desc }}</span>
+                  {%- endif -%}
+                </div>
+                <span class="acsgrid__card-arrow" aria-hidden="true">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+                </span>
+              </div>
+            </a>
+          </div>
+        {%- endfor -%}
+      {%- else -%}
+        {%- assign default_sizes = 'large,normal,normal,wide,normal,tall' | split: ',' -%}
+        {%- for i in (1..6) -%}
+          <div class="acsgrid__cell acsgrid__cell--{{ default_sizes[forloop.index0] }}" role="listitem">
+            <a class="acsgrid__card" href="/collections/all" aria-label="Collection {{ i }}">
+              <div class="acsgrid__card-media" aria-hidden="true">
+                <div class="acsgrid__card-placeholder"></div>
+                <div class="acsgrid__card-overlay" style="--ov-a:0.45;"></div>
+              </div>
+              <div class="acsgrid__card-content">
+                <div class="acsgrid__card-info">
+                  <span class="acsgrid__card-title">Collection {{ i }}</span>
+                </div>
+                <span class="acsgrid__card-arrow" aria-hidden="true">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+                </span>
+              </div>
+            </a>
+          </div>
+        {%- endfor -%}
+      {%- endif -%}
+    </div>
+
+  </div>
+</section>
+
+<style>
+/* ═══════════════════════════════════════════════
+   ACS Editorial Grid — acsgrid
+   ═══════════════════════════════════════════════ */
+.acsgrid {
+  --acsgrid-pad:     16px;
+  --acsgrid-ease:    cubic-bezier(0.4, 0, 0.2, 1);
+  --acsgrid-ease-out:cubic-bezier(0.16, 1, 0.3, 1);
+
+  background: var(--acsgrid-bg, #0a0a0a);
+  color: var(--acsgrid-text, #ffffff);
+  margin-top: var(--acsgrid-mt, 0);
+  margin-bottom: var(--acsgrid-mb, 0);
+}
+@media (min-width: 768px)  { .acsgrid { --acsgrid-pad: 24px; } }
+@media (min-width: 1024px) { .acsgrid { --acsgrid-pad: 40px; } }
+
+.acsgrid__inner {
+  max-width: var(--acsgrid-max-w, 1400px);
+  margin: 0 auto;
+  padding: var(--acsgrid-pt-m, 48px) var(--acsgrid-pad) var(--acsgrid-pb-m, 56px);
+}
+@media (min-width: 768px) {
+  .acsgrid__inner {
+    padding-top:    var(--acsgrid-pt-d, 64px);
+    padding-bottom: var(--acsgrid-pb-d, 64px);
+  }
+}
+
+/* Header */
+.acsgrid__header {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 16px; flex-wrap: wrap;
+  margin-bottom: 28px;
+}
+.acsgrid__header--center { flex-direction: column; align-items: center; text-align: center; }
+.acsgrid__header--right  { flex-direction: column; align-items: flex-end; text-align: right; }
+@media (max-width: 767px) {
+  .acsgrid__header { flex-direction: column; align-items: flex-start; gap: 10px; margin-bottom: 20px; }
+}
+
+.acsgrid__header-text { display: flex; flex-direction: column; gap: 4px; }
+
+.acsgrid__eyebrow {
+  font-size: 0.7rem; font-weight: 600;
+  letter-spacing: 0.16em; text-transform: uppercase;
+  color: var(--acsgrid-eyebrow, #0787ea);
+}
+
+.acsgrid__title {
+  font-family: var(--font-body, 'Inter', sans-serif);
+  font-size: clamp(1.4rem, 3vw, 2.2rem);
+  font-weight: 800; letter-spacing: -0.03em;
+  color: var(--acsgrid-title, #ffffff);
+  margin: 0; padding-bottom: 10px; position: relative;
+}
+.acsgrid__title::after {
+  content: ''; position: absolute; bottom: 0; left: 0;
+  width: 36px; height: 3px; background: #0787ea; border-radius: 2px;
+}
+.acsgrid__header--center .acsgrid__title::after { left: 50%; transform: translateX(-50%); }
+.acsgrid__header--right  .acsgrid__title::after { left: auto; right: 0; }
+
+.acsgrid__subtitle {
+  font-size: 0.875rem;
+  color: color-mix(in srgb, var(--acsgrid-text, #fff) 60%, transparent);
+  margin: 0; max-width: 52ch; line-height: 1.55;
+}
+
+.acsgrid__view-all {
+  display: inline-flex; align-items: center; gap: 5px;
+  flex-shrink: 0; white-space: nowrap;
+  font-size: 0.78rem; font-weight: 600;
+  color: var(--acsgrid-text, #fff);
+  text-decoration: none;
+  border-bottom: 1.5px solid rgba(255,255,255,0.4);
+  padding-bottom: 1px;
+  transition: color 160ms ease, border-color 160ms ease;
+}
+.acsgrid__view-all:hover { color: #0787ea; border-color: #0787ea; }
+.acsgrid__view-all svg { transition: transform 200ms var(--acsgrid-ease); }
+.acsgrid__view-all:hover svg { transform: translateX(3px); }
+
+/* ── Mosaic layout ── */
+.acsgrid__mosaic {
+  display: grid;
+  gap: var(--acsgrid-gap, 14px);
+  grid-template-columns: 1fr;
+}
+
+@media (min-width: 600px) {
+  .acsgrid__mosaic {
+    grid-template-columns: repeat(2, 1fr);
+    grid-auto-rows: 220px;
+  }
+  .acsgrid__cell--large  { grid-column: span 2; grid-row: span 2; }
+  .acsgrid__cell--wide   { grid-column: span 2; }
+  .acsgrid__cell--tall   { grid-row: span 2; }
+  .acsgrid__cell--normal { grid-column: span 1; grid-row: span 1; }
+}
+
+@media (min-width: 1024px) {
+  .acsgrid__mosaic {
+    grid-template-columns: repeat(3, 1fr);
+    grid-auto-rows: 240px;
+  }
+  .acsgrid__cell--large  { grid-column: span 2; grid-row: span 2; }
+  .acsgrid__cell--wide   { grid-column: span 2; }
+  .acsgrid__cell--tall   { grid-row: span 2; }
+}
+
+/* Cell animation */
+.acsgrid__cell {
+  opacity: 0;
+  transform: translateY(12px);
+  transition: opacity 400ms var(--acsgrid-ease), transform 400ms var(--acsgrid-ease);
+}
+.acsgrid__cell.is-visible { opacity: 1; transform: translateY(0); }
+.acsgrid__cell:nth-child(2) { transition-delay: 60ms; }
+.acsgrid__cell:nth-child(3) { transition-delay: 120ms; }
+.acsgrid__cell:nth-child(4) { transition-delay: 180ms; }
+.acsgrid__cell:nth-child(5) { transition-delay: 240ms; }
+.acsgrid__cell:nth-child(6) { transition-delay: 300ms; }
+
+/* Card */
+.acsgrid__card {
+  display: block;
+  position: relative;
+  width: 100%; height: 100%;
+  min-height: 220px;
+  border-radius: var(--acsgrid-radius, 12px);
+  overflow: hidden;
+  text-decoration: none;
+  color: #fff;
+  background: #1a1a1a;
+  transition: transform 400ms var(--acsgrid-ease-out), box-shadow 400ms var(--acsgrid-ease);
+}
+@media (hover: hover) {
+  .acsgrid__card:hover {
+    transform: translateY(-4px) scale(1.005);
+    box-shadow: 0 24px 64px rgba(0,0,0,0.45), 0 4px 16px rgba(0,0,0,0.2);
+  }
+}
+.acsgrid__card:focus-visible { outline: 2px solid #0787ea; outline-offset: 3px; }
+
+/* Media */
+.acsgrid__card-media {
+  position: absolute; inset: 0; z-index: 0;
+  overflow: hidden;
+}
+.acsgrid__card-img {
+  position: absolute; inset: 0;
+  width: 100%; height: 100%;
+  object-fit: cover; object-position: center;
+  display: block;
+  transition: transform 700ms var(--acsgrid-ease);
+  will-change: transform;
+}
+@media (hover: hover) {
+  .acsgrid__card:hover .acsgrid__card-img { transform: scale(1.08); }
+}
+.acsgrid__card-placeholder {
+  position: absolute; inset: 0;
+  background: linear-gradient(135deg, #1e1e1e 0%, #2a2a2a 100%);
+}
+.acsgrid__card-overlay {
+  position: absolute; inset: 0;
+  background: linear-gradient(
+    to top,
+    rgba(0,0,0,calc(var(--ov-a,0.45) * 1.6)) 0%,
+    rgba(0,0,0,calc(var(--ov-a,0.45) * 0.7)) 45%,
+    rgba(0,0,0,calc(var(--ov-a,0.45) * 0.15)) 100%
+  );
+  transition: opacity 400ms var(--acsgrid-ease);
+}
+@media (hover: hover) {
+  .acsgrid__card:hover .acsgrid__card-overlay { opacity: 1.25; }
+}
+
+/* Cinematic glow on hover */
+.acsgrid__card-glow {
+  position: absolute; inset: 0; z-index: 1; pointer-events: none;
+  background: radial-gradient(ellipse at 50% 120%, rgba(7,135,234,0.28) 0%, transparent 65%);
+  opacity: 0;
+  transition: opacity 500ms var(--acsgrid-ease);
+}
+@media (hover: hover) {
+  .acsgrid__card:hover .acsgrid__card-glow { opacity: 1; }
+}
+
+/* Badge */
+.acsgrid__card-badge {
+  position: absolute; top: 14px; left: 14px; z-index: 2;
+  background: rgba(255,255,255,0.13);
+  backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+  color: #fff; border: 1px solid rgba(255,255,255,0.22);
+  font-size: 0.6rem; font-weight: 700;
+  letter-spacing: 0.1em; text-transform: uppercase;
+  padding: 4px 10px; border-radius: 100px;
+}
+
+/* Content */
+.acsgrid__card-content {
+  position: absolute; bottom: 0; left: 0; right: 0; z-index: 2;
+  display: flex; align-items: flex-end; justify-content: space-between;
+  gap: 12px; padding: 18px 18px 22px;
+  transition: padding 300ms var(--acsgrid-ease);
+}
+@media (hover: hover) {
+  .acsgrid__card:hover .acsgrid__card-content { padding-bottom: 28px; }
+}
+
+.acsgrid__card-info { display: flex; flex-direction: column; gap: 5px; min-width: 0; }
+
+.acsgrid__card-title {
+  font-family: var(--font-body, 'Inter', sans-serif);
+  font-size: clamp(1rem, 2vw, 1.4rem);
+  font-weight: 700; letter-spacing: -0.02em; line-height: 1.2;
+  color: #fff; text-shadow: 0 1px 8px rgba(0,0,0,0.5);
+  display: block;
+}
+.acsgrid__cell--large  .acsgrid__card-title { font-size: clamp(1.3rem, 3vw, 2rem); }
+
+.acsgrid__card-desc {
+  font-size: 0.78rem; color: rgba(255,255,255,0.72); line-height: 1.5;
+  display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
+}
+
+.acsgrid__card-arrow {
+  flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center;
+  width: 34px; height: 34px; border-radius: 50%;
+  background: rgba(255,255,255,0.12);
+  backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px);
+  border: 1px solid rgba(255,255,255,0.25);
+  color: #fff;
+  transition: background 240ms ease, border-color 240ms ease, transform 300ms var(--acsgrid-ease-out);
+}
+@media (hover: hover) {
+  .acsgrid__card:hover .acsgrid__card-arrow {
+    background: #0787ea; border-color: #0787ea; transform: scale(1.12);
+  }
+}
+
+/* Mobile: full height on cells */
+@media (max-width: 599px) {
+  .acsgrid__cell { min-height: 240px; }
+  .acsgrid__cell--large { min-height: 320px; }
+}
+</style>
+
+<script>
+(function () {
+  'use strict';
+  var sec = document.getElementById('acsgrid-{{ sid }}');
+  if (!sec) return;
+  var cells = Array.from(sec.querySelectorAll('.acsgrid__cell'));
+  if (!cells.length) return;
+  if ('IntersectionObserver' in window) {
+    var obs = new IntersectionObserver(function (entries) {
+      entries.forEach(function (e) {
+        if (!e.isIntersecting) return;
+        e.target.classList.add('is-visible');
+        obs.unobserve(e.target);
+      });
+    }, { threshold: 0.06 });
+    cells.forEach(function (c) { obs.observe(c); });
+  } else {
+    cells.forEach(function (c) { c.classList.add('is-visible'); });
+  }
+})();
+</script>
+
+{% schema %}
+{
+  "name": "ACS — Grille Éditoriale",
+  "tag": "section",
+  "class": "section-acs-editorial-grid",
+  "settings": [
+    { "type": "header", "content": "En-tête" },
+    { "type": "text",     "id": "eyebrow",  "label": "Label eyebrow" },
+    { "type": "text",     "id": "title",    "label": "Titre", "default": "Toutes les collections" },
+    { "type": "textarea", "id": "subtitle", "label": "Sous-titre" },
+    { "type": "select",   "id": "header_align", "label": "Alignement", "default": "left",
+      "options": [
+        {"value":"left",   "label":"Gauche"},
+        {"value":"center", "label":"Centre"},
+        {"value":"right",  "label":"Droite"}
+      ]
+    },
+    { "type": "text", "id": "cta_label", "label": "Texte lien" },
+    { "type": "url",  "id": "cta_url",   "label": "Lien" },
+    { "type": "header", "content": "Grille" },
+    { "type": "range", "id": "gap_size",    "label": "Espacement entre cartes (px)", "min": 4, "max": 32, "step": 2, "default": 14, "unit": "px" },
+    { "type": "range", "id": "card_radius", "label": "Rayon cartes (px)", "min": 0, "max": 32, "step": 2, "default": 12, "unit": "px" },
+    { "type": "header", "content": "Couleurs" },
+    { "type": "color", "id": "bg_color",      "label": "Fond section",   "default": "#0a0a0a" },
+    { "type": "color", "id": "text_color",    "label": "Couleur texte",  "default": "#ffffff" },
+    { "type": "color", "id": "title_color",   "label": "Couleur titres", "default": "#ffffff" },
+    { "type": "color", "id": "eyebrow_color", "label": "Couleur eyebrow","default": "#0787ea" },
+    { "type": "header", "content": "Conteneur" },
+    { "type": "range", "id": "section_max_width", "label": "Largeur max (px)", "min": 960, "max": 1920, "step": 40, "default": 1400, "unit": "px" },
+    { "type": "header", "content": "Espacement" },
+    { "type": "range", "id": "padding_top_mobile",     "label": "Padding haut mobile",  "min": 0, "max": 120, "step": 4, "default": 48, "unit": "px" },
+    { "type": "range", "id": "padding_bottom_mobile",  "label": "Padding bas mobile",   "min": 0, "max": 120, "step": 4, "default": 56, "unit": "px" },
+    { "type": "range", "id": "padding_top_desktop",    "label": "Padding haut desktop", "min": 0, "max": 120, "step": 4, "default": 64, "unit": "px" },
+    { "type": "range", "id": "padding_bottom_desktop", "label": "Padding bas desktop",  "min": 0, "max": 120, "step": 4, "default": 64, "unit": "px" },
+    { "type": "range", "id": "margin_top",    "label": "Marge haut", "min": 0, "max": 120, "step": 4, "default": 0, "unit": "px" },
+    { "type": "range", "id": "margin_bottom", "label": "Marge bas",  "min": 0, "max": 120, "step": 4, "default": 0, "unit": "px" }
+  ],
+  "blocks": [
+    {
+      "type": "card",
+      "name": "Carte collection",
+      "settings": [
+        { "type": "image_picker", "id": "image",       "label": "Image" },
+        { "type": "text",         "id": "title",       "label": "Titre",       "default": "Collection" },
+        { "type": "textarea",     "id": "description", "label": "Description" },
+        { "type": "url",          "id": "url",         "label": "Lien" },
+        { "type": "text",         "id": "badge",       "label": "Badge" },
+        { "type": "select",       "id": "card_size",   "label": "Taille de la carte", "default": "normal",
+          "options": [
+            {"value":"normal", "label":"Normal (1×1)"},
+            {"value":"wide",   "label":"Large (2×1)"},
+            {"value":"tall",   "label":"Haut (1×2)"},
+            {"value":"large",  "label":"Grand (2×2)"}
+          ]
+        },
+        { "type": "range", "id": "overlay_opacity", "label": "Opacité overlay (%)", "min": 10, "max": 80, "step": 5, "default": 45, "unit": "%" }
+      ]
+    }
+  ],
+  "max_blocks": 12,
+  "presets": [
+    {
+      "name": "Grille Éditoriale",
+      "settings": { "title": "Toutes les collections", "eyebrow": "Catalogue", "bg_color": "#0a0a0a" },
+      "blocks": [
+        { "type": "card", "settings": { "title": "Caméras & Vidéo",  "card_size": "large" } },
+        { "type": "card", "settings": { "title": "Audio & Podcast",  "card_size": "normal" } },
+        { "type": "card", "settings": { "title": "Éclairage Studio", "card_size": "normal" } },
+        { "type": "card", "settings": { "title": "Streaming & Live", "card_size": "wide" } },
+        { "type": "card", "settings": { "title": "Mobile Creator",   "card_size": "normal" } },
+        { "type": "card", "settings": { "title": "Accessoires",      "card_size": "tall" } }
+      ]
+    }
+  ]
+}
+{% endschema %}

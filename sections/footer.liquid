@@ -1,0 +1,785 @@
+{% comment %} Footer — Motion 19 | Accordion mobile / Multi-colonnes desktop {% endcomment %}
+
+{%- liquid
+  assign f_bg      = section.settings.bg_color        | default: '#0a0a0a'
+  assign f_accent  = section.settings.accent_color     | default: '#0787ea'
+  assign f_text    = section.settings.text_color       | default: '#ffffff'
+  assign f_border  = section.settings.border_color     | default: '#1f1f1f'
+  assign f_maxw    = section.settings.footer_layout_width | default: 'boxed'
+  assign f_padx    = section.settings.footer_padding_x  | default: 20
+  assign f_pt      = section.settings.footer_padding_top    | default: 64
+  assign f_pb      = section.settings.footer_padding_bottom | default: 32
+  assign show_nl   = section.settings.show_newsletter   | default: true
+  assign nl_title  = section.settings.newsletter_title  | default: 'Rejoignez la communauté'
+  assign nl_sub    = section.settings.newsletter_subtitle | default: 'Nouveautés exclusives, offres membres et inspirations créatives.'
+  assign nl_ph     = section.settings.newsletter_placeholder | default: 'votre@email.com'
+  assign nl_btn    = section.settings.newsletter_btn    | default: "S'abonner"
+  assign copy      = section.settings.copyright_text    | default: ''
+  assign show_pay  = section.settings.show_payment_icons | default: true
+  assign f_logo    = section.settings.footer_logo
+  assign f_logo_w  = section.settings.footer_logo_width | default: 120
+  assign custom_css_f = section.settings.custom_css_footer | default: ''
+
+  assign f_inner_maxw = 1400
+  if f_maxw == 'wide'
+    assign f_inner_maxw = 1600
+  elsif f_maxw == 'full'
+    assign f_inner_maxw = 99999
+  endif
+-%}
+
+<style>
+  :root {
+    --footer-bg: {{ f_bg }};
+    --footer-accent: {{ f_accent }};
+    --footer-text: {{ f_text }};
+    --footer-border: {{ f_border }};
+  }
+  .footer { background: var(--footer-bg); color: var(--footer-text, rgba(255,255,255,0.85)); }
+  .footer__top-inner,
+  .footer__bottom-inner {
+    max-width: {{ f_inner_maxw }}px;
+    padding-left: {{ f_padx }}px;
+    padding-right: {{ f_padx }}px;
+  }
+  .footer__top { padding-top: {{ f_pt }}px; padding-bottom: {{ f_pt | divided_by: 2 }}px; }
+  .footer__bottom { padding-top: {{ f_pb }}px; padding-bottom: {{ f_pb }}px; }
+  .footer__social-btn:hover { background: var(--footer-accent); border-color: var(--footer-accent); }
+  {%- if custom_css_f != blank %}.footer { {{ custom_css_f }} }{%- endif %}
+</style>
+
+<style>
+/* ============================================================
+   FOOTER
+   ============================================================ */
+.footer {
+  background: #0a0a0a;
+  color: rgba(255,255,255,0.85);
+  font-family: 'Inter', sans-serif;
+}
+
+.footer *,
+.footer *::before,
+.footer *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+.footer a { text-decoration: none; color: inherit; }
+
+.footer ul { list-style: none; }
+
+/* ── Top strip ──────────────────────────────────────────────── */
+.footer__top {
+  border-bottom: 1px solid rgba(255,255,255,0.07);
+  padding: 48px 0 40px;
+}
+
+.footer__top-inner {
+  max-width: 1400px; margin: 0 auto; padding: 0 20px;
+  display: grid; grid-template-columns: 1fr;
+  gap: 40px;
+}
+
+/* Brand */
+.footer__brand { display: flex; flex-direction: column; gap: 16px; }
+
+.footer__logo-img { max-height: 40px; width: auto; filter: brightness(0) invert(1); opacity: 0.9; }
+
+.footer__brand-desc {
+  font-size: 0.85rem; line-height: 1.7; color: rgba(255,255,255,0.45);
+  max-width: 300px;
+}
+
+.footer__socials { display: flex; gap: 10px; margin-top: 4px; }
+
+.footer__social-btn {
+  width: 38px; height: 38px; border-radius: 50%;
+  border: 1px solid rgba(255,255,255,0.12);
+  background: transparent; color: rgba(255,255,255,0.6);
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer; transition: background 0.2s, color 0.2s, border-color 0.2s;
+}
+.footer__social-btn:hover {
+  background: var(--c-primary, #0787ea);
+  border-color: var(--c-primary, #0787ea);
+  color: #fff;
+}
+
+/* ── Nav columns — accordion on mobile, grid on desktop ──── */
+.footer__nav { display: flex; flex-direction: column; gap: 0; }
+
+/* Accordion item */
+.footer__col-head {
+  display: flex; align-items: center; justify-content: space-between;
+  width: 100%; background: transparent; border: none;
+  color: #fff; font-family: 'Inter', sans-serif;
+  font-size: 0.8rem; font-weight: 700; letter-spacing: 0.12em;
+  text-transform: uppercase; padding: 18px 0;
+  border-bottom: 1px solid rgba(255,255,255,0.07);
+  cursor: pointer;
+}
+.footer__col-head .chevron {
+  transition: transform 0.3s cubic-bezier(0.4,0,0.2,1);
+  color: rgba(255,255,255,0.4); flex-shrink: 0;
+}
+.footer__col.is-open .footer__col-head .chevron { transform: rotate(180deg); }
+
+.footer__col-body {
+  max-height: 0; overflow: hidden;
+  transition: max-height 0.38s cubic-bezier(0.4,0,0.2,1), padding 0.28s;
+  padding: 0;
+}
+.footer__col.is-open .footer__col-body { max-height: 400px; padding: 12px 0 20px; }
+
+.footer__col-list { display: flex; flex-direction: column; gap: 12px; }
+
+.footer__col-link {
+  font-size: 0.88rem; color: rgba(255,255,255,0.48);
+  transition: color 0.2s;
+  display: inline-flex; align-items: center; gap: 6px;
+}
+.footer__col-link:hover { color: #fff; }
+
+/* ── Contact ─────────────────────────────────────────────────── */
+.footer__contact {
+  display: flex; flex-direction: column; gap: 10px;
+}
+.footer__contact-item {
+  display: flex; align-items: flex-start; gap: 10px;
+  color: rgba(255,255,255,0.55); font-size: 0.82rem; line-height: 1.4;
+  transition: color 0.2s;
+}
+.footer__contact-item:hover { color: rgba(255,255,255,0.9); }
+.footer__contact-icon {
+  flex-shrink: 0;
+  width: 28px; height: 28px; border-radius: 50%;
+  background: rgba(255,255,255,0.07);
+  display: flex; align-items: center; justify-content: center;
+  margin-top: 1px;
+}
+.footer__contact-text { padding-top: 5px; }
+
+/* ── Bloc communauté ─────────────────────────────────────────── */
+.footer__community {
+  background: rgba(255,255,255,0.04);
+  border-radius: 12px; padding: 24px;
+  display: flex; flex-direction: column; gap: 12px;
+}
+.footer__nl-title {
+  font-family: 'Inter', sans-serif; font-size: 1rem; font-weight: 700; color: #fff;
+}
+.footer__nl-sub { font-size: 0.8rem; color: rgba(255,255,255,0.4); line-height: 1.55; margin-bottom: 12px; }
+
+/* ── Newsletter form ── */
+.footer__nl-row { display: flex; gap: 8px; flex-wrap: wrap; }
+.footer__nl-input {
+  flex: 1 1 180px; min-width: 0;
+  padding: 10px 14px;
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(255,255,255,0.12);
+  border-radius: 3px;
+  color: #fff; font-size: 0.82rem; font-family: var(--font-body, 'Inter', sans-serif);
+  transition: border-color 200ms ease;
+}
+.footer__nl-input::placeholder { color: rgba(255,255,255,0.3); }
+.footer__nl-input:focus { outline: none; border-color: var(--footer-accent, #0787ea); }
+.footer__nl-btn {
+  padding: 10px 20px; flex-shrink: 0;
+  background: var(--footer-accent, #0787ea); color: #fff;
+  border: none; border-radius: 3px; cursor: pointer;
+  font-size: 0.78rem; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase;
+  font-family: var(--font-body, 'Inter', sans-serif);
+  transition: background 200ms ease, transform 200ms ease;
+}
+.footer__nl-btn:hover { background: #0672c7; transform: translateY(-1px); }
+
+/* ── Payment icons ── */
+.footer__payment-icons { display: flex; gap: 8px; align-items: center; }
+.footer__payment-icons svg { height: 20px; width: auto; border-radius: 3px; }
+
+/* ── Bottom bar ─────────────────────────────────────────────── */
+.footer__bottom {
+  border-top: 1px solid rgba(255,255,255,0.07);
+  padding: 20px 0;
+}
+.footer__bottom-inner {
+  max-width: 1400px; margin: 0 auto; padding: 0 20px;
+  display: flex; flex-direction: column; align-items: center; gap: 10px; text-align: center;
+}
+.footer__copy {
+  font-size: 0.75rem; color: rgba(255,255,255,0.25);
+}
+.footer__legal-links {
+  display: flex; flex-wrap: wrap; gap: 16px; justify-content: center;
+}
+.footer__legal-link {
+  font-size: 0.75rem; color: rgba(255,255,255,0.3);
+  transition: color 0.2s;
+}
+.footer__legal-link:hover { color: rgba(255,255,255,0.7); }
+
+
+/* ============================================================
+   RESPONSIVE
+   ============================================================ */
+@media (min-width: 640px) {
+  .footer__top-inner { padding: 0 28px; }
+  .footer__bottom-inner { padding: 0 28px; flex-direction: row; justify-content: space-between; text-align: left; }
+}
+
+@media (min-width: 768px) {
+  .footer__top-inner {
+    grid-template-columns: 1.4fr 2fr;
+    gap: 64px;
+    padding: 0 36px;
+  }
+
+  /* On desktop: nav columns in a row, no accordion */
+  .footer__nav {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 0 32px;
+  }
+
+  .footer__col-head {
+    cursor: default; pointer-events: none;
+    border-bottom: none; padding: 0 0 16px 0;
+  }
+  .footer__col-head .chevron { display: none; }
+
+  .footer__col-body {
+    max-height: none !important;
+    overflow: visible;
+    padding: 0 !important;
+  }
+
+  .footer__bottom-inner { padding: 0 36px; }
+}
+
+@media (min-width: 1024px) {
+  .footer__top-inner { padding: 0 40px; grid-template-columns: 1.2fr 2.4fr; }
+  .footer__bottom-inner { padding: 0 40px; }
+}
+</style>
+
+<footer class="footer" role="contentinfo">
+
+  <!-- TOP STRIP: brand + nav -->
+  <div class="footer__top">
+    <div class="footer__top-inner">
+
+      <!-- Brand block -->
+      <div class="footer__brand">
+        {%- if settings.logo != blank -%}
+          <a href="{{ routes.root_url }}" aria-label="{{ shop.name }} — Accueil">
+            {%- assign footer_logo_src = f_logo | default: settings.logo -%}
+            <img
+              src="{{ footer_logo_src | image_url: width: 240 }}"
+              alt="{{ shop.name }}"
+              class="footer__logo-img"
+              width="{{ f_logo_w }}"
+              height="40"
+              style="max-width: {{ f_logo_w }}px; width: auto; height: auto;"
+              loading="lazy"
+            >
+          </a>
+        {%- else -%}
+          <a href="{{ routes.root_url }}" style="font-family:'Inter',sans-serif;font-size:1.4rem;font-weight:900;color:#fff;letter-spacing:-0.03em;">
+            {{ shop.name }}
+          </a>
+        {%- endif -%}
+
+        <p class="footer__brand-desc">
+          {{ section.settings.brand_desc | default: "Équipement photo, vidéo et drone pour les créateurs qui ne font aucun compromis sur la qualité." }}
+        </p>
+
+        <div class="footer__socials" aria-label="Réseaux sociaux">
+          {%- if section.settings.social_instagram != blank -%}<a href="{{ section.settings.social_instagram }}" class="footer__social-btn" target="_blank" rel="noopener" aria-label="Instagram"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><rect x="2" y="2" width="20" height="20" rx="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg></a>{%- endif -%}
+          {%- if section.settings.social_facebook != blank -%}<a href="{{ section.settings.social_facebook }}" class="footer__social-btn" target="_blank" rel="noopener" aria-label="Facebook"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg></a>{%- endif -%}
+          {%- if section.settings.social_youtube != blank -%}<a href="{{ section.settings.social_youtube }}" class="footer__social-btn" target="_blank" rel="noopener" aria-label="YouTube"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg></a>{%- endif -%}
+          {%- if section.settings.social_tiktok != blank -%}<a href="{{ section.settings.social_tiktok }}" class="footer__social-btn" target="_blank" rel="noopener" aria-label="TikTok"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-2.88 2.5 2.89 2.89 0 0 1-2.89-2.89 2.89 2.89 0 0 1 2.89-2.89c.28 0 .54.04.79.1V9.01a6.34 6.34 0 0 0-.79-.05 6.34 6.34 0 0 0-6.34 6.34 6.34 6.34 0 0 0 6.34 6.34 6.34 6.34 0 0 0 6.33-6.34V8.69a8.18 8.18 0 0 0 4.77 1.52V6.72a4.85 4.85 0 0 1-1-.03z"/></svg></a>{%- endif -%}
+          {%- if section.settings.social_twitter != blank -%}<a href="{{ section.settings.social_twitter }}" class="footer__social-btn" target="_blank" rel="noopener" aria-label="X / Twitter"><svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.748l7.73-8.835L1.254 2.25H8.08l4.253 5.622 5.91-5.622Zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg></a>{%- endif -%}
+          {%- if section.settings.social_linkedin != blank -%}<a href="{{ section.settings.social_linkedin }}" class="footer__social-btn" target="_blank" rel="noopener" aria-label="LinkedIn"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 0 1-2.063-2.065 2.064 2.064 0 1 1 2.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg></a>{%- endif -%}
+        </div>
+
+        <!-- Contact -->
+        <div class="footer__contact">
+          <a href="tel:+237656999989" class="footer__contact-item">
+            <span class="footer__contact-icon">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.11 11.8 19.79 19.79 0 0 1 1.11 3.2 2 2 0 0 1 3.08 1h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.09 8.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+            </span>
+            <span class="footer__contact-text">{{ section.settings.phone | default: '+237 656 999 989 / +237 654 546 554' }}</span>
+          </a>
+          <a href="https://maps.google.com/?q=1203+Boulevard+de+la+Liberté+Akwa+Douala" class="footer__contact-item" target="_blank" rel="noopener">
+            <span class="footer__contact-icon">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M15 10.5a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z"/><path d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1 1 15 0Z"/></svg>
+            </span>
+            <span class="footer__contact-text">{{ section.settings.address | default: '1203 Bvd de la Liberté, Akwa Douala' }}</span>
+          </a>
+        </div>
+
+        {%- if show_nl -%}
+        <!-- Bloc newsletter & communauté -->
+        <div class="footer__community" style="margin-top:8px;">
+          <div class="footer__nl-title">{{ nl_title }}</div>
+          <p class="footer__nl-sub">{{ nl_sub }}</p>
+          <form class="footer__nl-form" action="/contact#contact_form" method="post" accept-charset="UTF-8">
+            <input type="hidden" name="form_type" value="customer">
+            <input type="hidden" name="utf8" value="✓">
+            <input type="hidden" name="contact[tags]" value="newsletter">
+            <div class="footer__nl-row">
+              <input
+                class="footer__nl-input"
+                type="email"
+                name="contact[email]"
+                placeholder="{{ nl_ph }}"
+                aria-label="{{ nl_ph }}"
+                required
+                autocomplete="email"
+              >
+              <button class="footer__nl-btn" type="submit">{{ nl_btn }}</button>
+            </div>
+          </form>
+        </div>
+        {%- endif -%}
+
+        <!-- Réseaux sociaux (section brand) -->
+        <div class="footer__socials footer__socials--brand" aria-label="Nos réseaux sociaux" style="margin-top:16px;">
+          {%- if section.settings.social_instagram != blank -%}
+            <a href="{{ section.settings.social_instagram }}" class="footer__social-btn" target="_blank" rel="noopener" aria-label="Instagram">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><rect x="2" y="2" width="20" height="20" rx="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg>
+            </a>
+          {%- endif -%}
+          {%- if section.settings.social_facebook != blank -%}
+            <a href="{{ section.settings.social_facebook }}" class="footer__social-btn" target="_blank" rel="noopener" aria-label="Facebook">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg>
+            </a>
+          {%- endif -%}
+          {%- if section.settings.social_youtube != blank -%}
+            <a href="{{ section.settings.social_youtube }}" class="footer__social-btn" target="_blank" rel="noopener" aria-label="YouTube">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>
+            </a>
+          {%- endif -%}
+          {%- if section.settings.social_tiktok != blank -%}
+            <a href="{{ section.settings.social_tiktok }}" class="footer__social-btn" target="_blank" rel="noopener" aria-label="TikTok">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-2.88 2.5 2.89 2.89 0 0 1-2.89-2.89 2.89 2.89 0 0 1 2.89-2.89c.28 0 .54.04.79.1V9.01a6.34 6.34 0 0 0-.79-.05 6.34 6.34 0 0 0-6.34 6.34 6.34 6.34 0 0 0 6.34 6.34 6.34 6.34 0 0 0 6.33-6.34V8.69a8.18 8.18 0 0 0 4.77 1.52V6.72a4.85 4.85 0 0 1-1-.03z"/></svg>
+            </a>
+          {%- endif -%}
+          {%- if section.settings.social_twitter != blank -%}
+            <a href="{{ section.settings.social_twitter }}" class="footer__social-btn" target="_blank" rel="noopener" aria-label="X / Twitter">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.748l7.73-8.835L1.254 2.25H8.08l4.253 5.622 5.91-5.622Zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+            </a>
+          {%- endif -%}
+          {%- if section.settings.social_linkedin != blank -%}
+            <a href="{{ section.settings.social_linkedin }}" class="footer__social-btn" target="_blank" rel="noopener" aria-label="LinkedIn">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 0 1-2.063-2.065 2.064 2.064 0 1 1 2.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
+            </a>
+          {%- endif -%}
+        </div>
+      </div>
+
+      <!-- Nav columns (accordion mobile / grid desktop) -->
+      <nav class="footer__nav" aria-label="Navigation pied de page">
+
+        <!-- Shop -->
+        <div class="footer__col">
+          <button class="footer__col-head" aria-expanded="false" aria-controls="footer-shop">
+            Boutique
+            <svg class="chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg>
+          </button>
+          <div class="footer__col-body" id="footer-shop">
+            <ul class="footer__col-list" role="list">
+              <li><a href="/collections/photo"       class="footer__col-link">Photo</a></li>
+              <li><a href="/collections/video"       class="footer__col-link">Vidéo</a></li>
+              <li><a href="/collections/eclairage"   class="footer__col-link">Éclairage</a></li>
+              <li><a href="/collections/drone"       class="footer__col-link">Drone</a></li>
+              <li><a href="/collections/accessoire"  class="footer__col-link">Accessoires</a></li>
+              <li><a href="/collections/nouveautes"  class="footer__col-link">Nouveautés</a></li>
+              <li><a href="/collections/promotions"  class="footer__col-link">Promotions</a></li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- Learn -->
+        <div class="footer__col">
+          <button class="footer__col-head" aria-expanded="false" aria-controls="footer-learn">
+            Apprendre
+            <svg class="chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg>
+          </button>
+          <div class="footer__col-body" id="footer-learn">
+            <ul class="footer__col-list" role="list">
+              <li><a href="/blogs/guides"                          class="footer__col-link">Tous les guides</a></li>
+              <li><a href="/blogs/guides/choisir-son-objectif"     class="footer__col-link">Choisir un objectif</a></li>
+              <li><a href="/blogs/guides/setup-video-debutant"     class="footer__col-link">Setup vidéo débutant</a></li>
+              <li><a href="/blogs/guides/guide-drone"              class="footer__col-link">Guide drone</a></li>
+              <li><a href="/blogs/guides/photo-outdoor"            class="footer__col-link">Photo outdoor</a></li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- Support -->
+        <div class="footer__col">
+          <button class="footer__col-head" aria-expanded="false" aria-controls="footer-support">
+            Support
+            <svg class="chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg>
+          </button>
+          <div class="footer__col-body" id="footer-support">
+            <ul class="footer__col-list" role="list">
+              <li><a href="/pages/faq"             class="footer__col-link">FAQ</a></li>
+              <li><a href="/pages/livraison"        class="footer__col-link">Livraison</a></li>
+              <li><a href="/pages/retours"          class="footer__col-link">Retours & échanges</a></li>
+              <li><a href="/pages/garantie"         class="footer__col-link">Garantie</a></li>
+              <li><a href="/pages/support"          class="footer__col-link">Contacter le support</a></li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- À propos -->
+        <div class="footer__col">
+          <button class="footer__col-head" aria-expanded="false" aria-controls="footer-about">
+            À propos
+            <svg class="chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg>
+          </button>
+          <div class="footer__col-body" id="footer-about">
+            <ul class="footer__col-list" role="list">
+              <li><a href="/pages/a-propos"         class="footer__col-link">Notre histoire</a></li>
+              <li><a href="/pages/equipe"            class="footer__col-link">L'équipe</a></li>
+              <li><a href="/pages/engagements"       class="footer__col-link">Nos engagements</a></li>
+            </ul>
+          </div>
+        </div>
+
+      </nav>
+
+    </div>
+  </div>
+
+  <!-- BOTTOM BAR -->
+  <div class="footer__bottom">
+    <div class="footer__bottom-inner">
+      <p class="footer__copy">
+        {%- if copy != blank -%}
+          {{ copy }}
+        {%- else -%}
+          &copy; {{ 'now' | date: '%Y' }} {{ shop.name }}. Tous droits réservés.
+        {%- endif -%}
+      </p>
+
+      <div class="footer__legal-links">
+        {%- if section.settings.legal_1_label != blank -%}
+          <a href="{{ section.settings.legal_1_url | default: '#' }}" class="footer__legal-link">{{ section.settings.legal_1_label }}</a>
+        {%- else -%}
+          <a href="/pages/mentions-legales" class="footer__legal-link">Mentions légales</a>
+        {%- endif -%}
+        {%- if section.settings.legal_2_label != blank -%}
+          <a href="{{ section.settings.legal_2_url | default: '#' }}" class="footer__legal-link">{{ section.settings.legal_2_label }}</a>
+        {%- else -%}
+          <a href="/pages/confidentialite" class="footer__legal-link">Confidentialité</a>
+        {%- endif -%}
+        {%- if section.settings.legal_3_label != blank -%}
+          <a href="{{ section.settings.legal_3_url | default: '#' }}" class="footer__legal-link">{{ section.settings.legal_3_label }}</a>
+        {%- else -%}
+          <a href="/pages/cgv" class="footer__legal-link">CGV</a>
+        {%- endif -%}
+        {%- if section.settings.legal_4_label != blank -%}
+          <a href="{{ section.settings.legal_4_url | default: '#' }}" class="footer__legal-link">{{ section.settings.legal_4_label }}</a>
+        {%- else -%}
+          <a href="/pages/cookies" class="footer__legal-link">Cookies</a>
+        {%- endif -%}
+      </div>
+
+      {%- if show_pay -%}
+        <div class="footer__payment-icons" aria-label="Méthodes de paiement acceptées">
+          <svg height="20" viewBox="0 0 38 24" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Visa"><rect width="38" height="24" rx="4" fill="#1A1F71"/><path d="M14.5 16H12l1.5-8H16L14.5 16zm5-8l-2 5.5-.3-1.3-.9-4.2H14l2.5 8h2.5L23 8h-3.5zM26.5 8c-.7 0-1.3.2-1.7.5l-.3 1.8c.4-.4 1-.6 1.5-.6.7 0 1 .4 1 .8l-.1.5h-.7c-1.7 0-2.7.8-2.7 2 0 .8.5 1.4 1.5 1.4.7 0 1.2-.3 1.6-.7l-.1.6h2.2l1-5.2C30 8.6 29 8 26.5 8zm.8 4.4c-.1.6-.5 1-1.1 1-.4 0-.6-.2-.6-.6 0-.6.4-.9 1.2-.9h.6l-.1.5z" fill="#fff"/></svg>
+          <svg height="20" viewBox="0 0 38 24" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Mastercard"><rect width="38" height="24" rx="4" fill="#252525"/><circle cx="15" cy="12" r="7" fill="#EB001B"/><circle cx="23" cy="12" r="7" fill="#F79E1B"/><path d="M19 7.5a7 7 0 0 1 0 9 7 7 0 0 1 0-9z" fill="#FF5F00"/></svg>
+          <svg height="20" viewBox="0 0 38 24" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="PayPal"><rect width="38" height="24" rx="4" fill="#fff" stroke="#e5e5e5" stroke-width="1"/><path d="M13.5 7H16c2.2 0 3 1 2.7 2.5-.4 2-1.8 2.5-3.5 2.5h-.8l-.6 3H12l1.5-8zm1.3 3.5h.7c.7 0 1.2-.2 1.3-.8.1-.5-.2-.7-.8-.7h-.7l-.5 1.5z" fill="#003087"/><path d="M20.5 9H23c2 0 2.8 1 2.5 2.5-.4 2-1.8 2.5-3.5 2.5h-.8l-.6 3H19l1.5-8zm1.3 3.5h.7c.7 0 1.2-.2 1.3-.8.1-.5-.2-.7-.8-.7h-.7l-.5 1.5z" fill="#009cde"/></svg>
+        </div>
+      {%- endif -%}
+    </div>
+  </div>
+
+</footer>
+
+<script>
+(function () {
+  /* Accordion — mobile only (JS detects desktop via CSS pointer-events:none) */
+  var cols = document.querySelectorAll('.footer__col-head');
+  cols.forEach(function (btn) {
+    btn.addEventListener('click', function () {
+      var col = btn.closest('.footer__col');
+      /* Check if accordion mode is active (desktop disables pointer-events) */
+      if (getComputedStyle(btn).pointerEvents === 'none') return;
+      var isOpen = col.classList.toggle('is-open');
+      btn.setAttribute('aria-expanded', isOpen);
+    });
+  });
+})();
+</script>
+
+{% schema %}
+{
+  "name": "Footer",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Brand"
+    },
+    {
+      "type": "textarea",
+      "id": "brand_desc",
+      "label": "Brand description",
+      "default": "Photo, video and drone equipment for creators who make no compromises on quality."
+    },
+    {
+      "type": "text",
+      "id": "community_title",
+      "label": "Community block title",
+      "default": "The Motion 19 Community"
+    },
+    {
+      "type": "textarea",
+      "id": "community_subtitle",
+      "label": "Community block subtitle",
+      "default": "Follow us for the latest releases, tutorials, and creative inspiration."
+    },
+    {
+      "type": "header",
+      "content": "Contact"
+    },
+    {
+      "type": "text",
+      "id": "phone",
+      "label": "Phone number",
+      "default": "+237 656 999 989 / +237 654 546 554"
+    },
+    {
+      "type": "text",
+      "id": "address",
+      "label": "Address",
+      "default": "1203 Bvd de la Liberté, Akwa Douala"
+    },
+    {
+      "type": "url",
+      "id": "address_map_url",
+      "label": "Google Maps link",
+      "info": "Link to the location on Google Maps"
+    },
+    {
+      "type": "header",
+      "content": "Legal links (bottom bar)"
+    },
+    {
+      "type": "text",
+      "id": "legal_1_label",
+      "label": "Legal link 1",
+      "default": "Legal notice"
+    },
+    {
+      "type": "url",
+      "id": "legal_1_url",
+      "label": "Legal link 1 URL"
+    },
+    {
+      "type": "text",
+      "id": "legal_2_label",
+      "label": "Legal link 2",
+      "default": "Privacy policy"
+    },
+    {
+      "type": "url",
+      "id": "legal_2_url",
+      "label": "Legal link 2 URL"
+    },
+    {
+      "type": "text",
+      "id": "legal_3_label",
+      "label": "Legal link 3",
+      "default": "CGV"
+    },
+    {
+      "type": "url",
+      "id": "legal_3_url",
+      "label": "Legal link 3 URL"
+    },
+    {
+      "type": "text",
+      "id": "legal_4_label",
+      "label": "Legal link 4",
+      "default": "Cookies"
+    },
+    {
+      "type": "url",
+      "id": "legal_4_url",
+      "label": "Legal link 4 URL"
+    },
+    {
+      "type": "header",
+      "content": "Colors"
+    },
+    {
+      "type": "color",
+      "id": "bg_color",
+      "label": "Background color",
+      "default": "#0a0a0a"
+    },
+    {
+      "type": "color",
+      "id": "accent_color",
+      "label": "Accent color (social buttons hover)",
+      "default": "#0787ea"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Couleur du texte",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "border_color",
+      "label": "Couleur des bordures séparateurs",
+      "default": "#1f1f1f"
+    },
+    {
+      "type": "header",
+      "content": "📐 Layout footer"
+    },
+    {
+      "type": "select",
+      "id": "footer_layout_width",
+      "label": "Largeur conteneur",
+      "default": "boxed",
+      "options": [
+        { "value": "boxed", "label": "Boxed (1400px)" },
+        { "value": "wide",  "label": "Large (1600px)" },
+        { "value": "full",  "label": "Full width" }
+      ]
+    },
+    {
+      "type": "range",
+      "id": "footer_padding_x",
+      "label": "Padding horizontal (px)",
+      "min": 8, "max": 80, "step": 4, "default": 20, "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "footer_padding_top",
+      "label": "Padding haut (px)",
+      "min": 0, "max": 160, "step": 8, "default": 64, "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "footer_padding_bottom",
+      "label": "Padding bas (px)",
+      "min": 0, "max": 120, "step": 8, "default": 32, "unit": "px"
+    },
+    {
+      "type": "header",
+      "content": "📱 Réseaux sociaux"
+    },
+    {
+      "type": "url",
+      "id": "social_instagram",
+      "label": "Instagram"
+    },
+    {
+      "type": "url",
+      "id": "social_facebook",
+      "label": "Facebook"
+    },
+    {
+      "type": "url",
+      "id": "social_youtube",
+      "label": "YouTube"
+    },
+    {
+      "type": "url",
+      "id": "social_tiktok",
+      "label": "TikTok"
+    },
+    {
+      "type": "url",
+      "id": "social_twitter",
+      "label": "X / Twitter"
+    },
+    {
+      "type": "url",
+      "id": "social_linkedin",
+      "label": "LinkedIn"
+    },
+    {
+      "type": "header",
+      "content": "📧 Newsletter"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_newsletter",
+      "label": "Afficher le bloc newsletter",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "newsletter_title",
+      "label": "Titre newsletter",
+      "default": "Rejoignez la communauté"
+    },
+    {
+      "type": "text",
+      "id": "newsletter_subtitle",
+      "label": "Sous-titre newsletter",
+      "default": "Nouveautés exclusives, offres membres et inspirations créatives."
+    },
+    {
+      "type": "text",
+      "id": "newsletter_placeholder",
+      "label": "Placeholder champ email",
+      "default": "votre@email.com"
+    },
+    {
+      "type": "text",
+      "id": "newsletter_btn",
+      "label": "Texte bouton soumission",
+      "default": "S'abonner"
+    },
+    {
+      "type": "header",
+      "content": "©️ Copyright"
+    },
+    {
+      "type": "text",
+      "id": "copyright_text",
+      "label": "Texte copyright",
+      "default": "© Motion19. Tous droits réservés."
+    },
+    {
+      "type": "checkbox",
+      "id": "show_payment_icons",
+      "label": "Afficher les icônes de paiement",
+      "default": true
+    },
+    {
+      "type": "header",
+      "content": "🖼️ Logo footer"
+    },
+    {
+      "type": "image_picker",
+      "id": "footer_logo",
+      "label": "Logo footer (optionnel, sinon logo global)"
+    },
+    {
+      "type": "range",
+      "id": "footer_logo_width",
+      "label": "Largeur logo (px)",
+      "min": 40, "max": 240, "step": 10, "default": 120, "unit": "px"
+    },
+    {
+      "type": "header",
+      "content": "⚙️ Avancé"
+    },
+    {
+      "type": "text",
+      "id": "custom_css_footer",
+      "label": "CSS personnalisé footer",
+      "info": "Appliqué sur .footer"
+    }
+  ]
+}
+{% endschema %}

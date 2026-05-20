@@ -1,0 +1,567 @@
+{{ 'card.css' | asset_url | stylesheet_tag }}
+{%- comment -%} ACS Popular Collections Carousel — Motion19 OS 2.0 — Embla Carousel (identical to featured-carousel) {%- endcomment -%}
+
+{%- liquid
+  assign sid         = section.id
+  assign bg_color    = section.settings.bg_color      | default: '#f7f7f8'
+  assign card_bg     = section.settings.card_bg        | default: '#ffffff'
+  assign text_color  = section.settings.text_color    | default: '#0a0a0a'
+  assign title_color = section.settings.title_color   | default: '#0a0a0a'
+  assign eyebrow_col = section.settings.eyebrow_color | default: '#0787ea'
+  assign dot_active  = section.settings.dot_active_color   | default: '#0a0a0a'
+  assign dot_inactive = section.settings.dot_inactive_color | default: 'rgba(10,10,10,0.18)'
+  assign arrow_color = section.settings.arrow_color   | default: '#0a0a0a'
+
+  assign show_arr    = section.settings.show_arrows
+  assign show_nav    = section.settings.show_dots
+  assign arr_size    = section.settings.arrow_size  | default: 36
+  assign dot_size    = section.settings.dot_size    | default: 6
+
+  assign pt_m        = section.settings.padding_top_mobile    | default: 40
+  assign pb_m        = section.settings.padding_bottom_mobile | default: 36
+  assign pt_d        = section.settings.padding_top_desktop   | default: 52
+  assign pb_d        = section.settings.padding_bottom_desktop | default: 36
+  assign mt          = section.settings.margin_top    | default: 0
+  assign mb          = section.settings.margin_bottom | default: 0
+  assign gap_cards   = section.settings.cards_gap     | default: 14
+  assign max_width   = section.settings.section_max_width | default: 1400
+  assign header_align = section.settings.header_align | default: 'left'
+  assign sep_enabled = section.settings.separator_enabled | default: false
+  assign sep_text    = section.settings.separator_text
+  assign sep_style   = section.settings.separator_style | default: 'line'
+  assign card_radius = section.settings.card_radius | default: 12
+-%}
+
+<section
+  id="acspc-{{ sid }}"
+  class="acspc"
+  aria-labelledby="acspc-title-{{ sid }}"
+  style="
+    --acspc-bg:           {{ bg_color }};
+    --acspc-card-bg:      {{ card_bg }};
+    --acspc-text:         {{ text_color }};
+    --acspc-title:        {{ title_color }};
+    --acspc-eyebrow:      {{ eyebrow_col }};
+    --acspc-dot-active:   {{ dot_active }};
+    --acspc-dot-inactive: {{ dot_inactive }};
+    --acspc-arrow-color:  {{ arrow_color }};
+    --acspc-pt-m:         {{ pt_m }}px;
+    --acspc-pb-m:         {{ pb_m }}px;
+    --acspc-pt-d:         {{ pt_d }}px;
+    --acspc-pb-d:         {{ pb_d }}px;
+    --acspc-mt:           {{ mt }}px;
+    --acspc-mb:           {{ mb }}px;
+    --acspc-gap:          {{ gap_cards }}px;
+    --acspc-max-w:        {{ max_width }}px;
+    --acspc-arrow-size:   {{ arr_size }}px;
+    --acspc-dot-size:     {{ dot_size }}px;
+    --acspc-radius:       {{ card_radius }}px;
+  "
+>
+  <div class="acspc__inner">
+
+    <div class="acspc__header acspc__header--{{ header_align }}">
+      <div class="acspc__header-text">
+        {%- if section.settings.eyebrow != blank -%}
+          <span class="acspc__eyebrow">{{ section.settings.eyebrow }}</span>
+        {%- endif -%}
+        <h2 class="acspc__title" id="acspc-title-{{ sid }}">
+          {{- section.settings.title | default: 'Collections populaires' -}}
+        </h2>
+        {%- if section.settings.subtitle != blank -%}
+          <p class="acspc__subtitle">{{ section.settings.subtitle }}</p>
+        {%- endif -%}
+      </div>
+      {%- if section.settings.cta_label != blank -%}
+        <a class="acspc__view-all" href="{{ section.settings.cta_url | default: '/collections/all' }}">
+          {{ section.settings.cta_label }}
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+        </a>
+      {%- endif -%}
+    </div>
+
+    {%- if sep_enabled -%}
+      <div class="acspc__sep acspc__sep--{{ sep_style }}" aria-hidden="true">
+        {%- if sep_text != blank -%}<span class="acspc__sep-text">{{ sep_text }}</span>{%- endif -%}
+      </div>
+    {%- endif -%}
+
+    <div class="acspc__viewport-wrap">
+      <div class="acspc__viewport" id="acspc-viewport-{{ sid }}">
+        <ul class="acspc__track" id="acspc-track-{{ sid }}" role="list" aria-label="Collections">
+          {%- if section.blocks.size > 0 -%}
+            {%- for block in section.blocks -%}
+              {%- liquid
+                assign card_img   = block.settings.image
+                assign card_title = block.settings.title | default: 'Collection'
+                assign card_desc  = block.settings.description
+                assign card_url   = block.settings.url | default: '/collections/all'
+                assign card_badge = block.settings.badge
+                assign overlay_op = block.settings.overlay_opacity | default: 45 | divided_by: 100.0
+              -%}
+              <li class="acspc__item" {{ block.shopify_attributes }}>
+                <a class="acspc__card" href="{{ card_url }}" aria-label="{{ card_title | escape }}">
+                  <div class="acspc__card-media" aria-hidden="true">
+                    {%- if card_img != blank -%}
+                      <img
+                        class="acspc__card-img"
+                        src="{{ card_img | image_url: width: 600 }}"
+                        srcset="{{ card_img | image_url: width: 400 }} 400w, {{ card_img | image_url: width: 600 }} 600w, {{ card_img | image_url: width: 800 }} 800w"
+                        sizes="(max-width:768px) calc((100vw - 48px) / 1.5), (max-width:1280px) calc((100vw - 76px) / 3.5), calc((100vw - 106px) / 5.5)"
+                        alt="{{ card_img.alt | default: card_title | escape }}"
+                        loading="lazy"
+                        width="{{ card_img.width }}"
+                        height="{{ card_img.height }}"
+                      >
+                    {%- else -%}
+                      <div class="acspc__card-placeholder"></div>
+                    {%- endif -%}
+                    <div class="acspc__card-overlay" style="--ov-a:{{ overlay_op }};"></div>
+                  </div>
+                  {%- if card_badge != blank -%}
+                    <span class="acspc__card-badge">{{ card_badge }}</span>
+                  {%- endif -%}
+                  <div class="acspc__card-content">
+                    <span class="acspc__card-title">{{ card_title }}</span>
+                    {%- if card_desc != blank -%}
+                      <span class="acspc__card-desc">{{ card_desc }}</span>
+                    {%- endif -%}
+                  </div>
+                </a>
+              </li>
+            {%- endfor -%}
+          {%- else -%}
+            {%- assign default_titles = 'Caméras & Vidéo,Audio & Podcast,Éclairage,Streaming,Mobile Creator,Accessoires,Setup Débutant,Studio Pro' | split: ',' -%}
+            {%- for i in (1..8) -%}
+              <li class="acspc__item">
+                <a class="acspc__card" href="/collections/all" aria-label="{{ default_titles[forloop.index0] }}">
+                  <div class="acspc__card-media" aria-hidden="true">
+                    <div class="acspc__card-placeholder"></div>
+                    <div class="acspc__card-overlay" style="--ov-a:0.45;"></div>
+                  </div>
+                  <div class="acspc__card-content">
+                    <span class="acspc__card-title">{{ default_titles[forloop.index0] }}</span>
+                  </div>
+                </a>
+              </li>
+            {%- endfor -%}
+          {%- endif -%}
+        </ul>
+      </div>
+    </div>
+
+    {%- if show_nav or show_arr -%}
+      <div class="acspc__footer">
+        <div class="acspc__footer-left">
+          {%- if show_nav -%}
+            <div class="acspc__dots" id="acspc-dots-{{ sid }}" role="tablist" aria-label="Position carousel"></div>
+          {%- endif -%}
+        </div>
+        <div class="acspc__footer-right">
+          {%- if show_arr -%}
+            <div class="acspc__arrows">
+              <button class="acspc__arrow" id="acspc-prev-{{ sid }}" aria-label="Précédent" type="button">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="15 18 9 12 15 6"/></svg>
+              </button>
+              <button class="acspc__arrow" id="acspc-next-{{ sid }}" aria-label="Suivant" type="button">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="9 18 15 12 9 6"/></svg>
+              </button>
+            </div>
+          {%- endif -%}
+        </div>
+      </div>
+    {%- endif -%}
+  </div>
+</section>
+
+<style>
+/* ═══════════════════════════════════════════════════
+   ACS Popular Carousel — acspc
+   Responsive: ≤768px → 1.5 | 769-1280px → 3.5 | ≥1281px → 5.5
+   ═══════════════════════════════════════════════════ */
+.acspc {
+  --acspc-pad:    16px;
+  --acspc-ease:   cubic-bezier(0.4, 0, 0.2, 1);
+  --acspc-ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --acspc-card-w: calc((100vw - (2 * var(--acspc-pad)) - var(--acspc-gap)) / 1.5);
+
+  background: var(--acspc-bg, #f7f7f8);
+  color: var(--acspc-text, #0a0a0a);
+  margin-top: var(--acspc-mt, 0);
+  margin-bottom: var(--acspc-mb, 0);
+}
+@media (min-width: 769px) {
+  .acspc {
+    --acspc-pad: 24px;
+    --acspc-card-w: calc((100vw - (2 * var(--acspc-pad)) - (2.5 * var(--acspc-gap))) / 3.5);
+  }
+}
+@media (min-width: 1281px) {
+  .acspc {
+    --acspc-pad: 40px;
+    --acspc-card-w: calc((100vw - (2 * var(--acspc-pad)) - (4.5 * var(--acspc-gap))) / 5.5);
+  }
+}
+
+.acspc__inner {
+  max-width: var(--acspc-max-w, 1400px);
+  margin: 0 auto;
+  padding-top: var(--acspc-pt-m, 40px);
+  padding-bottom: var(--acspc-pb-m, 36px);
+}
+@media (min-width: 769px) {
+  .acspc__inner { padding-top: var(--acspc-pt-d, 52px); padding-bottom: var(--acspc-pb-d, 36px); }
+}
+
+/* Header */
+.acspc__header {
+  display: flex; flex-direction: column; align-items: flex-start; gap: 12px;
+  padding: 0 var(--acspc-pad) 24px;
+}
+.acspc__header--center { align-items: center; text-align: center; }
+.acspc__header--right  { align-items: flex-end; text-align: right; }
+@media (min-width: 769px) {
+  .acspc__header { flex-direction: row; align-items: flex-end; justify-content: space-between; }
+  .acspc__header--center { flex-direction: column; align-items: center; }
+  .acspc__header--right  { flex-direction: column; align-items: flex-end; }
+}
+
+.acspc__header-text { display: flex; flex-direction: column; gap: 4px; }
+
+.acspc__eyebrow {
+  font-size: 0.7rem; font-weight: 600; letter-spacing: 0.16em;
+  text-transform: uppercase; color: var(--acspc-eyebrow, #0787ea);
+}
+
+.acspc__title {
+  font-family: var(--font-body, 'Inter', sans-serif);
+  font-size: clamp(1.4rem, 3vw, 2.2rem);
+  font-weight: 800; letter-spacing: -0.03em;
+  color: var(--acspc-title, #0a0a0a); margin: 0;
+}
+
+.acspc__subtitle {
+  font-size: 0.875rem;
+  color: color-mix(in srgb, var(--acspc-text, #0a0a0a) 60%, transparent);
+  margin: 0; max-width: 52ch; line-height: 1.55;
+}
+
+.acspc__view-all {
+  display: inline-flex; align-items: center; gap: 5px; flex-shrink: 0;
+  font-size: 0.78rem; font-weight: 600;
+  color: var(--acspc-text, #0a0a0a); text-decoration: none;
+  border-bottom: 1.5px solid currentColor; padding-bottom: 1px;
+  white-space: nowrap; transition: color 160ms ease;
+}
+.acspc__view-all:hover { color: #0787ea; }
+.acspc__view-all svg { transition: transform 200ms var(--acspc-ease); }
+.acspc__view-all:hover svg { transform: translateX(3px); }
+
+/* Separator */
+.acspc__sep {
+  margin: 0 var(--acspc-pad) 20px;
+  display: flex; align-items: center; gap: 16px;
+  color: color-mix(in srgb, var(--acspc-text, #0a0a0a) 35%, transparent);
+  font-size: 0.78rem; letter-spacing: 0.08em; text-transform: uppercase;
+}
+.acspc__sep--line::before, .acspc__sep--line::after   { content: ''; flex: 1; height: 1px; background: currentColor; }
+.acspc__sep--dashed::before, .acspc__sep--dashed::after { content: ''; flex: 1; height: 1px; border-top: 1px dashed currentColor; }
+
+/* Viewport */
+.acspc__viewport-wrap { overflow-x: clip; overflow-y: visible; }
+.acspc__viewport {
+  padding-left: var(--acspc-pad);
+  overflow: visible;
+  cursor: grab;
+  user-select: none; -webkit-user-select: none;
+}
+.acspc__viewport:active { cursor: grabbing; }
+
+/* Track */
+.acspc__track {
+  display: flex; gap: var(--acspc-gap, 14px);
+  padding-top: 20px; padding-bottom: 28px;
+  padding-right: var(--acspc-pad); margin: 0; padding-left: 0;
+  list-style: none;
+}
+
+/* Items */
+.acspc__item {
+  flex: 0 0 var(--acspc-card-w);
+  min-width: 0;
+}
+
+/* Card */
+.acspc__card {
+  display: block;
+  position: relative;
+  aspect-ratio: 4/5;
+  border-radius: var(--acspc-radius, 12px);
+  overflow: hidden;
+  text-decoration: none;
+  color: #fff;
+  background: var(--acspc-card-bg, #fff);
+  transition: transform 380ms var(--acspc-ease-out), box-shadow 380ms var(--acspc-ease);
+}
+@media (hover: hover) {
+  .acspc__card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 20px 56px rgba(0,0,0,0.18), 0 4px 12px rgba(0,0,0,0.1);
+  }
+}
+.acspc__card:focus-visible { outline: 2px solid #0787ea; outline-offset: 3px; }
+
+/* Media */
+.acspc__card-media { position: absolute; inset: 0; }
+.acspc__card-img {
+  position: absolute; inset: 0; width: 100%; height: 100%;
+  object-fit: cover; object-position: center; display: block;
+  transition: transform 600ms var(--acspc-ease); will-change: transform;
+}
+@media (hover: hover) {
+  .acspc__card:hover .acspc__card-img { transform: scale(1.07); }
+}
+.acspc__card-placeholder {
+  position: absolute; inset: 0;
+  background: linear-gradient(135deg, #e8e8e8 0%, #d0d0d0 100%);
+}
+.acspc__card-overlay {
+  position: absolute; inset: 0;
+  background: linear-gradient(
+    to top,
+    rgba(0,0,0,calc(var(--ov-a,0.45) * 1.5)) 0%,
+    rgba(0,0,0,calc(var(--ov-a,0.45) * 0.5)) 50%,
+    rgba(0,0,0,0) 100%
+  );
+}
+
+/* Badge */
+.acspc__card-badge {
+  position: absolute; top: 10px; left: 10px; z-index: 2;
+  background: rgba(255,255,255,0.14);
+  backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+  color: #fff; border: 1px solid rgba(255,255,255,0.3);
+  font-size: 0.6rem; font-weight: 700;
+  letter-spacing: 0.1em; text-transform: uppercase;
+  padding: 3px 9px; border-radius: 100px;
+}
+
+/* Content */
+.acspc__card-content {
+  position: absolute; bottom: 0; left: 0; right: 0; z-index: 1;
+  padding: 14px 14px 18px;
+  display: flex; flex-direction: column; gap: 4px;
+  transition: padding 280ms var(--acspc-ease);
+}
+@media (hover: hover) {
+  .acspc__card:hover .acspc__card-content { padding-bottom: 24px; }
+}
+
+.acspc__card-title {
+  font-family: var(--font-body, 'Inter', sans-serif);
+  font-size: clamp(0.9rem, 1.6vw, 1.15rem);
+  font-weight: 700; letter-spacing: -0.02em; line-height: 1.2;
+  color: #fff; text-shadow: 0 1px 6px rgba(0,0,0,0.4);
+}
+.acspc__card-desc {
+  font-size: 0.72rem; color: rgba(255,255,255,0.72); line-height: 1.45;
+  display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
+}
+
+/* Footer */
+.acspc__footer {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 18px var(--acspc-pad) 0; gap: 16px;
+}
+@media (max-width: 767px) {
+  .acspc__footer       { justify-content: center; }
+  .acspc__footer-left  { display: none; }
+  .acspc__footer-right { margin: 0 auto; }
+}
+.acspc__footer-left, .acspc__footer-right { display: flex; align-items: center; }
+
+/* Arrows */
+.acspc__arrows { display: flex; gap: 4px; }
+.acspc__arrow {
+  display: flex; align-items: center; justify-content: center;
+  width: var(--acspc-arrow-size, 36px); height: var(--acspc-arrow-size, 36px);
+  border-radius: 0.75rem; border: none; background: none;
+  color: var(--acspc-arrow-color, #0a0a0a); cursor: pointer; padding: 0;
+  transition: background 180ms var(--acspc-ease);
+}
+.acspc__arrow:hover    { background: rgba(10,10,10,0.07); }
+.acspc__arrow:disabled { opacity: 0.28; cursor: default; pointer-events: none; }
+.acspc__arrow:focus-visible { outline: 2px solid #0787ea; outline-offset: 2px; }
+
+/* Dots */
+.acspc__dots { display: flex; align-items: center; gap: 8px; }
+.acspc__dot {
+  width: var(--acspc-dot-size, 6px); height: var(--acspc-dot-size, 6px);
+  padding: 0; border: none; border-radius: 50%;
+  background: var(--acspc-dot-inactive, rgba(10,10,10,0.18));
+  cursor: pointer;
+  transition: width 280ms var(--acspc-ease), border-radius 280ms var(--acspc-ease), background 280ms var(--acspc-ease);
+}
+.acspc__dot--active {
+  width: calc(var(--acspc-dot-size, 6px) * 3.5);
+  border-radius: 3px;
+  background: var(--acspc-dot-active, #0a0a0a);
+}
+.acspc__dot--small  { transform: scale(0.6); opacity: 0.5; }
+.acspc__dot--hidden { display: none; }
+.acspc__dot:focus-visible { outline: 2px solid #0787ea; outline-offset: 2px; }
+</style>
+
+<script>
+(function () {
+  'use strict';
+  var sid = '{{ sid }}';
+
+  function init() {
+    var section  = document.getElementById('acspc-' + sid);
+    if (!section || !window.EmblaCarousel) return;
+    var viewport = document.getElementById('acspc-viewport-' + sid);
+    if (!viewport) return;
+
+    var dotsWrap = document.getElementById('acspc-dots-' + sid);
+    var btnPrev  = document.getElementById('acspc-prev-' + sid);
+    var btnNext  = document.getElementById('acspc-next-' + sid);
+    var dots = [];
+
+    var embla = window.EmblaCarousel(viewport, {
+      loop: true, align: 'start', slidesToScroll: 1, dragFree: false, containScroll: false
+    });
+
+    function buildDots() {
+      if (!dotsWrap) return;
+      dotsWrap.innerHTML = ''; dots = [];
+      embla.scrollSnapList().forEach(function (_, i) {
+        var btn = document.createElement('button');
+        btn.type = 'button'; btn.className = 'acspc__dot';
+        btn.setAttribute('role', 'tab');
+        btn.setAttribute('aria-label', 'Page ' + (i + 1));
+        btn.addEventListener('click', function () { embla.scrollTo(i); });
+        dotsWrap.appendChild(btn); dots.push(btn);
+      });
+      updateDots();
+    }
+
+    function updateDots() {
+      var maxV = 5; var idx = embla.selectedScrollSnap();
+      dots.forEach(function (d, i) {
+        var active = i === idx;
+        d.className = 'acspc__dot' + (active ? ' acspc__dot--active' : '');
+        d.setAttribute('aria-selected', active ? 'true' : 'false');
+      });
+      if (dots.length > maxV) {
+        var half = Math.floor(maxV / 2);
+        var start = Math.max(0, idx - half);
+        var end = Math.min(dots.length, start + maxV);
+        if (end - start < maxV) start = Math.max(0, end - maxV);
+        dots.forEach(function (d, i) {
+          if (i < start || i >= end) {
+            if (i === start - 1 || i === end) d.classList.add('acspc__dot--small');
+            else d.classList.add('acspc__dot--hidden');
+          }
+        });
+      }
+    }
+
+    embla.on('select', updateDots);
+    embla.on('reInit', buildDots);
+    buildDots();
+
+    if (btnPrev) btnPrev.addEventListener('click', function () { embla.scrollPrev(); });
+    if (btnNext) btnNext.addEventListener('click', function () { embla.scrollNext(); });
+  }
+
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init);
+  else init();
+  document.addEventListener('shopify:section:load', function (e) {
+    if (e.detail && e.detail.sectionId === sid) init();
+  });
+})();
+</script>
+
+{% schema %}
+{
+  "name": "ACS — Collections Carousel",
+  "tag": "section",
+  "class": "section-acs-popular-carousel",
+  "settings": [
+    { "type": "header", "content": "En-tête" },
+    { "type": "text",     "id": "eyebrow",  "label": "Label eyebrow" },
+    { "type": "text",     "id": "title",    "label": "Titre", "default": "Collections populaires" },
+    { "type": "textarea", "id": "subtitle", "label": "Sous-titre" },
+    { "type": "select",   "id": "header_align", "label": "Alignement", "default": "left",
+      "options": [
+        {"value":"left",   "label":"Gauche"},
+        {"value":"center", "label":"Centre"},
+        {"value":"right",  "label":"Droite"}
+      ]
+    },
+    { "type": "text", "id": "cta_label", "label": "Texte lien" },
+    { "type": "url",  "id": "cta_url",   "label": "Lien" },
+    { "type": "header", "content": "Séparateur" },
+    { "type": "checkbox", "id": "separator_enabled", "label": "Afficher séparateur", "default": false },
+    { "type": "text",     "id": "separator_text",    "label": "Texte séparateur" },
+    { "type": "select",   "id": "separator_style",   "label": "Style", "default": "line",
+      "options": [{"value":"line","label":"Ligne"},{"value":"dashed","label":"Tirets"}]
+    },
+    { "type": "header", "content": "Navigation" },
+    { "type": "checkbox", "id": "show_arrows", "label": "Flèches",        "default": true },
+    { "type": "checkbox", "id": "show_dots",   "label": "Dots",            "default": true },
+    { "type": "range",    "id": "arrow_size",  "label": "Taille flèches (px)", "min": 28, "max": 56, "step": 2, "default": 36, "unit": "px" },
+    { "type": "range",    "id": "dot_size",    "label": "Taille dots (px)",    "min": 4,  "max": 12, "step": 1, "default": 6,  "unit": "px" },
+    { "type": "header", "content": "Cartes" },
+    { "type": "range", "id": "card_radius", "label": "Rayon cartes (px)", "min": 0, "max": 32, "step": 2, "default": 12, "unit": "px" },
+    { "type": "header", "content": "Couleurs" },
+    { "type": "color", "id": "bg_color",              "label": "Fond section",    "default": "#f7f7f8" },
+    { "type": "color", "id": "card_bg",               "label": "Fond cartes",     "default": "#ffffff" },
+    { "type": "color", "id": "text_color",            "label": "Couleur texte",   "default": "#0a0a0a" },
+    { "type": "color", "id": "title_color",           "label": "Couleur titres",  "default": "#0a0a0a" },
+    { "type": "color", "id": "eyebrow_color",         "label": "Couleur eyebrow", "default": "#0787ea" },
+    { "type": "color", "id": "dot_active_color",      "label": "Dot actif",       "default": "#0a0a0a" },
+    { "type": "color", "id": "dot_inactive_color",    "label": "Dot inactif",     "default": "rgba(10,10,10,0.18)" },
+    { "type": "color", "id": "arrow_color",           "label": "Couleur flèches", "default": "#0a0a0a" },
+    { "type": "header", "content": "Espacement" },
+    { "type": "range", "id": "padding_top_mobile",     "label": "Padding haut mobile",  "min": 0, "max": 120, "step": 4, "default": 40, "unit": "px" },
+    { "type": "range", "id": "padding_bottom_mobile",  "label": "Padding bas mobile",   "min": 0, "max": 120, "step": 4, "default": 36, "unit": "px" },
+    { "type": "range", "id": "padding_top_desktop",    "label": "Padding haut desktop", "min": 0, "max": 120, "step": 4, "default": 52, "unit": "px" },
+    { "type": "range", "id": "padding_bottom_desktop", "label": "Padding bas desktop",  "min": 0, "max": 120, "step": 4, "default": 36, "unit": "px" },
+    { "type": "range", "id": "margin_top",    "label": "Marge haut", "min": 0, "max": 120, "step": 4, "default": 0, "unit": "px" },
+    { "type": "range", "id": "margin_bottom", "label": "Marge bas",  "min": 0, "max": 120, "step": 4, "default": 0, "unit": "px" },
+    { "type": "range", "id": "cards_gap",     "label": "Espacement cards (px)", "min": 4, "max": 40, "step": 2, "default": 14, "unit": "px" },
+    { "type": "range", "id": "section_max_width", "label": "Largeur max (px)", "min": 960, "max": 1920, "step": 40, "default": 1400, "unit": "px" }
+  ],
+  "blocks": [
+    {
+      "type": "card",
+      "name": "Carte collection",
+      "settings": [
+        { "type": "image_picker", "id": "image",           "label": "Image" },
+        { "type": "text",         "id": "title",           "label": "Titre", "default": "Collection" },
+        { "type": "textarea",     "id": "description",     "label": "Description" },
+        { "type": "url",          "id": "url",             "label": "Lien" },
+        { "type": "text",         "id": "badge",           "label": "Badge" },
+        { "type": "range",        "id": "overlay_opacity", "label": "Opacité overlay (%)", "min": 10, "max": 80, "step": 5, "default": 45, "unit": "%" }
+      ]
+    }
+  ],
+  "max_blocks": 16,
+  "presets": [
+    {
+      "name": "Collections Carousel",
+      "settings": { "title": "Collections populaires", "eyebrow": "Tendances", "show_arrows": true, "show_dots": true },
+      "blocks": [
+        { "type": "card", "settings": { "title": "Caméras & Vidéo" } },
+        { "type": "card", "settings": { "title": "Audio & Podcast" } },
+        { "type": "card", "settings": { "title": "Éclairage Studio" } },
+        { "type": "card", "settings": { "title": "Streaming & Live" } },
+        { "type": "card", "settings": { "title": "Mobile Creator" } },
+        { "type": "card", "settings": { "title": "Accessoires" } }
+      ]
+    }
+  ]
+}
+{% endschema %}

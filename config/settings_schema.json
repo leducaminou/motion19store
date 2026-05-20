@@ -1,0 +1,264 @@
+[
+  {
+    "name": "theme_info",
+    "theme_name": "Motion19 Store",
+    "theme_author": "Aminou Mohamadou",
+    "theme_version": "2.0.0",
+    "theme_documentation_url": "https://motion19.com/docs",
+    "theme_support_url": "https://motion19.com/support"
+  },
+  {
+    "name": "Logo & favicon",
+    "settings": [
+      { "type": "image_picker", "id": "logo",       "label": "Logo" },
+      {
+        "type": "range", "id": "logo_width",
+        "min": 50, "max": 300, "step": 10, "unit": "px",
+        "label": "Largeur du logo", "default": 160
+      },
+      { "type": "image_picker", "id": "favicon", "label": "Favicon" }
+    ]
+  },
+  {
+    "name": "Couleurs — Design System",
+    "settings": [
+      { "type": "header", "content": "Palette principale" },
+      {
+        "type": "color", "id": "color_primary",
+        "label": "Couleur primaire (bleu)", "default": "#0787ea"
+      },
+      {
+        "type": "color", "id": "color_primary_hover",
+        "label": "Primaire — hover", "default": "#0672c7"
+      },
+      {
+        "type": "color", "id": "color_text",
+        "label": "Texte principal", "default": "#1a1a1a"
+      },
+      {
+        "type": "color", "id": "color_text_light",
+        "label": "Texte secondaire", "default": "#666666"
+      },
+      { "type": "header", "content": "Arrière-plans" },
+      {
+        "type": "color", "id": "color_bg",
+        "label": "Fond principal", "default": "#ffffff"
+      },
+      {
+        "type": "color", "id": "color_bg_soft",
+        "label": "Fond doux", "default": "#f7f7f8"
+      },
+      {
+        "type": "color", "id": "color_bg_dark",
+        "label": "Fond sombre", "default": "#0a0a0a"
+      },
+      {
+        "type": "color", "id": "color_border",
+        "label": "Bordures", "default": "#e5e5e5"
+      }
+    ]
+  },
+  {
+    "name": "Typographie — Design System",
+    "settings": [
+      { "type": "header", "content": "Police titres" },
+      {
+        "type": "select", "id": "font_heading_family",
+        "label": "Famille — titres",
+        "default": "Outfit",
+        "options": [
+          { "value": "Outfit",      "label": "Outfit (défaut)" },
+          { "value": "Inter",       "label": "Inter" },
+          { "value": "Syne",        "label": "Syne" },
+          { "value": "DM Sans",     "label": "DM Sans" },
+          { "value": "Manrope",     "label": "Manrope" },
+          { "value": "Plus Jakarta Sans", "label": "Plus Jakarta Sans" }
+        ]
+      },
+      {
+        "type": "select", "id": "font_heading_weight",
+        "label": "Graisse — titres",
+        "default": "800",
+        "options": [
+          { "value": "400", "label": "Regular 400" },
+          { "value": "500", "label": "Medium 500" },
+          { "value": "600", "label": "SemiBold 600" },
+          { "value": "700", "label": "Bold 700" },
+          { "value": "800", "label": "ExtraBold 800" }
+        ]
+      },
+      { "type": "header", "content": "Police corps" },
+      {
+        "type": "select", "id": "font_body_family",
+        "label": "Famille — corps",
+        "default": "Inter",
+        "options": [
+          { "value": "Inter",       "label": "Inter (défaut)" },
+          { "value": "Outfit",      "label": "Outfit" },
+          { "value": "DM Sans",     "label": "DM Sans" },
+          { "value": "Manrope",     "label": "Manrope" },
+          { "value": "Plus Jakarta Sans", "label": "Plus Jakarta Sans" }
+        ]
+      },
+      {
+        "type": "range", "id": "font_body_size",
+        "label": "Taille corps (px)", "min": 13, "max": 18, "step": 1,
+        "default": 15, "unit": "px"
+      },
+      { "type": "header", "content": "Tailles mobiles" },
+      {
+        "type": "range", "id": "font_h1_mobile",
+        "label": "H1 mobile (rem×10)", "min": 22, "max": 48, "step": 1,
+        "default": 30,
+        "info": "Divisé par 10 = valeur rem. Ex: 30 = 3.0rem"
+      },
+      {
+        "type": "range", "id": "font_h2_mobile",
+        "label": "H2 mobile (rem×10)", "min": 18, "max": 40, "step": 1,
+        "default": 24
+      }
+    ]
+  },
+  {
+    "name": "Boutons — Design System",
+    "settings": [
+      { "type": "header", "content": "Bouton primaire" },
+      {
+        "type": "color", "id": "btn_primary_bg",
+        "label": "Fond", "default": "#0787ea"
+      },
+      {
+        "type": "color", "id": "btn_primary_text",
+        "label": "Texte", "default": "#ffffff"
+      },
+      {
+        "type": "color", "id": "btn_primary_hover_bg",
+        "label": "Fond — hover", "default": "#0672c7"
+      },
+      { "type": "header", "content": "Bouton secondaire (outline)" },
+      {
+        "type": "color", "id": "btn_outline_border",
+        "label": "Bordure", "default": "#1a1a1a"
+      },
+      {
+        "type": "color", "id": "btn_outline_text",
+        "label": "Texte", "default": "#1a1a1a"
+      },
+      {
+        "type": "color", "id": "btn_outline_hover_bg",
+        "label": "Fond — hover", "default": "#1a1a1a"
+      },
+      { "type": "header", "content": "Forme & taille" },
+      {
+        "type": "range", "id": "btn_radius",
+        "label": "Rayon bordure (px)", "min": 0, "max": 32, "step": 1,
+        "default": 3, "unit": "px"
+      },
+      {
+        "type": "select", "id": "btn_size",
+        "label": "Taille par défaut",
+        "default": "md",
+        "options": [
+          { "value": "sm", "label": "Small" },
+          { "value": "md", "label": "Medium" },
+          { "value": "lg", "label": "Large" }
+        ]
+      },
+      {
+        "type": "checkbox", "id": "btn_uppercase",
+        "label": "Texte en majuscules", "default": true
+      }
+    ]
+  },
+  {
+    "name": "Espacements — Design System",
+    "settings": [
+      { "type": "header", "content": "Conteneur" },
+      {
+        "type": "range", "id": "container_max_width",
+        "label": "Largeur max conteneur (px)", "min": 960, "max": 1920, "step": 40,
+        "default": 1400, "unit": "px"
+      },
+      {
+        "type": "range", "id": "container_padding",
+        "label": "Padding horizontal conteneur (px)", "min": 8, "max": 80, "step": 4,
+        "default": 20, "unit": "px"
+      },
+      { "type": "header", "content": "Sections — espacement global" },
+      {
+        "type": "range", "id": "section_pt_mobile",
+        "label": "Padding haut section mobile (px)", "min": 0, "max": 120, "step": 4,
+        "default": 48, "unit": "px"
+      },
+      {
+        "type": "range", "id": "section_pb_mobile",
+        "label": "Padding bas section mobile (px)", "min": 0, "max": 120, "step": 4,
+        "default": 48, "unit": "px"
+      },
+      {
+        "type": "range", "id": "section_pt_desktop",
+        "label": "Padding haut section desktop (px)", "min": 0, "max": 160, "step": 4,
+        "default": 72, "unit": "px"
+      },
+      {
+        "type": "range", "id": "section_pb_desktop",
+        "label": "Padding bas section desktop (px)", "min": 0, "max": 160, "step": 4,
+        "default": 72, "unit": "px"
+      }
+    ]
+  },
+  {
+    "name": "Images — Design System",
+    "settings": [
+      {
+        "type": "select", "id": "img_ratio_default",
+        "label": "Ratio image par défaut",
+        "default": "portrait",
+        "options": [
+          { "value": "square",   "label": "Carré 1:1" },
+          { "value": "portrait", "label": "Portrait 3:4" },
+          { "value": "landscape","label": "Paysage 4:3" },
+          { "value": "wide",     "label": "Large 16:9" }
+        ]
+      },
+      {
+        "type": "checkbox", "id": "img_lazy_default",
+        "label": "Lazy load par défaut", "default": true
+      },
+      {
+        "type": "select", "id": "img_hover_effect",
+        "label": "Effet hover image",
+        "default": "zoom",
+        "options": [
+          { "value": "none",  "label": "Aucun" },
+          { "value": "zoom",  "label": "Zoom doux" },
+          { "value": "fade",  "label": "Fade" },
+          { "value": "slide", "label": "Slide" }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "Animations — Design System",
+    "settings": [
+      {
+        "type": "select", "id": "global_animation",
+        "label": "Animation globale au scroll",
+        "default": "fade-up",
+        "options": [
+          { "value": "none",        "label": "Aucune" },
+          { "value": "fade",        "label": "Fade" },
+          { "value": "fade-up",     "label": "Fade + slide haut" },
+          { "value": "fade-down",   "label": "Fade + slide bas" },
+          { "value": "slide-left",  "label": "Slide depuis droite" },
+          { "value": "slide-right", "label": "Slide depuis gauche" },
+          { "value": "zoom",        "label": "Zoom" }
+        ]
+      },
+      {
+        "type": "checkbox", "id": "reduce_motion_respect",
+        "label": "Respecter prefers-reduced-motion", "default": true
+      }
+    ]
+  }
+]

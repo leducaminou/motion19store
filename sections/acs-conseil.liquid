@@ -1,0 +1,362 @@
+{%- comment -%} ACS Conseil — Motion19 OS 2.0 — Style blog-journal du thème {%- endcomment -%}
+
+{%- liquid
+  assign sid         = section.id
+  assign bg_color    = section.settings.bg_color    | default: '#f7f7f8'
+  assign text_color  = section.settings.text_color  | default: '#0a0a0a'
+  assign title_color = section.settings.title_color | default: '#0a0a0a'
+  assign eyebrow_col = section.settings.eyebrow_color | default: '#0787ea'
+  assign pt_m        = section.settings.padding_top_mobile    | default: 56
+  assign pb_m        = section.settings.padding_bottom_mobile | default: 56
+  assign pt_d        = section.settings.padding_top_desktop   | default: 72
+  assign pb_d        = section.settings.padding_bottom_desktop | default: 72
+  assign mt          = section.settings.margin_top    | default: 0
+  assign mb          = section.settings.margin_bottom | default: 0
+  assign max_w       = section.settings.section_max_width | default: 1400
+  assign header_align = section.settings.header_align | default: 'left'
+
+  assign title   = section.settings.title   | default: 'Besoin d'aide pour construire votre setup ?'
+  assign subtitle = section.settings.subtitle | default: 'Nos experts accompagnent les créateurs pour choisir le matériel idéal selon leur budget et leur plateforme.'
+  assign eyebrow = section.settings.eyebrow
+
+  assign cta1_lbl   = section.settings.cta1_label | default: 'Contacter un expert'
+  assign cta1_url   = section.settings.cta1_url   | default: '/pages/contact'
+  assign cta1_style = section.settings.cta1_style  | default: 'primary'
+  assign cta2_lbl   = section.settings.cta2_label | default: 'Voir les guides'
+  assign cta2_url   = section.settings.cta2_url   | default: '/blogs/news'
+  assign cta2_style = section.settings.cta2_style  | default: 'outline'
+  assign cta_radius = section.settings.cta_radius  | default: 2
+
+  assign show_features = section.settings.show_features | default: true
+-%}
+
+<section
+  id="acsc-{{ sid }}"
+  class="acsc m19-animate"
+  aria-labelledby="acsc-title-{{ sid }}"
+  style="
+    --acsc-bg:      {{ bg_color }};
+    --acsc-text:    {{ text_color }};
+    --acsc-title:   {{ title_color }};
+    --acsc-eyebrow: {{ eyebrow_col }};
+    --acsc-pt-m:    {{ pt_m }}px;
+    --acsc-pb-m:    {{ pb_m }}px;
+    --acsc-pt-d:    {{ pt_d }}px;
+    --acsc-pb-d:    {{ pb_d }}px;
+    --acsc-mt:      {{ mt }}px;
+    --acsc-mb:      {{ mb }}px;
+    --acsc-max-w:   {{ max_w }}px;
+    --acsc-cta-r:   {{ cta_radius }}px;
+  "
+>
+  <div class="acsc__body">
+
+    {%- comment -%} Left — Text + CTA {%- endcomment -%}
+    <div class="acsc__left">
+      <div class="acsc__left-inner">
+        {%- if eyebrow != blank -%}
+          <span class="acsc__eyebrow">{{ eyebrow }}</span>
+        {%- endif -%}
+
+        <h2 class="acsc__title" id="acsc-title-{{ sid }}">{{ title }}</h2>
+
+        {%- if subtitle != blank -%}
+          <p class="acsc__subtitle">{{ subtitle }}</p>
+        {%- endif -%}
+
+        <div class="acsc__ctas">
+          {%- if cta1_lbl != blank -%}
+            <a class="acsc__btn acsc__btn--{{ cta1_style }}" href="{{ cta1_url }}">
+              <span>{{ cta1_lbl }}</span>
+              <svg width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </a>
+          {%- endif -%}
+          {%- if cta2_lbl != blank -%}
+            <a class="acsc__btn acsc__btn--{{ cta2_style }}" href="{{ cta2_url }}">
+              <span>{{ cta2_lbl }}</span>
+              <svg width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </a>
+          {%- endif -%}
+        </div>
+      </div>
+    </div>
+
+    {%- comment -%} Right — Feature cards (blocks) {%- endcomment -%}
+    {%- if show_features and section.blocks.size > 0 -%}
+      <div class="acsc__right">
+        <ul class="acsc__features" role="list">
+          {%- for block in section.blocks -%}
+            {%- if block.type == 'feature' -%}
+              <li class="acsc__feature" data-index="{{ forloop.index0 }}" {{ block.shopify_attributes }}>
+                <div class="acsc__feature-icon" aria-hidden="true">
+                  {%- if block.settings.icon == 'camera' -%}
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M23 19a2 2 0 01-2 2H3a2 2 0 01-2-2V8a2 2 0 012-2h4l2-3h6l2 3h4a2 2 0 012 2z"/><circle cx="12" cy="13" r="4"/></svg>
+                  {%- elsif block.settings.icon == 'mic' -%}
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 1a3 3 0 00-3 3v8a3 3 0 006 0V4a3 3 0 00-3-3z"/><path d="M19 10v2a7 7 0 01-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg>
+                  {%- elsif block.settings.icon == 'star' -%}
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                  {%- elsif block.settings.icon == 'users' -%}
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/></svg>
+                  {%- elsif block.settings.icon == 'zap' -%}
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+                  {%- else -%}
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+                  {%- endif -%}
+                </div>
+                <div class="acsc__feature-info">
+                  <span class="acsc__feature-title">{{ block.settings.title | default: 'Avantage' }}</span>
+                  {%- if block.settings.description != blank -%}
+                    <span class="acsc__feature-desc">{{ block.settings.description }}</span>
+                  {%- endif -%}
+                </div>
+              </li>
+            {%- endif -%}
+          {%- endfor -%}
+        </ul>
+      </div>
+    {%- endif -%}
+
+  </div>
+</section>
+
+<style>
+/* ═══════════════════════════════════════════════
+   ACS Conseil — acsc  (style blog-journal du thème)
+   ═══════════════════════════════════════════════ */
+.acsc {
+  --acsc-pad:  24px;
+  --acsc-ease: cubic-bezier(0.4, 0, 0.2, 1);
+  --acsc-blue: #0787ea;
+
+  background: var(--acsc-bg, #f7f7f8);
+  color: var(--acsc-text, #0a0a0a);
+  margin-top: var(--acsc-mt, 0);
+  margin-bottom: var(--acsc-mb, 0);
+  padding: var(--acsc-pt-m, 56px) 0 var(--acsc-pb-m, 56px);
+}
+@media (min-width: 768px) {
+  .acsc { padding: var(--acsc-pt-d, 72px) 0 var(--acsc-pb-d, 72px); --acsc-pad: 40px; }
+}
+
+/* Body — 2 colonnes comme bj__body */
+.acsc__body {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 40px;
+  max-width: var(--acsc-max-w, 1400px);
+  margin: 0 auto;
+  padding: 0 var(--acsc-pad);
+  align-items: center;
+}
+@media (min-width: 768px) {
+  .acsc__body { grid-template-columns: 1fr 1fr; gap: 64px; }
+}
+@media (max-width: 767px) { .acsc__body { padding: 0 16px; } }
+
+/* Left */
+.acsc__left-inner { display: flex; flex-direction: column; gap: 20px; }
+
+.acsc__eyebrow {
+  font-size: 0.7rem; font-weight: 600;
+  letter-spacing: 0.16em; text-transform: uppercase;
+  color: var(--acsc-eyebrow, #0787ea);
+}
+
+.acsc__title {
+  font-family: var(--font-body, 'Inter', sans-serif);
+  font-size: clamp(1.6rem, 3vw, 2.4rem);
+  font-weight: 800; letter-spacing: -0.03em; line-height: 1.1;
+  color: var(--acsc-title, #0a0a0a); margin: 0;
+}
+
+.acsc__subtitle {
+  font-family: var(--font-body, 'Inter', sans-serif);
+  font-size: 0.9rem; color: #666; line-height: 1.65; margin: 0; max-width: 52ch;
+}
+
+/* CTAs */
+.acsc__ctas { display: flex; flex-wrap: wrap; gap: 10px; }
+
+.acsc__btn {
+  display: inline-flex; align-items: center; gap: 8px;
+  font-size: 0.8rem; font-weight: 600;
+  letter-spacing: 0.07em; text-transform: uppercase;
+  text-decoration: none; padding: 13px 28px;
+  border-radius: var(--acsc-cta-r, 2px);
+  border: 1.5px solid transparent;
+  transition: background 200ms ease, color 200ms ease, border-color 200ms ease, transform 200ms ease, box-shadow 200ms ease;
+}
+.acsc__btn svg { flex-shrink: 0; transition: transform 200ms ease; }
+.acsc__btn:hover svg { transform: translateX(4px); }
+.acsc__btn:focus-visible { outline: 2px solid #0787ea; outline-offset: 3px; }
+
+.acsc__btn--primary { background: var(--acsc-blue, #0787ea); color: #fff; border-color: var(--acsc-blue, #0787ea); }
+.acsc__btn--outline { background: transparent; color: var(--acsc-text, #0a0a0a); border-color: currentColor; }
+.acsc__btn--dark    { background: #0a0a0a; color: #f5f5f7; border-color: #0a0a0a; }
+.acsc__btn--ghost   { background: transparent; color: var(--acsc-text, #0a0a0a); border-color: rgba(10,10,10,0.25); }
+
+@media (hover: hover) {
+  .acsc__btn--primary:hover { background: #0672c7; box-shadow: 0 8px 24px rgba(7,135,234,.35); transform: scale(1.02); }
+  .acsc__btn--outline:hover { background: var(--acsc-text, #0a0a0a); color: var(--acsc-bg, #f7f7f8); transform: scale(1.02); }
+  .acsc__btn--dark:hover    { background: #1a1a1a; transform: scale(1.02); }
+  .acsc__btn--ghost:hover   { background: rgba(10,10,10,0.06); transform: scale(1.02); }
+}
+
+/* Right — Features list (bj__list style) */
+.acsc__features {
+  list-style: none; margin: 0; padding: 0;
+  display: flex; flex-direction: column; gap: 10px;
+}
+
+.acsc__feature {
+  display: flex; align-items: flex-start; gap: 14px;
+  padding: 16px 18px;
+  background: var(--acsc-bg, #f7f7f8);
+  border: 1px solid rgba(10,10,10,0.06);
+  border-radius: 12px;
+  transition: transform 200ms var(--acsc-ease), box-shadow 200ms var(--acsc-ease);
+  opacity: 0; transform: translateY(8px);
+  transition: opacity 320ms var(--acsc-ease), transform 320ms var(--acsc-ease), box-shadow 200ms var(--acsc-ease);
+}
+.acsc__feature.is-visible { opacity: 1; transform: translateY(0); }
+.acsc__feature:nth-child(1) { transition-delay: 0ms; }
+.acsc__feature:nth-child(2) { transition-delay: 60ms; }
+.acsc__feature:nth-child(3) { transition-delay: 120ms; }
+.acsc__feature:nth-child(4) { transition-delay: 180ms; }
+@media (hover: hover) {
+  .acsc__feature.is-visible:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(0,0,0,0.07); }
+}
+
+.acsc__feature-icon {
+  flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center;
+  width: 40px; height: 40px; border-radius: 10px;
+  background: rgba(7,135,234,0.1); color: #0787ea;
+}
+
+.acsc__feature-info { display: flex; flex-direction: column; gap: 3px; }
+.acsc__feature-title {
+  font-family: var(--font-body, 'Inter', sans-serif);
+  font-size: 0.88rem; font-weight: 700; color: var(--acsc-text, #0a0a0a); line-height: 1.3;
+}
+.acsc__feature-desc {
+  font-family: var(--font-body, 'Inter', sans-serif);
+  font-size: 0.78rem; color: #777; line-height: 1.5;
+}
+</style>
+
+<script>
+(function () {
+  'use strict';
+  var sec = document.getElementById('acsc-{{ sid }}');
+  if (!sec) return;
+  var features = Array.from(sec.querySelectorAll('.acsc__feature'));
+  if (!features.length) return;
+  if ('IntersectionObserver' in window) {
+    var obs = new IntersectionObserver(function (entries) {
+      entries.forEach(function (e) {
+        if (!e.isIntersecting) return;
+        var el = e.target;
+        var idx = parseInt(el.dataset.index, 10) || 0;
+        setTimeout(function () { el.classList.add('is-visible'); }, Math.min(idx * 60, 300));
+        obs.unobserve(el);
+      });
+    }, { threshold: 0.06 });
+    features.forEach(function (f) { obs.observe(f); });
+  } else {
+    features.forEach(function (f) { f.classList.add('is-visible'); });
+  }
+})();
+</script>
+
+{% schema %}
+{
+  "name": "ACS — Conseil Expert",
+  "tag": "section",
+  "class": "section-acs-conseil",
+  "settings": [
+    { "type": "header", "content": "Contenu" },
+    { "type": "text",     "id": "eyebrow",  "label": "Eyebrow",   "default": "Nos experts" },
+    { "type": "text",     "id": "title",    "label": "Titre",     "default": "Besoin d'aide pour construire votre setup ?" },
+    { "type": "textarea", "id": "subtitle", "label": "Sous-titre","default": "Nos experts accompagnent les créateurs pour choisir le matériel idéal selon leur budget et leur plateforme." },
+    { "type": "header", "content": "Bouton principal" },
+    { "type": "text", "id": "cta1_label", "label": "Texte bouton 1", "default": "Contacter un expert" },
+    { "type": "url",  "id": "cta1_url",   "label": "Lien bouton 1" },
+    { "type": "select", "id": "cta1_style", "label": "Style bouton 1", "default": "primary",
+      "options": [
+        {"value":"primary", "label":"Bleu primaire"},
+        {"value":"dark",    "label":"Noir"},
+        {"value":"outline", "label":"Outline"},
+        {"value":"ghost",   "label":"Ghost"}
+      ]
+    },
+    { "type": "header", "content": "Bouton secondaire" },
+    { "type": "text", "id": "cta2_label", "label": "Texte bouton 2", "default": "Voir les guides" },
+    { "type": "url",  "id": "cta2_url",   "label": "Lien bouton 2" },
+    { "type": "select", "id": "cta2_style", "label": "Style bouton 2", "default": "outline",
+      "options": [
+        {"value":"primary", "label":"Bleu primaire"},
+        {"value":"dark",    "label":"Noir"},
+        {"value":"outline", "label":"Outline"},
+        {"value":"ghost",   "label":"Ghost"}
+      ]
+    },
+    { "type": "range", "id": "cta_radius", "label": "Rayon boutons (px)", "min": 0, "max": 40, "step": 1, "default": 2, "unit": "px" },
+    { "type": "header", "content": "Fonctionnalités" },
+    { "type": "checkbox", "id": "show_features", "label": "Afficher les avantages", "default": true },
+    { "type": "header", "content": "Couleurs" },
+    { "type": "color", "id": "bg_color",      "label": "Fond section",   "default": "#f7f7f8" },
+    { "type": "color", "id": "text_color",    "label": "Couleur texte",  "default": "#0a0a0a" },
+    { "type": "color", "id": "title_color",   "label": "Couleur titres", "default": "#0a0a0a" },
+    { "type": "color", "id": "eyebrow_color", "label": "Couleur eyebrow","default": "#0787ea" },
+    { "type": "header", "content": "Conteneur" },
+    { "type": "range", "id": "section_max_width", "label": "Largeur max (px)", "min": 960, "max": 1920, "step": 40, "default": 1400, "unit": "px" },
+    { "type": "header", "content": "Espacement" },
+    { "type": "range", "id": "padding_top_mobile",     "label": "Padding haut mobile",  "min": 0, "max": 120, "step": 4, "default": 56, "unit": "px" },
+    { "type": "range", "id": "padding_bottom_mobile",  "label": "Padding bas mobile",   "min": 0, "max": 120, "step": 4, "default": 56, "unit": "px" },
+    { "type": "range", "id": "padding_top_desktop",    "label": "Padding haut desktop", "min": 0, "max": 120, "step": 4, "default": 72, "unit": "px" },
+    { "type": "range", "id": "padding_bottom_desktop", "label": "Padding bas desktop",  "min": 0, "max": 120, "step": 4, "default": 72, "unit": "px" },
+    { "type": "range", "id": "margin_top",    "label": "Marge haut", "min": 0, "max": 120, "step": 4, "default": 0, "unit": "px" },
+    { "type": "range", "id": "margin_bottom", "label": "Marge bas",  "min": 0, "max": 120, "step": 4, "default": 0, "unit": "px" }
+  ],
+  "blocks": [
+    {
+      "type": "feature",
+      "name": "Avantage",
+      "settings": [
+        { "type": "select", "id": "icon", "label": "Icône", "default": "check",
+          "options": [
+            {"value":"check",  "label":"Coche"},
+            {"value":"camera", "label":"Caméra"},
+            {"value":"mic",    "label":"Micro"},
+            {"value":"star",   "label":"Étoile"},
+            {"value":"users",  "label":"Utilisateurs"},
+            {"value":"zap",    "label":"Éclair"}
+          ]
+        },
+        { "type": "text",     "id": "title",       "label": "Titre",       "default": "Conseil personnalisé" },
+        { "type": "textarea", "id": "description", "label": "Description", "default": "Accompagnement sur-mesure par des experts passionnés." }
+      ]
+    }
+  ],
+  "max_blocks": 6,
+  "presets": [
+    {
+      "name": "ACS — Conseil Expert",
+      "settings": {
+        "eyebrow": "Nos experts",
+        "title": "Besoin d'aide pour construire votre setup ?",
+        "subtitle": "Nos experts accompagnent les créateurs pour choisir le matériel idéal selon leur budget et leur plateforme.",
+        "cta1_label": "Contacter un expert",
+        "cta2_label": "Voir les guides"
+      },
+      "blocks": [
+        { "type": "feature", "settings": { "icon": "users", "title": "Conseil personnalisé", "description": "Un expert dédié selon votre profil et vos objectifs créatifs." } },
+        { "type": "feature", "settings": { "icon": "zap",   "title": "Réponse rapide",       "description": "Prise en charge en moins de 24h par notre équipe." } },
+        { "type": "feature", "settings": { "icon": "star",  "title": "Expertise matériel",   "description": "Testeurs et créateurs certifiés sur chaque catégorie." } },
+        { "type": "feature", "settings": { "icon": "check", "title": "Satisfait ou remboursé","description": "30 jours pour changer d'avis sur tous vos achats." } }
+      ]
+    }
+  ]
+}
+{% endschema %}
