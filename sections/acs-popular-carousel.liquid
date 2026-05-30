@@ -268,7 +268,14 @@
 .acspc__sep--dashed::before, .acspc__sep--dashed::after { content: ''; flex: 1; height: 1px; border-top: 1px dashed currentColor; }
 
 /* Viewport */
-.acspc__viewport-wrap { overflow-x: clip; overflow-y: visible; }
+/* Viewport wrap — overflow:hidden clips X; padding+negative-margin creates Y breathing room */
+.acspc__viewport-wrap {
+  overflow: hidden;
+  padding-top: 8px;
+  margin-top: -8px;
+  padding-bottom: 32px;
+  margin-bottom: -32px;
+}
 .acspc__viewport {
   padding-left: var(--acspc-pad);
   overflow: visible;
@@ -485,7 +492,7 @@
 
 {% schema %}
 {
-  "name": "ACS — Collections Carousel",
+  "name": "ACS Collections Carousel",
   "tag": "section",
   "class": "section-acs-popular-carousel",
   "settings": [

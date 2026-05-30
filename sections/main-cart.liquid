@@ -1,0 +1,910 @@
+{%- comment -%} Main Cart / WhatsApp Checkout — Motion19 OS 2.0 {%- endcomment -%}
+
+{%- liquid
+  assign s               = section.settings
+  assign wa_number       = s.whatsapp_number       | default: ''
+  assign wa_btn_label    = s.whatsapp_button_label  | default: 'Discuter sur WhatsApp'
+  assign store_name      = s.store_display_name     | default: shop.name
+  assign form_title      = s.form_title             | default: 'Vos coordonnées'
+  assign section_title   = s.section_title          | default: 'Votre panier'
+  assign accentcolor     = s.accent_color           | default: '#25D366'
+  assign btn_text_c      = s.btn_text_color         | default: '#ffffff'
+  assign bg_c            = s.page_bg                | default: '#ffffff'
+  assign card_bg_c       = s.card_bg                | default: '#f8f8f8'
+  assign border_c        = s.border_color           | default: '#e5e5e7'
+  assign text_c          = s.text_color             | default: '#1d1d1f'
+  assign text_muted_c    = s.text_muted_color       | default: '#6e6e73'
+  assign btn_radius_v    = s.btn_radius             | default: 6
+  assign card_radius_v   = s.card_radius            | default: 6
+  assign show_badges     = s.show_trust_badges      | default: true
+  assign phone_label     = s.phone_field_label      | default: 'Numéro de téléphone'
+  assign name_label      = s.name_field_label       | default: 'Nom complet'
+  assign city_label      = s.city_field_label       | default: 'Ville'
+-%}
+
+<style>
+  .mc {
+    --mc-accent:       {{ accentcolor }};
+    --mc-btn-text:     {{ btn_text_c }};
+    --mc-bg:           {{ bg_c }};
+    --mc-card-bg:      {{ card_bg_c }};
+    --mc-border:       {{ border_c }};
+    --mc-text:         {{ text_c }};
+    --mc-muted:        {{ text_muted_c }};
+    --mc-r-btn:        {{ btn_radius_v }}px;
+    --mc-r-card:       {{ card_radius_v }}px;
+    --mc-font:         'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+
+    font-family:       var(--mc-font);
+    color:             var(--mc-text);
+    background:        var(--mc-bg);
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .mc *, .mc *::before, .mc *::after { box-sizing: border-box; }
+
+  /* ── Wrapper ── */
+  .mc__wrap {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px 16px 60px;
+  }
+
+  @media (min-width: 641px)  { .mc__wrap { padding: 28px 24px 72px; } }
+  @media (min-width: 1025px) { .mc__wrap { padding: 40px 32px 88px; } }
+
+  /* ── Title ── */
+  .mc__page-title {
+    font-size: clamp(1.25rem, 4vw, 1.75rem);
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    color: var(--mc-text);
+    margin: 0 0 24px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .mc__item-count {
+    font-size: 0.7rem;
+    font-weight: 700;
+    background: var(--mc-text);
+    color: var(--mc-bg);
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  /* ── Grid ── */
+  .mc__grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 20px;
+    align-items: start;
+  }
+
+  @media (min-width: 900px) {
+    .mc__grid { grid-template-columns: 1fr 400px; gap: 32px; }
+  }
+
+  /* ── Cart items ── */
+  .mc__items {
+    border: 1px solid var(--mc-border);
+    border-radius: var(--mc-r-card);
+    background: #ffffff;
+    overflow: hidden;
+    contain: layout style;
+  }
+
+  .mc__item {
+    display: grid;
+    grid-template-columns: 80px 1fr auto;
+    gap: 12px 14px;
+    padding: 16px;
+    border-bottom: 1px solid var(--mc-border);
+    align-items: start;
+  }
+
+  .mc__item:last-child { border-bottom: none; }
+
+  @media (min-width: 641px) {
+    .mc__item { grid-template-columns: 96px 1fr auto; gap: 16px 20px; padding: 20px; }
+  }
+
+  .mc__item-img {
+    width: 80px;
+    height: 80px;
+    border: 1px solid var(--mc-border);
+    border-radius: calc(var(--mc-r-card) * 0.75);
+    overflow: hidden;
+    background: var(--mc-card-bg);
+    flex-shrink: 0;
+  }
+
+  @media (min-width: 641px) { .mc__item-img { width: 96px; height: 96px; } }
+
+  .mc__item-img img {
+    width: 100%; height: 100%;
+    object-fit: contain;
+    padding: 6px;
+    box-sizing: border-box;
+    display: block;
+  }
+
+  .mc__item-body { min-width: 0; }
+
+  .mc__item-title {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--mc-text);
+    text-decoration: none;
+    line-height: 1.35;
+    display: block;
+    margin-bottom: 4px;
+  }
+
+  @media (min-width: 641px) { .mc__item-title { font-size: 1rem; } }
+
+  .mc__item-variant {
+    display: inline-block;
+    font-size: 0.7rem;
+    background: var(--mc-card-bg);
+    border: 1px solid var(--mc-border);
+    padding: 2px 7px;
+    border-radius: 99px;
+    color: var(--mc-muted);
+    margin-bottom: 10px;
+  }
+
+  .mc__item-qty-row {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-top: 6px;
+  }
+
+  .mc__qty-wrap {
+    display: inline-flex;
+    align-items: stretch;
+    border: 1px solid var(--mc-border);
+    border-radius: calc(var(--mc-r-btn) * 0.6);
+    overflow: hidden;
+    height: 34px;
+  }
+
+  .mc__qty-btn {
+    width: 34px;
+    background: var(--mc-card-bg);
+    border: none;
+    cursor: pointer;
+    font-size: 1rem;
+    color: var(--mc-text);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.15s;
+    flex-shrink: 0;
+  }
+
+  @media (hover: hover) { .mc__qty-btn:hover { background: var(--mc-border); } }
+
+  @media (prefers-reduced-motion: reduce) {
+    .mc__qty-btn, .mc__remove-btn, .mc__continue, .mc__wa-btn, .mc__input,
+    .mc__empty-btn { transition: none !important; }
+  }
+
+  .mc__qty-val {
+    min-width: 36px;
+    text-align: center;
+    border: none;
+    border-left: 1px solid var(--mc-border);
+    border-right: 1px solid var(--mc-border);
+    font-size: 0.82rem;
+    font-weight: 700;
+    color: var(--mc-text);
+    background: var(--mc-bg);
+    outline: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .mc__remove-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 0.75rem;
+    color: var(--mc-muted);
+    text-decoration: underline;
+    text-underline-offset: 2px;
+    padding: 0;
+    font-family: var(--mc-font);
+    transition: color 0.15s;
+  }
+
+  .mc__remove-btn:hover { color: #e53e3e; }
+
+  .mc__item-price {
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: var(--mc-text);
+    text-align: right;
+    white-space: nowrap;
+  }
+
+  /* ── Continue shopping ── */
+  .mc__continue {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    margin-top: 16px;
+    text-decoration: none;
+    color: var(--mc-muted);
+    font-size: 0.78rem;
+    font-weight: 500;
+    transition: color 0.15s;
+  }
+
+  .mc__continue:hover { color: var(--mc-text); }
+
+  /* ── Right panel ── */
+  .mc__panel {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  /* ── Order summary card ── */
+  .mc__summary {
+    background: var(--mc-card-bg);
+    border: 1px solid var(--mc-border);
+    border-radius: var(--mc-r-card);
+    padding: 20px;
+  }
+
+  .mc__section-label {
+    font-size: 0.65rem;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--mc-muted);
+    margin: 0 0 16px;
+  }
+
+  .mc__summary-line {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 8px;
+    font-size: 0.82rem;
+    font-weight: 500;
+    color: var(--mc-muted);
+    padding: 6px 0;
+  }
+
+  .mc__summary-total {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 8px;
+    font-size: 0.92rem;
+    font-weight: 700;
+    color: var(--mc-text);
+    padding: 14px 0 0;
+    margin-top: 10px;
+    border-top: 1px solid var(--mc-border);
+  }
+
+  .mc__total-amount {
+    font-size: 1.35rem;
+    letter-spacing: -0.02em;
+  }
+
+  /* ── Form card ── */
+  .mc__form-card {
+    background: var(--mc-bg);
+    border: 1px solid var(--mc-border);
+    border-radius: var(--mc-r-card);
+    padding: 20px;
+  }
+
+  .mc__field {
+    margin-bottom: 14px;
+  }
+
+  .mc__label {
+    display: block;
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--mc-muted);
+    margin-bottom: 6px;
+  }
+
+  .mc__req {
+    color: var(--mc-accent);
+    margin-left: 2px;
+  }
+
+  .mc__input {
+    width: 100%;
+    padding: 11px 14px;
+    border: 1.5px solid var(--mc-border);
+    border-radius: var(--mc-r-btn);
+    font-size: 0.9rem;
+    font-family: var(--mc-font);
+    color: var(--mc-text);
+    background: var(--mc-bg);
+    outline: none;
+    transition: border-color 0.2s, box-shadow 0.2s;
+    -webkit-appearance: none;
+  }
+
+  .mc__input:focus {
+    border-color: var(--mc-accent);
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--mc-accent) 15%, transparent);
+  }
+
+  .mc__input::placeholder { color: color-mix(in srgb, var(--mc-muted) 60%, transparent); }
+
+  .mc__field-hint {
+    font-size: 0.68rem;
+    color: var(--mc-muted);
+    margin-top: 4px;
+  }
+
+  /* ── WhatsApp button ── */
+  .mc__wa-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    width: 100%;
+    padding: 15px 20px;
+    background: #25D366;
+    color: #ffffff;
+    border: none;
+    border-radius: var(--mc-r-btn);
+    font-size: 0.95rem;
+    font-weight: 700;
+    font-family: var(--mc-font);
+    cursor: pointer;
+    text-decoration: none;
+    transition: filter 0.2s, transform 0.15s;
+    margin-top: 8px;
+    letter-spacing: 0.01em;
+  }
+
+  .mc__wa-btn:hover { filter: brightness(1.08); transform: translateY(-1px); }
+  .mc__wa-btn:active { transform: scale(0.98); }
+
+  .mc__wa-icon {
+    flex-shrink: 0;
+    width: 22px;
+    height: 22px;
+  }
+
+  /* ── Trust badges ── */
+  .mc__badges {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding-top: 16px;
+    border-top: 1px solid var(--mc-border);
+    margin-top: 16px;
+  }
+
+  .mc__badge {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 0.78rem;
+    color: var(--mc-muted);
+  }
+
+  .mc__badge svg {
+    flex-shrink: 0;
+    color: var(--mc-accent);
+  }
+
+  /* ── Empty state ── */
+  .mc__empty {
+    text-align: center;
+    padding: 80px 20px;
+  }
+
+  .mc__empty-title {
+    font-size: 1.1rem;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+    color: var(--mc-text);
+    margin: 0 0 24px;
+  }
+
+  .mc__empty-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 13px 28px;
+    background: var(--mc-text);
+    color: var(--mc-bg);
+    border-radius: var(--mc-r-btn);
+    font-size: 0.85rem;
+    font-weight: 700;
+    font-family: var(--mc-font);
+    text-decoration: none;
+    transition: opacity 0.2s;
+  }
+
+  .mc__empty-btn:hover { opacity: 0.82; }
+
+  /* ── Validation ── */
+  .mc__input.is-error { border-color: #e53e3e; }
+  .mc__field-error {
+    font-size: 0.68rem;
+    color: #e53e3e;
+    margin-top: 4px;
+    display: none;
+  }
+  .mc__field-error.is-visible { display: block; }
+</style>
+
+<div class="mc" id="mc-{{ section.id }}">
+  <div class="mc__wrap">
+
+    {%- if cart.item_count > 0 -%}
+
+      <h1 class="mc__page-title">
+        {{ section_title }}
+        <span class="mc__item-count">{{ cart.item_count }}</span>
+      </h1>
+
+      <div class="mc__grid">
+
+        {%- comment -%} ── LEFT: articles ── {%- endcomment -%}
+        <div class="mc__col-left">
+          <div class="mc__items" id="mc-items">
+            {%- for item in cart.items -%}
+              <div class="mc__item" data-line="{{ forloop.index }}">
+                <a href="{{ item.url }}" class="mc__item-img">
+                  {%- if item.image -%}
+                    <img src="{{ item.image | image_url: width: 200 }}" alt="{{ item.title | escape }}" loading="lazy" width="200" height="200">
+                  {%- else -%}
+                    {{ 'product-1' | placeholder_svg_tag }}
+                  {%- endif -%}
+                </a>
+
+                <div class="mc__item-body">
+                  <a href="{{ item.url }}" class="mc__item-title">{{ item.product.title }}</a>
+                  {%- unless item.product.has_only_default_variant -%}
+                    <span class="mc__item-variant">{{ item.variant.title }}</span>
+                  {%- endunless -%}
+
+                  <div class="mc__item-qty-row">
+                    <div class="mc__qty-wrap">
+                      <button class="mc__qty-btn" type="button" aria-label="Diminuer" onclick="mcUpdateQty({{ forloop.index }}, {{ item.quantity | minus: 1 }})">
+                        <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                      </button>
+                      <span class="mc__qty-val">{{ item.quantity }}</span>
+                      <button class="mc__qty-btn" type="button" aria-label="Augmenter" onclick="mcUpdateQty({{ forloop.index }}, {{ item.quantity | plus: 1 }})">
+                        <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                      </button>
+                    </div>
+                    <button class="mc__remove-btn" type="button" onclick="mcUpdateQty({{ forloop.index }}, 0)">Supprimer</button>
+                  </div>
+                </div>
+
+                <div class="mc__item-price">{{ item.final_line_price | money }}</div>
+              </div>
+            {%- endfor -%}
+          </div>
+
+          <a href="{{ routes.all_products_collection_url }}" class="mc__continue">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+            Continuer mes achats
+          </a>
+        </div>
+
+        {%- comment -%} ── RIGHT: résumé + formulaire ── {%- endcomment -%}
+        <div class="mc__panel">
+
+          {%- comment -%} Résumé commande {%- endcomment -%}
+          <div class="mc__summary">
+            <p class="mc__section-label">Résumé</p>
+
+            {%- for item in cart.items -%}
+              <div class="mc__summary-line">
+                <span>{{ item.product.title | truncate: 32 }}{% unless item.product.has_only_default_variant %} · {{ item.variant.title }}{% endunless %} ×{{ item.quantity }}</span>
+                <span>{{ item.final_line_price | money }}</span>
+              </div>
+            {%- endfor -%}
+
+            <div class="mc__summary-total">
+              <span>Total</span>
+              <span class="mc__total-amount">{{ cart.total_price | money }}</span>
+            </div>
+          </div>
+
+          {%- comment -%} Formulaire coordonnées {%- endcomment -%}
+          <div class="mc__form-card">
+            <p class="mc__section-label">{{ form_title }}</p>
+
+            <div class="mc__field">
+              <label class="mc__label" for="mc-name">{{ name_label }}<span class="mc__req" aria-hidden="true">*</span></label>
+              <input
+                class="mc__input"
+                id="mc-name"
+                type="text"
+                name="customer_name"
+                placeholder="Jean Dupont"
+                autocomplete="name"
+                required
+              >
+              <p class="mc__field-error" id="mc-name-err">Ce champ est requis.</p>
+            </div>
+
+            <div class="mc__field">
+              <label class="mc__label" for="mc-city">{{ city_label }}<span class="mc__req" aria-hidden="true">*</span></label>
+              <input
+                class="mc__input"
+                id="mc-city"
+                type="text"
+                name="customer_city"
+                placeholder="Douala"
+                autocomplete="address-level2"
+                required
+              >
+              <p class="mc__field-error" id="mc-city-err">Ce champ est requis.</p>
+            </div>
+
+            <div class="mc__field">
+              <label class="mc__label" for="mc-phone">{{ phone_label }}</label>
+              <input
+                class="mc__input"
+                id="mc-phone"
+                type="tel"
+                name="customer_phone"
+                placeholder="+237 6XX XXX XXX"
+                autocomplete="tel"
+                inputmode="tel"
+              >
+              <p class="mc__field-hint">Optionnel — pour vous recontacter si besoin</p>
+            </div>
+
+            <button
+              class="mc__wa-btn"
+              id="mc-wa-btn"
+              type="button"
+              onclick="mcSendWhatsApp()"
+            >
+              <svg class="mc__wa-icon" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
+              </svg>
+              {{ wa_btn_label }}
+            </button>
+
+            {%- if show_badges -%}
+              <div class="mc__badges">
+                {%- for block in section.blocks -%}
+                  {%- if block.type == 'trust_badge' -%}
+                    <div class="mc__badge" {{ block.shopify_attributes }}>
+                      {%- if block.settings.icon == 'shield' -%}
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                      {%- elsif block.settings.icon == 'truck' -%}
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="1" y="3" width="15" height="13"/><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>
+                      {%- elsif block.settings.icon == 'refresh' -%}
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 .49-3.5"/></svg>
+                      {%- elsif block.settings.icon == 'lock' -%}
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+                      {%- else -%}
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>
+                      {%- endif -%}
+                      <span>{{ block.settings.text }}</span>
+                    </div>
+                  {%- endif -%}
+                {%- endfor -%}
+
+                {%- if section.blocks.size == 0 -%}
+                  <div class="mc__badge">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                    <span>Commande 100% sécurisée</span>
+                  </div>
+                  <div class="mc__badge">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>
+                    <span>Livraison rapide disponible</span>
+                  </div>
+                {%- endif -%}
+              </div>
+            {%- endif -%}
+          </div>
+        </div>
+      </div>
+
+    {%- else -%}
+      <div class="mc__empty">
+        <p class="mc__empty-title">Votre panier est vide</p>
+        <a href="{{ routes.all_products_collection_url }}" class="mc__empty-btn">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
+          Découvrir nos produits
+        </a>
+      </div>
+    {%- endif -%}
+
+  </div>
+</div>
+
+<script>
+(function () {
+  'use strict';
+
+  /* ─── Cart data rendered server-side ─── */
+  var MC_CART = {
+    items: {{ cart.items | json }},
+    total: {{ cart.total_price | json }},
+    currency: {{ shop.currency | json }},
+    storeName: {{ store_name | json }},
+    waNumber: {{ wa_number | remove: '+' | remove: ' ' | remove: '-' | json }}
+  };
+
+  /* ─── Money formatter ─── */
+  function fmt(cents) {
+    return (cents / 100).toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, ' ')
+      + ' ' + MC_CART.currency;
+  }
+
+  /* ─── Qty update — optimistic UI, no full page reload ─── */
+  window.mcUpdateQty = function (line, qty) {
+    var items = document.getElementById('mc-items');
+    if (items) items.style.opacity = '0.5';
+    var params = new URLSearchParams();
+    params.append('line', String(line));
+    params.append('quantity', String(qty));
+    fetch('/cart/change.js', {
+      method: 'POST',
+      headers: { 'X-Requested-With': 'XMLHttpRequest' },
+      body: params
+    })
+    .then(function (r) { if (!r.ok) throw new Error(); return r.json(); })
+    .then(function (cart) {
+      /* Dispatch unified cart event for header badge */
+      document.dispatchEvent(new CustomEvent('cart:updated', { detail: { item_count: cart.item_count } }));
+      document.querySelectorAll('[data-cart-count]').forEach(function (el) {
+        el.textContent = cart.item_count;
+      });
+
+      if (cart.item_count === 0) {
+        /* Cart empty — reload to show empty state */
+        window.location.reload();
+        return;
+      }
+
+      /* Find the changed line item in response */
+      var lineItem = cart.items[line - 1];
+
+      if (qty === 0 || !lineItem) {
+        /* Item removed — remove its DOM row */
+        var row = document.querySelector('[data-line="' + line + '"]');
+        if (row) row.remove();
+        /* Re-index remaining rows */
+        var rows = items ? items.querySelectorAll('[data-line]') : [];
+        rows.forEach(function (r, i) { r.setAttribute('data-line', i + 1); });
+      } else {
+        /* Qty changed — update displayed qty and price */
+        var row = document.querySelector('[data-line="' + line + '"]');
+        if (row) {
+          var qtyEl = row.querySelector('.mc__qty-val');
+          var priceEl = row.querySelector('.mc__item-price');
+          if (qtyEl) qtyEl.textContent = lineItem.quantity;
+          if (priceEl) priceEl.textContent = fmt(lineItem.final_line_price);
+          /* Update +/- button onclick values */
+          var btns = row.querySelectorAll('.mc__qty-btn');
+          if (btns[0]) btns[0].setAttribute('onclick', 'mcUpdateQty(' + line + ',' + (lineItem.quantity - 1) + ')');
+          if (btns[1]) btns[1].setAttribute('onclick', 'mcUpdateQty(' + line + ',' + (lineItem.quantity + 1) + ')');
+          var removeBtn = row.querySelector('.mc__remove-btn');
+          if (removeBtn) removeBtn.setAttribute('onclick', 'mcUpdateQty(' + line + ',0)');
+        }
+      }
+
+      /* Update summary total */
+      var totalEl = document.querySelector('.mc__total-amount');
+      if (totalEl) totalEl.textContent = fmt(cart.total_price);
+
+      /* Update MC_CART for WA message */
+      MC_CART.items = cart.items;
+      MC_CART.total = cart.total_price;
+
+      /* Update page title count */
+      var countEl = document.querySelector('.mc__item-count');
+      if (countEl) countEl.textContent = cart.item_count;
+
+      if (items) items.style.opacity = '1';
+    })
+    .catch(function () {
+      /* Fallback: reload on error */
+      window.location.reload();
+    });
+  };
+
+  /* ─── Validate form ─── */
+  function validate() {
+    var ok = true;
+    var nameEl = document.getElementById('mc-name');
+    var cityEl = document.getElementById('mc-city');
+    var nameErr = document.getElementById('mc-name-err');
+    var cityErr = document.getElementById('mc-city-err');
+
+    if (!nameEl.value.trim()) {
+      nameEl.classList.add('is-error');
+      if (nameErr) nameErr.classList.add('is-visible');
+      ok = false;
+    } else {
+      nameEl.classList.remove('is-error');
+      if (nameErr) nameErr.classList.remove('is-visible');
+    }
+
+    if (!cityEl.value.trim()) {
+      cityEl.classList.add('is-error');
+      if (cityErr) cityErr.classList.add('is-visible');
+      ok = false;
+    } else {
+      cityEl.classList.remove('is-error');
+      if (cityErr) cityErr.classList.remove('is-visible');
+    }
+
+    return ok;
+  }
+
+  /* ─── Build WhatsApp message ─── */
+  function buildMessage() {
+    var name  = (document.getElementById('mc-name')  || {}).value || '';
+    var city  = (document.getElementById('mc-city')  || {}).value || '';
+    var phone = (document.getElementById('mc-phone') || {}).value || '';
+
+    var lines = [];
+    lines.push('🛒 *Nouvelle commande — ' + MC_CART.storeName + '*');
+    lines.push('');
+    lines.push('👤 *Informations client*');
+    lines.push('• Nom : ' + name);
+    lines.push('• Ville : ' + city);
+    if (phone.trim()) lines.push('• Tél : ' + phone);
+    lines.push('');
+    lines.push('📦 *Articles commandés*');
+
+    MC_CART.items.forEach(function (item) {
+      var variant = (!item.product_has_only_default_variant && item.variant_title)
+        ? ' (' + item.variant_title + ')' : '';
+      lines.push('• ' + item.product_title + variant + ' × ' + item.quantity
+        + ' — ' + fmt(item.final_line_price));
+    });
+
+    lines.push('');
+    lines.push('💰 *Total : ' + fmt(MC_CART.total) + '*');
+    lines.push('');
+    lines.push('📅 ' + new Date().toLocaleDateString('fr-FR', {
+      day: '2-digit', month: 'long', year: 'numeric',
+      hour: '2-digit', minute: '2-digit'
+    }));
+
+    return lines.join('\n');
+  }
+
+  /* ─── Open WhatsApp ─── */
+  window.mcSendWhatsApp = function () {
+    if (!validate()) return;
+
+    var msg = encodeURIComponent(buildMessage());
+    var number = MC_CART.waNumber;
+    var url = number
+      ? 'https://wa.me/' + number + '?text=' + msg
+      : 'https://wa.me/?text=' + msg;
+
+    window.open(url, '_blank', 'noopener,noreferrer');
+  };
+
+  /* ─── Live validation clear on input ─── */
+  ['mc-name', 'mc-city'].forEach(function (id) {
+    var el = document.getElementById(id);
+    if (!el) return;
+    el.addEventListener('input', function () {
+      el.classList.remove('is-error');
+      var err = document.getElementById(id + '-err');
+      if (err) err.classList.remove('is-visible');
+    }, { passive: true });
+  });
+
+})();
+</script>
+
+{% schema %}
+{
+  "name": "Commande WhatsApp",
+  "tag": "section",
+  "class": "section-main-cart",
+  "settings": [
+    { "type": "header", "content": "━━ WhatsApp" },
+    {
+      "type": "text",
+      "id": "whatsapp_number",
+      "label": "Numéro WhatsApp admin",
+      "placeholder": "+237656999989",
+      "info": "Incluez l'indicatif pays (ex: +237656999989). Le message de commande sera envoyé à ce numéro."
+    },
+    {
+      "type": "text",
+      "id": "whatsapp_button_label",
+      "label": "Texte du bouton",
+      "default": "Discuter sur WhatsApp"
+    },
+
+    { "type": "header", "content": "━━ Textes" },
+    { "type": "text", "id": "store_display_name",  "label": "Nom de la boutique (dans le message WA)", "default": "Motion 19" },
+    { "type": "text", "id": "section_title",        "label": "Titre de la page",                        "default": "Votre panier" },
+    { "type": "text", "id": "form_title",            "label": "Titre du formulaire",                     "default": "Vos coordonnées" },
+    { "type": "text", "id": "name_field_label",      "label": "Label — Nom complet",                     "default": "Nom complet" },
+    { "type": "text", "id": "city_field_label",      "label": "Label — Ville",                           "default": "Ville" },
+    { "type": "text", "id": "phone_field_label",     "label": "Label — Téléphone",                       "default": "Numéro de téléphone" },
+
+    { "type": "header", "content": "━━ Couleurs" },
+    { "type": "color", "id": "accent_color",    "label": "Couleur principale (bouton WA, focus)",  "default": "#25D366" },
+    { "type": "color", "id": "btn_text_color",  "label": "Texte bouton WhatsApp",                  "default": "#ffffff" },
+    { "type": "color", "id": "page_bg",         "label": "Fond de la page",                        "default": "#ffffff" },
+    { "type": "color", "id": "card_bg",         "label": "Fond des blocs",                         "default": "#f8f8f8" },
+    { "type": "color", "id": "border_color",    "label": "Couleur des bordures",                   "default": "#e5e5e7" },
+    { "type": "color", "id": "text_color",      "label": "Texte principal",                        "default": "#1d1d1f" },
+    { "type": "color", "id": "text_muted_color","label": "Texte secondaire",                       "default": "#6e6e73" },
+
+    { "type": "header", "content": "━━ Rayon des éléments" },
+    { "type": "range", "id": "btn_radius",  "label": "Rayon bouton / champs (px)",  "min": 0, "max": 32, "step": 2, "default": 6,  "unit": "px" },
+    { "type": "range", "id": "card_radius", "label": "Rayon blocs / cartes (px)",   "min": 0, "max": 24, "step": 2, "default": 6,  "unit": "px" },
+
+    { "type": "header", "content": "━━ Badges de confiance" },
+    { "type": "checkbox", "id": "show_trust_badges", "label": "Afficher les badges de confiance", "default": true }
+  ],
+  "blocks": [
+    {
+      "type": "trust_badge",
+      "name": "Badge de confiance",
+      "settings": [
+        {
+          "type": "select",
+          "id": "icon",
+          "label": "Icône",
+          "default": "check",
+          "options": [
+            { "value": "check",   "label": "Coche ✓" },
+            { "value": "shield",  "label": "Bouclier" },
+            { "value": "truck",   "label": "Camion livraison" },
+            { "value": "refresh", "label": "Retour / Remboursement" },
+            { "value": "lock",    "label": "Cadenas sécurité" }
+          ]
+        },
+        {
+          "type": "text",
+          "id": "text",
+          "label": "Texte du badge",
+          "default": "Commande 100% sécurisée"
+        }
+      ]
+    }
+  ],
+  "max_blocks": 4,
+  "presets": [
+    {
+      "name": "Panier WhatsApp",
+      "settings": {
+        "store_display_name": "Motion 19",
+        "whatsapp_button_label": "Discuter sur WhatsApp"
+      },
+      "blocks": [
+        { "type": "trust_badge", "settings": { "icon": "shield",  "text": "Commande 100% sécurisée" } },
+        { "type": "trust_badge", "settings": { "icon": "truck",   "text": "Livraison rapide disponible" } },
+        { "type": "trust_badge", "settings": { "icon": "refresh", "text": "Retours acceptés sous 30 jours" } }
+      ]
+    }
+  ]
+}
+{% endschema %}

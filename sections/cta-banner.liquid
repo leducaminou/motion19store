@@ -75,6 +75,19 @@
 
         assign anim     = block.settings.animation      | default: 'fade-up'
         assign blk_hide = block.settings.hide_on_mobile | default: false
+        assign title_fs_d  = block.settings.title_fs_desktop   | default: 56
+        assign title_fs_m  = block.settings.title_fs_mobile    | default: 32
+        assign title_fw_v  = block.settings.title_fw            | default: '700'
+        assign title_lh_v  = block.settings.title_lh            | default: 105 | divided_by: 100.0
+        assign title_ls_v  = block.settings.title_ls            | default: '-0.025'
+        assign sub_fs_d    = block.settings.subtitle_fs_desktop | default: 17
+        assign sub_fs_m    = block.settings.subtitle_fs_mobile  | default: 14
+        assign sub_fw_v    = block.settings.subtitle_fw         | default: '400'
+        assign sub_lh_v    = block.settings.subtitle_lh         | default: 165 | divided_by: 100.0
+        assign cont_pv_v   = block.settings.content_pv          | default: 72
+        assign cont_ph_v   = block.settings.content_ph_val      | default: 60
+        assign ol_fs_v     = block.settings.overline_fs         | default: 11
+        assign ol_fw_v     = block.settings.overline_fw         | default: '600'
       -%}
 
       {%- if img_d != blank -%}
@@ -98,8 +111,21 @@
           --b-ov-a:   {{ ov_op }};
           --b-h-mob:  {{ h_mobile }}px;
           --b-cont-mw:{{ cont_mw }}px;
-          --b-hl-col: {{ hl_col }};
-          --b-cta-r:  {{ cta_rad }}px;
+          --b-hl-col:    {{ hl_col }};
+          --b-cta-r:     {{ cta_rad }}px;
+          --b-title-fs-d:{{ title_fs_d }}px;
+          --b-title-fs-m:{{ title_fs_m }}px;
+          --b-title-fw:  {{ title_fw_v }};
+          --b-title-lh:  {{ title_lh_v }};
+          --b-title-ls:  {{ title_ls_v }}em;
+          --b-sub-fs-d:  {{ sub_fs_d }}px;
+          --b-sub-fs-m:  {{ sub_fs_m }}px;
+          --b-sub-fw:    {{ sub_fw_v }};
+          --b-sub-lh:    {{ sub_lh_v }};
+          --b-cont-pv:   {{ cont_pv_v }}px;
+          --b-cont-ph:   {{ cont_ph_v }}px;
+          --b-ol-fs:     {{ ol_fs_v }}px;
+          --b-ol-fw:     {{ ol_fw_v }};
           {% if sub_col != blank  %}--b-sub-col: {{ sub_col }};{% endif %}
           {% if ov_tcol != blank  %}--b-ov-tcol: {{ ov_tcol }};{% endif %}
         "
@@ -111,7 +137,7 @@
           {%- else -%}
             <picture>
               <source media="(max-width:767px)" srcset="{{ url_m }}">
-              <img class="ctab__bg" src="{{ url_d }}" alt="" loading="lazy" decoding="async" style="object-position:{{ focal }};">
+              <img class="ctab__bg" src="{{ url_d }}" alt="" width="{{ img_d.width | default: 1800 }}" height="{{ img_d.height | default: 1000 }}" loading="lazy" decoding="async" style="object-position:{{ focal }};">
             </picture>
           {%- endif -%}
           <div class="ctab__overlay ctab__overlay--{{ grad }}" aria-hidden="true"></div>
@@ -158,7 +184,7 @@
         <div class="ctab__media" aria-hidden="true">
           <picture>
             <source media="(max-width:767px)" srcset="{{ 'hp-cta-mobile.jpg' | asset_url }}">
-            <img class="ctab__bg" src="{{ 'hp-cta.jpg' | asset_url }}" alt="" loading="lazy" decoding="async" style="object-position:center;">
+            <img class="ctab__bg" src="{{ 'hp-cta.jpg' | asset_url }}" alt="" width="1800" height="1000" loading="lazy" decoding="async" style="object-position:center;">
           </picture>
           <div class="ctab__overlay ctab__overlay--full" aria-hidden="true"></div>
         </div>
@@ -295,7 +321,7 @@
   z-index: 1;
   width: 100%;
   display: flex;
-  padding: clamp(40px,7vw,100px) clamp(20px,5vw,80px);
+  padding: var(--b-cont-pv, 72px) var(--b-cont-ph, 60px);
 }
 
 .ctab__banner--ah-left   .ctab__content { justify-content: flex-start; }
@@ -334,8 +360,8 @@
   display: inline-flex;
   align-items: center;
   gap: 10px;
-  font-size: .68rem;
-  font-weight: 600;
+  font-size: var(--b-ol-fs, .68rem);
+  font-weight: var(--b-ol-fw, 600);
   letter-spacing: .18em;
   text-transform: uppercase;
   color: var(--b-ov-tcol, var(--color-primary, #0787ea));
@@ -348,19 +374,19 @@
 /* ── Title ─────────────────────────────── */
 .ctab__title {
   font-family: var(--font-body, 'Inter', sans-serif);
-  font-size: clamp(1.9rem, 4.5vw, 3.6rem);
-  font-weight: 700;
-  line-height: 1.05;
-  letter-spacing: -.025em;
+  font-size: var(--b-title-fs-d, 3.6rem);
+  font-weight: var(--b-title-fw, 700);
+  line-height: var(--b-title-lh, 1.05);
+  letter-spacing: var(--b-title-ls, -.025em);
   color: var(--b-hl-col, #fff);
   margin: 0 0 16px;
 }
 
 /* ── Subtitle ──────────────────────────── */
 .ctab__sub {
-  font-size: clamp(.87rem, 1.4vw, 1.05rem);
-  font-weight: 400;
-  line-height: 1.65;
+  font-size: var(--b-sub-fs-d, 1.05rem);
+  font-weight: var(--b-sub-fw, 400);
+  line-height: var(--b-sub-lh, 1.65);
   color: var(--b-sub-col, rgba(255,255,255,.8));
   margin: 0 0 32px;
   max-width: 52ch;
@@ -406,14 +432,13 @@
 }
 
 @media (max-width: 767px) {
-  .ctab__title { font-size: clamp(1.5rem, 7vw, 2.4rem); }
-  .ctab__sub   { font-size: .875rem; margin-bottom: 24px; }
+  .ctab__title { font-size: var(--b-title-fs-m, 2.4rem); }
+  .ctab__sub   { font-size: var(--b-sub-fs-m, .875rem); margin-bottom: 24px; }
   .ctab__ctas  { flex-direction: column; gap: 8px; }
   .ctab__banner--ah-center .ctab__ctas { align-items: center; }
   .ctab__banner--ah-right  .ctab__ctas { align-items: flex-end; }
   .ctab__btn--md { font-size: .78rem; padding: 13px 28px; }
   .ctab__btn--lg { font-size: .82rem; padding: 14px 30px; }
-  .ctab__content { padding: clamp(32px,7vw,60px) clamp(20px,5vw,40px); }
 }
 </style>
 
@@ -509,12 +534,47 @@
         { "type": "header", "content": "Overline" },
         { "type": "text", "id": "overline", "label": "Overline text" },
         { "type": "color", "id": "overline_color", "label": "Overline color" },
+        { "type": "range", "id": "overline_fs", "label": "Overline font size (px)", "min": 8, "max": 18, "step": 1, "default": 11, "unit": "px" },
+        { "type": "select", "id": "overline_fw", "label": "Overline weight", "default": "600",
+          "options": [
+            { "value": "400", "label": "400 — Regular" }, { "value": "500", "label": "500 — Medium" },
+            { "value": "600", "label": "600 — SemiBold" }, { "value": "700", "label": "700 — Bold" }
+          ]
+        },
         { "type": "header", "content": "Title" },
         { "type": "text", "id": "title", "label": "Title", "default": "Limited Time Offers" },
         { "type": "color", "id": "title_color", "label": "Title color", "default": "#ffffff" },
+        { "type": "range", "id": "title_fs_desktop", "label": "Title size — desktop (px)", "min": 20, "max": 120, "step": 1, "default": 56, "unit": "px" },
+        { "type": "range", "id": "title_fs_mobile", "label": "Title size — mobile (px)", "min": 14, "max": 72, "step": 1, "default": 32, "unit": "px" },
+        { "type": "select", "id": "title_fw", "label": "Title weight", "default": "700",
+          "options": [
+            { "value": "300", "label": "300 — Light" }, { "value": "400", "label": "400 — Regular" },
+            { "value": "500", "label": "500 — Medium" }, { "value": "600", "label": "600 — SemiBold" },
+            { "value": "700", "label": "700 — Bold" }, { "value": "800", "label": "800 — ExtraBold" },
+            { "value": "900", "label": "900 — Black" }
+          ]
+        },
+        { "type": "range", "id": "title_lh", "label": "Title line-height (÷100)", "min": 80, "max": 150, "step": 5, "default": 105 },
+        { "type": "select", "id": "title_ls", "label": "Title letter-spacing", "default": "-0.025",
+          "options": [
+            { "value": "-0.05", "label": "-0.05em" }, { "value": "-0.04", "label": "-0.04em" },
+            { "value": "-0.03", "label": "-0.03em" }, { "value": "-0.025", "label": "-0.025em — Défaut" },
+            { "value": "-0.02", "label": "-0.02em" }, { "value": "-0.01", "label": "-0.01em" },
+            { "value": "0", "label": "0 — Normal" }
+          ]
+        },
         { "type": "header", "content": "Subtitle" },
         { "type": "textarea", "id": "subtitle", "label": "Subtitle", "default": "Exceptional prices on exclusive stock. Don't miss your next acquisition." },
         { "type": "color", "id": "subtitle_color", "label": "Subtitle color" },
+        { "type": "range", "id": "subtitle_fs_desktop", "label": "Subtitle size — desktop (px)", "min": 12, "max": 36, "step": 1, "default": 17, "unit": "px" },
+        { "type": "range", "id": "subtitle_fs_mobile", "label": "Subtitle size — mobile (px)", "min": 10, "max": 28, "step": 1, "default": 14, "unit": "px" },
+        { "type": "select", "id": "subtitle_fw", "label": "Subtitle weight", "default": "400",
+          "options": [
+            { "value": "300", "label": "300 — Light" }, { "value": "400", "label": "400 — Regular" },
+            { "value": "500", "label": "500 — Medium" }, { "value": "600", "label": "600 — SemiBold" }
+          ]
+        },
+        { "type": "range", "id": "subtitle_lh", "label": "Subtitle line-height (÷100)", "min": 100, "max": 220, "step": 5, "default": 165 },
         { "type": "header", "content": "Primary button" },
         { "type": "text", "id": "cta_label", "label": "Button text", "default": "Acheter maintenant" },
         { "type": "url", "id": "cta_url", "label": "Link" },
@@ -536,6 +596,9 @@
             { "value": "primary", "label": "Primary" }, { "value": "dark", "label": "Dark" }
           ]
         },
+        { "type": "header", "content": "Content padding" },
+        { "type": "range", "id": "content_pv", "label": "Padding vertical (px)", "min": 20, "max": 200, "step": 4, "default": 72, "unit": "px" },
+        { "type": "range", "id": "content_ph_val", "label": "Padding horizontal (px)", "min": 12, "max": 200, "step": 4, "default": 60, "unit": "px" },
         { "type": "header", "content": "Animation" },
         { "type": "select", "id": "animation", "label": "Content animation", "default": "fade-up",
           "options": [

@@ -1,0 +1,1757 @@
+{%- comment -%}
+  Hero Carousel — Motion19 — OS 2.0
+  Préfixe .hcr | Swiper JS | Homepage exclusif
+{%- endcomment -%}
+
+{%- liquid
+  assign sid = section.id
+
+  assign autoplay_enabled  = section.settings.autoplay_enabled  | default: true
+  assign autoplay_speed    = section.settings.autoplay_speed    | default: 5000
+  assign transition_speed  = section.settings.transition_speed  | default: 700
+  assign loop_enabled      = section.settings.loop_enabled      | default: true
+  assign pause_hover       = section.settings.pause_on_hover    | default: true
+  assign pause_interaction = section.settings.pause_on_interaction | default: true
+
+  assign height_desktop    = section.settings.height_desktop    | default: 78
+  assign height_laptop     = section.settings.height_laptop     | default: 90
+  assign height_mobile     = section.settings.height_mobile     | default: 50
+
+  assign enable_float      = section.settings.enable_large_float | default: true
+  assign large_margin      = section.settings.large_screen_margin | default: 40
+  assign large_radius      = section.settings.large_screen_radius | default: 6
+  assign laptop_radius     = section.settings.laptop_radius     | default: 0
+
+  assign show_dots         = section.settings.show_dots         | default: true
+  assign dots_style        = section.settings.dots_style        | default: 'capsule'
+  assign dots_pos_h        = section.settings.dots_position_h   | default: 'right'
+  assign dots_pos_v        = section.settings.dots_position_v   | default: 20
+  assign dot_active_w      = section.settings.dot_active_width  | default: 32
+  assign dot_inactive_w    = section.settings.dot_inactive_width | default: 8
+  assign dot_h             = section.settings.dot_height        | default: 5
+  assign dot_gap           = section.settings.dot_gap           | default: 6
+  assign dot_color_active  = section.settings.dot_color_active  | default: '#ffffff'
+  assign dot_color_inactive = section.settings.dot_color_inactive | default: 'rgba(255,255,255,0.35)'
+  assign dot_radius        = section.settings.dot_radius        | default: 999
+
+  assign font_family       = section.settings.font_family       | default: "'Inter', sans-serif"
+-%}
+
+<section
+  id="hcr-{{ sid }}"
+  class="hcr{% if enable_float %} hcr--float{% endif %}"
+  aria-label="Hero Carousel"
+  aria-roledescription="carousel"
+  tabindex="0"
+  style="
+    --hcr-h-d:        {{ height_desktop }}vh;
+    --hcr-h-l:        {{ height_laptop }}vh;
+    --hcr-h-m:        {{ height_mobile }}vh;
+    --hcr-large-mg:   {{ large_margin }}px;
+    --hcr-large-r:    {{ large_radius }}px;
+    --hcr-laptop-r:   {{ laptop_radius }}px;
+    --hcr-dot-act-w:  {{ dot_active_w }}px;
+    --hcr-dot-inact-w:{{ dot_inactive_w }}px;
+    --hcr-dot-h:      {{ dot_h }}px;
+    --hcr-dot-gap:    {{ dot_gap }}px;
+    --hcr-dot-r:      {{ dot_radius }}px;
+    --hcr-dot-act-c:  {{ dot_color_active }};
+    --hcr-dot-inact-c:{{ dot_color_inactive }};
+    --hcr-ease:         cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    --hcr-transition:   {{ transition_speed }}ms;
+    --hcr-autoplay-spd: {{ autoplay_speed }}ms;
+    --hcr-font:         {{ font_family }};
+    --hcr-dots-bottom:  {{ dots_pos_v }}px;
+  "
+>
+
+  {%- comment -%} ═══ SWIPER ═══ {%- endcomment -%}
+  <div
+    class="swiper hcr__swiper"
+    id="hcr-swiper-{{ sid }}"
+    aria-live="off"
+  >
+    <div class="swiper-wrapper hcr__container">
+
+      {%- comment -%} ── Slides par défaut si aucun block configuré ── {%- endcomment -%}
+      {%- if section.blocks.size == 0 -%}
+
+        {%- assign default_slides = '1,2,3' | split: ',' -%}
+        {%- assign default_eyebrows    = 'Motion19 Store,Nouveautés 2025,Collection Premium' | split: ',' -%}
+        {%- assign default_headings    = "Tout l'équipement des créateurs modernes,Redéfinissez votre setup studio,L'excellence. Redéfinie." | split: ',' -%}
+        {%- assign default_descs       = "Caméras, audio, éclairage, streaming, podcast et studio professionnel pour les créateurs nouvelle génération.,Les meilleurs équipements audio et vidéo sélectionnés pour vous — qualité pro, prix accessibles.,Des matériaux de premier choix, une ingénierie sans compromis. Pour les créateurs qui refusent la médiocrité." | split: ',' -%}
+        {%- assign default_cta1s       = 'Explorer les collections,Voir les nouveautés,Découvrir la collection' | split: ',' -%}
+        {%- assign default_cta2s       = 'Voir les setups,,En savoir plus' | split: ',' -%}
+        {%- assign default_aligns      = 'left,left,left' | split: ',' -%}
+        {%- assign default_valigns     = 'bottom,bottom,bottom' | split: ',' -%}
+        {%- assign default_ov_dirs     = 'left,left,left' | split: ',' -%}
+        {%- assign default_cta1_styles = 'solid-white,outline-white,luxury' | split: ',' -%}
+        {%- assign default_cta2_styles = 'outline-white,ghost,ghost' | split: ',' -%}
+
+        {%- for idx in default_slides -%}
+          {%- assign i0 = forloop.index0 -%}
+          {%- assign df_eyebrow = default_eyebrows[i0] -%}
+          {%- assign df_heading = default_headings[i0] -%}
+          {%- assign df_desc    = default_descs[i0] -%}
+          {%- assign df_cta1    = default_cta1s[i0] -%}
+          {%- assign df_cta2    = default_cta2s[i0] -%}
+          {%- assign df_align   = default_aligns[i0] -%}
+          {%- assign df_valign  = default_valigns[i0] -%}
+          {%- assign df_ov_dir  = default_ov_dirs[i0] -%}
+          {%- assign df_cta1s   = default_cta1_styles[i0] -%}
+          {%- assign df_cta2s   = default_cta2_styles[i0] -%}
+          <div
+            class="swiper-slide hcr__slide hcr__slide--ph-{{ df_align }} hcr__slide--pv-{{ df_valign }} hcr__slide--tha-{{ df_align }} hcr__slide--tva-{{ df_valign }} hcr__slide--mh-{{ df_align }} hcr__slide--mv-bottom{% if forloop.first %} is-selected{% endif %}"
+            role="group"
+            aria-roledescription="slide"
+            aria-label="{{ forloop.index }} / 3"
+            style="
+              --hcr-s-ov-r: 0; --hcr-s-ov-g: 0; --hcr-s-ov-b: 0; --hcr-s-ov-a: 0.5;
+              --hcr-s-ov-r-m: 0; --hcr-s-ov-g-m: 0; --hcr-s-ov-b-m: 0; --hcr-s-ov-a-m: 0.62;
+              --hcr-s-h-col: #ffffff;
+              --hcr-s-h-sz-d: 72px; --hcr-s-h-sz-t: 52px; --hcr-s-h-sz-m: 38px;
+              --hcr-s-h-fw: 800; --hcr-s-h-lh: 1.0; --hcr-s-h-ls: -0.03em; --hcr-s-h-tt: none;
+              --hcr-s-h-mw: 900px;
+              --hcr-s-d-col: rgba(255,255,255,0.75); --hcr-s-d-sz-d: 17px; --hcr-s-d-sz-m: 15px; --hcr-s-d-mw: 560px;
+              --hcr-s-btn-r: 2px; --hcr-s-btn-py: 14px; --hcr-s-btn-px: 28px;
+              --hcr-s-pt-d: 80px; --hcr-s-pb-d: 80px; --hcr-s-pl-d: 80px; --hcr-s-pr-d: 80px;
+              --hcr-s-pt-m: 48px; --hcr-s-pb-m: 64px; --hcr-s-pl-m: 24px; --hcr-s-pr-m: 24px;
+              --hcr-s-gap-d: 18px; --hcr-s-gap-m: 14px;
+            "
+          >
+            <div class="hcr__media" aria-hidden="true">
+              <picture>
+                <source media="(max-width: 767px)" srcset="{{ 'hp-hero-' | append: forloop.index | append: '-mobile.jpg' | asset_url }}">
+                <img
+                  class="hcr__img"
+                  src="{{ 'hp-hero-' | append: forloop.index | append: '.jpg' | asset_url }}"
+                  width="1800" height="1012"
+                  alt=""
+                  loading="{% if forloop.first %}eager{% else %}lazy{% endif %}"
+                  fetchpriority="{% if forloop.first %}high{% else %}auto{% endif %}"
+                  decoding="async"
+                  style="object-fit: cover; object-position: center center;"
+                >
+              </picture>
+              <div class="hcr__overlay hcr__overlay--{{ df_ov_dir }}" aria-hidden="true"></div>
+            </div>
+            <div class="hcr__content hcr__content--{{ df_align }}">
+              <div class="hcr__inner">
+                <p class="hcr__eyebrow">
+                  {%- if df_align == 'left' -%}<span class="hcr__eyebrow-line" aria-hidden="true"></span>{%- endif -%}
+                  <span>{{ df_eyebrow }}</span>
+                </p>
+                <h2 class="hcr__heading">{{ df_heading }}</h2>
+                <p class="hcr__desc">{{ df_desc }}</p>
+                <div class="hcr__ctas">
+                  <a class="hcr__btn hcr__btn--{{ df_cta1s }}" href="/collections/all" aria-label="{{ df_cta1 }}">
+                    <span class="hcr__btn-label">{{ df_cta1 }}</span>
+                    <span class="hcr__btn-icon" aria-hidden="true">
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+                    </span>
+                  </a>
+                  {%- if df_cta2 != blank -%}
+                    <a class="hcr__btn hcr__btn--{{ df_cta2s }}" href="/collections/all" aria-label="{{ df_cta2 }}">
+                      <span class="hcr__btn-label">{{ df_cta2 }}</span>
+                    </a>
+                  {%- endif -%}
+                </div>
+              </div>
+            </div>
+          </div>
+        {%- endfor -%}
+
+      {%- else -%}
+
+      {%- for block in section.blocks -%}
+        {%- liquid
+          assign b = block
+
+          assign img_d    = b.settings.image_desktop
+          assign img_m    = b.settings.image_mobile
+          assign focal    = b.settings.focal_point | default: 'center center'
+          assign obj_fit  = b.settings.obj_fit     | default: 'cover'
+
+          assign eyebrow  = b.settings.eyebrow
+          assign heading  = b.settings.heading     | default: 'Motion19'
+          assign subhead  = b.settings.subheading
+          assign desc     = b.settings.description
+
+          assign cta1_lbl   = b.settings.cta1_label
+          assign cta1_url   = b.settings.cta1_url | default: '#'
+          assign cta1_style = b.settings.cta1_style | default: 'solid-white'
+          assign cta2_lbl   = b.settings.cta2_label
+          assign cta2_url   = b.settings.cta2_url | default: '#'
+          assign cta2_style = b.settings.cta2_style | default: 'ghost'
+
+          assign btn_radius = b.settings.btn_radius  | default: 2
+          assign btn_py     = b.settings.btn_py      | default: 14
+          assign btn_px     = b.settings.btn_px      | default: 28
+
+          assign ov_col     = b.settings.overlay_color
+          assign ov_op      = b.settings.overlay_opacity | default: 45 | divided_by: 100.0
+          assign ov_dir     = b.settings.overlay_direction | default: 'bottom'
+          assign ov_col_m   = b.settings.overlay_color_mobile
+          assign ov_op_m    = b.settings.overlay_opacity_mobile | default: 55 | divided_by: 100.0
+
+          assign h_col      = b.settings.heading_color  | default: '#ffffff'
+          assign h_sz_d     = b.settings.heading_sz_d   | default: 64
+          assign h_sz_t     = b.settings.heading_sz_t   | default: 46
+          assign h_sz_m     = b.settings.heading_sz_m   | default: 36
+          assign h_fw       = b.settings.heading_fw     | default: '800'
+          assign h_lh       = b.settings.heading_lh     | default: '1.0'
+          assign h_ls       = b.settings.heading_ls     | default: '-0.03'
+          assign h_tt       = b.settings.heading_tt     | default: 'none'
+          assign h_mw       = b.settings.heading_max_width | default: 900
+
+          assign d_col      = b.settings.desc_color     | default: 'rgba(255,255,255,0.75)'
+          assign d_sz_d     = b.settings.desc_sz_d      | default: 17
+          assign d_sz_m     = b.settings.desc_sz_m      | default: 15
+          assign d_mw       = b.settings.desc_max_width | default: 560
+
+          assign pos_h_d    = b.settings.pos_h_desktop  | default: 'left'
+          assign pos_v_d    = b.settings.pos_v_desktop  | default: 'bottom'
+          assign pos_h_t    = b.settings.pos_h_tablet   | default: 'left'
+          assign pos_v_t    = b.settings.pos_v_tablet   | default: 'bottom'
+          assign pos_h_m    = b.settings.pos_h_mobile   | default: 'left'
+          assign pos_v_m    = b.settings.pos_v_mobile   | default: 'bottom'
+          assign content_align = b.settings.content_text_align | default: 'left'
+
+          assign pt_d    = b.settings.padding_top_d    | default: 80
+          assign pb_d    = b.settings.padding_bottom_d | default: 80
+          assign pl_d    = b.settings.padding_left_d   | default: 80
+          assign pr_d    = b.settings.padding_right_d  | default: 80
+          assign pt_m    = b.settings.padding_top_m    | default: 48
+          assign pb_m    = b.settings.padding_bottom_m | default: 64
+          assign pl_m    = b.settings.padding_left_m   | default: 24
+          assign pr_m    = b.settings.padding_right_m  | default: 24
+          assign gap_d   = b.settings.content_gap_d    | default: 18
+          assign gap_m   = b.settings.content_gap_m    | default: 14
+
+          assign ov_r = 0
+          assign ov_g = 0
+          assign ov_b = 0
+          if ov_col != blank
+            assign ov_r = ov_col.red
+            assign ov_g = ov_col.green
+            assign ov_b = ov_col.blue
+          else
+            assign ov_r = 0
+            assign ov_g = 0
+            assign ov_b = 0
+          endif
+
+          assign ov_r_m = 0
+          assign ov_g_m = 0
+          assign ov_b_m = 0
+          if ov_col_m != blank
+            assign ov_r_m = ov_col_m.red
+            assign ov_g_m = ov_col_m.green
+            assign ov_b_m = ov_col_m.blue
+          else
+            assign ov_r_m = ov_r
+            assign ov_g_m = ov_g
+            assign ov_b_m = ov_b
+          endif
+
+          assign forloop_index0 = forloop.index0
+        -%}
+
+        {%- comment -%} Preload LCP image premier slide {%- endcomment -%}
+        {%- if forloop.index == 1 -%}
+          {%- if img_d != blank -%}
+            <link rel="preload" as="image" href="{{ img_d | image_url: width: 1800 }}" media="(min-width: 768px)">
+            <link rel="preload" as="image" href="{{ img_d | image_url: width: 800 }}" media="(max-width: 767px)">
+          {%- else -%}
+            <link rel="preload" as="image" href="{{ 'hp-hero-1.jpg' | asset_url }}" media="(min-width: 768px)">
+            <link rel="preload" as="image" href="{{ 'hp-hero-1-mobile.jpg' | asset_url }}" media="(max-width: 767px)">
+          {%- endif -%}
+        {%- endif -%}
+
+        <div
+          class="swiper-slide hcr__slide hcr__slide--ph-{{ pos_h_d }} hcr__slide--pv-{{ pos_v_d }} hcr__slide--tha-{{ pos_h_t }} hcr__slide--tva-{{ pos_v_t }} hcr__slide--mh-{{ pos_h_m }} hcr__slide--mv-{{ pos_v_m }}{% if forloop.first %} is-selected{% endif %}"
+          role="group"
+          aria-roledescription="slide"
+          aria-label="{{ forloop.index }} / {{ section.blocks.size }}"
+          {{ block.shopify_attributes }}
+          style="
+            --hcr-s-ov-r:    {{ ov_r }};
+            --hcr-s-ov-g:    {{ ov_g }};
+            --hcr-s-ov-b:    {{ ov_b }};
+            --hcr-s-ov-a:    {{ ov_op }};
+            --hcr-s-ov-r-m:  {{ ov_r_m }};
+            --hcr-s-ov-g-m:  {{ ov_g_m }};
+            --hcr-s-ov-b-m:  {{ ov_b_m }};
+            --hcr-s-ov-a-m:  {{ ov_op_m }};
+            --hcr-s-h-col:   {{ h_col }};
+            --hcr-s-h-sz-d:  {{ h_sz_d }}px;
+            --hcr-s-h-sz-t:  {{ h_sz_t }}px;
+            --hcr-s-h-sz-m:  {{ h_sz_m }}px;
+            --hcr-s-h-fw:    {{ h_fw }};
+            --hcr-s-h-lh:    {{ h_lh }};
+            --hcr-s-h-ls:    {{ h_ls }}em;
+            --hcr-s-h-tt:    {{ h_tt }};
+            --hcr-s-h-mw:    {{ h_mw }}px;
+            --hcr-s-d-col:   {{ d_col }};
+            --hcr-s-d-sz-d:  {{ d_sz_d }}px;
+            --hcr-s-d-sz-m:  {{ d_sz_m }}px;
+            --hcr-s-d-mw:    {{ d_mw }}px;
+            --hcr-s-btn-r:   {{ btn_radius }}px;
+            --hcr-s-btn-py:  {{ btn_py }}px;
+            --hcr-s-btn-px:  {{ btn_px }}px;
+            --hcr-s-pt-d:    {{ pt_d }}px;
+            --hcr-s-pb-d:    {{ pb_d }}px;
+            --hcr-s-pl-d:    {{ pl_d }}px;
+            --hcr-s-pr-d:    {{ pr_d }}px;
+            --hcr-s-pt-m:    {{ pt_m }}px;
+            --hcr-s-pb-m:    {{ pb_m }}px;
+            --hcr-s-pl-m:    {{ pl_m }}px;
+            --hcr-s-pr-m:    {{ pr_m }}px;
+            --hcr-s-gap-d:   {{ gap_d }}px;
+            --hcr-s-gap-m:   {{ gap_m }}px;
+          "
+        >
+
+          {%- comment -%} ── IMAGE ── {%- endcomment -%}
+          <div class="hcr__media" aria-hidden="true">
+            {%- if img_d != blank -%}
+              {%- assign img_d_src  = img_d | image_url: width: 1800 -%}
+              {%- assign img_d_src2 = img_d | image_url: width: 2400 -%}
+              {%- assign img_d_800  = img_d | image_url: width: 800 -%}
+              {%- assign img_d_1200 = img_d | image_url: width: 1200 -%}
+              {%- assign img_d_600  = img_d | image_url: width: 600 -%}
+
+              {%- if img_m != blank -%}
+                {%- assign img_m_src  = img_m | image_url: width: 800 -%}
+                {%- assign img_m_src2 = img_m | image_url: width: 1200 -%}
+              {%- else -%}
+                {%- assign img_m_src  = img_d_800 -%}
+                {%- assign img_m_src2 = img_d_1200 -%}
+              {%- endif -%}
+              <picture>
+                <source
+                  media="(max-width: 767px)"
+                  srcset="{{ img_m_src }} 800w, {{ img_m_src2 }} 1200w"
+                  sizes="100vw"
+                >
+                <source
+                  media="(max-width: 1199px)"
+                  srcset="{{ img_d_1200 }} 1200w, {{ img_d_src }} 1800w"
+                  sizes="100vw"
+                >
+                <img
+                  class="hcr__img"
+                  src="{{ img_d_src }}"
+                  srcset="{{ img_d_src }} 1800w, {{ img_d_src2 }} 2400w"
+                  sizes="100vw"
+                  width="{{ img_d.width }}"
+                  height="{{ img_d.height }}"
+                  alt="{{ img_d.alt | escape }}"
+                  loading="{% if forloop.index == 1 %}eager{% else %}lazy{% endif %}"
+                  fetchpriority="{% if forloop.index == 1 %}high{% else %}auto{% endif %}"
+                  decoding="async"
+                  style="object-fit: {{ obj_fit }}; object-position: {{ focal }};"
+                >
+              </picture>
+            {%- else -%}
+              {%- assign fb_idx = forloop.index -%}
+              {%- if fb_idx > 3 -%}{%- assign fb_idx = 3 -%}{%- endif -%}
+              <picture>
+                <source media="(max-width: 767px)" srcset="{{ 'hp-hero-' | append: fb_idx | append: '-mobile.jpg' | asset_url }}">
+                <img
+                  class="hcr__img"
+                  src="{{ 'hp-hero-' | append: fb_idx | append: '.jpg' | asset_url }}"
+                  width="1800"
+                  height="1012"
+                  alt=""
+                  loading="{% if forloop.index == 1 %}eager{% else %}lazy{% endif %}"
+                  fetchpriority="{% if forloop.index == 1 %}high{% else %}auto{% endif %}"
+                  decoding="async"
+                  style="object-fit: {{ obj_fit }}; object-position: {{ focal }};"
+                >
+              </picture>
+            {%- endif -%}
+
+            {%- comment -%} ── OVERLAY ── {%- endcomment -%}
+            <div
+              class="hcr__overlay hcr__overlay--{{ ov_dir }}"
+              aria-hidden="true"
+            ></div>
+          </div>
+
+          {%- comment -%} ── CONTENT ── {%- endcomment -%}
+          <div class="hcr__content hcr__content--{{ content_align }}" aria-hidden="false">
+            <div class="hcr__inner">
+
+              {%- assign badge_text = b.settings.badge_text -%}
+              {%- if badge_text != blank -%}
+                <span class="hcr__badge" aria-label="{{ badge_text | escape }}">
+                  <span class="hcr__badge-dot" aria-hidden="true"></span>
+                  {{ badge_text | escape }}
+                </span>
+              {%- endif -%}
+
+              {%- if eyebrow != blank -%}
+                <p class="hcr__eyebrow">
+                  <span class="hcr__eyebrow-line" aria-hidden="true"></span>
+                  <span>{{ eyebrow | escape }}</span>
+                </p>
+              {%- endif -%}
+
+              {%- if heading != blank -%}
+                {%- if forloop.index == 1 -%}
+                  <h1 class="hcr__heading">{{ heading | escape }}</h1>
+                {%- else -%}
+                  <h2 class="hcr__heading">{{ heading | escape }}</h2>
+                {%- endif -%}
+              {%- endif -%}
+
+              {%- if subhead != blank -%}
+                <p class="hcr__subheading">{{ subhead | escape }}</p>
+              {%- endif -%}
+
+              {%- if desc != blank -%}
+                <p class="hcr__desc">{{ desc | escape }}</p>
+              {%- endif -%}
+
+              {%- if cta1_lbl != blank or cta2_lbl != blank -%}
+                <div class="hcr__ctas">
+                  {%- if cta1_lbl != blank -%}
+                    <a
+                      class="hcr__btn hcr__btn--{{ cta1_style }}"
+                      href="{{ cta1_url }}"
+                      aria-label="{{ cta1_lbl | escape }}"
+                    >
+                      <span class="hcr__btn-label">{{ cta1_lbl | escape }}</span>
+                      <span class="hcr__btn-icon" aria-hidden="true">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                          <line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/>
+                        </svg>
+                      </span>
+                    </a>
+                  {%- endif -%}
+                  {%- if cta2_lbl != blank -%}
+                    <a
+                      class="hcr__btn hcr__btn--{{ cta2_style }}"
+                      href="{{ cta2_url }}"
+                      aria-label="{{ cta2_lbl | escape }}"
+                    >
+                      <span class="hcr__btn-label">{{ cta2_lbl | escape }}</span>
+                    </a>
+                  {%- endif -%}
+                </div>
+              {%- endif -%}
+
+            </div>
+          </div>
+
+        </div>
+      {%- endfor -%}
+
+      {%- endif -%}
+
+    </div>
+  </div>
+
+  {%- comment -%} ═══ NAVIGATION DOTS (pre-rendered) ═══ {%- endcomment -%}
+  {%- assign hcr_slide_count = section.blocks.size -%}
+  {%- if hcr_slide_count == 0 -%}{%- assign hcr_slide_count = 3 -%}{%- endif -%}
+  {%- if show_dots and hcr_slide_count > 1 -%}
+    <div
+      class="hcr__dots hcr__dots--h-{{ dots_pos_h }} hcr__dots--style-{{ dots_style }}"
+      id="hcr-dots-{{ sid }}"
+      role="tablist"
+      aria-label="Slides"
+    >
+      {%- for i in (1..hcr_slide_count) -%}
+        <button
+          class="hcr__dot{% if forloop.first %} hcr__dot--active{% endif %}"
+          type="button"
+          role="tab"
+          aria-label="Slide {{ i }}"
+          aria-selected="{% if forloop.first %}true{% else %}false{% endif %}"
+        ></button>
+      {%- endfor -%}
+    </div>
+  {%- endif -%}
+
+  {%- comment -%} ═══ PROGRESS BAR ═══ {%- endcomment -%}
+  {%- if autoplay_enabled -%}
+    <div class="hcr__progress" id="hcr-prog-{{ sid }}" aria-hidden="true">
+      <div class="hcr__progress-bar" id="hcr-prog-bar-{{ sid }}"></div>
+    </div>
+  {%- endif -%}
+
+  {%- comment -%} ═══ SCROLL HINT ═══ {%- endcomment -%}
+  {%- if section.settings.show_scroll_hint -%}
+    <div class="hcr__scroll-hint" aria-hidden="true">
+      <span class="hcr__scroll-hint-label">Scroll</span>
+      <span class="hcr__scroll-hint-line"></span>
+    </div>
+  {%- endif -%}
+
+</section>
+
+<style>
+/* ═══════════════════════════════════════════════════
+   HERO CAROUSEL — Motion19 — hcr
+   Préfixe isolé : .hcr
+   Architecture : BEM + CSS Custom Properties
+═══════════════════════════════════════════════════ */
+
+/* ── Root ─────────────────────────────────────── */
+.hcr {
+  position: relative;
+  overflow: hidden;
+  background: #0a0a0a;
+  height: var(--hcr-h-m, 50vh);
+}
+
+/* ── Grande résolution : floating card ── */
+@media (min-width: 1500px) {
+  .hcr--float {
+    margin-top:    var(--hcr-large-mg, 40px);
+    margin-left:   var(--hcr-large-mg, 40px);
+    margin-right:  var(--hcr-large-mg, 40px);
+    border-radius: var(--hcr-large-r, 16px);
+    overflow: hidden;
+  }
+  .hcr {
+    height: var(--hcr-h-d, 78vh);
+  }
+}
+
+/* ── Desktop 1024–1499px ── */
+@media (min-width: 1024px) and (max-width: 1499px) {
+  .hcr {
+    height: var(--hcr-h-l, 90vh);
+    border-radius: var(--hcr-laptop-r, 0px);
+  }
+}
+
+/* ── Tablet 768–1023px ── */
+@media (min-width: 768px) and (max-width: 1023px) {
+  .hcr { height: var(--hcr-h-l, 90vh); }
+}
+
+/* ── Swiper container ── */
+.hcr__swiper {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
+/* ── Swiper wrapper (track) ── */
+.hcr__swiper .swiper-wrapper {
+  height: 100%;
+  will-change: transform;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+}
+
+/* ── Slide ── */
+.hcr__slide {
+  flex: 0 0 100%;
+  min-width: 0;
+  position: relative;
+  overflow: hidden;
+  min-height: inherit;
+  display: flex;
+}
+
+/* ── Image background ── */
+.hcr__media {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+}
+.hcr__img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+  will-change: transform;
+  transform: translate3d(0, 0, 0);
+  transition: transform var(--hcr-transition, 700ms) var(--hcr-ease);
+}
+
+/* ── Overlay par slide ── */
+.hcr__overlay {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+.hcr__overlay--bottom {
+  background: linear-gradient(
+    to top,
+    rgba(var(--hcr-s-ov-r,0),var(--hcr-s-ov-g,0),var(--hcr-s-ov-b,0),var(--hcr-s-ov-a,.45)) 0%,
+    rgba(var(--hcr-s-ov-r,0),var(--hcr-s-ov-g,0),var(--hcr-s-ov-b,0),0.35) 40%,
+    rgba(var(--hcr-s-ov-r,0),var(--hcr-s-ov-g,0),var(--hcr-s-ov-b,0),0.10) 100%
+  );
+}
+.hcr__overlay--top {
+  background: linear-gradient(
+    to bottom,
+    rgba(var(--hcr-s-ov-r,0),var(--hcr-s-ov-g,0),var(--hcr-s-ov-b,0),var(--hcr-s-ov-a,.45)) 0%,
+    rgba(var(--hcr-s-ov-r,0),var(--hcr-s-ov-g,0),var(--hcr-s-ov-b,0),0.25) 50%,
+    transparent 100%
+  );
+}
+.hcr__overlay--left {
+  background: linear-gradient(
+    to right,
+    rgba(var(--hcr-s-ov-r,0),var(--hcr-s-ov-g,0),var(--hcr-s-ov-b,0),var(--hcr-s-ov-a,.65)) 0%,
+    rgba(var(--hcr-s-ov-r,0),var(--hcr-s-ov-g,0),var(--hcr-s-ov-b,0),0.30) 55%,
+    transparent 100%
+  );
+}
+.hcr__overlay--right {
+  background: linear-gradient(
+    to left,
+    rgba(var(--hcr-s-ov-r,0),var(--hcr-s-ov-g,0),var(--hcr-s-ov-b,0),var(--hcr-s-ov-a,.65)) 0%,
+    rgba(var(--hcr-s-ov-r,0),var(--hcr-s-ov-g,0),var(--hcr-s-ov-b,0),0.30) 55%,
+    transparent 100%
+  );
+}
+.hcr__overlay--center {
+  background: radial-gradient(
+    ellipse at center,
+    rgba(var(--hcr-s-ov-r,0),var(--hcr-s-ov-g,0),var(--hcr-s-ov-b,0),0.15) 0%,
+    rgba(var(--hcr-s-ov-r,0),var(--hcr-s-ov-g,0),var(--hcr-s-ov-b,0),var(--hcr-s-ov-a,.55)) 100%
+  );
+}
+.hcr__overlay--full {
+  background: rgba(var(--hcr-s-ov-r,0),var(--hcr-s-ov-g,0),var(--hcr-s-ov-b,0),var(--hcr-s-ov-a,.45));
+}
+
+/* Mobile : overlay indépendant */
+@media (max-width: 767px) {
+  .hcr__overlay--bottom {
+    background: linear-gradient(
+      to top,
+      rgba(var(--hcr-s-ov-r-m,0),var(--hcr-s-ov-g-m,0),var(--hcr-s-ov-b-m,0),var(--hcr-s-ov-a-m,.55)) 0%,
+      rgba(var(--hcr-s-ov-r-m,0),var(--hcr-s-ov-g-m,0),var(--hcr-s-ov-b-m,0),0.40) 45%,
+      rgba(var(--hcr-s-ov-r-m,0),var(--hcr-s-ov-g-m,0),var(--hcr-s-ov-b-m,0),0.12) 100%
+    );
+  }
+  .hcr__overlay--left,
+  .hcr__overlay--right {
+    background: linear-gradient(
+      to top,
+      rgba(var(--hcr-s-ov-r-m,0),var(--hcr-s-ov-g-m,0),var(--hcr-s-ov-b-m,0),var(--hcr-s-ov-a-m,.60)) 0%,
+      rgba(var(--hcr-s-ov-r-m,0),var(--hcr-s-ov-g-m,0),var(--hcr-s-ov-b-m,0),0.25) 60%,
+      transparent 100%
+    );
+  }
+}
+
+/* ── Content positioning ── */
+.hcr__content {
+  position: relative;
+  z-index: 2;
+  width: 100%;
+  display: flex;
+  align-self: stretch;
+  padding:
+    var(--hcr-s-pt-d, 80px)
+    var(--hcr-s-pr-d, 80px)
+    var(--hcr-s-pb-d, 80px)
+    var(--hcr-s-pl-d, 80px);
+}
+
+/* Horizontal alignment */
+.hcr__slide--ph-left   .hcr__content { justify-content: flex-start; }
+.hcr__slide--ph-center .hcr__content { justify-content: center; }
+.hcr__slide--ph-right  .hcr__content { justify-content: flex-end; }
+
+/* Vertical alignment */
+.hcr__slide--pv-top    .hcr__content { align-items: flex-start; }
+.hcr__slide--pv-center .hcr__content { align-items: center; }
+.hcr__slide--pv-bottom .hcr__content { align-items: flex-end; }
+
+/* Text alignment */
+.hcr__content--left   { text-align: left; }
+.hcr__content--center { text-align: center; }
+.hcr__content--right  { text-align: right; }
+
+/* ── Inner content block ── */
+.hcr__inner {
+  display: flex;
+  flex-direction: column;
+  gap: var(--hcr-s-gap-d, 18px);
+  max-width: var(--hcr-s-h-mw, 900px);
+  width: 100%;
+}
+
+.hcr__content--center .hcr__inner { align-items: center; }
+.hcr__content--right  .hcr__inner { align-items: flex-end; }
+.hcr__content--left   .hcr__inner { align-items: flex-start; }
+
+/* ── Eyebrow / Overline ── */
+.hcr__eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  margin: 0;
+  font-family: var(--hcr-font);
+  font-size: 0.68rem;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.85);
+}
+.hcr__eyebrow-line {
+  display: block;
+  width: 22px;
+  height: 1.5px;
+  background: currentColor;
+  flex-shrink: 0;
+}
+.hcr__content--center .hcr__eyebrow-line,
+.hcr__content--right  .hcr__eyebrow-line { display: none; }
+
+/* ── Heading ── */
+.hcr__heading {
+  margin: 0;
+  font-family: var(--hcr-font);
+  font-size: var(--hcr-s-h-sz-d, 64px);
+  font-weight: var(--hcr-s-h-fw, 800);
+  line-height: var(--hcr-s-h-lh, 1.0);
+  letter-spacing: var(--hcr-s-h-ls, -0.03em);
+  text-transform: var(--hcr-s-h-tt, none);
+  color: var(--hcr-s-h-col, #fff);
+  text-wrap: balance;
+}
+
+/* ── Subheading ── */
+.hcr__subheading {
+  margin: 0;
+  font-family: var(--hcr-font);
+  font-size: clamp(0.9rem, 1.2vw, 1.05rem);
+  font-weight: 500;
+  letter-spacing: 0.04em;
+  color: rgba(255,255,255,0.7);
+  text-transform: uppercase;
+}
+
+/* ── Description ── */
+.hcr__desc {
+  margin: 0;
+  font-family: var(--hcr-font);
+  font-size: var(--hcr-s-d-sz-d, 17px);
+  font-weight: 400;
+  line-height: 1.65;
+  color: var(--hcr-s-d-col, rgba(255,255,255,0.75));
+  max-width: var(--hcr-s-d-mw, 560px);
+}
+.hcr__content--center .hcr__desc { max-width: 60ch; }
+.hcr__content--right  .hcr__desc { max-width: 60ch; }
+
+/* ── CTAs ── */
+.hcr__ctas {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  align-items: center;
+}
+.hcr__content--center .hcr__ctas { justify-content: center; }
+.hcr__content--right  .hcr__ctas { justify-content: flex-end; }
+
+/* ── Boutons base ── */
+.hcr__btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  font-family: var(--hcr-font);
+  font-size: 0.82rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  text-decoration: none;
+  padding: var(--hcr-s-btn-py, 14px) var(--hcr-s-btn-px, 28px);
+  border-radius: var(--hcr-s-btn-r, 2px);
+  border: 1.5px solid transparent;
+  transition:
+    background 220ms cubic-bezier(0.4, 0, 0.2, 1),
+    color 220ms cubic-bezier(0.4, 0, 0.2, 1),
+    border-color 220ms cubic-bezier(0.4, 0, 0.2, 1),
+    transform 200ms cubic-bezier(0.4, 0, 0.2, 1),
+    box-shadow 220ms cubic-bezier(0.4, 0, 0.2, 1);
+  white-space: nowrap;
+  cursor: pointer;
+}
+.hcr__btn:focus-visible {
+  outline: 2px solid rgba(255,255,255,0.8);
+  outline-offset: 3px;
+}
+.hcr__btn-icon {
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+  transition: transform 200ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+@media (hover: hover) {
+  .hcr__btn:hover .hcr__btn-icon { transform: translateX(4px); }
+}
+
+/* Solid blanc */
+.hcr__btn--solid-white {
+  background: rgba(255,255,255,0.95);
+  color: #0a0a0a;
+  border-color: transparent;
+}
+@media (hover: hover) {
+  .hcr__btn--solid-white:hover {
+    background: #fff;
+    transform: scale(1.02);
+    box-shadow: 0 8px 28px rgba(255,255,255,0.25);
+  }
+}
+
+/* Outline blanc */
+.hcr__btn--outline-white {
+  background: transparent;
+  color: #fff;
+  border-color: rgba(255,255,255,0.65);
+}
+@media (hover: hover) {
+  .hcr__btn--outline-white:hover {
+    background: #fff;
+    color: #0a0a0a;
+    border-color: #fff;
+    transform: scale(1.02);
+  }
+}
+
+/* Ghost */
+.hcr__btn--ghost {
+  background: transparent;
+  color: #fff;
+  border-color: transparent;
+  padding-left: 0;
+  padding-right: 0;
+  gap: 8px;
+}
+@media (hover: hover) {
+  .hcr__btn--ghost:hover { opacity: 0.7; }
+}
+
+/* Primary */
+.hcr__btn--primary {
+  background: #0787ea;
+  color: #fff;
+  border-color: #0787ea;
+}
+@media (hover: hover) {
+  .hcr__btn--primary:hover {
+    background: #0672c7;
+    box-shadow: 0 8px 28px rgba(7,135,234,0.45);
+    transform: scale(1.02);
+  }
+}
+
+/* Glass */
+.hcr__btn--glass {
+  background: rgba(255,255,255,0.12);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  color: #fff;
+  border-color: rgba(255,255,255,0.22);
+}
+@media (hover: hover) {
+  .hcr__btn--glass:hover {
+    background: rgba(255,255,255,0.22);
+    transform: scale(1.02);
+  }
+}
+
+/* Dark */
+.hcr__btn--dark {
+  background: #0a0a0a;
+  color: #f5f5f7;
+  border-color: rgba(255,255,255,0.15);
+}
+@media (hover: hover) {
+  .hcr__btn--dark:hover {
+    background: #1a1a1a;
+    transform: scale(1.02);
+  }
+}
+
+/* Luxury */
+.hcr__btn--luxury {
+  background: transparent;
+  color: #fff;
+  border-color: rgba(255,255,255,0.4);
+  letter-spacing: 0.14em;
+  font-size: 0.72rem;
+}
+@media (hover: hover) {
+  .hcr__btn--luxury:hover {
+    background: rgba(255,255,255,0.08);
+    border-color: rgba(255,255,255,0.75);
+  }
+}
+
+/* ── TABLET overrides ── */
+@media (min-width: 768px) and (max-width: 1023px) {
+  .hcr__content {
+    padding:
+      var(--hcr-s-pt-m, 48px)
+      calc(var(--hcr-s-pr-d, 80px) * 0.6)
+      var(--hcr-s-pb-m, 64px)
+      calc(var(--hcr-s-pl-d, 80px) * 0.6);
+  }
+  .hcr__heading { font-size: var(--hcr-s-h-sz-t, 46px); }
+  .hcr__desc    { font-size: var(--hcr-s-d-sz-m, 15px); }
+
+  .hcr__slide--tha-left   .hcr__content { justify-content: flex-start; }
+  .hcr__slide--tha-center .hcr__content { justify-content: center; }
+  .hcr__slide--tha-right  .hcr__content { justify-content: flex-end; }
+
+  .hcr__slide--tva-top    .hcr__content { align-items: flex-start; }
+  .hcr__slide--tva-center .hcr__content { align-items: center; }
+  .hcr__slide--tva-bottom .hcr__content { align-items: flex-end; }
+}
+
+/* ── MOBILE overrides ── */
+@media (max-width: 767px) {
+  .hcr {
+    height: var(--hcr-h-m, 50vh);
+    border-radius: 0 !important;
+  }
+  .hcr--float {
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+    border-radius: 0 !important;
+  }
+  .hcr__swiper,
+  .hcr__swiper .swiper-wrapper,
+  .hcr__slide { height: 100%; }
+  .hcr__content {
+    padding:
+      var(--hcr-s-pt-m, 48px)
+      var(--hcr-s-pr-m, 24px)
+      var(--hcr-s-pb-m, 64px)
+      var(--hcr-s-pl-m, 24px);
+  }
+  .hcr__inner { gap: var(--hcr-s-gap-m, 14px); }
+
+  .hcr__slide--mh-left   .hcr__content { justify-content: flex-start; }
+  .hcr__slide--mh-center .hcr__content { justify-content: center; }
+  .hcr__slide--mh-right  .hcr__content { justify-content: flex-end; }
+
+  .hcr__slide--mv-top    .hcr__content { align-items: flex-start; }
+  .hcr__slide--mv-center .hcr__content { align-items: center; }
+  .hcr__slide--mv-bottom .hcr__content { align-items: flex-end; }
+
+  .hcr__heading { font-size: var(--hcr-s-h-sz-m, 36px); }
+  .hcr__desc    { font-size: var(--hcr-s-d-sz-m, 15px); }
+  .hcr__ctas    { flex-direction: column; gap: 10px; width: 100%; }
+  .hcr__content--center .hcr__ctas { align-items: center; }
+  .hcr__content--left   .hcr__ctas { align-items: flex-start; }
+  .hcr__content--right  .hcr__ctas { align-items: flex-end; }
+  .hcr__btn {
+    font-size: 0.78rem;
+    padding: 13px 24px;
+  }
+}
+
+/* ─── NAVIGATION DOTS ─────────────────────────── */
+.hcr__dots {
+  position: absolute;
+  bottom: var(--hcr-dots-bottom, 20px);
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  gap: var(--hcr-dot-gap, 6px);
+}
+.hcr__dots--h-left   { left: 40px; }
+.hcr__dots--h-center { left: 50%; transform: translateX(-50%); }
+.hcr__dots--h-right  { right: 40px; }
+
+@media (max-width: 767px) {
+  .hcr__dots--h-left   { left: 24px; }
+  .hcr__dots--h-right  { right: 24px; }
+}
+
+/* Dot base */
+.hcr__dot {
+  display: block;
+  height: var(--hcr-dot-h, 5px);
+  border-radius: var(--hcr-dot-r, 999px);
+  background: var(--hcr-dot-inact-c, rgba(255,255,255,0.35));
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  transition:
+    width 350ms cubic-bezier(0.25, 0.46, 0.45, 0.94),
+    background 280ms ease,
+    opacity 280ms ease;
+}
+
+/* Style: capsule */
+.hcr__dots--style-capsule .hcr__dot {
+  width: var(--hcr-dot-inact-w, 8px);
+}
+.hcr__dots--style-capsule .hcr__dot--active {
+  width: var(--hcr-dot-act-w, 32px);
+  background: var(--hcr-dot-act-c, #fff);
+  position: relative;
+  overflow: hidden;
+}
+/* Active dot progress fill */
+.hcr__dots--style-capsule .hcr__dot--active::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: rgba(255,255,255,0.35);
+  transform: scaleX(0);
+  transform-origin: left;
+  animation: hcr-dot-fill var(--hcr-autoplay-spd, 5000ms) linear forwards;
+}
+.hcr--paused .hcr__dot--active::after {
+  animation-play-state: paused;
+}
+@keyframes hcr-dot-fill {
+  from { transform: scaleX(0); }
+  to   { transform: scaleX(1); }
+}
+
+/* Style: round */
+.hcr__dots--style-round .hcr__dot {
+  width: var(--hcr-dot-h, 5px);
+  border-radius: 50%;
+}
+.hcr__dots--style-round .hcr__dot--active {
+  width: var(--hcr-dot-h, 5px);
+  background: var(--hcr-dot-act-c, #fff);
+  transform: scale(1.5);
+}
+
+/* Style: line */
+.hcr__dots--style-line .hcr__dot {
+  width: 20px;
+  height: 2px;
+  border-radius: 0;
+  background: var(--hcr-dot-inact-c, rgba(255,255,255,0.35));
+}
+.hcr__dots--style-line .hcr__dot--active {
+  background: var(--hcr-dot-act-c, #fff);
+  transform: scaleX(1.4);
+}
+
+/* ─── PROGRESS BAR ───────────────────────────── */
+.hcr__progress {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: rgba(255,255,255,0.1);
+  z-index: 10;
+  overflow: hidden;
+}
+.hcr__progress-bar {
+  height: 100%;
+  width: 0%;
+  background: linear-gradient(to right, rgba(255,255,255,0.55), rgba(255,255,255,0.9));
+  transform-origin: left;
+  will-change: width;
+  transition: opacity 300ms ease;
+}
+
+/* ─── SLIDE ENTRANCE ANIMATION — per-element stagger ── */
+.hcr__eyebrow,
+.hcr__heading,
+.hcr__subheading,
+.hcr__desc,
+.hcr__ctas,
+.hcr__badge {
+  opacity: 0;
+  transform: translateY(28px);
+  transition:
+    opacity  700ms cubic-bezier(0.22, 1, 0.36, 1),
+    transform 700ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.hcr__slide.is-selected .hcr__eyebrow    { opacity: 1; transform: none; transition-delay:  40ms; }
+.hcr__slide.is-selected .hcr__badge      { opacity: 1; transform: none; transition-delay:  40ms; }
+.hcr__slide.is-selected .hcr__heading    { opacity: 1; transform: none; transition-delay: 120ms; }
+.hcr__slide.is-selected .hcr__subheading { opacity: 1; transform: none; transition-delay: 190ms; }
+.hcr__slide.is-selected .hcr__desc       { opacity: 1; transform: none; transition-delay: 220ms; }
+.hcr__slide.is-selected .hcr__ctas       { opacity: 1; transform: none; transition-delay: 310ms; }
+
+/* ─── KEN BURNS on images ─────────────────── */
+.hcr__img {
+  transition: transform var(--hcr-transition, 700ms) var(--hcr-ease),
+              opacity 400ms ease;
+}
+.hcr__slide:not(.is-selected) .hcr__img {
+  transform: translate3d(0,0,0) scale(1.0);
+}
+.hcr__slide.is-selected .hcr__img {
+  animation: hcr-kenburns var(--hcr-autoplay-spd, 5000ms) linear forwards;
+}
+@keyframes hcr-kenburns {
+  from { transform: translate3d(0,0,0) scale(1.0); }
+  to   { transform: translate3d(0,0,0) scale(1.04); }
+}
+
+/* ─── BADGE ──────────────────────────────── */
+.hcr__badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 12px;
+  font-size: 0.65rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  border-radius: 999px;
+  border: 1px solid rgba(255,255,255,0.3);
+  color: #fff;
+  background: rgba(255,255,255,0.1);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  align-self: flex-start;
+  width: fit-content;
+}
+.hcr__content--center .hcr__badge { align-self: center; }
+.hcr__content--right  .hcr__badge { align-self: flex-end; }
+.hcr__badge-dot {
+  width: 5px; height: 5px;
+  border-radius: 50%;
+  background: currentColor;
+  opacity: 0.9;
+  flex-shrink: 0;
+}
+
+/* ─── SCROLL INDICATOR ───────────────────── */
+.hcr__scroll-hint {
+  position: absolute;
+  bottom: 28px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 10;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  opacity: 0.45;
+  pointer-events: none;
+  animation: hcr-scroll-fade 2.4s ease-in-out infinite;
+}
+@keyframes hcr-scroll-fade {
+  0%,100% { opacity: 0.3; transform: translateX(-50%) translateY(0); }
+  50%      { opacity: 0.7; transform: translateX(-50%) translateY(4px); }
+}
+.hcr__scroll-hint-line {
+  width: 1px;
+  height: 28px;
+  background: linear-gradient(to bottom, transparent, rgba(255,255,255,0.7));
+}
+.hcr__scroll-hint-label {
+  font-size: 0.6rem;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: #fff;
+}
+@media (max-width: 767px) { .hcr__scroll-hint { display: none; } }
+
+/* ─── AUTOPLAY PAUSED INDICATOR ─────────── */
+.hcr--paused .hcr__progress-bar {
+  opacity: 0.35;
+}
+
+/* ─── FOCUS STATES PREMIUM ───────────────── */
+.hcr__dot:focus-visible {
+  outline: 2px solid rgba(255,255,255,0.8);
+  outline-offset: 3px;
+  border-radius: 2px;
+}
+
+/* ─── REDUCED MOTION ─────────────────────── */
+@media (prefers-reduced-motion: reduce) {
+  .hcr__img { animation: none !important; transition: none !important; }
+  .hcr__eyebrow, .hcr__heading, .hcr__subheading,
+  .hcr__desc, .hcr__ctas, .hcr__badge {
+    opacity: 1 !important; transform: none !important; transition: none !important;
+  }
+  .hcr__dot,
+  .hcr__progress-bar { transition: none !important; }
+  @keyframes hcr-kenburns { from {} to {} }
+  @keyframes hcr-scroll-fade { 0%,50%,100% { opacity: 0.3; transform: translateX(-50%); } }
+}
+</style>
+
+<script>
+(function () {
+  'use strict';
+
+  var SID      = '{{ sid }}';
+  var AUTOPLAY = {{ autoplay_enabled | json }};
+  var AUTO_SPD = {{ autoplay_speed }};
+  var LOOP     = {{ loop_enabled | json }};
+  var P_HOVER  = {{ pause_hover | json }};
+  var P_INT    = {{ pause_interaction | json }};
+  var SPEED    = {{ transition_speed }};
+
+  function init() {
+    var root     = document.getElementById('hcr-' + SID);
+    var swiperEl = document.getElementById('hcr-swiper-' + SID);
+    var dotsWrap = document.getElementById('hcr-dots-' + SID);
+    var progBar  = document.getElementById('hcr-prog-bar-' + SID);
+
+    if (!root || !swiperEl || !window.Swiper) return;
+
+    var swiper = new window.Swiper(swiperEl, {
+      loop:           LOOP,
+      speed:          SPEED,
+      grabCursor:     true,
+      slidesPerView:  1,
+      allowTouchMove: true
+    });
+
+    /* ── Dots (pre-rendered in Liquid) ── */
+    var dots = dotsWrap ? Array.from(dotsWrap.querySelectorAll('.hcr__dot')) : [];
+
+    function updateDots() {
+      var idx = LOOP ? swiper.realIndex : swiper.activeIndex;
+      dots.forEach(function (d, i) {
+        var active = i === idx;
+        d.className = 'hcr__dot' + (active ? ' hcr__dot--active' : '');
+        d.setAttribute('aria-selected', active ? 'true' : 'false');
+      });
+    }
+
+    dots.forEach(function (d, i) {
+      d.addEventListener('click', function () {
+        if (LOOP) swiper.slideToLoop(i); else swiper.slideTo(i);
+        resetTimer();
+      });
+    });
+
+    /* ── is-selected (entrance animation) ── */
+    function getOrigSlides() {
+      return Array.from(swiperEl.querySelectorAll('.swiper-slide:not(.swiper-slide-duplicate)'));
+    }
+
+    function updateSelected() {
+      var idx = LOOP ? swiper.realIndex : swiper.activeIndex;
+      getOrigSlides().forEach(function (s, i) {
+        s.classList.toggle('is-selected', i === idx);
+      });
+    }
+
+    /* ── Autoplay + progress bar ── */
+    var paused    = false;
+    var rafId     = null;
+    var startTime = null;
+    var elapsed   = 0;
+
+    function startProgress() {
+      if (!AUTOPLAY || !progBar) return;
+      startTime = performance.now() - elapsed;
+      function tick(now) {
+        if (paused) return;
+        var p = (now - startTime) / AUTO_SPD;
+        progBar.style.width = Math.min(p * 100, 100) + '%';
+        if (p >= 1) {
+          elapsed = 0;
+          swiper.slideNext();
+          startTime = performance.now();
+        }
+        rafId = requestAnimationFrame(tick);
+      }
+      cancelAnimationFrame(rafId);
+      rafId = requestAnimationFrame(tick);
+    }
+
+    function resetTimer() {
+      elapsed = 0;
+      if (progBar) progBar.style.width = '0%';
+      cancelAnimationFrame(rafId);
+      if (!paused && AUTOPLAY) startProgress();
+    }
+
+    function pauseAutoplay() {
+      if (!AUTOPLAY) return;
+      paused  = true;
+      elapsed = progBar ? (parseFloat(progBar.style.width) / 100) * AUTO_SPD : 0;
+      cancelAnimationFrame(rafId);
+    }
+
+    function resumeAutoplay() {
+      if (!AUTOPLAY) return;
+      paused = false;
+      startProgress();
+    }
+
+    function doPause()  { pauseAutoplay();  root.classList.add('hcr--paused'); }
+    function doResume() { resumeAutoplay(); root.classList.remove('hcr--paused'); }
+
+    if (P_HOVER) {
+      root.addEventListener('mouseenter', doPause,  { passive: true });
+      root.addEventListener('mouseleave', doResume, { passive: true });
+    }
+
+    if (P_INT) {
+      swiper.on('touchStart', function () { doPause(); });
+      swiper.on('touchEnd',   function () {
+        setTimeout(function () { elapsed = 0; doResume(); }, 400);
+      });
+    }
+
+    /* ── Page Visibility API ── */
+    document.addEventListener('visibilitychange', function () {
+      if (document.hidden) { doPause(); } else { doResume(); }
+    });
+
+    /* ── IntersectionObserver — pause off-screen ── */
+    if (window.IntersectionObserver) {
+      var io = new IntersectionObserver(function (entries) {
+        entries.forEach(function (entry) {
+          if (entry.isIntersecting) { doResume(); } else { doPause(); }
+        });
+      }, { threshold: 0.25 });
+      io.observe(root);
+    }
+
+    /* ── Keyboard navigation ── */
+    root.addEventListener('keydown', function (e) {
+      if (e.key === 'ArrowLeft')  { swiper.slidePrev(); resetTimer(); }
+      if (e.key === 'ArrowRight') { swiper.slideNext(); resetTimer(); }
+    });
+
+    /* ── Swiper events ── */
+    swiper.on('slideChange', function () {
+      updateDots();
+      updateSelected();
+      resetTimer();
+    });
+
+    /* ── Resize ── */
+    var resizeTimer;
+    window.addEventListener('resize', function () {
+      clearTimeout(resizeTimer);
+      resizeTimer = setTimeout(function () { swiper.update(); }, 150);
+    }, { passive: true });
+
+    window.addEventListener('orientationchange', function () {
+      setTimeout(function () { swiper.update(); resetTimer(); }, 300);
+    }, { passive: true });
+
+    /* ── Init ── */
+    updateSelected();
+    if (AUTOPLAY) startProgress();
+
+    /* ── Shopify Theme Editor ── */
+    document.addEventListener('shopify:section:load', function (e) {
+      if (e.detail && e.detail.sectionId === SID) {
+        cancelAnimationFrame(rafId);
+        swiper.destroy(true, true);
+        init();
+      }
+    });
+
+    document.addEventListener('shopify:block:select', function (e) {
+      if (!e.detail) return;
+      var blockEl = document.getElementById(e.detail.blockId);
+      if (!blockEl || !swiperEl.contains(blockEl)) return;
+      var origSlides = getOrigSlides();
+      var idx = origSlides.indexOf(blockEl);
+      if (idx >= 0) {
+        if (LOOP) swiper.slideToLoop(idx); else swiper.slideTo(idx);
+        doPause();
+      }
+    });
+
+    document.addEventListener('shopify:block:deselect', function () {
+      doResume();
+    });
+  }
+
+  function safeInit() {
+    var t = 0;
+    (function poll() {
+      if (window.Swiper) { init(); return; }
+      if (t < 5000) { t += 50; setTimeout(poll, 50); }
+    }());
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', safeInit);
+  } else {
+    safeInit();
+  }
+})();
+</script>
+
+{% schema %}
+{
+  "name": "Hero Carousel",
+  "tag": "section",
+  "class": "section-hero-carousel",
+  "settings": [
+    { "type": "header", "content": "── 1. Carousel" },
+    { "type": "checkbox", "id": "autoplay_enabled",     "label": "Autoplay",                     "default": true },
+    { "type": "range",    "id": "autoplay_speed",        "label": "Durée par slide (ms)",         "min": 2000, "max": 9500, "step": 500, "default": 5000, "unit": "ms" },
+    { "type": "range",    "id": "transition_speed",      "label": "Vitesse transition (ms)",      "min": 300,  "max": 1200,  "step": 50,  "default": 700,  "unit": "ms" },
+    { "type": "checkbox", "id": "loop_enabled",          "label": "Boucle infinie",               "default": true },
+    { "type": "checkbox", "id": "pause_on_hover",        "label": "Pause au survol",              "default": true },
+    { "type": "checkbox", "id": "pause_on_interaction",  "label": "Pause sur interaction",        "default": true },
+
+    { "type": "header", "content": "── 2. Hauteurs" },
+    { "type": "range", "id": "height_desktop", "label": "Hauteur XL desktop (vh)", "min": 60, "max": 100, "step": 1, "default": 78, "unit": "vh" },
+    { "type": "range", "id": "height_laptop",  "label": "Hauteur laptop (vh)",     "min": 70, "max": 100, "step": 1, "default": 90, "unit": "vh" },
+    { "type": "range", "id": "height_mobile",  "label": "Hauteur mobile (vh)",     "min": 30, "max": 60,  "step": 1, "default": 50, "unit": "vh" },
+
+    { "type": "header", "content": "── 3. Container XL (≥ 1500px)" },
+    { "type": "checkbox", "id": "enable_large_float",    "label": "Flotter sur grand écran (1500px+)", "default": true },
+    { "type": "range",    "id": "large_screen_margin",   "label": "Marge côtés (px)",          "min": 8,  "max": 120, "step": 4, "default": 40, "unit": "px" },
+    { "type": "range",    "id": "large_screen_radius",   "label": "Border-radius XL (px)",     "min": 0,  "max": 48,  "step": 2, "default": 6, "unit": "px" },
+    { "type": "range",    "id": "laptop_radius",         "label": "Border-radius laptop (px)", "min": 0,  "max": 16,  "step": 2, "default": 0,  "unit": "px" },
+
+    { "type": "header", "content": "── 4. Navigation Dots" },
+    { "type": "checkbox", "id": "show_dots", "label": "Afficher les dots", "default": true },
+    {
+      "type": "select", "id": "dots_style", "label": "Style dots", "default": "capsule",
+      "options": [
+        { "value": "capsule", "label": "Capsule (recommandé)" },
+        { "value": "round",   "label": "Rond" },
+        { "value": "line",    "label": "Tiret" }
+      ]
+    },
+    {
+      "type": "select", "id": "dots_position_h", "label": "Position horizontale", "default": "right",
+      "options": [
+        { "value": "left",   "label": "Gauche" },
+        { "value": "center", "label": "Centre" },
+        { "value": "right",  "label": "Droite" }
+      ]
+    },
+    { "type": "range", "id": "dots_position_v",    "label": "Distance depuis le bas (px)",  "min": 8,  "max": 80, "step": 2, "default": 20, "unit": "px" },
+    { "type": "range", "id": "dot_active_width",   "label": "Largeur dot actif (px)",       "min": 12, "max": 60, "step": 2, "default": 32, "unit": "px" },
+    { "type": "range", "id": "dot_inactive_width", "label": "Largeur dot inactif (px)",     "min": 4,  "max": 20, "step": 1, "default": 8,  "unit": "px" },
+    { "type": "range", "id": "dot_height",         "label": "Hauteur dot (px)",             "min": 2,  "max": 12, "step": 1, "default": 5,  "unit": "px" },
+    { "type": "range", "id": "dot_gap",            "label": "Espace entre dots (px)",       "min": 2,  "max": 16, "step": 1, "default": 6,  "unit": "px" },
+    { "type": "range", "id": "dot_radius",         "label": "Border-radius dot (px)",       "min": 0,  "max": 100, "step": 1, "default": 100 },
+    { "type": "color", "id": "dot_color_active",   "label": "Couleur dot actif",            "default": "#ffffff" },
+    { "type": "color", "id": "dot_color_inactive", "label": "Couleur dot inactif",          "default": "#ffffff" },
+
+    { "type": "header", "content": "── 5. Extras" },
+    { "type": "checkbox", "id": "show_scroll_hint", "label": "Indicateur scroll (desktop)", "default": false }
+  ],
+  "blocks": [
+    {
+      "type": "slide",
+      "name": "Slide",
+      "settings": [
+        { "type": "header", "content": "── Média" },
+        { "type": "image_picker", "id": "image_desktop", "label": "Image desktop" },
+        { "type": "image_picker", "id": "image_mobile",  "label": "Image mobile (optionnel)" },
+        {
+          "type": "select", "id": "focal_point", "label": "Point focal", "default": "center center",
+          "options": [
+            { "value": "top left",      "label": "Haut gauche" },
+            { "value": "top center",    "label": "Haut centre" },
+            { "value": "top right",     "label": "Haut droite" },
+            { "value": "center left",   "label": "Centre gauche" },
+            { "value": "center center", "label": "Centre" },
+            { "value": "center right",  "label": "Centre droite" },
+            { "value": "bottom left",   "label": "Bas gauche" },
+            { "value": "bottom center", "label": "Bas centre" },
+            { "value": "bottom right",  "label": "Bas droite" }
+          ]
+        },
+        {
+          "type": "select", "id": "obj_fit", "label": "Recadrage", "default": "cover",
+          "options": [
+            { "value": "cover",   "label": "Cover" },
+            { "value": "contain", "label": "Contain" }
+          ]
+        },
+
+        { "type": "header", "content": "── Overlay desktop" },
+        { "type": "color",  "id": "overlay_color",   "label": "Couleur overlay",   "default": "#000000" },
+        { "type": "range",  "id": "overlay_opacity",  "label": "Opacité (%)",       "min": 0, "max": 85, "step": 5, "default": 45 },
+        {
+          "type": "select", "id": "overlay_direction", "label": "Direction gradient", "default": "bottom",
+          "options": [
+            { "value": "bottom",  "label": "Bas (dégradé vers haut)" },
+            { "value": "top",     "label": "Haut (dégradé vers bas)" },
+            { "value": "left",    "label": "Gauche" },
+            { "value": "right",   "label": "Droite" },
+            { "value": "center",  "label": "Radial centre" },
+            { "value": "full",    "label": "Plein" }
+          ]
+        },
+
+        { "type": "header", "content": "── Overlay mobile" },
+        { "type": "color", "id": "overlay_color_mobile",   "label": "Couleur mobile (vide = même)" },
+        { "type": "range", "id": "overlay_opacity_mobile", "label": "Opacité mobile (%)", "min": 0, "max": 90, "step": 5, "default": 55 },
+
+        { "type": "header", "content": "── Contenu" },
+        { "type": "text", "id": "badge_text",  "label": "Badge (ex: Nouveau, Promo)" },
+        { "type": "text", "id": "eyebrow",     "label": "Eyebrow / Overline" },
+        { "type": "text", "id": "heading",     "label": "Titre",       "default": "L'équipement des créateurs" },
+        { "type": "text", "id": "subheading",  "label": "Sous-titre (optionnel)" },
+        { "type": "textarea", "id": "description", "label": "Description", "default": "Caméras, audio, éclairage et studio professionnel pour la nouvelle génération." },
+
+        { "type": "header", "content": "── Positionnement desktop" },
+        {
+          "type": "select", "id": "pos_h_desktop", "label": "Horizontal", "default": "left",
+          "options": [
+            { "value": "left",   "label": "Gauche" },
+            { "value": "center", "label": "Centre" },
+            { "value": "right",  "label": "Droite" }
+          ]
+        },
+        {
+          "type": "select", "id": "pos_v_desktop", "label": "Vertical", "default": "bottom",
+          "options": [
+            { "value": "top",    "label": "Haut" },
+            { "value": "center", "label": "Centre" },
+            { "value": "bottom", "label": "Bas" }
+          ]
+        },
+        {
+          "type": "select", "id": "content_text_align", "label": "Alignement texte", "default": "left",
+          "options": [
+            { "value": "left",   "label": "Gauche" },
+            { "value": "center", "label": "Centre" },
+            { "value": "right",  "label": "Droite" }
+          ]
+        },
+
+        { "type": "header", "content": "── Positionnement tablet" },
+        {
+          "type": "select", "id": "pos_h_tablet", "label": "Horizontal tablet", "default": "left",
+          "options": [
+            { "value": "left",   "label": "Gauche" },
+            { "value": "center", "label": "Centre" },
+            { "value": "right",  "label": "Droite" }
+          ]
+        },
+        {
+          "type": "select", "id": "pos_v_tablet", "label": "Vertical tablet", "default": "bottom",
+          "options": [
+            { "value": "top",    "label": "Haut" },
+            { "value": "center", "label": "Centre" },
+            { "value": "bottom", "label": "Bas" }
+          ]
+        },
+
+        { "type": "header", "content": "── Positionnement mobile" },
+        {
+          "type": "select", "id": "pos_h_mobile", "label": "Horizontal mobile", "default": "left",
+          "options": [
+            { "value": "left",   "label": "Gauche" },
+            { "value": "center", "label": "Centre" },
+            { "value": "right",  "label": "Droite" }
+          ]
+        },
+        {
+          "type": "select", "id": "pos_v_mobile", "label": "Vertical mobile", "default": "bottom",
+          "options": [
+            { "value": "top",    "label": "Haut" },
+            { "value": "center", "label": "Centre" },
+            { "value": "bottom", "label": "Bas" }
+          ]
+        },
+
+        { "type": "header", "content": "── Espacement contenu" },
+        { "type": "range", "id": "padding_top_d",    "label": "Padding haut desktop (px)",   "min": 0,  "max": 200, "step": 4, "default": 80, "unit": "px" },
+        { "type": "range", "id": "padding_bottom_d", "label": "Padding bas desktop (px)",    "min": 0,  "max": 200, "step": 4, "default": 80, "unit": "px" },
+        { "type": "range", "id": "padding_left_d",   "label": "Padding gauche desktop (px)", "min": 0,  "max": 200, "step": 4, "default": 80, "unit": "px" },
+        { "type": "range", "id": "padding_right_d",  "label": "Padding droit desktop (px)",  "min": 0,  "max": 200, "step": 4, "default": 80, "unit": "px" },
+        { "type": "range", "id": "padding_top_m",    "label": "Padding haut mobile (px)",    "min": 0,  "max": 120, "step": 4, "default": 48, "unit": "px" },
+        { "type": "range", "id": "padding_bottom_m", "label": "Padding bas mobile (px)",     "min": 0,  "max": 160, "step": 4, "default": 64, "unit": "px" },
+        { "type": "range", "id": "padding_left_m",   "label": "Padding gauche mobile (px)",  "min": 0,  "max": 60,  "step": 2, "default": 24, "unit": "px" },
+        { "type": "range", "id": "padding_right_m",  "label": "Padding droit mobile (px)",   "min": 0,  "max": 60,  "step": 2, "default": 24, "unit": "px" },
+        { "type": "range", "id": "content_gap_d",    "label": "Gap éléments desktop (px)",   "min": 4,  "max": 48,  "step": 2, "default": 18, "unit": "px" },
+        { "type": "range", "id": "content_gap_m",    "label": "Gap éléments mobile (px)",    "min": 4,  "max": 40,  "step": 2, "default": 14, "unit": "px" },
+
+        { "type": "header", "content": "── Typographie — Titre" },
+        { "type": "color",  "id": "heading_color",     "label": "Couleur",             "default": "#ffffff" },
+        { "type": "range",  "id": "heading_sz_d",       "label": "Taille desktop (px)", "min": 28, "max": 120, "step": 2, "default": 64, "unit": "px" },
+        { "type": "range",  "id": "heading_sz_t",       "label": "Taille tablet (px)",  "min": 24, "max": 90,  "step": 2, "default": 46, "unit": "px" },
+        { "type": "range",  "id": "heading_sz_m",       "label": "Taille mobile (px)",  "min": 20, "max": 64,  "step": 2, "default": 36, "unit": "px" },
+        {
+          "type": "select", "id": "heading_fw", "label": "Graisse", "default": "800",
+          "options": [
+            { "value": "300", "label": "Light 300" },
+            { "value": "400", "label": "Regular 400" },
+            { "value": "600", "label": "SemiBold 600" },
+            { "value": "700", "label": "Bold 700" },
+            { "value": "800", "label": "ExtraBold 800" },
+            { "value": "900", "label": "Black 900" }
+          ]
+        },
+        {
+          "type": "select", "id": "heading_lh", "label": "Interligne", "default": "1.0",
+          "options": [
+            { "value": "0.9",  "label": "Très serré 0.9" },
+            { "value": "0.95", "label": "Serré 0.95" },
+            { "value": "1.0",  "label": "Compact 1.0" },
+            { "value": "1.1",  "label": "Normal 1.1" },
+            { "value": "1.2",  "label": "Aéré 1.2" }
+          ]
+        },
+        {
+          "type": "select", "id": "heading_ls", "label": "Letter-spacing", "default": "-0.03",
+          "options": [
+            { "value": "-0.04", "label": "-0.04em" },
+            { "value": "-0.03", "label": "-0.03em" },
+            { "value": "-0.02", "label": "-0.02em" },
+            { "value": "0",     "label": "0" },
+            { "value": "0.02",  "label": "+0.02em" },
+            { "value": "0.05",  "label": "+0.05em" }
+          ]
+        },
+        {
+          "type": "select", "id": "heading_tt", "label": "Casse", "default": "none",
+          "options": [
+            { "value": "none",       "label": "Normale" },
+            { "value": "uppercase",  "label": "MAJUSCULES" },
+            { "value": "lowercase",  "label": "minuscules" },
+            { "value": "capitalize", "label": "Capitalize" }
+          ]
+        },
+        { "type": "range", "id": "heading_max_width", "label": "Largeur max titre (px)", "min": 200, "max": 1200, "step": 20, "default": 900, "unit": "px" },
+
+        { "type": "header", "content": "── Typographie — Description" },
+        { "type": "color", "id": "desc_color",    "label": "Couleur",             "default": "#cccccc" },
+        { "type": "range", "id": "desc_sz_d",      "label": "Taille desktop (px)", "min": 12, "max": 24, "step": 1, "default": 17, "unit": "px" },
+        { "type": "range", "id": "desc_sz_m",      "label": "Taille mobile (px)",  "min": 12, "max": 20, "step": 1, "default": 15, "unit": "px" },
+        { "type": "range", "id": "desc_max_width", "label": "Largeur max (px)",    "min": 200, "max": 800, "step": 20, "default": 560, "unit": "px" },
+
+        { "type": "header", "content": "── Bouton principal" },
+        { "type": "text", "id": "cta1_label", "label": "Texte",  "default": "Explorer les collections" },
+        { "type": "url",  "id": "cta1_url",   "label": "Lien" },
+        {
+          "type": "select", "id": "cta1_style", "label": "Style", "default": "solid-white",
+          "options": [
+            { "value": "solid-white",   "label": "Solide blanc" },
+            { "value": "outline-white", "label": "Outline blanc" },
+            { "value": "ghost",         "label": "Ghost" },
+            { "value": "primary",       "label": "Bleu primaire" },
+            { "value": "glass",         "label": "Glass" },
+            { "value": "dark",          "label": "Noir" },
+            { "value": "luxury",        "label": "Luxury" }
+          ]
+        },
+
+        { "type": "header", "content": "── Bouton secondaire" },
+        { "type": "text", "id": "cta2_label", "label": "Texte (optionnel)" },
+        { "type": "url",  "id": "cta2_url",   "label": "Lien" },
+        {
+          "type": "select", "id": "cta2_style", "label": "Style", "default": "ghost",
+          "options": [
+            { "value": "solid-white",   "label": "Solide blanc" },
+            { "value": "outline-white", "label": "Outline blanc" },
+            { "value": "ghost",         "label": "Ghost" },
+            { "value": "primary",       "label": "Bleu primaire" },
+            { "value": "glass",         "label": "Glass" },
+            { "value": "dark",          "label": "Noir" },
+            { "value": "luxury",        "label": "Luxury" }
+          ]
+        },
+
+        { "type": "header", "content": "── Style boutons commun" },
+        { "type": "range", "id": "btn_radius", "label": "Border-radius (px)",    "min": 0, "max": 40, "step": 1, "default": 2, "unit": "px" },
+        { "type": "range", "id": "btn_py",     "label": "Padding vertical (px)", "min": 6, "max": 32, "step": 1, "default": 14, "unit": "px" },
+        { "type": "range", "id": "btn_px",     "label": "Padding horizontal (px)","min": 10,"max": 60, "step": 2, "default": 28, "unit": "px" }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Hero Carousel",
+      "blocks": [
+        {
+          "type": "slide",
+          "settings": {
+            "eyebrow": "Motion19 Store",
+            "heading": "Tout l'équipement des créateurs modernes",
+            "description": "Caméras, audio, éclairage, streaming, podcast et studio professionnel pour les créateurs nouvelle génération.",
+            "cta1_label": "Explorer les collections",
+            "cta1_url": "/collections/all",
+            "cta2_label": "Voir les setups",
+            "cta2_url": "/collections/all",
+            "cta1_style": "solid-white",
+            "cta2_style": "outline-white",
+            "pos_h_desktop": "left",
+            "pos_v_desktop": "bottom",
+            "pos_h_tablet": "left",
+            "pos_v_tablet": "bottom",
+            "pos_v_mobile": "bottom",
+            "overlay_direction": "left",
+            "overlay_opacity": 50,
+            "overlay_opacity_mobile": 60,
+            "heading_sz_d": 72,
+            "heading_sz_t": 52,
+            "heading_sz_m": 38,
+            "padding_left_d": 80
+          }
+        },
+        {
+          "type": "slide",
+          "settings": {
+            "eyebrow": "Nouveautés 2025",
+            "heading": "Redéfinissez votre setup studio",
+            "description": "Les meilleurs équipements audio et vidéo sélectionnés pour vous — qualité professionnelle, prix accessibles.",
+            "cta1_label": "Voir les nouveautés",
+            "cta1_url": "/collections/new",
+            "cta1_style": "outline-white",
+            "pos_h_desktop": "left",
+            "pos_v_desktop": "bottom",
+            "pos_h_tablet": "left",
+            "pos_v_tablet": "bottom",
+            "content_text_align": "left",
+            "overlay_direction": "center",
+            "overlay_opacity": 40,
+            "overlay_opacity_mobile": 55,
+            "heading_sz_d": 68,
+            "heading_sz_t": 48,
+            "heading_sz_m": 36
+          }
+        },
+        {
+          "type": "slide",
+          "settings": {
+            "eyebrow": "Collection Premium",
+            "heading": "L'excellence. Redéfinie.",
+            "description": "Des matériaux de premier choix, une ingénierie sans compromis. Pour les créateurs qui refusent la médiocrité.",
+            "cta1_label": "Découvrir la collection",
+            "cta1_url": "/collections/premium",
+            "cta2_label": "En savoir plus",
+            "cta2_url": "/pages/about",
+            "cta1_style": "luxury",
+            "cta2_style": "ghost",
+            "pos_h_desktop": "left",
+            "pos_v_desktop": "bottom",
+            "pos_h_tablet": "left",
+            "pos_v_tablet": "bottom",
+            "content_text_align": "left",
+            "overlay_direction": "right",
+            "overlay_opacity": 50,
+            "overlay_opacity_mobile": 60,
+            "heading_sz_d": 64,
+            "heading_sz_t": 46,
+            "heading_sz_m": 34,
+            "padding_right_d": 80,
+            "padding_left_d": 80
+          }
+        }
+      ]
+    }
+  ],
+  "max_blocks": 10
+}
+{% endschema %}

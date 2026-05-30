@@ -27,7 +27,11 @@
       "WebFetch(domain:raw.githubusercontent.com)",
       "WebFetch(domain:www.embla-carousel.com)",
       "Bash(grep -E '\\\\.\\(css|js\\)$')",
-      "Bash(git config *)"
+      "Bash(git config *)",
+      "Bash(git -C \"D:/Motion 19/motion19store\" config user.name \"Duc Aminou\")",
+      "Bash(git -C \"D:/Motion 19/motion19store\" config user.email \"duc@motion19.com\")",
+      "Bash(git *)",
+      "Bash(grep \"\\\\.liquid$\")"
     ]
   }
 }

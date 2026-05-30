@@ -1,0 +1,986 @@
+{%- comment -%} Shop By Type — Motion19 — OS 2.0 v2.0 (Full Customizer) {%- endcomment -%}
+
+{%- liquid
+  assign sid = section.id
+
+  assign section_bg = section.settings.section_bg
+  if section_bg == blank
+    assign section_bg = '#f7f7f8'
+  endif
+  assign text_color = section.settings.text_color
+  if text_color == blank
+    assign text_color = '#0a0a0a'
+  endif
+  assign eyebrow_col = section.settings.eyebrow_color
+  if eyebrow_col == blank
+    assign eyebrow_col = '#0787ea'
+  endif
+  assign title_color = section.settings.title_color
+  if title_color == blank
+    assign title_color = '#0a0a0a'
+  endif
+  assign sep_color = section.settings.sep_color
+  if sep_color == blank
+    assign sep_color = '#0787ea'
+  endif
+  assign cta_hover_color = section.settings.cta_hover_color
+  if cta_hover_color == blank
+    assign cta_hover_color = '#0787ea'
+  endif
+  assign dot_active_color = section.settings.dot_active_color
+  if dot_active_color == blank
+    assign dot_active_color = '#0a0a0a'
+  endif
+  assign card_border_c = section.settings.card_border_color
+  if card_border_c == blank
+    assign card_border_c = '#333333'
+  endif
+
+  assign max_width      = section.settings.section_max_width       | default: 1400
+  assign pt_m           = section.settings.padding_top_mobile      | default: 40
+  assign pb_m           = section.settings.padding_bottom_mobile   | default: 36
+  assign pt_d           = section.settings.padding_top_desktop     | default: 56
+  assign pb_d           = section.settings.padding_bottom_desktop  | default: 40
+  assign mt             = section.settings.margin_top              | default: 0
+  assign mb             = section.settings.margin_bottom           | default: 0
+  assign grid_gap       = section.settings.grid_gap                | default: 12
+  assign card_radius    = section.settings.card_radius             | default: 6
+  assign card_border_w  = section.settings.card_border_width       | default: 0
+
+  assign header_align   = section.settings.header_align            | default: 'left'
+  assign title_fs_d     = section.settings.title_size_desktop      | default: 32
+  assign title_fs_m     = section.settings.title_size_mobile       | default: 22
+  assign title_fw       = section.settings.title_weight            | default: '800'
+  assign subtitle_fs    = section.settings.subtitle_size           | default: 14
+  assign eyebrow_fs     = section.settings.eyebrow_size            | default: 11
+
+  if section.settings.show_title_sep == false
+    assign sep_op = 0
+  else
+    assign sep_op = 1
+  endif
+  assign sep_w          = section.settings.sep_width               | default: 36
+  assign sep_h          = section.settings.sep_height              | default: 3
+
+  assign card_title_fs_d  = section.settings.card_title_size_desktop | default: 20
+  assign card_title_fs_m  = section.settings.card_title_size_mobile  | default: 16
+  assign card_title_fw    = section.settings.card_title_weight        | default: '700'
+  assign card_eyebrow_fs  = section.settings.card_eyebrow_size        | default: 11
+  assign card_eyebrow_op  = section.settings.card_eyebrow_opacity     | default: 65 | divided_by: 100.0
+  assign card_content_pad = section.settings.card_content_padding     | default: 18
+
+  assign overlay_bot    = section.settings.overlay_bottom_opacity   | default: 70 | divided_by: 100.0
+  assign overlay_mid    = section.settings.overlay_mid_opacity      | default: 25 | divided_by: 100.0
+
+  assign cta_size       = section.settings.cta_button_size          | default: 34
+  assign cta_bg_op      = section.settings.cta_bg_opacity           | default: 15 | divided_by: 100.0
+  assign cta_border_op  = section.settings.cta_border_opacity       | default: 30 | divided_by: 100.0
+
+  assign hover_lift         = section.settings.hover_lift            | default: 5
+  assign hover_scale_raw    = section.settings.hover_img_scale       | default: 103
+  assign hover_scale        = hover_scale_raw | times: 0.01
+  assign anim_speed         = section.settings.transition_speed      | default: 300
+
+  assign desktop_layout = section.settings.desktop_layout            | default: 'editorial'
+  assign row1_h         = section.settings.grid_row1_height          | default: 320
+  assign row2_h         = section.settings.grid_row2_height          | default: 280
+  assign row3_h         = section.settings.grid_row3_height          | default: 260
+
+  assign default_imgs     = 'hp-cat-video.jpg,hp-cat-eclairage.jpg,hp-cta-2.jpg,hp-editorial.jpg,hp-cat-photo.jpg,hp-story-2.jpg' | split: ','
+  assign default_eyebrows = 'Creator Studio,Broadcast Ready,Production Audio,Cinema Workflow,Visual Excellence,Studio Sound' | split: ','
+  assign default_titles   = 'Conçu pour les créateurs YouTube,Pour les streamers exigeants,L univers des podcasters,Pensé pour les cinéastes,Capturez chaque détail,Produisez sans limites' | split: ','
+  assign default_ctas     = 'Explorer,Découvrir,Voir la sélection,Explorer,Découvrir,Explorer' | split: ','
+
+  if section.blocks.size > 0
+    assign use_blocks = true
+  else
+    assign use_blocks = false
+  endif
+-%}
+
+<section
+  id="sbt-{{ sid }}"
+  class="sbt"
+  aria-labelledby="sbt-title-{{ sid }}"
+  style="
+    --sbt-bg:              {{ section_bg }};
+    --sbt-text:            {{ text_color }};
+    --sbt-eyebrow:         {{ eyebrow_col }};
+    --sbt-title:           {{ title_color }};
+    --sbt-max-w:           {{ max_width }}px;
+    --sbt-pt-m:            {{ pt_m }}px;
+    --sbt-pb-m:            {{ pb_m }}px;
+    --sbt-pt-d:            {{ pt_d }}px;
+    --sbt-pb-d:            {{ pb_d }}px;
+    --sbt-mt:              {{ mt }}px;
+    --sbt-mb:              {{ mb }}px;
+    --sbt-grid-gap:        {{ grid_gap }}px;
+    --sbt-card-r:          {{ card_radius }}px;
+    --sbt-card-border-w:   {{ card_border_w }}px;
+    --sbt-card-border-c:   {{ card_border_c }};
+    --sbt-title-fs-d:      {{ title_fs_d }}px;
+    --sbt-title-fs-m:      {{ title_fs_m }}px;
+    --sbt-title-fw:        {{ title_fw }};
+    --sbt-subtitle-fs:     {{ subtitle_fs }}px;
+    --sbt-eyebrow-fs:      {{ eyebrow_fs }}px;
+    --sbt-sep-op:          {{ sep_op }};
+    --sbt-sep-color:       {{ sep_color }};
+    --sbt-sep-w:           {{ sep_w }}px;
+    --sbt-sep-h:           {{ sep_h }}px;
+    --sbt-card-title-fs-d: {{ card_title_fs_d }}px;
+    --sbt-card-title-fs-m: {{ card_title_fs_m }}px;
+    --sbt-card-title-fw:   {{ card_title_fw }};
+    --sbt-card-eyebrow-fs: {{ card_eyebrow_fs }}px;
+    --sbt-card-eyebrow-op: {{ card_eyebrow_op }};
+    --sbt-card-content-pad:{{ card_content_pad }}px;
+    --sbt-overlay-bot:     {{ overlay_bot }};
+    --sbt-overlay-mid:     {{ overlay_mid }};
+    --sbt-cta-size:        {{ cta_size }}px;
+    --sbt-cta-bg-op:       {{ cta_bg_op }};
+    --sbt-cta-border-op:   {{ cta_border_op }};
+    --sbt-cta-hover:       {{ cta_hover_color }};
+    --sbt-hover-lift:      {{ hover_lift }}px;
+    --sbt-hover-scale:     {{ hover_scale }};
+    --sbt-anim-dur:        {{ anim_speed }}ms;
+    --sbt-row1-h:          {{ row1_h }}px;
+    --sbt-row2-h:          {{ row2_h }}px;
+    --sbt-row3-h:          {{ row3_h }}px;
+    --sbt-dot-active:      {{ dot_active_color }};
+  "
+>
+  <div class="sbt__inner">
+
+    {%- comment -%} ── Header ── {%- endcomment -%}
+    <div class="sbt__header sbt__header--{{ header_align }}">
+      <div class="sbt__header-text">
+        {%- if section.settings.eyebrow != blank -%}
+          <span class="sbt__eyebrow">{{ section.settings.eyebrow }}</span>
+        {%- endif -%}
+        <h2 class="sbt__title" id="sbt-title-{{ sid }}">
+          {{- section.settings.title | default: 'Votre univers créatif' -}}
+        </h2>
+        {%- if section.settings.subtitle != blank -%}
+          <p class="sbt__subtitle">{{ section.settings.subtitle }}</p>
+        {%- endif -%}
+      </div>
+    </div>
+
+    {%- comment -%} ── Desktop Grid ── {%- endcomment -%}
+    <div class="sbt__grid sbt__grid--{{ desktop_layout }}" aria-label="Par type de créateur">
+      {%- if use_blocks -%}
+        {%- for block in section.blocks -%}
+          {%- assign img_src = default_imgs[forloop.index0] | asset_url -%}
+          {%- if block.settings.image != blank -%}
+            {%- assign img_src = block.settings.image | image_url: width: 1200 -%}
+          {%- endif -%}
+          <article class="sbt__card" {{ block.shopify_attributes }}>
+            <a class="sbt__card-link" href="{{ block.settings.cta_url | default: '#' }}" aria-label="{{ block.settings.title | default: block.settings.eyebrow | escape }}">
+            <div class="sbt__card-media">
+              {%- if block.settings.image != blank -%}
+                <img
+                  class="sbt__card-img"
+                  src="{{ block.settings.image | image_url: width: 800 }}"
+                  srcset="{{ block.settings.image | image_url: width: 400 }} 400w,
+                          {{ block.settings.image | image_url: width: 800 }} 800w,
+                          {{ block.settings.image | image_url: width: 1200 }} 1200w"
+                  sizes="(max-width: 1024px) 50vw, 33vw"
+                  loading="{% if forloop.index <= 3 %}eager{% else %}lazy{% endif %}"
+                  fetchpriority="{% if forloop.index == 1 %}high{% else %}auto{% endif %}"
+                  decoding="async"
+                  alt="{{ block.settings.title | default: block.settings.eyebrow | escape }}"
+                  width="{{ block.settings.image.width }}"
+                  height="{{ block.settings.image.height }}"
+                >
+              {%- else -%}
+                <img
+                  class="sbt__card-img"
+                  src="{{ img_src }}"
+                  loading="{% if forloop.index <= 3 %}eager{% else %}lazy{% endif %}"
+                  decoding="async"
+                  alt="{{ block.settings.title | default: block.settings.eyebrow | escape }}"
+                  width="800"
+                  height="1000"
+                >
+              {%- endif -%}
+              <div class="sbt__card-overlay"></div>
+            </div>
+            <div class="sbt__card-content">
+              <div class="sbt__card-info">
+                {%- if block.settings.eyebrow != blank -%}
+                  <span class="sbt__card-eyebrow">{{ block.settings.eyebrow }}</span>
+                {%- endif -%}
+                {%- if block.settings.title != blank -%}
+                  <h3 class="sbt__card-title">{{ block.settings.title }}</h3>
+                {%- endif -%}
+              </div>
+              <span class="sbt__card-cta" aria-hidden="true">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+              </span>
+            </div>
+            </a>
+          </article>
+        {%- endfor -%}
+      {%- else -%}
+        {%- for i in (0..5) -%}
+          {%- assign img_src = default_imgs[i] | asset_url -%}
+          <article class="sbt__card">
+            <a class="sbt__card-link" href="#" aria-label="{{ default_titles[i] | escape }}">
+            <div class="sbt__card-media">
+              <img
+                class="sbt__card-img"
+                src="{{ img_src }}"
+                loading="{% if i < 3 %}eager{% else %}lazy{% endif %}"
+                decoding="async"
+                alt="{{ default_titles[i] }}"
+                width="800"
+                height="1000"
+              >
+              <div class="sbt__card-overlay"></div>
+            </div>
+            <div class="sbt__card-content">
+              <div class="sbt__card-info">
+                <span class="sbt__card-eyebrow">{{ default_eyebrows[i] }}</span>
+                <h3 class="sbt__card-title">{{ default_titles[i] }}</h3>
+              </div>
+              <span class="sbt__card-cta" aria-hidden="true">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+              </span>
+            </div>
+            </a>
+          </article>
+        {%- endfor -%}
+      {%- endif -%}
+    </div>
+
+    {%- comment -%} ── Mobile/Tablet Carousel ── {%- endcomment -%}
+    <div class="sbt__carousel">
+      <div class="sbt__viewport-wrap">
+        <div class="swiper sbt__swiper" id="sbt-swiper-{{ sid }}">
+          <ul class="swiper-wrapper sbt__c-track" role="list" aria-label="Par type de créateur">
+            {%- if use_blocks -%}
+              {%- for block in section.blocks -%}
+                {%- assign img_src = default_imgs[forloop.index0] | asset_url -%}
+                {%- if block.settings.image != blank -%}
+                  {%- assign img_src = block.settings.image | image_url: width: 900 -%}
+                {%- endif -%}
+                <li class="swiper-slide sbt__c-slide">
+                  <article class="sbt__card" {{ block.shopify_attributes }}>
+                    <a class="sbt__card-link" href="{{ block.settings.cta_url | default: '#' }}" aria-label="{{ block.settings.title | default: block.settings.eyebrow | escape }}">
+                    <div class="sbt__card-media">
+                      {%- if block.settings.image != blank -%}
+                        <img
+                          class="sbt__card-img"
+                          src="{{ block.settings.image | image_url: width: 600 }}"
+                          srcset="{{ block.settings.image | image_url: width: 400 }} 400w,
+                                  {{ block.settings.image | image_url: width: 800 }} 800w"
+                          sizes="50vw"
+                          loading="lazy"
+                          decoding="async"
+                          alt="{{ block.settings.title | default: block.settings.eyebrow | escape }}"
+                          width="{{ block.settings.image.width }}"
+                          height="{{ block.settings.image.height }}"
+                        >
+                      {%- else -%}
+                        <img
+                          class="sbt__card-img"
+                          src="{{ img_src }}"
+                          loading="lazy"
+                          decoding="async"
+                          alt="{{ block.settings.title | default: block.settings.eyebrow | escape }}"
+                          width="800"
+                          height="1000"
+                        >
+                      {%- endif -%}
+                      <div class="sbt__card-overlay"></div>
+                    </div>
+                    <div class="sbt__card-content">
+                      <div class="sbt__card-info">
+                        {%- if block.settings.eyebrow != blank -%}
+                          <span class="sbt__card-eyebrow">{{ block.settings.eyebrow }}</span>
+                        {%- endif -%}
+                        {%- if block.settings.title != blank -%}
+                          <h3 class="sbt__card-title">{{ block.settings.title }}</h3>
+                        {%- endif -%}
+                      </div>
+                      <span class="sbt__card-cta" aria-hidden="true">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+                      </span>
+                    </div>
+                    </a>
+                  </article>
+                </li>
+              {%- endfor -%}
+            {%- else -%}
+              {%- for i in (0..5) -%}
+                {%- assign img_src = default_imgs[i] | asset_url -%}
+                <li class="swiper-slide sbt__c-slide">
+                  <article class="sbt__card">
+                    <a class="sbt__card-link" href="#" aria-label="{{ default_titles[i] | escape }}">
+                    <div class="sbt__card-media">
+                      <img
+                        class="sbt__card-img"
+                        src="{{ img_src }}"
+                        loading="lazy"
+                        decoding="async"
+                        alt="{{ default_titles[i] }}"
+                        width="800"
+                        height="1000"
+                      >
+                      <div class="sbt__card-overlay"></div>
+                    </div>
+                    <div class="sbt__card-content">
+                      <div class="sbt__card-info">
+                        <span class="sbt__card-eyebrow">{{ default_eyebrows[i] }}</span>
+                        <h3 class="sbt__card-title">{{ default_titles[i] }}</h3>
+                      </div>
+                      <span class="sbt__card-cta" aria-hidden="true">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+                      </span>
+                    </div>
+                    </a>
+                  </article>
+                </li>
+              {%- endfor -%}
+            {%- endif -%}
+          </ul>
+        </div>
+      </div>
+      {%- if section.settings.show_dots != false -%}
+        <div class="sbt__dots" id="sbt-dots-{{ sid }}" role="tablist" aria-label="Position carousel">
+          {%- assign dot_count = section.blocks.size -%}
+          {%- if dot_count == 0 -%}{%- assign dot_count = 6 -%}{%- endif -%}
+          {%- for i in (1..dot_count) -%}
+            <button
+              class="sbt__dot{% if forloop.first %} sbt__dot--active{% endif %}"
+              type="button"
+              role="tab"
+              aria-label="Slide {{ forloop.index }}"
+              aria-selected="{% if forloop.first %}true{% else %}false{% endif %}"
+            ></button>
+          {%- endfor -%}
+        </div>
+      {%- endif -%}
+    </div>
+
+  </div>
+</section>
+
+<style>
+/* ═══════════════════════════════════════════════════
+   Shop By Type — .sbt — OS 2.0 v2.0
+   ═══════════════════════════════════════════════════ */
+
+.sbt {
+  --sbt-pad:      16px;
+  --sbt-ease:     cubic-bezier(0.4, 0, 0.2, 1);
+  --sbt-ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --sbt-usable-w: min(100vw, var(--sbt-max-w, 1400px));
+
+  background:    var(--sbt-bg, #f7f7f8);
+  color:         var(--sbt-text, #0a0a0a);
+  margin-top:    var(--sbt-mt, 0);
+  margin-bottom: var(--sbt-mb, 0);
+  overflow-x:    clip;
+}
+
+@media (min-width: 641px)  { .sbt { --sbt-pad: 24px; } }
+@media (min-width: 1025px) { .sbt { --sbt-pad: 32px; } }
+@media (min-width: 1281px) { .sbt { --sbt-pad: 40px; } }
+
+/* ── Inner container ── */
+.sbt__inner {
+  max-width:      var(--sbt-max-w, 1400px);
+  margin:         0 auto;
+  padding-top:    var(--sbt-pt-m, 40px);
+  padding-bottom: var(--sbt-pb-m, 36px);
+}
+@media (min-width: 641px) {
+  .sbt__inner {
+    padding-top:    var(--sbt-pt-d, 56px);
+    padding-bottom: var(--sbt-pb-d, 40px);
+  }
+}
+
+/* ── Header ── */
+.sbt__header {
+  display:        flex;
+  flex-direction: column;
+  align-items:    flex-start;
+  gap:            12px;
+  padding:        0 var(--sbt-pad) 28px;
+}
+.sbt__header--center { align-items: center; text-align: center; }
+.sbt__header--right  { align-items: flex-end; text-align: right; }
+
+.sbt__header-text { display: flex; flex-direction: column; gap: 4px; }
+
+.sbt__eyebrow {
+  font-size:      var(--sbt-eyebrow-fs, 11px);
+  font-weight:    600;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color:          var(--sbt-eyebrow, #0787ea);
+}
+.sbt__title {
+  font-family:    var(--font-body, 'Inter', sans-serif);
+  font-size:      var(--sbt-title-fs-m, 22px);
+  font-weight:    var(--sbt-title-fw, 800);
+  letter-spacing: -0.03em;
+  color:          var(--sbt-title, #0a0a0a);
+  margin:         0;
+  position:       relative;
+  padding-bottom: 10px;
+}
+@media (min-width: 641px) {
+  .sbt__title { font-size: var(--sbt-title-fs-d, 32px); }
+}
+.sbt__title::after {
+  content:       '';
+  position:      absolute;
+  bottom:        0;
+  left:          0;
+  width:         var(--sbt-sep-w, 36px);
+  height:        var(--sbt-sep-h, 3px);
+  background:    var(--sbt-sep-color, #0787ea);
+  border-radius: 2px;
+  opacity:       var(--sbt-sep-op, 1);
+}
+.sbt__header--center .sbt__title::after { left: 50%; transform: translateX(-50%); }
+.sbt__header--right  .sbt__title::after { left: auto; right: 0; }
+
+.sbt__subtitle {
+  font-size:   var(--sbt-subtitle-fs, 14px);
+  color:       color-mix(in srgb, var(--sbt-text, #0a0a0a) 60%, transparent);
+  margin:      0;
+  max-width:   52ch;
+  line-height: 1.55;
+}
+
+/* ═══════════════════════════════════════════════════
+   Desktop Grid ≥1025px
+   ═══════════════════════════════════════════════════ */
+.sbt__carousel { display: block; }
+@media (min-width: 1025px) { .sbt__carousel { display: none; } }
+
+.sbt__grid { display: none; }
+@media (min-width: 1025px) { .sbt__grid { display: grid; } }
+
+.sbt__grid {
+  gap:     var(--sbt-grid-gap, 12px);
+  padding: 0 var(--sbt-pad);
+}
+
+/* Layout: Éditorial asymétrique (bento) */
+.sbt__grid--editorial {
+  grid-template-columns: repeat(3, 1fr);
+  grid-template-rows: var(--sbt-row1-h, 320px) var(--sbt-row2-h, 280px) var(--sbt-row3-h, 260px);
+}
+.sbt__grid--editorial .sbt__card:nth-child(1) { grid-column: 1 / 3; grid-row: 1 / 3; }
+.sbt__grid--editorial .sbt__card:nth-child(2) { grid-column: 3;     grid-row: 1;     }
+.sbt__grid--editorial .sbt__card:nth-child(3) { grid-column: 3;     grid-row: 2;     }
+.sbt__grid--editorial .sbt__card:nth-child(4) { grid-column: 1;     grid-row: 3;     }
+.sbt__grid--editorial .sbt__card:nth-child(5) { grid-column: 2;     grid-row: 3;     }
+.sbt__grid--editorial .sbt__card:nth-child(6) { grid-column: 3;     grid-row: 3;     }
+
+@media (min-width: 1025px) and (max-width: 1280px) {
+  .sbt__grid--editorial {
+    grid-template-rows:
+      calc(var(--sbt-row1-h, 320px) * 0.875)
+      calc(var(--sbt-row2-h, 280px) * 0.875)
+      calc(var(--sbt-row3-h, 260px) * 0.875);
+  }
+}
+
+/* Layout: Grille uniforme 3 colonnes */
+.sbt__grid--uniform {
+  grid-template-columns: repeat(3, 1fr);
+  grid-template-rows:    repeat(2, var(--sbt-row1-h, 320px));
+}
+
+/* Layout: 2 colonnes */
+.sbt__grid--2col {
+  grid-template-columns: repeat(2, 1fr);
+  grid-template-rows:    repeat(3, var(--sbt-row1-h, 280px));
+}
+
+/* ═══════════════════════════════════════════════════
+   Card
+   ═══════════════════════════════════════════════════ */
+.sbt__card {
+  position:        relative;
+  overflow:        hidden;
+  border-radius:   var(--sbt-card-r, 6px);
+  border:          var(--sbt-card-border-w, 0px) solid var(--sbt-card-border-c, transparent);
+  background:      #111;
+  display:         block;
+  transition:      transform var(--sbt-anim-dur, 300ms) var(--sbt-ease),
+                   box-shadow var(--sbt-anim-dur, 300ms) var(--sbt-ease);
+  will-change:     transform, box-shadow;
+}
+
+.sbt__card-link {
+  display:         block;
+  width:           100%;
+  height:          100%;
+  text-decoration: none;
+  color:           inherit;
+  position:        absolute;
+  inset:           0;
+  z-index:         3;
+}
+.sbt__card-link:focus-visible {
+  outline:        2px solid rgba(255,255,255,0.8);
+  outline-offset: -3px;
+  border-radius:  var(--sbt-card-r, 6px);
+}
+
+.sbt__card-media {
+  position: absolute;
+  inset:    0;
+}
+
+.sbt__card-img {
+  width:           100%;
+  height:          100%;
+  object-fit:      cover;
+  object-position: center;
+  display:         block;
+  transition:      transform calc(var(--sbt-anim-dur, 300ms) * 2) var(--sbt-ease);
+  will-change:     transform;
+}
+
+.sbt__card-overlay {
+  position:   absolute;
+  inset:      0;
+  background: linear-gradient(
+    to top,
+    rgba(0,0,0,var(--sbt-overlay-bot, 0.72)) 0%,
+    rgba(0,0,0,var(--sbt-overlay-mid, 0.25)) 40%,
+    rgba(0,0,0,0) 70%
+  );
+  transition: opacity var(--sbt-anim-dur, 300ms) ease;
+  z-index:    1;
+}
+
+.sbt__card-content {
+  position:        absolute;
+  bottom:          0;
+  left:            0;
+  right:           0;
+  z-index:         2;
+  display:         flex;
+  align-items:     flex-end;
+  justify-content: space-between;
+  gap:             12px;
+  padding:         var(--sbt-card-content-pad, 18px);
+  transition:      padding var(--sbt-anim-dur, 300ms) var(--sbt-ease);
+}
+@media (min-width: 641px) {
+  .sbt__card-content {
+    padding: calc(var(--sbt-card-content-pad, 18px) * 1.1) calc(var(--sbt-card-content-pad, 18px) * 1.1) calc(var(--sbt-card-content-pad, 18px) * 1.2);
+  }
+}
+@media (hover: hover) {
+  .sbt__card:hover .sbt__card-content {
+    padding-bottom: calc(var(--sbt-card-content-pad, 18px) * 1.6);
+  }
+}
+
+.sbt__card-info {
+  display:        flex;
+  flex-direction: column;
+  gap:            5px;
+  min-width:      0;
+}
+
+.sbt__card-eyebrow {
+  font-size:      var(--sbt-card-eyebrow-fs, 11px);
+  font-weight:    600;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color:          rgba(255,255,255,var(--sbt-card-eyebrow-op, 0.65));
+  margin:         0;
+}
+
+.sbt__card-title {
+  font-family:    var(--font-body, 'Inter', sans-serif);
+  font-size:      var(--sbt-card-title-fs-m, 16px);
+  font-weight:    var(--sbt-card-title-fw, 700);
+  line-height:    1.2;
+  letter-spacing: -0.02em;
+  color:          #fff;
+  text-shadow:    0 1px 6px rgba(0,0,0,0.4);
+  margin:         0;
+}
+@media (min-width: 1025px) {
+  .sbt__card-title { font-size: var(--sbt-card-title-fs-d, 20px); }
+}
+
+.sbt__card-cta {
+  flex-shrink:     0;
+  display:         flex;
+  align-items:     center;
+  justify-content: center;
+  width:           var(--sbt-cta-size, 34px);
+  height:          var(--sbt-cta-size, 34px);
+  border-radius:   50%;
+  background:      rgba(255,255,255,var(--sbt-cta-bg-op, 0.14));
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border:          1px solid rgba(255,255,255,var(--sbt-cta-border-op, 0.30));
+  color:           #fff;
+  text-decoration: none;
+  transition:      background var(--sbt-anim-dur, 300ms) var(--sbt-ease),
+                   border-color var(--sbt-anim-dur, 300ms) var(--sbt-ease),
+                   transform var(--sbt-anim-dur, 300ms) var(--sbt-ease-out);
+}
+
+@media (hover: hover) {
+  .sbt__card:hover,
+  .sbt__card:focus-within {
+    transform:  translateY(calc(-1 * var(--sbt-hover-lift, 5px)));
+    box-shadow: 0 16px 48px rgba(0,0,0,0.12), 0 2px 8px rgba(0,0,0,0.06);
+  }
+  .sbt__card:hover .sbt__card-img,
+  .sbt__card:focus-within .sbt__card-img     { transform: scale(var(--sbt-hover-scale, 1.03)); }
+  .sbt__card:hover .sbt__card-overlay,
+  .sbt__card:focus-within .sbt__card-overlay { opacity: 1.15; }
+  .sbt__card:hover .sbt__card-cta,
+  .sbt__card:focus-within .sbt__card-cta {
+    background:   var(--sbt-cta-hover, #0787ea);
+    border-color: var(--sbt-cta-hover, #0787ea);
+    transform:    scale(1.12);
+  }
+  .sbt__card:hover .sbt__card-content,
+  .sbt__card:focus-within .sbt__card-content {
+    padding-bottom: calc(var(--sbt-card-content-pad, 18px) * 1.6);
+  }
+}
+
+/* ═══════════════════════════════════════════════════
+   Carousel Mobile/Tablet <1025px
+   ═══════════════════════════════════════════════════ */
+.sbt__carousel {
+  --sbt-c-usable: min(100vw, var(--sbt-max-w, 1400px));
+  --sbt-c-pad:    16px;
+  --sbt-c-gap:    var(--sbt-grid-gap, 12px);
+  --sbt-c-card-w: calc((var(--sbt-c-usable) - 2 * var(--sbt-c-pad) - 1 * var(--sbt-c-gap)) / 1.3);
+}
+@media (min-width: 641px) {
+  .sbt__carousel {
+    --sbt-c-pad:    24px;
+    --sbt-c-card-w: calc((var(--sbt-c-usable) - 2 * var(--sbt-c-pad) - 3 * var(--sbt-c-gap)) / 3.3);
+  }
+}
+
+.sbt__viewport-wrap {
+  overflow:       hidden;
+  padding-top:    8px;
+  margin-top:     -8px;
+  padding-bottom: 24px;
+  margin-bottom:  -24px;
+}
+
+.sbt__swiper {
+  overflow: visible;
+  padding:  20px var(--sbt-c-pad, 16px) 28px;
+}
+
+.sbt__swiper .sbt__c-track {
+  margin:     0;
+  padding:    0;
+  list-style: none;
+  gap:        var(--sbt-c-gap, 12px);
+}
+
+.sbt__swiper .sbt__c-slide {
+  width:        var(--sbt-c-card-w) !important;
+  flex-shrink:  0;
+  aspect-ratio: 4 / 5;
+}
+
+.sbt__swiper .sbt__c-slide .sbt__card {
+  width:  100%;
+  height: 100%;
+}
+
+.sbt__swiper .swiper-pagination,
+.sbt__swiper .swiper-button-next,
+.sbt__swiper .swiper-button-prev { display: none !important; }
+
+/* ── Dots ── */
+.sbt__dots {
+  display:         flex;
+  align-items:     center;
+  justify-content: center;
+  gap:             8px;
+  padding:         16px var(--sbt-pad) 0;
+}
+
+.sbt__dot {
+  width:         6px;
+  height:        6px;
+  padding:       0;
+  border:        none;
+  border-radius: 50%;
+  background:    rgba(10,10,10,0.18);
+  cursor:        pointer;
+  transition:    width 280ms var(--sbt-ease), border-radius 280ms var(--sbt-ease),
+                 background 280ms var(--sbt-ease), transform 280ms ease, opacity 280ms ease;
+}
+.sbt__dot--active {
+  width:         21px;
+  border-radius: 3px;
+  background:    var(--sbt-dot-active, #0a0a0a);
+}
+.sbt__dot--small  { transform: scale(0.6); opacity: 0.5; }
+.sbt__dot--hidden { display: none; }
+.sbt__dot:focus-visible { outline: 2px solid #0787ea; outline-offset: 2px; }
+
+/* ═══════════════════════════════════════════════════
+   Reduced motion
+   ═══════════════════════════════════════════════════ */
+@media (prefers-reduced-motion: reduce) {
+  .sbt__card,
+  .sbt__card-img,
+  .sbt__card-overlay,
+  .sbt__card-cta,
+  .sbt__dot { transition: none !important; }
+}
+
+/* ── Visibilité ── */
+{%- if section.settings.hide_on_mobile -%}
+@media (max-width: 640px) { #sbt-{{ sid }} { display: none !important; } }
+{%- endif -%}
+{%- if section.settings.hide_on_desktop -%}
+@media (min-width: 641px) { #sbt-{{ sid }} { display: none !important; } }
+{%- endif -%}
+
+{%- if section.settings.custom_css != blank -%}
+{{ section.settings.custom_css }}
+{%- endif -%}
+</style>
+
+<script>
+(function () {
+  'use strict';
+  var sid = '{{ sid }}';
+
+  function init() {
+    var section  = document.getElementById('sbt-' + sid);
+    if (!section || typeof Swiper === 'undefined') return;
+
+    var swiperEl = document.getElementById('sbt-swiper-' + sid);
+    if (!swiperEl) return;
+
+    var dotsWrap = document.getElementById('sbt-dots-' + sid);
+    var dots     = dotsWrap ? Array.from(dotsWrap.querySelectorAll('.sbt__dot')) : [];
+
+    var swiper = new Swiper(swiperEl, {
+      slidesPerView: 'auto',
+      spaceBetween:  0,
+      loop:          false,
+      grabCursor:    true
+    });
+
+    dots.forEach(function (btn, idx) {
+      btn.addEventListener('click', function (e) {
+        e.preventDefault();
+        swiper.slideTo(idx);
+      });
+    });
+
+    function updateDots() {
+      if (!dots.length) return;
+      var maxV = 5;
+      var idx  = swiper.activeIndex;
+      dots.forEach(function (d, i) {
+        var active = i === idx;
+        d.className = 'sbt__dot' + (active ? ' sbt__dot--active' : '');
+        d.setAttribute('aria-selected', active ? 'true' : 'false');
+      });
+      if (dots.length > maxV) {
+        var half  = Math.floor(maxV / 2);
+        var start = Math.max(0, idx - half);
+        var end   = Math.min(dots.length, start + maxV);
+        if (end - start < maxV) start = Math.max(0, end - maxV);
+        dots.forEach(function (d, i) {
+          if (i < start || i >= end) {
+            if (i === start - 1 || i === end) d.classList.add('sbt__dot--small');
+            else d.classList.add('sbt__dot--hidden');
+          }
+        });
+      }
+    }
+
+    swiper.on('slideChange', updateDots);
+  }
+
+  function safeInit() {
+    if (typeof Swiper !== 'undefined') { init(); return; }
+    var interval = setInterval(function () {
+      if (typeof Swiper !== 'undefined') { clearInterval(interval); init(); }
+    }, 50);
+    setTimeout(function () { clearInterval(interval); }, 5000);
+  }
+
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', safeInit);
+  else safeInit();
+  document.addEventListener('shopify:section:load', function (e) {
+    if (e.detail && e.detail.sectionId === sid) safeInit();
+  });
+})();
+</script>
+
+{% schema %}
+{
+  "name": "Shop By Type",
+  "tag": "section",
+  "class": "section-shop-by-type",
+  "settings": [
+    { "type": "header", "content": "── En-tête" },
+    { "type": "text",     "id": "eyebrow",       "label": "Label eyebrow", "default": "Par type de créateur" },
+    { "type": "text",     "id": "title",          "label": "Titre",         "default": "Votre univers créatif" },
+    { "type": "textarea", "id": "subtitle",       "label": "Sous-titre" },
+    {
+      "type": "select", "id": "header_align", "label": "Alignement header", "default": "left",
+      "options": [
+        { "value": "left",   "label": "Gauche" },
+        { "value": "center", "label": "Centre" },
+        { "value": "right",  "label": "Droite" }
+      ]
+    },
+
+    { "type": "header", "content": "── Typographie header" },
+    { "type": "range", "id": "title_size_desktop", "label": "Taille titre desktop (px)", "min": 18, "max": 72, "step": 2, "default": 32, "unit": "px" },
+    { "type": "range", "id": "title_size_mobile",  "label": "Taille titre mobile (px)",  "min": 16, "max": 48, "step": 2, "default": 22, "unit": "px" },
+    {
+      "type": "select", "id": "title_weight", "label": "Graisse titre", "default": "800",
+      "options": [
+        { "value": "400", "label": "Regular (400)" },
+        { "value": "500", "label": "Medium (500)" },
+        { "value": "600", "label": "Semi-Bold (600)" },
+        { "value": "700", "label": "Bold (700)" },
+        { "value": "800", "label": "Extra-Bold (800)" },
+        { "value": "900", "label": "Black (900)" }
+      ]
+    },
+    { "type": "range", "id": "subtitle_size", "label": "Taille sous-titre (px)", "min": 11, "max": 20, "step": 1, "default": 14, "unit": "px" },
+    { "type": "range", "id": "eyebrow_size",  "label": "Taille eyebrow (px)",   "min": 9,  "max": 14, "step": 1, "default": 11, "unit": "px" },
+
+    { "type": "header", "content": "── Séparateur titre" },
+    { "type": "checkbox", "id": "show_title_sep", "label": "Afficher séparateur", "default": true },
+    { "type": "color",    "id": "sep_color",      "label": "Couleur séparateur",  "default": "#0787ea" },
+    { "type": "range",    "id": "sep_width",       "label": "Largeur (px)",        "min": 16, "max": 100, "step": 4, "default": 36, "unit": "px" },
+    { "type": "range",    "id": "sep_height",      "label": "Épaisseur (px)",      "min": 1,  "max": 8,   "step": 1, "default": 3,  "unit": "px" },
+
+    { "type": "header", "content": "── Couleurs section" },
+    { "type": "color", "id": "section_bg",    "label": "Fond section",    "default": "#f7f7f8" },
+    { "type": "color", "id": "text_color",    "label": "Texte général",   "default": "#0a0a0a" },
+    { "type": "color", "id": "eyebrow_color", "label": "Couleur eyebrow", "default": "#0787ea" },
+    { "type": "color", "id": "title_color",   "label": "Couleur titre",   "default": "#0a0a0a" },
+
+    { "type": "header", "content": "── Layout desktop" },
+    {
+      "type": "select", "id": "desktop_layout", "label": "Disposition grille", "default": "editorial",
+      "options": [
+        { "value": "editorial", "label": "Éditorial asymétrique (Bento)" },
+        { "value": "uniform",   "label": "Grille uniforme 3 colonnes" },
+        { "value": "2col",      "label": "2 colonnes" }
+      ]
+    },
+    { "type": "range", "id": "grid_gap",          "label": "Espacement grille (px)", "min": 0, "max": 40, "step": 2,  "default": 12,  "unit": "px" },
+    { "type": "range", "id": "grid_row1_height",   "label": "Hauteur rangée 1 (px)", "min": 160, "max": 600, "step": 10, "default": 320, "unit": "px" },
+    { "type": "range", "id": "grid_row2_height",   "label": "Hauteur rangée 2 (px)", "min": 120, "max": 500, "step": 10, "default": 280, "unit": "px" },
+    { "type": "range", "id": "grid_row3_height",   "label": "Hauteur rangée 3 (px)", "min": 100, "max": 450, "step": 10, "default": 260, "unit": "px" },
+
+    { "type": "header", "content": "── Espacement section" },
+    { "type": "range", "id": "section_max_width",       "label": "Largeur max (px)",      "min": 960, "max": 1920, "step": 40, "default": 1400 },
+    { "type": "range", "id": "padding_top_mobile",      "label": "Padding haut mobile",   "min": 0, "max": 120, "step": 4, "default": 40, "unit": "px" },
+    { "type": "range", "id": "padding_bottom_mobile",   "label": "Padding bas mobile",    "min": 0, "max": 120, "step": 4, "default": 36, "unit": "px" },
+    { "type": "range", "id": "padding_top_desktop",     "label": "Padding haut desktop",  "min": 0, "max": 120, "step": 4, "default": 56, "unit": "px" },
+    { "type": "range", "id": "padding_bottom_desktop",  "label": "Padding bas desktop",   "min": 0, "max": 120, "step": 4, "default": 40, "unit": "px" },
+    { "type": "range", "id": "margin_top",              "label": "Marge haut",            "min": 0, "max": 120, "step": 4, "default": 0,  "unit": "px" },
+    { "type": "range", "id": "margin_bottom",           "label": "Marge bas",             "min": 0, "max": 120, "step": 4, "default": 0,  "unit": "px" },
+
+    { "type": "header", "content": "── Cartes — Design" },
+    { "type": "range", "id": "card_radius",          "label": "Rayon bordure (px)",    "min": 0, "max": 32, "step": 1, "default": 6,  "unit": "px" },
+    { "type": "range", "id": "card_border_width",    "label": "Épaisseur bordure (px)","min": 0, "max": 4,  "step": 1, "default": 0,  "unit": "px" },
+    { "type": "color", "id": "card_border_color",    "label": "Couleur bordure",       "default": "#333333" },
+    { "type": "range", "id": "card_content_padding", "label": "Padding contenu (px)",  "min": 8, "max": 40, "step": 2, "default": 18, "unit": "px" },
+
+    { "type": "header", "content": "── Cartes — Typographie" },
+    { "type": "range", "id": "card_title_size_desktop", "label": "Taille titre desktop (px)", "min": 12, "max": 32, "step": 1, "default": 20, "unit": "px" },
+    { "type": "range", "id": "card_title_size_mobile",  "label": "Taille titre mobile (px)",  "min": 12, "max": 28, "step": 1, "default": 16, "unit": "px" },
+    {
+      "type": "select", "id": "card_title_weight", "label": "Graisse titre carte", "default": "700",
+      "options": [
+        { "value": "400", "label": "Regular (400)" },
+        { "value": "500", "label": "Medium (500)" },
+        { "value": "600", "label": "Semi-Bold (600)" },
+        { "value": "700", "label": "Bold (700)" },
+        { "value": "800", "label": "Extra-Bold (800)" }
+      ]
+    },
+    { "type": "range", "id": "card_eyebrow_size",    "label": "Taille eyebrow carte (px)", "min": 8, "max": 14, "step": 1, "default": 11, "unit": "px" },
+    { "type": "range", "id": "card_eyebrow_opacity", "label": "Opacité eyebrow carte (%)", "min": 20, "max": 100, "step": 5, "default": 65, "unit": "%" },
+
+    { "type": "header", "content": "── Cartes — Overlay" },
+    { "type": "range", "id": "overlay_bottom_opacity", "label": "Opacité bas overlay (%)",    "min": 0, "max": 100, "step": 5, "default": 70, "unit": "%" },
+    { "type": "range", "id": "overlay_mid_opacity",    "label": "Opacité milieu overlay (%)", "min": 0, "max": 60,  "step": 5, "default": 25, "unit": "%" },
+
+    { "type": "header", "content": "── Bouton CTA" },
+    { "type": "range", "id": "cta_button_size",    "label": "Taille bouton (px)",       "min": 24, "max": 56, "step": 2,  "default": 34, "unit": "px" },
+    { "type": "range", "id": "cta_bg_opacity",     "label": "Opacité fond bouton (%)",  "min": 0,  "max": 50, "step": 5,  "default": 15, "unit": "%" },
+    { "type": "range", "id": "cta_border_opacity", "label": "Opacité bordure bouton (%)", "min": 0, "max": 100, "step": 5, "default": 30, "unit": "%" },
+    { "type": "color", "id": "cta_hover_color",    "label": "Couleur hover bouton",     "default": "#0787ea" },
+
+    { "type": "header", "content": "── Effets hover" },
+    { "type": "range", "id": "hover_lift",      "label": "Élévation hover (px)",       "min": 0, "max": 16, "step": 1,  "default": 5,   "unit": "px" },
+    { "type": "range", "id": "hover_img_scale", "label": "Zoom image hover (× 0.01)", "min": 100, "max": 115, "step": 1, "default": 103 },
+    { "type": "range", "id": "transition_speed","label": "Vitesse animation (ms)",     "min": 100, "max": 800, "step": 50, "default": 300, "unit": "ms" },
+
+    { "type": "header", "content": "── Dots navigation" },
+    { "type": "checkbox", "id": "show_dots",        "label": "Afficher dots",          "default": true },
+    { "type": "color",    "id": "dot_active_color", "label": "Couleur dot actif",      "default": "#0a0a0a" },
+
+    { "type": "header", "content": "── Visibilité" },
+    { "type": "checkbox", "id": "hide_on_mobile",  "label": "Masquer sur mobile",  "default": false },
+    { "type": "checkbox", "id": "hide_on_desktop", "label": "Masquer sur desktop", "default": false },
+
+    { "type": "header", "content": "── Avancé" },
+    { "type": "textarea", "id": "custom_css", "label": "CSS personnalisé" }
+  ],
+  "blocks": [
+    {
+      "type": "creator",
+      "name": "Créateur",
+      "settings": [
+        { "type": "text",         "id": "eyebrow",   "label": "Label eyebrow" },
+        { "type": "text",         "id": "title",     "label": "Titre" },
+        { "type": "text",         "id": "cta_label", "label": "Texte CTA", "default": "Explorer" },
+        { "type": "url",          "id": "cta_url",   "label": "Lien CTA" },
+        { "type": "image_picker", "id": "image",     "label": "Image" }
+      ]
+    }
+  ],
+  "max_blocks": 6,
+  "presets": [
+    {
+      "name": "Shop By Type",
+      "settings": {
+        "eyebrow": "Par type de créateur",
+        "title": "Votre univers créatif"
+      },
+      "blocks": [
+        { "type": "creator", "settings": { "eyebrow": "Creator Studio",  "title": "Conçu pour les créateurs YouTube", "cta_label": "Explorer" } },
+        { "type": "creator", "settings": { "eyebrow": "Broadcast Ready", "title": "Pour les streamers exigeants",     "cta_label": "Découvrir" } },
+        { "type": "creator", "settings": { "eyebrow": "Production Audio","title": "L'univers des podcasters",         "cta_label": "Voir la sélection" } },
+        { "type": "creator", "settings": { "eyebrow": "Cinema Workflow",  "title": "Pensé pour les cinéastes",        "cta_label": "Explorer" } },
+        { "type": "creator", "settings": { "eyebrow": "Visual Excellence","title": "Capturez chaque détail",          "cta_label": "Découvrir" } },
+        { "type": "creator", "settings": { "eyebrow": "Studio Sound",     "title": "Produisez sans limites",          "cta_label": "Explorer" } }
+      ]
+    }
+  ]
+}
+{% endschema %}

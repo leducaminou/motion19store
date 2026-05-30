@@ -17,6 +17,7 @@
   "dependencies": {
     "embla-carousel": "^8.6.0",
     "embla-carousel-auto-scroll": "^8.6.0",
-    "img-comparison-slider": "^8.0.7"
+    "img-comparison-slider": "^8.0.7",
+    "swiper": "^12.1.4"
   }
 }

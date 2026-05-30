@@ -288,11 +288,11 @@
 
     <script>
       (function () {
-        /* ── Sticky header glassmorphism ── */
-        var header = document.querySelector('.site-header');
-        if (header) {
+        /* ── Glassmorphism au scroll ── */
+        var siteHeader = document.querySelector('.site-header');
+        if (siteHeader) {
           function onScroll() {
-            header.classList.toggle('is-scrolled', window.scrollY > 10);
+            siteHeader.classList.toggle('is-scrolled', window.scrollY > 10);
           }
           window.addEventListener('scroll', onScroll, { passive: true });
           onScroll();

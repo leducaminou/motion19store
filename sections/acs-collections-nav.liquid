@@ -142,16 +142,26 @@
           </li>
         {%- endfor -%}
       {%- else -%}
-        {%- for i in (1..6) -%}
+        {%- assign _def_imgs   = 'hp-cat-photo.jpg,hp-cat-video.jpg,hp-cat-eclairage-2.jpg,hp-cat-eclairage.jpg,hp-cat-drone.jpg,hp-cat-accessoires.jpg' | split: ',' -%}
+        {%- assign _def_titles = 'Photo,Vidéo,Stream,Audio,Drone,Accessoires' | split: ',' -%}
+        {%- assign _def_urls   = '/collections/photo,/collections/video,/collections/stream,/collections/audio,/collections/drone,/collections/accessoires' | split: ',' -%}
+        {%- for i in (0..5) -%}
           <li class="acsnav__item">
-            <a class="acsnav__card" href="/collections/all" aria-label="Collection {{ i }}">
+            <a class="acsnav__card" href="{{ _def_urls[i] }}" aria-label="{{ _def_titles[i] }}">
               <div class="acsnav__card-media" aria-hidden="true">
-                <div class="acsnav__card-placeholder"></div>
+                <img
+                  class="acsnav__card-img"
+                  src="{{ _def_imgs[i] | asset_url }}"
+                  alt="{{ _def_titles[i] }}"
+                  loading="{% if i < 3 %}eager{% else %}lazy{% endif %}"
+                  width="800"
+                  height="600"
+                >
                 <div class="acsnav__card-overlay" style="--ov-a:0.45;"></div>
               </div>
               <div class="acsnav__card-content">
                 <div class="acsnav__card-info">
-                  <span class="acsnav__card-title">Collection {{ i }}</span>
+                  <span class="acsnav__card-title">{{ _def_titles[i] }}</span>
                 </div>
                 <span class="acsnav__card-btn" aria-hidden="true">
                   <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
@@ -441,7 +451,7 @@
 
 {% schema %}
 {
-  "name": "ACS — Navigation Collections",
+  "name": "ACS Collections Nav",
   "tag": "section",
   "class": "section-acs-collections-nav",
   "settings": [
@@ -468,7 +478,7 @@
       ]
     },
     { "type": "header", "content": "Grille" },
-    { "type": "range", "id": "columns_mobile",  "label": "Colonnes mobile (<600px)",  "min": 1, "max": 2, "step": 1, "default": 1 },
+    { "type": "range", "id": "columns_mobile",  "label": "Colonnes mobile (<600px)",  "min": 1, "max": 3, "step": 1, "default": 1 },
     { "type": "range", "id": "columns_tablet",  "label": "Colonnes tablette (≥600px)", "min": 2, "max": 4, "step": 1, "default": 2 },
     { "type": "range", "id": "columns_desktop", "label": "Colonnes desktop (≥1024px)", "min": 2, "max": 6, "step": 1, "default": 3 },
     { "type": "header", "content": "Ratio des cartes" },
@@ -543,12 +553,12 @@
       "name": "Navigation Univers",
       "settings": { "title": "Explorer par univers", "eyebrow": "Collections", "subtitle": "Trouvez le matériel qui correspond à votre style de création." },
       "blocks": [
-        { "type": "card", "settings": { "title": "Caméras & Vidéo",  "description": "Appareils photo, caméras cinéma et accessoires vidéo" } },
-        { "type": "card", "settings": { "title": "Audio & Podcast",  "description": "Micros, interfaces audio et matériel broadcast" } },
-        { "type": "card", "settings": { "title": "Éclairage Studio", "description": "LED panels, RGB, softbox et lumières continues" } },
-        { "type": "card", "settings": { "title": "Streaming & Live", "description": "Capturers, greenscreen, équipement live" } },
-        { "type": "card", "settings": { "title": "Mobile Creator",   "description": "Gimbals, trépieds et accessoires smartphone" } },
-        { "type": "card", "settings": { "title": "Accessoires",      "description": "Sacs, batteries, câbles et essentiels" } }
+        { "type": "card", "settings": { "title": "Photo",        "url": "/collections/photo" } },
+        { "type": "card", "settings": { "title": "Vidéo",        "url": "/collections/video" } },
+        { "type": "card", "settings": { "title": "Stream",       "url": "/collections/stream" } },
+        { "type": "card", "settings": { "title": "Audio",        "url": "/collections/audio" } },
+        { "type": "card", "settings": { "title": "Drone",        "url": "/collections/drone" } },
+        { "type": "card", "settings": { "title": "Accessoires",  "url": "/collections/accessoires" } }
       ]
     },
     {

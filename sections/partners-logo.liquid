@@ -1,0 +1,526 @@
+{%- comment -%} Partners Logo — Motion19 OS 2.0 — Carousel infini droite→gauche {%- endcomment -%}
+
+{%- liquid
+  assign sid = section.id
+
+  assign bg_color      = section.settings.bg_color       | default: '#ffffff'
+  assign text_color    = section.settings.text_color     | default: '#0a0a0a'
+  assign eyebrow_col   = section.settings.eyebrow_color  | default: '#0787ea'
+  assign subtitle_col  = section.settings.subtitle_color | default: '#888888'
+
+  assign logo_size     = section.settings.logo_size      | default: 96
+  assign logo_radius   = section.settings.logo_radius    | default: 8
+  assign card_gap      = section.settings.card_gap       | default: 16
+  assign card_bg_c     = section.settings.card_bg_color  | default: '#f8f8f8'
+  assign card_brd_c    = section.settings.card_border_color | default: '#e8e8e8'
+  assign show_border   = section.settings.show_card_border
+  assign enable_hover  = section.settings.enable_hover
+
+  assign scroll_speed  = section.settings.carousel_speed | default: 7000
+  assign pause_hover   = section.settings.pause_on_hover
+
+  assign pt_m     = section.settings.padding_top_mobile    | default: 52
+  assign pb_m     = section.settings.padding_bottom_mobile | default: 52
+  assign pt_d     = section.settings.padding_top_desktop   | default: 72
+  assign pb_d     = section.settings.padding_bottom_desktop| default: 64
+  assign mt       = section.settings.margin_top            | default: 0
+  assign mb       = section.settings.margin_bottom         | default: 0
+  assign max_w    = section.settings.max_width             | default: 1400
+  assign h_align  = section.settings.header_align          | default: 'center'
+
+  assign show_header   = section.settings.enable_header
+  assign border_top    = section.settings.section_border_top
+  assign border_bottom = section.settings.section_border_bottom
+
+  assign card_bdr_val = '0px'
+  if show_border
+    assign card_bdr_val = '1px'
+  endif
+-%}
+
+<section
+  id="pl-{{ sid }}"
+  class="pl m19-animate"
+  aria-label="{{ section.settings.title | default: 'Partenaires' | escape }}"
+  style="
+    --pl-bg:       {{ bg_color }};
+    --pl-text:     {{ text_color }};
+    --pl-eyebrow:  {{ eyebrow_col }};
+    --pl-subtitle: {{ subtitle_col }};
+    --pl-size:     {{ logo_size }}px;
+    --pl-radius:   {{ logo_radius }}px;
+    --pl-gap:      {{ card_gap }}px;
+    --pl-card-bg:  {{ card_bg_c }};
+    --pl-card-brd: {{ card_brd_c }};
+    --pl-card-bdr: {{ card_bdr_val }};
+    --pl-pt-m:     {{ pt_m }}px;
+    --pl-pb-m:     {{ pb_m }}px;
+    --pl-pt-d:     {{ pt_d }}px;
+    --pl-pb-d:     {{ pb_d }}px;
+    --pl-mt:       {{ mt }}px;
+    --pl-mb:       {{ mb }}px;
+    --pl-max-w:    {{ max_w }}px;
+    {% if border_top %}border-top: 1px solid rgba(10,10,10,0.07);{% endif %}
+    {% if border_bottom %}border-bottom: 1px solid rgba(10,10,10,0.07);{% endif %}
+  "
+>
+  <div class="pl__inner">
+
+    {%- if show_header -%}
+      <div class="pl__header pl__header--{{ h_align }}">
+        {%- if section.settings.eyebrow != blank -%}
+          <span class="pl__eyebrow">{{ section.settings.eyebrow }}</span>
+        {%- endif -%}
+        {%- if section.settings.title != blank -%}
+          <h2 class="pl__title">{{ section.settings.title }}</h2>
+        {%- endif -%}
+        {%- if section.settings.description != blank -%}
+          <p class="pl__desc">{{ section.settings.description }}</p>
+        {%- endif -%}
+      </div>
+    {%- endif -%}
+
+    <div class="pl__viewport-wrap">
+      <div class="swiper pl__swiper" id="pl-swiper-{{ sid }}" aria-hidden="true">
+        <ul class="swiper-wrapper pl__track" role="list">
+
+          {%- if section.blocks.size > 0 -%}
+            {%- for block in section.blocks -%}
+              {%- if block.type == 'partner_logo' -%}
+                {%- assign img = block.settings.logo_image -%}
+                {%- assign lnk = block.settings.logo_link -%}
+                {%- assign alt = block.settings.logo_alt | default: block.settings.logo_image.alt | default: 'Partenaire' -%}
+                {%- assign blk_bg  = block.settings.custom_bg    | default: card_bg_c -%}
+                {%- assign blk_brd = block.settings.custom_border | default: card_brd_c -%}
+                {%- assign blk_r   = block.settings.custom_radius | default: logo_radius -%}
+                <li
+                  class="swiper-slide pl__item{% if enable_hover %} pl__item--hoverable{% endif %}"
+                  {{ block.shopify_attributes }}
+                  style="--pl-blk-bg:{{ blk_bg }};--pl-blk-brd:{{ blk_brd }};--pl-blk-r:{{ blk_r }}px;"
+                >
+                  {%- if lnk != blank and block.settings.enable_link -%}
+                    <a class="pl__card" href="{{ lnk }}" target="_blank" rel="noopener noreferrer" aria-label="{{ alt | escape }}">
+                  {%- else -%}
+                    <div class="pl__card">
+                  {%- endif -%}
+
+                    {%- if img != blank -%}
+                      <img
+                        src="{{ img | image_url: width: 240 }}"
+                        srcset="
+                          {{ img | image_url: width: 120 }} 120w,
+                          {{ img | image_url: width: 200 }} 200w,
+                          {{ img | image_url: width: 240 }} 240w
+                        "
+                        sizes="{{ logo_size }}px"
+                        alt="{{ alt | escape }}"
+                        width="{{ logo_size }}"
+                        height="{{ logo_size }}"
+                        loading="lazy"
+                        decoding="async"
+                      >
+                    {%- else -%}
+                      <div class="pl__card-placeholder" aria-hidden="true">
+                        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg>
+                      </div>
+                    {%- endif -%}
+
+                  {%- if lnk != blank and block.settings.enable_link -%}
+                    </a>
+                  {%- else -%}
+                    </div>
+                  {%- endif -%}
+                </li>
+              {%- endif -%}
+            {%- endfor -%}
+
+          {%- else -%}
+            {%- comment -%} Fallback par défaut {%- endcomment -%}
+            {%- assign defaults = "hp-partener-logo-1.png,hp-partener-logo-2.png,hp-partener-logo-3.png,hp-partener-logo-4.png,hp-partener-logo-5.png,hp-partener-logo-6.png,hp-partener-logo-7.png,hp-partener-logo-8.png" | split: "," -%}
+            {%- for f in defaults -%}
+              <li class="swiper-slide pl__item{% if enable_hover %} pl__item--hoverable{% endif %}">
+                <div class="pl__card">
+                  <img
+                    src="{{ f | asset_url }}"
+                    alt="Partenaire"
+                    width="{{ logo_size }}"
+                    height="{{ logo_size }}"
+                    loading="lazy"
+                    decoding="async"
+                  >
+                </div>
+              </li>
+            {%- endfor -%}
+          {%- endif -%}
+
+        </ul>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<style>
+/* ═══════════════════════════════════════════════════
+   Partners Logo — pl — Motion19 OS 2.0
+   mobile  ≤640px       → 2 + partiel
+   tablet  641–1023px   → 4 + partiel
+   medium  1024–1280px  → 5 + partiel
+   large   ≥1281px      → 6 + partiel
+   ═══════════════════════════════════════════════════ */
+
+.pl {
+  --pl-pad:      16px;
+  --pl-ease:     cubic-bezier(0.4, 0, 0.2, 1);
+  --pl-usable-w: min(100vw, var(--pl-max-w, 1400px));
+  --pl-slide-w:  calc((var(--pl-usable-w) - (2 * var(--pl-pad)) - (2 * var(--pl-gap, 16px))) / 2.4);
+
+  background:    var(--pl-bg, #ffffff);
+  color:         var(--pl-text, #0a0a0a);
+  margin-top:    var(--pl-mt, 0);
+  margin-bottom: var(--pl-mb, 0);
+  overflow-x:    clip;
+}
+
+@media (min-width: 641px) {
+  .pl {
+    --pl-pad:     24px;
+    --pl-slide-w: calc((var(--pl-usable-w) - (2 * var(--pl-pad)) - (4 * var(--pl-gap, 16px))) / 4.3);
+  }
+}
+
+@media (min-width: 1024px) {
+  .pl {
+    --pl-pad:     32px;
+    --pl-slide-w: calc((var(--pl-usable-w) - (2 * var(--pl-pad)) - (5 * var(--pl-gap, 16px))) / 5.3);
+  }
+}
+
+@media (min-width: 1281px) {
+  .pl {
+    --pl-pad:     40px;
+    --pl-slide-w: calc((var(--pl-usable-w) - (2 * var(--pl-pad)) - (6 * var(--pl-gap, 16px))) / 6.3);
+  }
+}
+
+/* ── Inner ── */
+.pl__inner {
+  max-width:      var(--pl-max-w, 1400px);
+  margin:         0 auto;
+  padding-top:    var(--pl-pt-m, 52px);
+  padding-bottom: var(--pl-pb-m, 52px);
+}
+@media (min-width: 641px) {
+  .pl__inner {
+    padding-top:    var(--pl-pt-d, 72px);
+    padding-bottom: var(--pl-pb-d, 64px);
+  }
+}
+
+/* ── Header ── */
+.pl__header {
+  display:        flex;
+  flex-direction: column;
+  gap:            8px;
+  padding:        0 var(--pl-pad) 36px;
+}
+.pl__header--center { align-items: center; text-align: center; }
+.pl__header--left   { align-items: flex-start; }
+.pl__header--right  { align-items: flex-end; text-align: right; }
+
+.pl__eyebrow {
+  font-family:    var(--font-body, sans-serif);
+  font-size:      0.65rem;
+  font-weight:    700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color:          var(--pl-eyebrow, #0787ea);
+}
+
+.pl__title {
+  font-family:    var(--font-body, sans-serif);
+  font-size:      clamp(1.2rem, 2.5vw, 1.8rem);
+  font-weight:    800;
+  letter-spacing: -0.03em;
+  line-height:    1.15;
+  color:          var(--pl-text, #0a0a0a);
+  margin:         0;
+}
+
+.pl__desc {
+  font-family: var(--font-body, sans-serif);
+  font-size:   0.83rem;
+  color:       var(--pl-subtitle, #888);
+  margin:      0;
+  max-width:   56ch;
+  line-height: 1.6;
+}
+
+/* ── Viewport wrap ── */
+.pl__viewport-wrap {
+  overflow:       hidden;
+  padding-top:    4px;
+  margin-top:     -4px;
+  padding-bottom: 8px;
+  margin-bottom:  -8px;
+  contain:        layout style;
+}
+
+/* ── Swiper ── */
+.pl__swiper {
+  overflow: visible;
+  padding:  0 var(--pl-pad);
+}
+
+.pl__swiper .pl__track {
+  margin:      0;
+  padding:     0;
+  list-style:  none;
+  gap:         var(--pl-gap, 16px);
+  align-items: center;
+}
+
+/* ── Slide ── */
+.pl__swiper .pl__item {
+  width:        var(--pl-slide-w) !important;
+  flex-shrink:  0;
+  display:      flex;
+  align-items:  center;
+  justify-content: center;
+  contain:      layout;
+}
+
+/* ── Card ── */
+.pl__card {
+  display:         flex;
+  align-items:     center;
+  justify-content: center;
+  width:           100%;
+  aspect-ratio:    1 / 1;
+  background:      var(--pl-blk-bg, var(--pl-card-bg, #f8f8f8));
+  border:          var(--pl-card-bdr, 0px) solid var(--pl-blk-brd, var(--pl-card-brd, #e8e8e8));
+  border-radius:   var(--pl-blk-r, var(--pl-radius, 8px));
+  padding:         14%;
+  box-sizing:      border-box;
+  overflow:        hidden;
+  text-decoration: none;
+  transition:      transform 200ms var(--pl-ease), border-color 200ms var(--pl-ease), background 200ms var(--pl-ease);
+  will-change:     transform;
+}
+
+.pl__card img {
+  width:      100%;
+  height:     100%;
+  object-fit: contain;
+  display:    block;
+  user-select: none;
+  -webkit-user-drag: none;
+}
+
+.pl__card-placeholder {
+  display:         flex;
+  align-items:     center;
+  justify-content: center;
+  color: rgba(10,10,10,0.2);
+}
+
+/* ── Hover ── */
+@media (hover: hover) {
+  .pl__item--hoverable .pl__card:hover {
+    transform:    translateY(-2px);
+    border-color: rgba(10,10,10,0.16);
+    background:   #fff;
+  }
+}
+
+/* ── Cache les contrôles Swiper natifs ── */
+.pl__swiper .swiper-pagination,
+.pl__swiper .swiper-button-next,
+.pl__swiper .swiper-button-prev { display: none !important; }
+
+/* ── Reduced motion ── */
+@media (prefers-reduced-motion: reduce) {
+  .pl__card { transition: none; will-change: auto; }
+}
+</style>
+
+<script>
+(function () {
+  'use strict';
+
+  var sid          = '{{ sid }}';
+  var scrollSpeed  = {{ scroll_speed }};
+  var pauseHover   = {{ pause_hover | default: true | json }};
+  var reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var swiper        = null;
+
+  function resumeIfPaused() {
+    if (swiper && swiper.autoplay && !swiper.autoplay.running) {
+      swiper.autoplay.start();
+    }
+  }
+
+  function init() {
+    var el = document.getElementById('pl-swiper-' + sid);
+    if (!el || typeof Swiper === 'undefined') return;
+
+    if (swiper) { swiper.destroy(true, true); swiper = null; }
+
+    swiper = new Swiper(el, {
+      slidesPerView:  'auto',
+      spaceBetween:   0,
+      loop:           true,
+      speed:          reducedMotion ? 0 : scrollSpeed,
+      grabCursor:     false,
+      allowTouchMove: !reducedMotion,
+      observer:       true,
+      observeParents: true,
+      resizeObserver: true,
+      watchSlidesProgress: true,
+      freeMode: {
+        enabled:  !reducedMotion,
+        momentum: false
+      },
+      autoplay: reducedMotion ? false : {
+        delay:                0,
+        disableOnInteraction: false,
+        reverseDirection:     true,
+        pauseOnMouseEnter:    pauseHover
+      }
+    });
+
+    el.addEventListener('touchend', function () {
+      setTimeout(resumeIfPaused, 800);
+    }, { passive: true });
+
+    if ('IntersectionObserver' in window && !reducedMotion) {
+      var obs = new IntersectionObserver(function (entries) {
+        entries.forEach(function (e) {
+          if (!swiper || !swiper.autoplay) return;
+          if (e.isIntersecting) { resumeIfPaused(); }
+          else { swiper.autoplay.stop(); }
+        });
+      }, { threshold: 0.1 });
+      obs.observe(el.closest('.pl') || el);
+    }
+
+    if (!reducedMotion) {
+      document.addEventListener('visibilitychange', function () {
+        if (!swiper || !swiper.autoplay) return;
+        if (document.hidden) { swiper.autoplay.stop(); }
+        else { resumeIfPaused(); }
+      });
+    }
+  }
+
+  function safeInit() {
+    if (typeof Swiper !== 'undefined') { init(); return; }
+    var n = 0;
+    var t = setInterval(function () {
+      n++;
+      if (typeof Swiper !== 'undefined') { clearInterval(t); init(); return; }
+      if (n >= 100) clearInterval(t);
+    }, 50);
+  }
+
+  document.addEventListener('shopify:section:load', function (e) {
+    if (e.detail && e.detail.sectionId === sid) safeInit();
+  });
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', safeInit, { once: true });
+  } else {
+    safeInit();
+  }
+})();
+</script>
+
+{% schema %}
+{
+  "name": "Partners Logo",
+  "tag": "section",
+  "class": "section-partners-logo",
+  "settings": [
+    { "type": "header", "content": "Section" },
+    { "type": "checkbox", "id": "enable_header",       "label": "Afficher le header",       "default": true },
+    { "type": "checkbox", "id": "section_border_top",  "label": "Bordure haut de section",  "default": true },
+    { "type": "checkbox", "id": "section_border_bottom","label": "Bordure bas de section",   "default": false },
+
+    { "type": "header", "content": "Header" },
+    { "type": "text",     "id": "eyebrow",     "label": "Eyebrow",      "default": "PARTENAIRES" },
+    { "type": "text",     "id": "title",       "label": "Titre",        "default": "Des marques utilisées par les créateurs modernes." },
+    { "type": "textarea", "id": "description", "label": "Description",  "default": "Des outils et fabricants reconnus dans les workflows professionnels de création audiovisuelle." },
+    {
+      "type": "select", "id": "header_align", "label": "Alignement header", "default": "center",
+      "options": [
+        { "value": "left",   "label": "Gauche" },
+        { "value": "center", "label": "Centre" }
+      ]
+    },
+
+    { "type": "header", "content": "Carousel" },
+    { "type": "range",    "id": "carousel_speed",  "label": "Vitesse (ms — plus grand = plus lent)", "min": 3000, "max": 9500, "step": 500, "default": 7000, "unit": "ms" },
+    { "type": "checkbox", "id": "pause_on_hover",   "label": "Pause au survol (desktop)",            "default": true },
+
+    { "type": "header", "content": "Logos — Style" },
+    { "type": "range",    "id": "logo_size",          "label": "Taille logo (px)",          "min": 56,  "max": 160, "step": 4,  "default": 96,  "unit": "px" },
+    { "type": "range",    "id": "logo_radius",         "label": "Border-radius card (px)",   "min": 0,   "max": 32,  "step": 1,  "default": 8,   "unit": "px" },
+    { "type": "range",    "id": "card_gap",            "label": "Espacement entre logos (px)","min": 4,  "max": 40,  "step": 2,  "default": 16,  "unit": "px" },
+    { "type": "color",    "id": "card_bg_color",       "label": "Fond card par défaut",      "default": "#f8f8f8" },
+    { "type": "checkbox", "id": "show_card_border",    "label": "Bordure card",              "default": true },
+    { "type": "color",    "id": "card_border_color",   "label": "Couleur bordure",           "default": "#e8e8e8" },
+    { "type": "checkbox", "id": "enable_hover",        "label": "Effet hover",               "default": true },
+
+    { "type": "header", "content": "Couleurs" },
+    { "type": "color", "id": "bg_color",       "label": "Fond section",       "default": "#ffffff" },
+    { "type": "color", "id": "text_color",     "label": "Couleur titres",     "default": "#0a0a0a" },
+    { "type": "color", "id": "eyebrow_color",  "label": "Couleur eyebrow",    "default": "#0787ea" },
+    { "type": "color", "id": "subtitle_color", "label": "Couleur description","default": "#888888" },
+
+    { "type": "header", "content": "Espacement" },
+    { "type": "range", "id": "padding_top_mobile",     "label": "Padding haut mobile",    "min": 0, "max": 120, "step": 4, "default": 52, "unit": "px" },
+    { "type": "range", "id": "padding_bottom_mobile",  "label": "Padding bas mobile",     "min": 0, "max": 120, "step": 4, "default": 52, "unit": "px" },
+    { "type": "range", "id": "padding_top_desktop",    "label": "Padding haut desktop",   "min": 0, "max": 120, "step": 4, "default": 72, "unit": "px" },
+    { "type": "range", "id": "padding_bottom_desktop", "label": "Padding bas desktop",    "min": 0, "max": 120, "step": 4, "default": 64, "unit": "px" },
+    { "type": "range", "id": "margin_top",             "label": "Marge haut",             "min": 0, "max": 120, "step": 4, "default": 0,  "unit": "px" },
+    { "type": "range", "id": "margin_bottom",          "label": "Marge bas",              "min": 0, "max": 120, "step": 4, "default": 0,  "unit": "px" },
+    { "type": "range", "id": "max_width",              "label": "Largeur max (px)",       "min": 960, "max": 1920, "step": 40, "default": 1400 }
+  ],
+  "blocks": [
+    {
+      "type": "partner_logo",
+      "name": "Logo partenaire",
+      "settings": [
+        { "type": "image_picker", "id": "logo_image",      "label": "Image logo" },
+        { "type": "text",         "id": "logo_alt",        "label": "Texte alternatif",           "default": "Partenaire" },
+        { "type": "url",          "id": "logo_link",       "label": "Lien (optionnel)" },
+        { "type": "checkbox",     "id": "enable_link",     "label": "Activer le lien",            "default": false },
+        { "type": "color",        "id": "custom_bg",       "label": "Fond card personnalisé" },
+        { "type": "color",        "id": "custom_border",   "label": "Bordure personnalisée" },
+        { "type": "range",        "id": "custom_radius",   "label": "Rayon personnalisé (px)",    "min": 0, "max": 32, "step": 1, "default": 8, "unit": "px" }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Partners Logo",
+      "settings": {
+        "eyebrow":     "PARTENAIRES",
+        "title":       "Des marques utilisées par les créateurs modernes.",
+        "description": "Des outils et fabricants reconnus dans les workflows professionnels de création audiovisuelle.",
+        "enable_header": true
+      },
+      "blocks": [
+        { "type": "partner_logo", "settings": { "logo_alt": "Sony",       "enable_link": false } },
+        { "type": "partner_logo", "settings": { "logo_alt": "Rode",       "enable_link": false } },
+        { "type": "partner_logo", "settings": { "logo_alt": "Elgato",     "enable_link": false } },
+        { "type": "partner_logo", "settings": { "logo_alt": "Blue Yeti",  "enable_link": false } },
+        { "type": "partner_logo", "settings": { "logo_alt": "Focusrite",  "enable_link": false } },
+        { "type": "partner_logo", "settings": { "logo_alt": "Godox",      "enable_link": false } },
+        { "type": "partner_logo", "settings": { "logo_alt": "Logitech",   "enable_link": false } },
+        { "type": "partner_logo", "settings": { "logo_alt": "BenQ",       "enable_link": false } }
+      ]
+    }
+  ]
+}
+{% endschema %}

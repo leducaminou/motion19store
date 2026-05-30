@@ -40,15 +40,73 @@
   assign price_size_desk  = s.price_size_desktop    | default: 24
 
   assign whatsapp_number  = s.whatsapp_number       | default: ''
-  assign conseil_email    = s.conseil_email         | default: ''
+
+  assign show_vendor      = s.show_vendor           | default: false
+
+  assign wa_label          = s.whatsapp_label      | default: 'WhatsApp'
+  assign conseil_label_txt = s.conseil_label_text  | default: 'Conseils'
+  assign wa_color          = s.whatsapp_color      | default: '#25D366'
+
+  assign conseil_modal_title   = s.conseil_modal_title               | default: 'Parlez-nous de votre besoin.'
+  assign conseil_modal_eyebrow = s.conseil_modal_eyebrow             | default: 'Conseil expert'
+  assign conseil_modal_desc    = s.conseil_modal_desc                | default: 'Recevez des recommandations adaptées à votre workflow créatif et à votre utilisation réelle.'
+  assign conseil_cta_label     = s.conseil_cta_label                 | default: 'Discuter sur WhatsApp'
+  assign conseil_placeholder   = s.conseil_textarea_placeholder      | default: 'Décrivez rapidement votre besoin, votre setup actuel ou votre utilisation prévue…'
+  assign conseil_wa_num        = s.conseil_whatsapp_number           | default: whatsapp_number | default: ''
+  assign conseil_modal_r       = s.conseil_modal_radius              | default: btn_radius_val
+  assign conseil_modal_bg_c    = s.conseil_modal_bg                  | default: '#ffffff'
+  assign conseil_modal_brd_c   = s.conseil_modal_border_color        | default: '#e8e8e8'
+  assign conseil_modal_txt_c   = s.conseil_modal_text_color          | default: '#0a0a0a'
+  assign conseil_accent_c      = s.conseil_accent_color              | default: '#0787ea'
+  assign stock_in_color    = s.stock_in_color      | default: '#22c55e'
+  assign stock_out_color   = s.stock_out_color     | default: '#ef4444'
+  assign sticky_bg         = s.sticky_bg_color     | default: 'rgba(255,255,255,0.92)'
+  assign badge_icon_color  = s.badge_icon_color    | default: '#0787ea'
+  assign desc_size         = s.desc_font_size      | default: 14
+  assign pill_r            = s.pill_radius         | default: 6
+  assign pill_sel_bg       = s.pill_selected_bg    | default: '#0a0a0a'
+  assign pill_sel_txt      = s.pill_selected_text  | default: '#ffffff'
+  assign sec_btn_bg_val    = s.sec_btn_bg          | default: '#ffffff'
+  assign sec_btn_txt_val   = s.sec_btn_text_color  | default: '#0a0a0a'
+  assign sec_btn_brd_val   = s.sec_btn_border      | default: '#e8e8e8'
+  assign pad_x_mob_val     = s.padding_x_mobile    | default: 16
+  assign pad_x_desk_val    = s.padding_x_desktop   | default: 40
 
   assign enable_anim      = s.enable_animations     | default: true
 
   assign first_image      = product.images.first
   assign current_variant  = product.selected_or_first_available_variant
+
+  assign bg_color         = s.bg_color
+  assign card_bg          = s.card_bg
+  assign border_color     = s.border_color
+  assign text_color       = s.text_color
+  assign text_light       = s.text_light_color
+  assign btn_bg           = s.btn_bg
+  assign btn_text_c       = s.btn_text_color
+  assign btn_hover_bg     = s.btn_hover_bg
+  assign btn_radius_val   = s.btn_radius            | default: 6
+  assign img_bg           = s.image_bg
+  assign img_fit          = s.image_fit             | default: 'contain'
+  assign img_pad          = s.image_padding         | default: 24
+  assign img_radius       = s.image_border_radius   | default: 6
+  assign discount_bg      = s.discount_badge_bg
+  assign discount_txt     = s.discount_badge_text
+  assign pt_mob           = s.padding_top_mobile    | default: 20
+  assign pb_mob           = s.padding_bottom_mobile | default: 40
+  assign pt_desk          = s.padding_top_desktop   | default: 40
+  assign pb_desk          = s.padding_bottom_desktop| default: 80
+  assign atc_label        = s.atc_label             | default: 'Ajouter au panier'
+  assign max_w            = s.section_max_width     | default: 1400
 -%}
 
 {{ 'product.css' | asset_url | stylesheet_tag }}
+<style>
+  @media (prefers-reduced-motion: reduce) {
+    .pdp__gallery-thumb, .pdp__main-image-wrap, .pdp__sticky-atc,
+    .pdp__btn, .pdp__lightbox, .pdp__cart-modal { transition: none !important; animation: none !important; }
+  }
+</style>
 
 <div
   class="pdp{% if enable_anim %} pdp--animated{% endif %}"
@@ -71,6 +129,45 @@
     --pdp-price-mob: {{ price_size_mob }}px;
     --pdp-price-tab: {{ price_size_tab }}px;
     --pdp-price-desk: {{ price_size_desk }}px;
+    --pdp-bg:           {{ bg_color }};
+    --pdp-card-bg:      {{ card_bg }};
+    --pdp-border:       {{ border_color }};
+    --pdp-text:         {{ text_color }};
+    --pdp-text-light:   {{ text_light }};
+    --pdp-btn-bg:       {{ btn_bg }};
+    --pdp-btn-text:     {{ btn_text_c }};
+    --pdp-btn-hover:    {{ btn_hover_bg }};
+    --pdp-btn-r:        {{ btn_radius_val }}px;
+    --pdp-img-bg:       {{ img_bg }};
+    --pdp-img-fit:      {{ img_fit }};
+    --pdp-img-pad:      {{ img_pad }}px;
+    --pdp-img-radius:   {{ img_radius }}px;
+    --pdp-discount-bg:  {{ discount_bg }};
+    --pdp-discount-txt: {{ discount_txt }};
+    --pdp-pt-mob:       {{ pt_mob }}px;
+    --pdp-pb-mob:       {{ pb_mob }}px;
+    --pdp-pt-desk:      {{ pt_desk }}px;
+    --pdp-pb-desk:      {{ pb_desk }}px;
+    --pdp-max-w:        {{ max_w }}px;
+    --pdp-wa-color:      {{ wa_color }};
+    --pdp-stock-in:      {{ stock_in_color }};
+    --pdp-stock-out:     {{ stock_out_color }};
+    --pdp-sticky-bg:     {{ sticky_bg }};
+    --pdp-badge-icon:    {{ badge_icon_color }};
+    --pdp-desc-size:     {{ desc_size }}px;
+    --pdp-pill-r:        {{ pill_r }}px;
+    --pdp-pill-sel-bg:   {{ pill_sel_bg }};
+    --pdp-pill-sel-txt:  {{ pill_sel_txt }};
+    --pdp-sec-bg:        {{ sec_btn_bg_val }};
+    --pdp-sec-text:      {{ sec_btn_txt_val }};
+    --pdp-sec-border:    {{ sec_btn_brd_val }};
+    --pdp-pad-mob:       {{ pad_x_mob_val }}px;
+    --pdp-pad-desk:      {{ pad_x_desk_val }}px;
+    --pdp-conseil-r:     {{ conseil_modal_r }}px;
+    --pdp-conseil-bg:    {{ conseil_modal_bg_c }};
+    --pdp-conseil-brd:   {{ conseil_modal_brd_c }};
+    --pdp-conseil-txt:   {{ conseil_modal_txt_c }};
+    --pdp-conseil-acc:   {{ conseil_accent_c }};
   "
 >
   <div class="pdp__inner">
@@ -82,10 +179,10 @@
           1 / {{ product.images.size }}
         </span>
         <div class="pdp__swiper-arrows">
-          <button class="pdp__swiper-arrow" id="pdpPrev" aria-label="{{ 'accessibility.previous' | t | default: 'Image précédente' }}">
+          <button class="pdp__swiper-arrow" id="pdpPrev" aria-label="Image précédente">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 18l-6-6 6-6"/></svg>
           </button>
-          <button class="pdp__swiper-arrow" id="pdpNext" aria-label="{{ 'accessibility.next' | t | default: 'Image suivante' }}">
+          <button class="pdp__swiper-arrow" id="pdpNext" aria-label="Image suivante">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 18l6-6-6-6"/></svg>
           </button>
         </div>
@@ -130,11 +227,14 @@
           <div class="swiper pdp__thumbs-strip" id="pdpThumbsStrip">
             <div class="swiper-wrapper">
               {%- for image in product.images -%}
-                <div class="swiper-slide" role="button" aria-label="{{ 'products.product.media.load_image' | t | default: 'Voir image' }} {{ forloop.index }}">
+                <div class="swiper-slide" role="button" aria-label="Voir image {{ forloop.index }}">
                   <img
                     src="{{ image | image_url: width: 160 }}"
                     alt="{{ image.alt | default: product.title | escape }} — miniature {{ forloop.index }}"
                     loading="lazy"
+                    decoding="async"
+                    width="{{ image.width }}"
+                    height="{{ image.height }}"
                   >
                 </div>
               {%- endfor -%}
@@ -148,7 +248,7 @@
 
       {%- comment -%}── GALLERY (desktop) ──{%- endcomment -%}
       <div class="pdp__gallery pdp__gallery--thumbs-{{ thumb_pos }}" id="pdpGallery">
-        <div class="pdp__main-image-wrap" id="pdpMainWrap" onclick="pdpOpenLightbox(0)" role="button" tabindex="0" aria-label="{{ 'products.product.media.open_media' | t | default: 'Agrandir l\'image' }}">
+        <div class="pdp__main-image-wrap" id="pdpMainWrap" onclick="pdpOpenLightbox(0)" role="button" tabindex="0" aria-label="Agrandir image">
           <img
             id="pdpMainImg"
             src="{{ first_image | image_url: width: 1200 }}"
@@ -174,7 +274,7 @@
         </div>
 
         {%- if product.images.size > 1 -%}
-          <div class="pdp__gallery-thumbs-grid" id="pdpThumbsGrid" role="list" aria-label="{{ 'products.product.media.gallery_viewer' | t | default: 'Miniatures produit' }}">
+          <div class="pdp__gallery-thumbs-grid" id="pdpThumbsGrid" role="list" aria-label="Miniatures produit">
             {%- for image in product.images -%}
               <div
                 class="pdp__gallery-thumb{% if forloop.first %} is-active{% endif %}"
@@ -183,13 +283,14 @@
                 onclick="pdpSetImage(this,'{{ image | image_url: width: 1200 }}','{{ image.alt | default: product.title | escape }}',{{ forloop.index0 }})"
                 onkeydown="if(event.key==='Enter'||event.key===' ')pdpSetImage(this,'{{ image | image_url: width: 1200 }}','{{ image.alt | default: product.title | escape }}',{{ forloop.index0 }})"
                 data-index="{{ forloop.index0 }}"
-                aria-label="{{ 'products.product.media.load_image' | t | default: 'Image' }} {{ forloop.index }}"
+                aria-label="Image {{ forloop.index }}"
                 aria-pressed="{% if forloop.first %}true{% else %}false{% endif %}"
               >
                 <img
                   src="{{ image | image_url: width: 300 }}"
                   alt="{{ image.alt | default: product.title | escape }} — miniature {{ forloop.index }}"
                   loading="lazy"
+                  decoding="async"
                   width="{{ image.width }}"
                   height="{{ image.height }}"
                 >
@@ -221,7 +322,7 @@
                 class="pdp__share-btn"
                 id="pdpShareBtn"
                 onclick="pdpToggleShare(this)"
-                aria-label="{{ 'general.share.title' | t | default: 'Partager' }}"
+                aria-label="Partager"
                 aria-expanded="false"
                 aria-haspopup="true"
               >
@@ -234,10 +335,6 @@
                   <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
                   Copier le lien
                 </button>
-                <a class="pdp__share-item pdp__share-twitter" href="#" target="_blank" rel="noopener noreferrer" role="menuitem">
-                  <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.744l7.732-8.835L1.254 2.25H8.08l4.253 5.622zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
-                  Partager sur X
-                </a>
                 <a class="pdp__share-item pdp__share-facebook" href="#" target="_blank" rel="noopener noreferrer" role="menuitem">
                   <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
                   Partager sur Facebook
@@ -253,6 +350,9 @@
         </div>
 
         {%- comment -%} 2. Title {%- endcomment -%}
+        {%- if show_vendor and product.vendor != blank -%}
+          <p class="pdp__vendor">{{ product.vendor }}</p>
+        {%- endif -%}
         <h1 class="pdp__title" itemprop="name">{{ product.title }}</h1>
 
         {%- comment -%} 3. Pricing + stock {%- endcomment -%}
@@ -371,7 +471,7 @@
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
               <path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/>
             </svg>
-            <span>Ajouter au panier</span>
+            <span>{{ atc_label }}</span>
           </button>
 
           {%- if show_whatsapp or show_conseil -%}
@@ -381,25 +481,27 @@
                   class="pdp__btn pdp__btn--whatsapp"
                   id="pdpWaBtn"
                   href="#"
-                  aria-label="Commander via WhatsApp"
+                  aria-label="Suivant"
                   rel="noopener noreferrer"
                   target="_blank"
                 >
                   <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l2.27-2.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
-                  <span>WhatsApp</span>
+                  <span>{{ wa_label }}</span>
                 </a>
               {%- endif -%}
 
               {%- if show_conseil -%}
-                <a
+                <button
                   class="pdp__btn pdp__btn--secondary"
                   id="pdpConseilBtn"
-                  href="#"
-                  aria-label="Demander un conseil"
+                  type="button"
+                  onclick="pdpOpenConseilModal()"
+                  aria-label="Demander un conseil — {{ product.title | escape }}"
+                  aria-haspopup="dialog"
                 >
                   <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
-                  <span>Conseils</span>
-                </a>
+                  <span>{{ conseil_label_txt }}</span>
+                </button>
               {%- endif -%}
             </div>
           {%- endif -%}
@@ -571,6 +673,129 @@
   </div>
 </div>
 
+{%- comment -%}── CONSEIL MODAL ──{%- endcomment -%}
+{%- if show_conseil -%}
+<div
+  class="pdp__conseil-overlay"
+  id="pdpConseilOverlay"
+  role="dialog"
+  aria-modal="true"
+  aria-labelledby="pdpConseilTitle"
+  aria-hidden="true"
+>
+  <div class="pdp__conseil-modal" id="pdpConseilModal">
+    {%- comment -%} Header {%- endcomment -%}
+    <div class="pdp__conseil-header">
+      <div class="pdp__conseil-header-text">
+        {%- if conseil_modal_eyebrow != blank -%}
+          <span class="pdp__conseil-eyebrow">{{ conseil_modal_eyebrow }}</span>
+        {%- endif -%}
+        <h2 class="pdp__conseil-title" id="pdpConseilTitle">{{ conseil_modal_title }}</h2>
+        {%- if conseil_modal_desc != blank -%}
+          <p class="pdp__conseil-desc">{{ conseil_modal_desc }}</p>
+        {%- endif -%}
+      </div>
+      <button
+        class="pdp__conseil-close"
+        id="pdpConseilClose"
+        type="button"
+        aria-label="Fermer"
+      >
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12"/></svg>
+      </button>
+    </div>
+
+    {%- comment -%} Product context chip {%- endcomment -%}
+    <div class="pdp__conseil-product">
+      <img
+        class="pdp__conseil-product-img"
+        src="{{ first_image | image_url: width: 80 }}"
+        alt="{{ product.title | escape }}"
+        width="32" height="32"
+        loading="lazy"
+        decoding="async"
+      >
+      <span class="pdp__conseil-product-name">{{ product.title | truncate: 48 }}</span>
+    </div>
+
+    {%- comment -%} Topics / blocks {%- endcomment -%}
+    <p class="pdp__conseil-section-label">Votre demande concerne :</p>
+    {%- assign conseil_topics = section.blocks | where: 'type', 'advice_topic' -%}
+    {%- if conseil_topics.size > 0 -%}
+      <div class="pdp__conseil-topics" role="group" aria-label="Thèmes de votre demande">
+        {%- for block in conseil_topics -%}
+          {%- if block.settings.topic_enabled != false -%}
+            <label
+              class="pdp__conseil-topic{% if block.settings.topic_default %} is-checked{% endif %}"
+              {{ block.shopify_attributes }}
+            >
+              <input
+                class="pdp__conseil-topic-input"
+                type="checkbox"
+                name="conseil_topic"
+                value="{{ block.settings.topic_label | default: 'Conseil' | escape }}"
+                {% if block.settings.topic_default %}checked{% endif %}
+                aria-label="{{ block.settings.topic_label | default: 'Conseil' | escape }}"
+              >
+              {%- if block.settings.topic_icon != blank -%}
+                <span class="pdp__conseil-topic-icon" aria-hidden="true">{{ block.settings.topic_icon }}</span>
+              {%- endif -%}
+              <span class="pdp__conseil-topic-label">{{ block.settings.topic_label | default: 'Conseil' }}</span>
+              <span class="pdp__conseil-topic-check" aria-hidden="true">
+                <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+              </span>
+            </label>
+          {%- endif -%}
+        {%- endfor -%}
+      </div>
+    {%- else -%}
+      {%- comment -%} Default topics when no blocks configured {%- endcomment -%}
+      <div class="pdp__conseil-topics" role="group" aria-label="Thèmes de votre demande" id="pdpConseilDefaultTopics">
+        {%- assign default_topics = "Conseil sur l'utilisation,Compatibilité setup,Configuration studio,Comparaison produit,Accessoires recommandés,Setup débutant,Workflow professionnel,Tournage vidéo" | split: "," -%}
+        {%- for topic in default_topics -%}
+          <label class="pdp__conseil-topic">
+            <input class="pdp__conseil-topic-input" type="checkbox" name="conseil_topic" value="{{ topic | escape }}" aria-label="{{ topic | escape }}">
+            <span class="pdp__conseil-topic-label">{{ topic }}</span>
+            <span class="pdp__conseil-topic-check" aria-hidden="true">
+              <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+            </span>
+          </label>
+        {%- endfor -%}
+      </div>
+    {%- endif -%}
+
+    {%- comment -%} Free-text textarea {%- endcomment -%}
+    <div class="pdp__conseil-field">
+      <label class="pdp__conseil-field-label" for="pdpConseilTextarea">
+        Votre message <span class="pdp__conseil-optional">(optionnel)</span>
+      </label>
+      <textarea
+        class="pdp__conseil-textarea"
+        id="pdpConseilTextarea"
+        name="conseil_message"
+        rows="3"
+        placeholder="{{ conseil_placeholder | escape }}"
+        aria-label="Votre besoin"
+      ></textarea>
+    </div>
+
+    {%- comment -%} CTA {%- endcomment -%}
+    <button
+      class="pdp__conseil-cta"
+      id="pdpConseilCta"
+      type="button"
+      onclick="pdpSendConseilWA()"
+    >
+      <svg class="pdp__conseil-cta-icon" width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+        <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
+      </svg>
+      <span>{{ conseil_cta_label }}</span>
+    </button>
+
+  </div>
+</div>
+{%- endif -%}
+
 {%- comment -%}── LIGHTBOX ──{%- endcomment -%}
 <div
   class="pdp__lightbox"
@@ -648,6 +873,8 @@
               alt=""
               loading="lazy"
               aria-hidden="true"
+              width="{{ image.width }}"
+              height="{{ image.height }}"
             >
           </div>
         {%- endfor -%}
@@ -659,6 +886,8 @@
 <script>
 (function () {
   'use strict';
+
+  var reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
   /* ── Pricing data ── */
   var pdpVariants   = {{ product.variants | json }};
@@ -730,36 +959,33 @@
     pdpVariantId = matched.id;
     pdpUnitCents = matched.price;
 
-    /* Update ATC btn */
-    var btn = document.getElementById('pdpAtcBtn');
-    if (btn) btn.dataset.variantId = matched.id;
+    /* Batch all DOM writes in a single rAF */
+    requestAnimationFrame(function () {
+      var btn = document.getElementById('pdpAtcBtn');
+      if (btn) btn.dataset.variantId = matched.id;
 
-    /* Update price */
-    var priceEl = document.getElementById('pdpPrice');
-    if (priceEl) priceEl.textContent = fmtMoney(matched.price);
+      var priceEl = document.getElementById('pdpPrice');
+      if (priceEl) priceEl.textContent = fmtMoney(matched.price);
 
-    /* Update total */
-    var qty = parseInt((document.getElementById('pdpQtyInput') || {}).value, 10) || 1;
-    var total = document.getElementById('pdpTotalPrice');
-    if (total) total.textContent = fmtMoney(matched.price * qty);
+      var qty = parseInt((document.getElementById('pdpQtyInput') || {}).value, 10) || 1;
+      var total = document.getElementById('pdpTotalPrice');
+      if (total) total.textContent = fmtMoney(matched.price * qty);
 
-    /* Update sticky price */
-    var stickyP = document.getElementById('pdpStickyPrice');
-    if (stickyP) stickyP.textContent = fmtMoney(matched.price);
+      var stickyP = document.getElementById('pdpStickyPrice');
+      if (stickyP) stickyP.textContent = fmtMoney(matched.price);
 
-    /* Update stock */
-    var stockEl = document.getElementById('pdpStock');
-    if (stockEl) {
-      stockEl.className = 'pdp__stock pdp__stock--' + (matched.available ? 'in' : 'out');
-      stockEl.querySelector('.pdp__stock-label').textContent = matched.available ? 'En stock' : 'Épuisé';
-    }
+      var stockEl = document.getElementById('pdpStock');
+      if (stockEl) {
+        stockEl.className = 'pdp__stock pdp__stock--' + (matched.available ? 'in' : 'out');
+        stockEl.querySelector('.pdp__stock-label').textContent = matched.available ? 'En stock' : 'Épuisé';
+      }
 
-    /* URL history */
-    if (window.history && window.history.replaceState) {
-      var url = new URL(window.location.href);
-      url.searchParams.set('variant', matched.id);
-      window.history.replaceState({}, '', url.toString());
-    }
+      if (window.history && window.history.replaceState) {
+        var url = new URL(window.location.href);
+        url.searchParams.set('variant', matched.id);
+        window.history.replaceState({}, '', url.toString());
+      }
+    });
   }
 
   /* ────────────────────────────────────────────
@@ -791,7 +1017,15 @@
         return;
       }
 
-      /* Update cart badge */
+      /* Update cart badge and dispatch unified event */
+      fetch('/cart.js')
+        .then(function (r) { return r.json(); })
+        .then(function (c) {
+          document.querySelectorAll('[data-cart-count]').forEach(function (el) {
+            el.textContent = c.item_count;
+          });
+          document.dispatchEvent(new CustomEvent('cart:updated', { detail: { item_count: c.item_count } }));
+        });
       if (window.M19Cart) window.M19Cart.refreshBadge();
 
       /* Show modal */
@@ -871,10 +1105,8 @@
     if (isOpen) {
       var url   = encodeURIComponent(window.location.href);
       var title = encodeURIComponent(document.title);
-      var tw = dropdown.querySelector('.pdp__share-twitter');
       var fb = dropdown.querySelector('.pdp__share-facebook');
       var wa = dropdown.querySelector('.pdp__share-whatsapp');
-      if (tw) tw.href = 'https://twitter.com/intent/tweet?url=' + url + '&text=' + title;
       if (fb) fb.href = 'https://www.facebook.com/sharer/sharer.php?u=' + url;
       if (wa) wa.href = 'https://wa.me/?text=' + title + '%20' + url;
     }
@@ -912,17 +1144,23 @@
   };
 
   /* ────────────────────────────────────────────
-     STICKY ATC
+     STICKY ATC — rAF throttled scroll
   ──────────────────────────────────────────── */
   (function () {
     var sticky  = document.getElementById('pdpStickyAtc');
     var trigger = document.getElementById('pdpAtcBtn');
     if (!sticky || !trigger) return;
 
+    var rafPending = false;
     function onScroll() {
-      var below = trigger.getBoundingClientRect().bottom < 0;
-      sticky.classList.toggle('is-visible', below);
-      sticky.setAttribute('aria-hidden', below ? 'false' : 'true');
+      if (rafPending) return;
+      rafPending = true;
+      requestAnimationFrame(function () {
+        rafPending = false;
+        var below = trigger.getBoundingClientRect().bottom < 0;
+        sticky.classList.toggle('is-visible', below);
+        sticky.setAttribute('aria-hidden', below ? 'false' : 'true');
+      });
     }
 
     window.addEventListener('scroll', onScroll, { passive: true });
@@ -947,7 +1185,9 @@
         slidesPerView: 'auto',
         spaceBetween: 6,
         watchSlidesProgress: true,
-        freeMode: true,
+        freeMode: !reducedMotion,
+        observer: true,
+        resizeObserver: true,
       });
     }
 
@@ -955,9 +1195,12 @@
       _lbSwiper = new Swiper('#pdpLbSwiper', {
         initialSlide: index,
         slidesPerView: 1,
-        speed: 300,
+        speed: reducedMotion ? 0 : 300,
         grabCursor: true,
         keyboard: { enabled: true },
+        observer: true,
+        resizeObserver: true,
+        watchSlidesProgress: true,
         navigation: { nextEl: '#pdpLbNext', prevEl: '#pdpLbPrev' },
         thumbs: { swiper: _lbThumbsSwiper },
         on: {
@@ -997,8 +1240,35 @@
     if (backdrop)  backdrop.addEventListener('click',   pdpCloseLightbox);
 
     document.addEventListener('keydown', function (e) {
-      if (e.key === 'Escape') pdpCloseLightbox();
+      if (e.key !== 'Escape') return;
+      pdpCloseLightbox();
+      var cm = document.getElementById('pdpConseilOverlay');
+      if (cm && cm.classList.contains('is-open')) pdpCloseConseilModal();
     });
+
+    /* Conseil modal wiring */
+    var conseilOverlay = document.getElementById('pdpConseilOverlay');
+    var conseilCloseBtn = document.getElementById('pdpConseilClose');
+    if (conseilCloseBtn) conseilCloseBtn.addEventListener('click', pdpCloseConseilModal);
+    if (conseilOverlay) {
+      conseilOverlay.addEventListener('click', function (e) {
+        if (e.target === conseilOverlay) pdpCloseConseilModal();
+      });
+    }
+
+    document.querySelectorAll('.pdp__conseil-topic-input').forEach(function (inp) {
+      inp.addEventListener('change', function () {
+        this.closest('.pdp__conseil-topic').classList.toggle('is-checked', this.checked);
+      });
+    });
+
+    var conseilTa = document.getElementById('pdpConseilTextarea');
+    if (conseilTa) {
+      conseilTa.addEventListener('input', function () {
+        this.style.height = 'auto';
+        this.style.height = Math.min(this.scrollHeight, 180) + 'px';
+      });
+    }
 
     /* WhatsApp URL */
     var waBtn = document.getElementById('pdpWaBtn');
@@ -1012,17 +1282,6 @@
       {%- endif -%}
     }
 
-    /* Conseil mailto URL */
-    var conseilBtn = document.getElementById('pdpConseilBtn');
-    if (conseilBtn) {
-      var subj = encodeURIComponent('Demande de conseil — {{ product.title | escape }}');
-      var body = encodeURIComponent('Bonjour,\n\nJe souhaite des informations sur : {{ product.title | escape }}\n' + window.location.href);
-      {%- if conseil_email != blank -%}
-        conseilBtn.href = 'mailto:{{ conseil_email }}?subject=' + subj + '&body=' + body;
-      {%- else -%}
-        conseilBtn.href = 'mailto:contact@motion19.com?subject=' + subj + '&body=' + body;
-      {%- endif -%}
-    }
   });
 
   /* ────────────────────────────────────────────
@@ -1035,13 +1294,20 @@
       slidesPerView: 'auto',
       spaceBetween: {{ thumb_gap }},
       watchSlidesProgress: true,
-      freeMode: true,
+      freeMode: !reducedMotion,
+      observer: true,
+      observeParents: true,
+      resizeObserver: true,
     });
 
     var mainSwiper = new Swiper('#pdpSwiper', {
       slidesPerView: 1,
-      speed: 380,
+      speed: reducedMotion ? 0 : 380,
       grabCursor: true,
+      observer: true,
+      observeParents: true,
+      resizeObserver: true,
+      watchSlidesProgress: true,
       thumbs: { swiper: thumbsStrip },
       on: {
         slideChange: function () {
@@ -1049,14 +1315,10 @@
           var t = this.slides.length;
           var ctr = document.getElementById('pdpSwiperCounter');
           if (ctr) ctr.textContent = i + ' / ' + t;
-          ['pdpPrev'].forEach(function (id) {
-            var b = document.getElementById(id);
-            if (b) b.disabled = i === 1;
-          });
-          ['pdpNext'].forEach(function (id) {
-            var b = document.getElementById(id);
-            if (b) b.disabled = i === t;
-          });
+          var prevBtn = document.getElementById('pdpPrev');
+          var nextBtn = document.getElementById('pdpNext');
+          if (prevBtn) prevBtn.disabled = i === 1;
+          if (nextBtn) nextBtn.disabled = i === t;
         },
         init: function () {
           var prevBtn = document.getElementById('pdpPrev');
@@ -1069,8 +1331,8 @@
 
     var prevBtn = document.getElementById('pdpPrev');
     var nextBtn = document.getElementById('pdpNext');
-    if (prevBtn) prevBtn.addEventListener('click', function () { mainSwiper.slidePrev(); });
-    if (nextBtn) nextBtn.addEventListener('click', function () { mainSwiper.slideNext(); });
+    if (prevBtn) prevBtn.addEventListener('click', function () { mainSwiper.slidePrev(); }, { passive: true });
+    if (nextBtn) nextBtn.addEventListener('click', function () { mainSwiper.slideNext(); }, { passive: true });
   });
 
   /* ATC spin keyframe */
@@ -1080,6 +1342,55 @@
     s.textContent = '@keyframes pdpSpin { to { transform: rotate(360deg); } }';
     document.head.appendChild(s);
   }
+
+  /* ────────────────────────────────────────────
+     CONSEIL MODAL
+  ──────────────────────────────────────────── */
+  window.pdpOpenConseilModal = function () {
+    var overlay = document.getElementById('pdpConseilOverlay');
+    if (!overlay) return;
+    overlay.classList.add('is-open');
+    overlay.setAttribute('aria-hidden', 'false');
+    document.body.style.overflow = 'hidden';
+    setTimeout(function () {
+      var close = document.getElementById('pdpConseilClose');
+      if (close) close.focus();
+    }, 60);
+  };
+
+  window.pdpCloseConseilModal = function () {
+    var overlay = document.getElementById('pdpConseilOverlay');
+    if (!overlay) return;
+    overlay.classList.remove('is-open');
+    overlay.setAttribute('aria-hidden', 'true');
+    document.body.style.overflow = '';
+    var trigger = document.getElementById('pdpConseilBtn');
+    if (trigger) trigger.focus();
+  };
+
+  window.pdpSendConseilWA = function () {
+    var topics = [];
+    document.querySelectorAll('#pdpConseilOverlay .pdp__conseil-topic-input:checked').forEach(function (inp) {
+      topics.push(inp.value);
+    });
+    var textarea = document.getElementById('pdpConseilTextarea');
+    var freeText = textarea ? textarea.value.trim() : '';
+
+    var variant = '';
+    var selPill = document.querySelector('.pdp__pill.is-selected');
+    if (selPill) variant = selPill.dataset.value || '';
+
+    var msg = 'Bonjour, je souhaite obtenir des conseils concernant ce produit :\n\n';
+    msg += {{ product.title | json }} + '\n\nLien :\n' + window.location.href;
+    if (variant) msg += '\n\nVariante :\n' + variant;
+    if (topics.length) msg += '\n\nThèmes sélectionnés :\n' + topics.map(function (t) { return '— ' + t; }).join('\n');
+    if (freeText) msg += '\n\nMon besoin :\n' + freeText;
+    msg += '\n\nMerci.';
+
+    var waNum = '{{ conseil_wa_num | remove: "+" | remove: " " | remove: "-" }}';
+    var url = 'https://wa.me/' + (waNum || '') + '?text=' + encodeURIComponent(msg);
+    window.open(url, '_blank', 'noopener,noreferrer');
+  };
 
 }());
 </script>
@@ -1318,15 +1629,28 @@
     {
       "type": "checkbox",
       "id": "show_conseil",
-      "label": "Bouton Conseils (email)",
+      "label": "Bouton Conseil (WhatsApp)",
       "default": true
     },
     {
       "type": "text",
-      "id": "conseil_email",
-      "label": "Email pour les demandes de conseil",
-      "placeholder": "contact@votresite.com"
+      "id": "conseil_whatsapp_number",
+      "label": "Numéro WhatsApp — Conseil",
+      "placeholder": "+33612345678",
+      "info": "Prioritaire sur le numéro WhatsApp principal si renseigné."
     },
+    { "type": "header", "content": "Modal Conseil — Textes" },
+    { "type": "text",     "id": "conseil_modal_eyebrow",         "label": "Eyebrow modal",          "default": "Conseil expert" },
+    { "type": "text",     "id": "conseil_modal_title",           "label": "Titre modal",            "default": "Parlez-nous de votre besoin." },
+    { "type": "textarea", "id": "conseil_modal_desc",            "label": "Description",            "default": "Recevez des recommandations adaptées à votre workflow créatif et à votre utilisation réelle." },
+    { "type": "text",     "id": "conseil_cta_label",             "label": "Texte bouton CTA",       "default": "Discuter sur WhatsApp" },
+    { "type": "textarea", "id": "conseil_textarea_placeholder",  "label": "Placeholder textarea",   "default": "Décrivez rapidement votre besoin, votre setup actuel ou votre utilisation prévue…" },
+    { "type": "header", "content": "Modal Conseil — Style" },
+    { "type": "range",  "id": "conseil_modal_radius",       "label": "Rayon modal (px)",     "min": 0,  "max": 32, "step": 2,  "default": 16, "unit": "px" },
+    { "type": "color",  "id": "conseil_modal_bg",           "label": "Fond modal",           "default": "#ffffff" },
+    { "type": "color",  "id": "conseil_modal_border_color", "label": "Bordure modal",        "default": "#e8e8e8" },
+    { "type": "color",  "id": "conseil_modal_text_color",   "label": "Texte modal",          "default": "#0a0a0a" },
+    { "type": "color",  "id": "conseil_accent_color",       "label": "Couleur accent",       "default": "#0787ea" },
     {
       "type": "header",
       "content": "Animations"
@@ -1337,9 +1661,71 @@
       "label": "Activer les animations d'entrée",
       "default": true,
       "info": "Les animations respectent prefers-reduced-motion"
-    }
+    },
+    { "type": "header", "content": "Couleurs — Page" },
+    { "type": "color", "id": "bg_color",           "label": "Fond de la page",                   "default": "#ffffff" },
+    { "type": "color", "id": "card_bg",             "label": "Fond des blocs (prix, qty, variants)", "default": "#f8f8f8" },
+    { "type": "color", "id": "border_color",        "label": "Couleur des bordures",              "default": "#e8e8e8" },
+    { "type": "color", "id": "text_color",          "label": "Couleur du texte principal",        "default": "#0a0a0a" },
+    { "type": "color", "id": "text_light_color",    "label": "Couleur du texte secondaire",       "default": "#666666" },
+    { "type": "header", "content": "Couleurs — Bouton ATC" },
+    { "type": "color", "id": "btn_bg",              "label": "Fond bouton ATC",                   "default": "#0a0a0a" },
+    { "type": "color", "id": "btn_text_color",      "label": "Texte bouton ATC",                  "default": "#ffffff" },
+    { "type": "color", "id": "btn_hover_bg",        "label": "Fond bouton ATC au survol",         "default": "#333333" },
+    { "type": "range", "id": "btn_radius",          "label": "Rayon bouton ATC (px)", "min": 0, "max": 32, "step": 1, "default": 6, "unit": "px" },
+    { "type": "text",  "id": "atc_label",           "label": "Texte bouton ATC",                  "default": "Ajouter au panier" },
+    { "type": "header", "content": "Couleurs — Badge réduction" },
+    { "type": "color", "id": "discount_badge_bg",   "label": "Fond badge réduction",              "default": "#d74e09" },
+    { "type": "color", "id": "discount_badge_text", "label": "Texte badge réduction",             "default": "#ffffff" },
+    { "type": "header", "content": "Image produit" },
+    { "type": "color", "id": "image_bg",            "label": "Fond de l'image",                   "default": "#ffffff" },
+    { "type": "select","id": "image_fit",           "label": "Recadrage image", "default": "contain", "options": [{ "value": "contain", "label": "Contenir (objet complet)" },{ "value": "cover", "label": "Couvrir (plein cadre)" }] },
+    { "type": "range", "id": "image_padding",       "label": "Padding image (px)",  "min": 0, "max": 48, "step": 4, "default": 24, "unit": "px" },
+    { "type": "range", "id": "image_border_radius", "label": "Rayon image (px)",    "min": 0, "max": 32, "step": 2, "default": 6, "unit": "px" },
+    { "type": "header", "content": "Espacement — Section" },
+    { "type": "range", "id": "padding_top_mobile",    "label": "Padding haut mobile (px)",  "min": 0, "max": 80,  "step": 4, "default": 20, "unit": "px" },
+    { "type": "range", "id": "padding_bottom_mobile", "label": "Padding bas mobile (px)",   "min": 0, "max": 80,  "step": 4, "default": 40, "unit": "px" },
+    { "type": "range", "id": "padding_top_desktop",   "label": "Padding haut desktop (px)", "min": 0, "max": 120, "step": 4, "default": 40, "unit": "px" },
+    { "type": "range", "id": "padding_bottom_desktop","label": "Padding bas desktop (px)",  "min": 0, "max": 120, "step": 4, "default": 80, "unit": "px" },
+    { "type": "range", "id": "section_max_width",     "label": "Largeur max section (px)",  "min": 960, "max": 1920, "step": 40, "default": 1400 },
+    { "type": "header", "content": "Divers" },
+    { "type": "checkbox", "id": "show_vendor", "label": "Afficher la marque (vendor)", "default": false },
+    { "type": "header", "content": "Boutons secondaires — Labels" },
+    { "type": "text",  "id": "whatsapp_label",     "label": "Texte bouton WhatsApp",    "default": "WhatsApp" },
+    { "type": "text",  "id": "conseil_label_text",  "label": "Texte bouton Conseils",    "default": "Conseils" },
+    { "type": "header", "content": "Boutons secondaires — Couleurs" },
+    { "type": "color", "id": "whatsapp_color",      "label": "Couleur WhatsApp",         "default": "#25D366" },
+    { "type": "color", "id": "sec_btn_bg",          "label": "Fond bouton secondaire",   "default": "#ffffff" },
+    { "type": "color", "id": "sec_btn_text_color",  "label": "Texte bouton secondaire",  "default": "#0a0a0a" },
+    { "type": "color", "id": "sec_btn_border",      "label": "Bordure bouton secondaire","default": "#e8e8e8" },
+    { "type": "header", "content": "Variants — Pills" },
+    { "type": "range", "id": "pill_radius",         "label": "Rayon pills (px)", "min": 0, "max": 32, "step": 1, "default": 6, "unit": "px" },
+    { "type": "color", "id": "pill_selected_bg",    "label": "Fond pill sélectionnée",   "default": "#0a0a0a" },
+    { "type": "color", "id": "pill_selected_text",  "label": "Texte pill sélectionnée",  "default": "#ffffff" },
+    { "type": "header", "content": "Indicateurs de stock" },
+    { "type": "color", "id": "stock_in_color",      "label": "Couleur « En stock »",     "default": "#22c55e" },
+    { "type": "color", "id": "stock_out_color",     "label": "Couleur « Épuisé »",       "default": "#ef4444" },
+    { "type": "header", "content": "Badges de confiance — Style" },
+    { "type": "color", "id": "badge_icon_color",    "label": "Couleur icône badge",      "default": "#0787ea" },
+    { "type": "header", "content": "Description" },
+    { "type": "range", "id": "desc_font_size",      "label": "Taille police (px)", "min": 11, "max": 18, "step": 1, "default": 14, "unit": "px" },
+    { "type": "header", "content": "Barre ATC sticky" },
+    { "type": "color", "id": "sticky_bg_color",     "label": "Fond barre sticky",        "default": "#ffffff" },
+    { "type": "header", "content": "Espacement horizontal" },
+    { "type": "range", "id": "padding_x_mobile",   "label": "Padding horizontal mobile (px)",  "min": 8,  "max": 40, "step": 4, "default": 16, "unit": "px" },
+    { "type": "range", "id": "padding_x_desktop",  "label": "Padding horizontal desktop (px)", "min": 16, "max": 80, "step": 4, "default": 40, "unit": "px" }
   ],
   "blocks": [
+    {
+      "type": "advice_topic",
+      "name": "Thème de conseil",
+      "settings": [
+        { "type": "text",     "id": "topic_label",   "label": "Label",                  "default": "Conseil utilisation" },
+        { "type": "text",     "id": "topic_icon",    "label": "Icône (emoji)",          "default": "💬" },
+        { "type": "checkbox", "id": "topic_enabled", "label": "Activé",                 "default": true },
+        { "type": "checkbox", "id": "topic_default", "label": "Sélectionné par défaut", "default": false }
+      ]
+    },
     {
       "type": "trust_badge",
       "name": "Badge de confiance",
@@ -1375,6 +1761,14 @@
     {
       "name": "Page produit",
       "blocks": [
+        { "type": "advice_topic", "settings": { "topic_label": "Conseil sur l'utilisation",    "topic_icon": "💡", "topic_enabled": true, "topic_default": false } },
+        { "type": "advice_topic", "settings": { "topic_label": "Compatibilité avec mon setup", "topic_icon": "🔌", "topic_enabled": true, "topic_default": false } },
+        { "type": "advice_topic", "settings": { "topic_label": "Configuration studio",         "topic_icon": "🎙️", "topic_enabled": true, "topic_default": false } },
+        { "type": "advice_topic", "settings": { "topic_label": "Comparaison produit",          "topic_icon": "⚖️", "topic_enabled": true, "topic_default": false } },
+        { "type": "advice_topic", "settings": { "topic_label": "Accessoires recommandés",      "topic_icon": "🎒", "topic_enabled": true, "topic_default": false } },
+        { "type": "advice_topic", "settings": { "topic_label": "Setup débutant",               "topic_icon": "🚀", "topic_enabled": true, "topic_default": false } },
+        { "type": "advice_topic", "settings": { "topic_label": "Workflow professionnel",       "topic_icon": "⚡", "topic_enabled": true, "topic_default": false } },
+        { "type": "advice_topic", "settings": { "topic_label": "Tournage vidéo",               "topic_icon": "🎬", "topic_enabled": true, "topic_default": false } },
         {
           "type": "trust_badge",
           "settings": {

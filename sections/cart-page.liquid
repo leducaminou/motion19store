@@ -1,0 +1,927 @@
+{%- liquid
+  assign s            = section.settings
+  assign wa_number    = s.wa_number     | default: '237656999989' | remove: '+' | remove: ' ' | remove: '-'
+  assign store_name   = s.store_name    | default: shop.name
+  assign wa_btn_lbl   = s.wa_btn_label  | default: 'Discutez sur WhatsApp'
+  assign wa_send_lbl  = s.wa_send_label | default: 'Discuter sur WhatsApp'
+  assign modal_title  = s.modal_title   | default: 'Finaliser la commande'
+  assign modal_sub    = s.modal_subtitle| default: 'Vérifiez votre panier puis renseignez vos coordonnées'
+  assign lbl_name     = s.name_label    | default: 'Nom complet'
+  assign lbl_city     = s.city_label    | default: 'Ville'
+  assign lbl_phone    = s.phone_label   | default: 'Numéro de téléphone'
+  assign wa_color     = s.wa_color      | default: '#25D366'
+  assign btn_text     = s.btn_text_color| default: '#ffffff'
+  assign page_bg      = s.page_bg       | default: '#ffffff'
+  assign card_bg      = s.card_bg       | default: '#f8f8f8'
+  assign border_c     = s.border_color  | default: '#e5e5e7'
+  assign text_c       = s.text_color    | default: '#1d1d1f'
+  assign muted_c      = s.text_muted    | default: '#6e6e73'
+  assign show_badges  = s.show_badges
+-%}
+
+<style>
+  .cp {
+    --cp-wa:      {{ wa_color }};
+    --cp-btn-txt: {{ btn_text }};
+    --cp-bg:      {{ page_bg }};
+    --cp-card:    {{ card_bg }};
+    --cp-border:  {{ border_c }};
+    --cp-text:    {{ text_c }};
+    --cp-muted:   {{ muted_c }};
+    --cp-font:    'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+
+    font-family: var(--cp-font);
+    color: var(--cp-text);
+    background: var(--cp-bg);
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .cp *, .cp *::before, .cp *::after { box-sizing: border-box; }
+
+  .cp__wrap {
+    max-width: 1320px;
+    margin: 3rem auto;
+    padding: 0 1.5rem;
+  }
+
+  .cp__grid {
+    display: grid;
+    grid-template-columns: 1fr 400px;
+    gap: 3rem;
+    align-items: start;
+  }
+
+  /* ── Header ── */
+  .cp__header {
+    background: var(--cp-card);
+    border: 1px solid var(--cp-border);
+    border-radius: 6px;
+    padding: 1.25rem 1.5rem;
+    margin-bottom: 2rem;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    grid-column: 1 / -1;
+  }
+
+  .cp__title {
+    font-size: 0.75rem;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    margin: 0;
+    color: var(--cp-muted);
+  }
+
+  .cp__count {
+    background: var(--cp-text);
+    color: var(--cp-bg);
+    font-size: 0.7rem;
+    font-weight: 700;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  /* ── Items ── */
+  .cp__items {
+    border: 1px solid var(--cp-border);
+    border-radius: 6px;
+    background: var(--cp-bg);
+  }
+
+  .cp__item {
+    display: grid;
+    grid-template-columns: 100px 1fr auto;
+    gap: 1.5rem;
+    padding: 1.5rem;
+    border-bottom: 1px solid var(--cp-border);
+  }
+
+  .cp__item:last-child { border-bottom: none; }
+
+  .cp__item-img {
+    width: 100px;
+    height: 100px;
+    border: 1px solid var(--cp-border);
+    border-radius: 6px;
+    overflow: hidden;
+    background: var(--cp-bg);
+    display: block;
+  }
+
+  .cp__item-img img { width: 100%; height: 100%; object-fit: contain; }
+
+  .cp__item-body { display: flex; flex-direction: column; gap: 0.5rem; }
+
+  .cp__item-name {
+    font-size: 1.05rem;
+    font-weight: 500;
+    text-decoration: none;
+    color: var(--cp-text);
+    line-height: 1.4;
+    max-width: 90%;
+  }
+
+  .cp__item-variant {
+    font-size: 0.78rem;
+    background: var(--cp-card);
+    padding: 0.2rem 0.5rem;
+    border-radius: 4px;
+    color: var(--cp-muted);
+    width: fit-content;
+  }
+
+  .cp__qty-row {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-top: 0.5rem;
+  }
+
+  .cp__qty-box {
+    width: 48px;
+    height: 32px;
+    border: 1px solid var(--cp-border);
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.9rem;
+    font-weight: 500;
+  }
+
+  .cp__qty-btn {
+    width: 32px;
+    height: 32px;
+    border: 1px solid var(--cp-border);
+    border-radius: 6px;
+    background: var(--cp-bg);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-size: 1rem;
+    color: var(--cp-muted);
+    transition: background 0.15s;
+  }
+
+  .cp__qty-btn:hover { background: var(--cp-card); }
+
+  .cp__remove {
+    font-size: 0.82rem;
+    color: var(--cp-muted);
+    text-decoration: underline;
+    text-underline-offset: 2px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+    font-family: var(--cp-font);
+    transition: color 0.15s;
+  }
+
+  .cp__remove:hover { color: #e53e3e; }
+
+  .cp__item-price {
+    font-size: 1.05rem;
+    font-weight: 600;
+    text-align: right;
+    white-space: nowrap;
+    color: var(--cp-text);
+  }
+
+  .cp__continue {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    margin-top: 1.5rem;
+    text-decoration: none;
+    color: var(--cp-muted);
+    font-size: 0.75rem;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    transition: color 0.15s, transform 0.15s;
+  }
+
+  .cp__continue:hover { color: var(--cp-text); transform: translateX(-4px); }
+
+  /* ── Summary sidebar ── */
+  .cp__summary {
+    background: var(--cp-card);
+    border-radius: 6px;
+    padding: 2rem;
+    border: 1px solid var(--cp-border);
+  }
+
+  .cp__summary-title {
+    font-size: 0.75rem;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    margin: 0 0 2rem;
+    color: var(--cp-muted);
+  }
+
+  .cp__summary-line {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 1.25rem;
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    font-weight: 500;
+    color: var(--cp-text);
+  }
+
+  .cp__summary-note {
+    background: var(--cp-bg);
+    border: 1px solid var(--cp-border);
+    padding: 0.75rem 1rem;
+    border-radius: 6px;
+    font-size: 0.78rem;
+    color: var(--cp-muted);
+    margin: 1.25rem 0;
+  }
+
+  .cp__summary-total {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-top: 1.5rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--cp-border);
+    font-weight: 700;
+    font-size: 1rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--cp-text);
+  }
+
+  .cp__total-val { font-size: 1.4rem; letter-spacing: 0; }
+
+  /* ── Commander button ── */
+  .cp__wa-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 9px;
+    width: 100%;
+    padding: 1.1rem 1.25rem;
+    background: var(--cp-wa);
+    color: var(--cp-btn-txt);
+    border: none;
+    border-radius: 6px;
+    font-size: 0.9rem;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    font-family: var(--cp-font);
+    cursor: pointer;
+    transition: filter 0.2s, transform 0.15s;
+    margin-top: 1.5rem;
+  }
+
+  .cp__wa-btn:hover { filter: brightness(1.08); transform: translateY(-1px); }
+  .cp__wa-btn:active { transform: scale(0.98); }
+
+  .cp__wa-btn svg { flex-shrink: 0; }
+
+  /* ── Trust badges ── */
+  .cp__badges {
+    margin-top: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.65rem;
+  }
+
+  .cp__badge {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    font-size: 0.82rem;
+    color: var(--cp-muted);
+  }
+
+  .cp__badge-icon { font-size: 1rem; line-height: 1; flex-shrink: 0; }
+
+  /* ── Empty state ── */
+  .cp__empty {
+    text-align: center;
+    padding: 6rem 0;
+  }
+
+  .cp__empty-btn {
+    display: inline-block;
+    padding: 1.1rem 2.5rem;
+    background: var(--cp-text);
+    color: var(--cp-bg);
+    font-weight: 700;
+    font-size: 0.85rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    text-decoration: none;
+    border-radius: 6px;
+    margin-top: 1.5rem;
+    transition: opacity 0.2s;
+    font-family: var(--cp-font);
+  }
+
+  .cp__empty-btn:hover { opacity: 0.82; }
+
+  /* ── Responsive ── */
+  @media (max-width: 991px) {
+    .cp__grid { grid-template-columns: 1fr; gap: 2rem; }
+    .cp__wrap { margin: 1.5rem auto; }
+    .cp__header { grid-column: 1; }
+  }
+
+  @media (max-width: 599px) {
+    .cp__wrap { padding: 0 1rem; margin: 1rem auto; }
+    .cp__item {
+      grid-template-columns: 76px 1fr;
+      grid-template-rows: auto auto;
+      gap: 0.75rem 1rem;
+      padding: 1rem;
+    }
+    .cp__item-img { width: 76px; height: 76px; grid-row: 1 / 3; }
+    .cp__item-price { grid-column: 2; text-align: left; font-size: 1rem; }
+    .cp__item-name { font-size: 0.95rem; max-width: 100%; }
+    .cp__qty-row { flex-wrap: wrap; }
+    .cp__summary { padding: 1.25rem; }
+    .cp__wa-btn { padding: 1rem; font-size: 0.85rem; }
+  }
+
+  /* ══ WhatsApp Modal ══ */
+  .cp-modal-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    z-index: 9000;
+    background: rgba(0,0,0,0.5);
+    backdrop-filter: blur(3px);
+    -webkit-backdrop-filter: blur(3px);
+    align-items: flex-end;
+    justify-content: center;
+  }
+
+  @media (min-width: 641px) {
+    .cp-modal-overlay { align-items: center; padding: 24px; }
+  }
+
+  .cp-modal-overlay.is-open { display: flex; }
+
+  .cp-modal {
+    background: #ffffff;
+    width: 100%;
+    max-width: 480px;
+    border-radius: 20px 20px 0 0;
+    padding: 24px 20px 32px;
+    position: relative;
+    animation: cpSlideUp 0.28s cubic-bezier(0.32, 0.72, 0, 1);
+    max-height: 92vh;
+    overflow-y: auto;
+  }
+
+  @media (min-width: 641px) {
+    .cp-modal {
+      border-radius: 14px;
+      padding: 28px 24px;
+      animation: cpFadeIn 0.22s ease;
+    }
+  }
+
+  @keyframes cpSlideUp {
+    from { transform: translateY(100%); opacity: 0; }
+    to   { transform: translateY(0);    opacity: 1; }
+  }
+
+  @keyframes cpFadeIn {
+    from { transform: translateY(10px) scale(0.98); opacity: 0; }
+    to   { transform: translateY(0)    scale(1);    opacity: 1; }
+  }
+
+  .cp-modal__handle {
+    width: 36px;
+    height: 4px;
+    background: #d1d1d6;
+    border-radius: 2px;
+    margin: 0 auto 18px;
+  }
+
+  @media (min-width: 641px) { .cp-modal__handle { display: none; } }
+
+  .cp-modal__close {
+    position: absolute;
+    top: 14px;
+    right: 14px;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    border: none;
+    background: var(--cp-card);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1rem;
+    color: var(--cp-muted);
+    line-height: 1;
+    transition: background 0.15s;
+  }
+
+  .cp-modal__close:hover { background: var(--cp-border); }
+
+  .cp-modal__title {
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: var(--cp-text);
+    margin: 0 0 4px;
+    letter-spacing: -0.01em;
+    padding-right: 36px;
+  }
+
+  .cp-modal__sub {
+    font-size: 0.8rem;
+    color: var(--cp-muted);
+    margin: 0 0 18px;
+  }
+
+  /* Mini summary in modal */
+  .cp-modal__order {
+    background: var(--cp-card);
+    border: 1px solid var(--cp-border);
+    border-radius: 10px;
+    padding: 12px 14px;
+    margin-bottom: 18px;
+  }
+
+  .cp-modal__order-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    font-size: 0.8rem;
+    color: var(--cp-text);
+    padding: 3px 0;
+    gap: 8px;
+  }
+
+  .cp-modal__order-row span:first-child {
+    flex: 1;
+    min-width: 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    color: var(--cp-muted);
+  }
+
+  .cp-modal__order-row span:last-child { flex-shrink: 0; font-weight: 600; }
+
+  .cp-modal__order-total {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.88rem;
+    font-weight: 700;
+    color: var(--cp-text);
+    border-top: 1px solid var(--cp-border);
+    padding-top: 9px;
+    margin-top: 7px;
+  }
+
+  /* Form */
+  .cp-field { margin-bottom: 13px; }
+
+  .cp-label {
+    display: block;
+    font-size: 0.68rem;
+    font-weight: 700;
+    letter-spacing: 0.09em;
+    text-transform: uppercase;
+    color: var(--cp-muted);
+    margin-bottom: 5px;
+  }
+
+  .cp-req { color: var(--cp-wa); margin-left: 2px; }
+
+  .cp-input {
+    width: 100%;
+    padding: 11px 13px;
+    border: 1.5px solid var(--cp-border);
+    border-radius: 8px;
+    font-size: 0.9rem;
+    font-family: var(--cp-font);
+    color: var(--cp-text);
+    background: var(--cp-bg);
+    outline: none;
+    transition: border-color 0.2s, box-shadow 0.2s;
+    -webkit-appearance: none;
+  }
+
+  .cp-input:focus {
+    border-color: var(--cp-wa);
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--cp-wa) 14%, transparent);
+  }
+
+  .cp-input.is-error { border-color: #e53e3e; }
+
+  .cp-error {
+    font-size: 0.68rem;
+    color: #e53e3e;
+    margin-top: 3px;
+    display: none;
+  }
+
+  .cp-error.is-visible { display: block; }
+  .cp-hint { font-size: 0.68rem; color: var(--cp-muted); margin-top: 3px; }
+
+  /* WhatsApp send button */
+  .cp-modal__wa-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 9px;
+    width: 100%;
+    padding: 14px 18px;
+    background: #25D366;
+    color: #ffffff;
+    border: none;
+    border-radius: 10px;
+    font-size: 0.92rem;
+    font-weight: 700;
+    font-family: var(--cp-font);
+    cursor: pointer;
+    transition: filter 0.2s, transform 0.15s;
+    margin-top: 6px;
+    letter-spacing: 0.01em;
+  }
+
+  .cp-modal__wa-btn:hover { filter: brightness(1.08); transform: translateY(-1px); }
+  .cp-modal__wa-btn:active { transform: scale(0.98); }
+</style>
+
+<div class="cp" id="cp-{{ section.id }}">
+  <div class="cp__wrap">
+
+    {%- if cart.item_count > 0 -%}
+
+      <div class="cp__grid">
+
+        {%- comment -%} ── Gauche : articles ── {%- endcomment -%}
+        <div class="cp__col-left">
+          <header class="cp__header">
+            <h1 class="cp__title">Panier</h1>
+            <span class="cp__count">{{ cart.item_count }}</span>
+          </header>
+
+          <div class="cp__items" id="cp-items">
+            {%- for item in cart.items -%}
+              <div class="cp__item">
+                <a href="{{ item.url }}" class="cp__item-img">
+                  {%- if item.image -%}
+                    <img src="{{ item.image | image_url: width: 200 }}" alt="{{ item.title | escape }}" loading="lazy" width="200" height="200">
+                  {%- else -%}
+                    {{ 'product-1' | placeholder_svg_tag }}
+                  {%- endif -%}
+                </a>
+
+                <div class="cp__item-body">
+                  <a href="{{ item.url }}" class="cp__item-name">{{ item.product.title }}</a>
+                  {%- unless item.product.has_only_default_variant -%}
+                    <span class="cp__item-variant">{{ item.variant.title }}</span>
+                  {%- endunless -%}
+
+                  <div class="cp__qty-row">
+                    <button class="cp__qty-btn" type="button" aria-label="Diminuer" onclick="cpUpdateQty({{ forloop.index }}, {{ item.quantity | minus: 1 }})">
+                      <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" aria-hidden="true"><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                    </button>
+                    <div class="cp__qty-box">{{ item.quantity }}</div>
+                    <button class="cp__qty-btn" type="button" aria-label="Augmenter" onclick="cpUpdateQty({{ forloop.index }}, {{ item.quantity | plus: 1 }})">
+                      <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" aria-hidden="true"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                    </button>
+                    <button class="cp__remove" type="button" onclick="cpUpdateQty({{ forloop.index }}, 0)">Supprimer</button>
+                  </div>
+                </div>
+
+                <div class="cp__item-price">{{ item.final_line_price | money }}</div>
+              </div>
+            {%- endfor -%}
+          </div>
+
+          <a href="{{ routes.all_products_collection_url }}" class="cp__continue">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+            Continuer mes achats
+          </a>
+        </div>
+
+        {%- comment -%} ── Droite : résumé ── {%- endcomment -%}
+        <aside class="cp__col-right">
+          <div class="cp__summary">
+            <h2 class="cp__summary-title">Résumé du panier</h2>
+
+            <div class="cp__summary-line">
+              <span>Sous-total</span>
+              <span>{{ cart.total_price | money }}</span>
+            </div>
+
+            <div class="cp__summary-line">
+              <span>Livraison</span>
+              <span>Calculée</span>
+            </div>
+
+            <div class="cp__summary-note">Livraison calculée après confirmation de votre commande</div>
+
+            <div class="cp__summary-total">
+              <span>Total</span>
+              <span class="cp__total-val">{{ cart.total_price | money }}</span>
+            </div>
+
+            <button class="cp__wa-btn" type="button" onclick="cpModalOpen()">
+              <svg width="19" height="19" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
+              </svg>
+              {{ wa_btn_lbl }}
+            </button>
+
+            {%- if show_badges -%}
+              <div class="cp__badges">
+                {%- if section.blocks.size > 0 -%}
+                  {%- for block in section.blocks -%}
+                    {%- if block.type == 'badge' -%}
+                      <div class="cp__badge" {{ block.shopify_attributes }}>
+                        <span class="cp__badge-icon">{{ block.settings.icon }}</span>
+                        <span>{{ block.settings.text }}</span>
+                      </div>
+                    {%- endif -%}
+                  {%- endfor -%}
+                {%- else -%}
+                  <div class="cp__badge"><span class="cp__badge-icon">🔒</span><span>Commande 100% sécurisée</span></div>
+                  <div class="cp__badge"><span class="cp__badge-icon">🚚</span><span>Livraison rapide disponible</span></div>
+                {%- endif -%}
+              </div>
+            {%- endif -%}
+          </div>
+        </aside>
+
+      </div>
+
+    {%- else -%}
+      <div class="cp__empty">
+        <p class="cp__title">Votre panier est vide</p>
+        <a href="{{ routes.all_products_collection_url }}" class="cp__empty-btn">Découvrir nos produits</a>
+      </div>
+    {%- endif -%}
+
+  </div>
+</div>
+
+<!-- ══ Modal WhatsApp ══ -->
+<div class="cp-modal-overlay" id="cpModalOverlay" role="dialog" aria-modal="true" aria-labelledby="cpModalTitle">
+  <div class="cp-modal">
+    <div class="cp-modal__handle"></div>
+
+    <button class="cp-modal__close" type="button" onclick="cpModalClose()" aria-label="Fermer">✕</button>
+
+    <h2 class="cp-modal__title" id="cpModalTitle">{{ modal_title }}</h2>
+    <p class="cp-modal__sub">{{ modal_sub }}</p>
+
+    <div class="cp-modal__order" id="cpOrderSummary"></div>
+
+    <div class="cp-field">
+      <label class="cp-label" for="cp-name">{{ lbl_name }}<span class="cp-req" aria-hidden="true">*</span></label>
+      <input class="cp-input" id="cp-name" type="text" placeholder="Jean Dupont" autocomplete="name">
+      <p class="cp-error" id="cp-name-err">Ce champ est requis.</p>
+    </div>
+
+    <div class="cp-field">
+      <label class="cp-label" for="cp-city">{{ lbl_city }}<span class="cp-req" aria-hidden="true">*</span></label>
+      <input class="cp-input" id="cp-city" type="text" placeholder="Douala" autocomplete="address-level2">
+      <p class="cp-error" id="cp-city-err">Ce champ est requis.</p>
+    </div>
+
+    <div class="cp-field">
+      <label class="cp-label" for="cp-phone">{{ lbl_phone }}</label>
+      <input class="cp-input" id="cp-phone" type="tel" placeholder="+237 6XX XXX XXX" autocomplete="tel" inputmode="tel">
+      <p class="cp-hint">Optionnel — pour vous recontacter si besoin</p>
+    </div>
+
+    <button class="cp-modal__wa-btn" type="button" onclick="cpSend()">
+      <svg width="19" height="19" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+        <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
+      </svg>
+      {{ wa_send_lbl }}
+    </button>
+  </div>
+</div>
+
+<script>
+(function () {
+  'use strict';
+
+  var CART = {
+    items:     {{ cart.items | json }},
+    total:     {{ cart.total_price }},
+    currency:  {{ shop.currency | json }},
+    storeName: {{ store_name | json }},
+    waNumber:  {{ wa_number | json }}
+  };
+
+  function fmt(cents) {
+    return (cents / 100).toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, ' ')
+      + ' ' + CART.currency;
+  }
+
+  /* ── Qty ── */
+  window.cpUpdateQty = function (line, qty) {
+    var el = document.getElementById('cp-items');
+    if (el) el.style.opacity = '0.5';
+    var p = new URLSearchParams();
+    p.append('line', String(line));
+    p.append('quantity', String(qty));
+    fetch('/cart/change.js', { method: 'POST', headers: { 'X-Requested-With': 'XMLHttpRequest' }, body: p })
+      .then(function (r) { if (r.ok) window.location.reload(); else throw 0; })
+      .catch(function () { if (el) el.style.opacity = '1'; });
+  };
+
+  /* ── Mini order summary ── */
+  function buildSummaryHTML() {
+    var html = '';
+    CART.items.forEach(function (item) {
+      var v = (!item.product_has_only_default_variant && item.variant_title) ? ' · ' + item.variant_title : '';
+      html += '<div class="cp-modal__order-row"><span>' + item.product_title + v + ' ×' + item.quantity + '</span><span>' + fmt(item.final_line_price) + '</span></div>';
+    });
+    html += '<div class="cp-modal__order-total"><span>Total</span><span>' + fmt(CART.total) + '</span></div>';
+    return html;
+  }
+
+  /* ── Modal ── */
+  window.cpModalOpen = function () {
+    document.getElementById('cpOrderSummary').innerHTML = buildSummaryHTML();
+    document.getElementById('cpModalOverlay').classList.add('is-open');
+    document.body.style.overflow = 'hidden';
+    setTimeout(function () { var el = document.getElementById('cp-name'); if (el) el.focus(); }, 80);
+  };
+
+  window.cpModalClose = function () {
+    document.getElementById('cpModalOverlay').classList.remove('is-open');
+    document.body.style.overflow = '';
+  };
+
+  document.getElementById('cpModalOverlay').addEventListener('click', function (e) {
+    if (e.target === this) cpModalClose();
+  });
+
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape') cpModalClose();
+  });
+
+  /* ── Validate ── */
+  function validate() {
+    var ok = true;
+    [['cp-name', 'cp-name-err'], ['cp-city', 'cp-city-err']].forEach(function (pair) {
+      var inp = document.getElementById(pair[0]);
+      var err = document.getElementById(pair[1]);
+      if (!inp.value.trim()) {
+        inp.classList.add('is-error');
+        if (err) err.classList.add('is-visible');
+        ok = false;
+      } else {
+        inp.classList.remove('is-error');
+        if (err) err.classList.remove('is-visible');
+      }
+    });
+    return ok;
+  }
+
+  ['cp-name', 'cp-city'].forEach(function (id) {
+    var el = document.getElementById(id);
+    if (!el) return;
+    el.addEventListener('input', function () {
+      el.classList.remove('is-error');
+      var err = document.getElementById(id + '-err');
+      if (err) err.classList.remove('is-visible');
+    });
+  });
+
+  /* ── Build WhatsApp message ── */
+  function buildMessage() {
+    var name  = document.getElementById('cp-name').value.trim();
+    var city  = document.getElementById('cp-city').value.trim();
+    var phone = document.getElementById('cp-phone').value.trim();
+
+    var lines = [
+      '🛒 *Nouvelle commande — ' + CART.storeName + '*',
+      '',
+      '👤 *Informations client*',
+      '• Nom : ' + name,
+      '• Ville : ' + city
+    ];
+    if (phone) lines.push('• Tél : ' + phone);
+    lines.push('', '📦 *Articles commandés*');
+
+    CART.items.forEach(function (item) {
+      var v = (!item.product_has_only_default_variant && item.variant_title) ? ' (' + item.variant_title + ')' : '';
+      lines.push('• ' + item.product_title + v + ' ×' + item.quantity + ' — ' + fmt(item.final_line_price));
+    });
+
+    lines.push(
+      '',
+      '💰 *Total : ' + fmt(CART.total) + '*',
+      '',
+      '📅 ' + new Date().toLocaleDateString('fr-FR', { day: '2-digit', month: 'long', year: 'numeric', hour: '2-digit', minute: '2-digit' })
+    );
+
+    return lines.join('\n');
+  }
+
+  /* ── Send ── */
+  window.cpSend = function () {
+    if (!validate()) return;
+    var url = 'https://wa.me/' + CART.waNumber + '?text=' + encodeURIComponent(buildMessage());
+    window.open(url, '_blank', 'noopener,noreferrer');
+  };
+
+})();
+</script>
+
+{% schema %}
+{
+  "name": "Page Panier",
+  "tag": "div",
+  "class": "section-cart-page",
+  "settings": [
+    { "type": "header", "content": "━━ WhatsApp" },
+    {
+      "type": "text",
+      "id": "wa_number",
+      "label": "Numéro WhatsApp admin",
+      "default": "237656999989",
+      "info": "Sans + ni espaces ni tirets. Ex: 237656999989"
+    },
+    {
+      "type": "text",
+      "id": "store_name",
+      "label": "Nom de la boutique (dans le message)",
+      "default": "Motion 19"
+    },
+    {
+      "type": "text",
+      "id": "wa_btn_label",
+      "label": "Texte du bouton Commander",
+      "default": "Discutez sur WhatsApp"
+    },
+
+    { "type": "header", "content": "━━ Modal commande" },
+    { "type": "text", "id": "modal_title",    "label": "Titre du modal",   "default": "Finaliser la commande" },
+    { "type": "text", "id": "modal_subtitle", "label": "Sous-titre",        "default": "Vérifiez votre panier puis renseignez vos coordonnées" },
+    { "type": "text", "id": "wa_send_label",  "label": "Texte bouton envoi","default": "Discuter sur WhatsApp" },
+    { "type": "text", "id": "name_label",     "label": "Label Nom complet", "default": "Nom complet" },
+    { "type": "text", "id": "city_label",     "label": "Label Ville",       "default": "Ville" },
+    { "type": "text", "id": "phone_label",    "label": "Label Téléphone",   "default": "Numéro de téléphone" },
+
+    { "type": "header", "content": "━━ Couleurs" },
+    { "type": "color", "id": "wa_color",      "label": "Couleur WhatsApp (boutons)", "default": "#25D366" },
+    { "type": "color", "id": "btn_text_color","label": "Texte des boutons",          "default": "#ffffff" },
+    { "type": "color", "id": "page_bg",       "label": "Fond de la page",            "default": "#ffffff" },
+    { "type": "color", "id": "card_bg",       "label": "Fond des blocs",             "default": "#f8f8f8" },
+    { "type": "color", "id": "border_color",  "label": "Bordures",                   "default": "#e5e5e7" },
+    { "type": "color", "id": "text_color",    "label": "Texte principal",            "default": "#1d1d1f" },
+    { "type": "color", "id": "text_muted",    "label": "Texte secondaire",           "default": "#6e6e73" },
+
+    { "type": "header", "content": "━━ Badges de confiance" },
+    { "type": "checkbox", "id": "show_badges", "label": "Afficher les badges", "default": true }
+  ],
+  "blocks": [
+    {
+      "type": "badge",
+      "name": "Badge de confiance",
+      "settings": [
+        {
+          "type": "text",
+          "id": "icon",
+          "label": "Emoji icône",
+          "default": "✅",
+          "info": "Copiez-collez un emoji : ✅ 🔒 🚚 ↩️ 🛡️ ⭐"
+        },
+        {
+          "type": "text",
+          "id": "text",
+          "label": "Texte du badge",
+          "default": "Commande 100% sécurisée"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Page Panier",
+      "blocks": [
+        { "type": "badge", "settings": { "icon": "🔒", "text": "Commande 100% sécurisée" } },
+        { "type": "badge", "settings": { "icon": "🚚", "text": "Livraison rapide disponible" } }
+      ]
+    }
+  ]
+}
+{% endschema %}

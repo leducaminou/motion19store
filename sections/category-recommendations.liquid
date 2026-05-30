@@ -1,59 +1,143 @@
-{%- comment -%} Category Recommendations — Motion19 {%- endcomment -%}
-
-{%- render 'section-settings', section: section, prefix: 'rc' -%}
+{%- comment -%} Category Recommendations — Motion19 OS 2.0 — .rc {%- endcomment -%}
 
 {%- assign cols_mobile  = section.settings.columns_mobile  | default: 1 -%}
 {%- assign cols_tablet  = section.settings.columns_tablet  | default: 2 -%}
 {%- assign cols_desktop = section.settings.columns_desktop | default: 3 -%}
 
+{%- assign default_imgs = 'hp-cat-photo.jpg,hp-cat-video.jpg,hp-cat-eclairage.jpg,hp-cat-drone.jpg,hp-cat-accessoires.jpg,hp-cat-video-2.jpg' | split: ',' -%}
+
+{%- liquid
+  assign sid             = section.id
+  assign rc_text_col     = section.settings.text_color          | default: '#0a0a0a'
+  assign rc_eyebrow_col  = section.settings.eyebrow_color       | default: '#0787ea'
+  assign rc_title_col    = section.settings.title_color         | default: '#0a0a0a'
+  assign rc_header_align = section.settings.header_align        | default: 'left'
+  assign rc_title_fs_d   = section.settings.title_size_desktop  | default: 32
+  assign rc_title_fs_m   = section.settings.title_size_mobile   | default: 22
+  assign rc_title_fw     = section.settings.title_weight        | default: '800'
+  assign rc_subtitle_fs  = section.settings.subtitle_size       | default: 14
+  assign rc_eyebrow_fs   = section.settings.eyebrow_size        | default: 11
+  if section.settings.show_title_sep == false
+    assign rc_sep_op = 0
+  else
+    assign rc_sep_op = 1
+  endif
+  assign rc_sep_color    = section.settings.sep_color           | default: '#0787ea'
+  assign rc_sep_w        = section.settings.sep_width           | default: 36
+  assign rc_sep_h        = section.settings.sep_height          | default: 3
+  assign rc_card_r       = section.settings.card_radius         | default: 6
+  assign rc_card_pad     = section.settings.card_content_padding | default: 18
+  assign rc_hover_lift   = section.settings.hover_lift          | default: 5
+  assign rc_anim_speed   = section.settings.transition_speed    | default: 300
+  assign rc_max_w        = section.settings.section_max_width   | default: 1400
+  assign rc_mt           = section.settings.margin_top          | default: 0
+  assign rc_mb           = section.settings.margin_bottom       | default: 0
+-%}
+
 <section
-  class="rc m19-animate"
-  id="rc-section"
-  aria-labelledby="rc-title"
+  class="rc"
+  id="rc-{{ sid }}"
+  aria-labelledby="rc-title-{{ sid }}"
   style="
-    --rc-cols-mobile:  {{ cols_mobile }};
-    --rc-cols-tablet:  {{ cols_tablet }};
-    --rc-cols-desktop: {{ cols_desktop }};
+    --rc-cols-mobile:   {{ cols_mobile }};
+    --rc-cols-tablet:   {{ cols_tablet }};
+    --rc-cols-desktop:  {{ cols_desktop }};
     --rc-aspect-mobile:  {{ section.settings.aspect_mobile  | default: '4/3' }};
     --rc-aspect-tablet:  {{ section.settings.aspect_tablet  | default: '3/2' }};
     --rc-aspect-desktop: {{ section.settings.aspect_desktop | default: '3/2' }};
-    --rc-bg:     {{ section.settings.bg_color | default: '#ffffff' }};
-    --rc-pt-mobile:  {{ section.settings.padding_top_mobile  | default: 48 }}px;
-    --rc-pb-mobile:  {{ section.settings.padding_bottom_mobile  | default: 56 }}px;
-    --rc-pt-desktop: {{ section.settings.padding_top_desktop | default: 64 }}px;
-    --rc-pb-desktop: {{ section.settings.padding_bottom_desktop | default: 64 }}px;
+    --rc-bg:             {{ section.settings.bg_color | default: '#ffffff' }};
+    --rc-text:           {{ rc_text_col }};
+    --rc-eyebrow:        {{ rc_eyebrow_col }};
+    --rc-title:          {{ rc_title_col }};
+    --rc-pt-mobile:      {{ section.settings.padding_top_mobile    | default: 48 }}px;
+    --rc-pb-mobile:      {{ section.settings.padding_bottom_mobile | default: 56 }}px;
+    --rc-pt-desktop:     {{ section.settings.padding_top_desktop   | default: 64 }}px;
+    --rc-pb-desktop:     {{ section.settings.padding_bottom_desktop| default: 64 }}px;
+    --rc-mt:             {{ rc_mt }}px;
+    --rc-mb:             {{ rc_mb }}px;
+    --rc-max-w:          {{ rc_max_w }}px;
+    --rc-title-fs-d:     {{ rc_title_fs_d }}px;
+    --rc-title-fs-m:     {{ rc_title_fs_m }}px;
+    --rc-title-fw:       {{ rc_title_fw }};
+    --rc-subtitle-fs:    {{ rc_subtitle_fs }}px;
+    --rc-eyebrow-fs:     {{ rc_eyebrow_fs }}px;
+    --rc-sep-op:         {{ rc_sep_op }};
+    --rc-sep-color:      {{ rc_sep_color }};
+    --rc-sep-w:          {{ rc_sep_w }}px;
+    --rc-sep-h:          {{ rc_sep_h }}px;
+    --rc-card-r:         {{ rc_card_r }}px;
+    --rc-card-pad:       {{ rc_card_pad }}px;
+    --rc-hover-lift:     {{ rc_hover_lift }}px;
+    --rc-anim-dur:       {{ rc_anim_speed }}ms;
   "
 >
-  <div class="rc__header">
-    <h2 class="rc__title" id="rc-title">
-      {{- section.settings.title | default: 'Nos recommandations' -}}
-    </h2>
-    {%- if section.settings.subtitle != blank -%}
-      <p class="rc__subtitle">{{ section.settings.subtitle }}</p>
-    {%- endif -%}
+  <div class="rc__inner">
+  <div class="rc__header rc__header--{{ rc_header_align }}">
+    <div class="rc__header-text">
+      {%- if section.settings.eyebrow != blank -%}
+        <span class="rc__eyebrow">{{ section.settings.eyebrow }}</span>
+      {%- endif -%}
+      <h2 class="rc__title" id="rc-title-{{ sid }}">
+        {{- section.settings.title | default: 'Nos recommandations' -}}
+      </h2>
+      {%- if section.settings.subtitle != blank -%}
+        <p class="rc__subtitle">{{ section.settings.subtitle }}</p>
+      {%- endif -%}
+    </div>
   </div>
 
   <ul class="rc__grid" role="list">
     {%- for block in section.blocks -%}
-      {%- assign card_img   = block.settings.image -%}
-      {%- assign card_label = block.settings.label | default: 'Catégorie' -%}
-      {%- assign card_url   = block.settings.url | default: '#' -%}
-      {%- assign card_alt   = card_label | escape -%}
+      {%- assign card_img     = block.settings.image -%}
+      {%- assign card_label   = block.settings.label | default: 'Catégorie' -%}
+      {%- assign card_desc    = block.settings.description -%}
+      {%- assign card_url     = block.settings.url | default: '#' -%}
+      {%- assign card_alt     = card_label | escape -%}
+      {%- assign fallback_img = default_imgs[forloop.index0] | asset_url -%}
 
       <li class="rc__item" {{ block.shopify_attributes }}>
-        <a class="m19-card m19-card--cat" href="{{ card_url }}" aria-label="{{ card_alt }}"
-          style="--m19-cat-aspect: var(--rc-aspect-mobile, 4/3);">
+        <a
+          class="m19-card m19-card--cat rc__card"
+          href="{{ card_url }}"
+          aria-label="{{ card_alt }}"
+        >
           <div class="m19-card__cat-bg" aria-hidden="true">
             {%- if card_img != blank -%}
-              <img src="{{ card_img | image_url: width: 800 }}" alt="" class="m19-card__cat-img" loading="lazy" width="{{ card_img.width }}" height="{{ card_img.height }}">
+              <img
+                src="{{ card_img | image_url: width: 800 }}"
+                srcset="{{ card_img | image_url: width: 400 }} 400w,
+                        {{ card_img | image_url: width: 800 }} 800w,
+                        {{ card_img | image_url: width: 1200 }} 1200w"
+                sizes="(max-width: 599px) 100vw, (max-width: 1023px) 50vw, 33vw"
+                alt=""
+                class="m19-card__cat-img"
+                loading="{% if forloop.index <= 3 %}eager{% else %}lazy{% endif %}"
+                fetchpriority="{% if forloop.index == 1 %}high{% else %}auto{% endif %}"
+                decoding="async"
+                width="{{ card_img.width }}"
+                height="{{ card_img.height }}"
+              >
             {%- else -%}
-              <div class="m19-card__cat-placeholder"></div>
+              <img
+                src="{{ fallback_img }}"
+                alt=""
+                class="m19-card__cat-img"
+                loading="{% if forloop.index <= 3 %}eager{% else %}lazy{% endif %}"
+                decoding="async"
+                width="800"
+                height="600"
+              >
             {%- endif -%}
           </div>
           <div class="m19-card__cat-overlay" aria-hidden="true"></div>
-          <div class="m19-card__cat-content">
-            <span class="m19-card__cat-label">{{ card_label }}</span>
-            <span class="m19-card__cat-btn" aria-hidden="true">
+          <div class="m19-card__cat-content rc__card-content">
+            <div class="rc__card-info">
+              <span class="m19-card__cat-label rc__card-label">{{ card_label }}</span>
+              {%- if card_desc != blank -%}
+                <span class="rc__card-desc">{{ card_desc | escape }}</span>
+              {%- endif -%}
+            </div>
+            <span class="m19-card__cat-btn rc__card-btn" aria-hidden="true">
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
                 <line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/>
               </svg>
@@ -63,137 +147,270 @@
       </li>
     {%- endfor -%}
   </ul>
+  </div>{%- comment -%} /.rc__inner {%- endcomment -%}
 </section>
 
 <style>
-  /* ── Variables ─────────────────────────────────── */
-  .rc {
-    --rc-gap:    16px;
-    --rc-pad:    16px;
-    --rc-radius: 10px;
-    --rc-blue:   #0787ea;
-    --rc-black:  #0a0a0a;
-    --rc-ease:   cubic-bezier(0.4, 0, 0.2, 1);
+/* ═══════════════════════════════════════════════════════════
+   Category Recommendations — .rc — Motion19 OS 2.0
+   Design system harmonisé avec .sbt (shop-by-type)
+   ═══════════════════════════════════════════════════════════ */
+
+.rc {
+  --rc-pad:       16px;
+  --rc-gap:       12px;
+  --rc-ease:      cubic-bezier(0.4, 0, 0.2, 1);
+  --rc-ease-out:  cubic-bezier(0.16, 1, 0.3, 1);
+
+  background:    var(--rc-bg, #f7f7f8);
+  color:         var(--rc-text, #0a0a0a);
+  margin-top:    var(--rc-mt, 0);
+  margin-bottom: var(--rc-mb, 0);
+  overflow-x:    clip;
+}
+
+@media (min-width: 641px)  { .rc { --rc-pad: 24px; } }
+@media (min-width: 1025px) { .rc { --rc-pad: 32px; } }
+@media (min-width: 1281px) { .rc { --rc-pad: 40px; } }
+
+/* ── Inner container ── */
+.rc__inner {
+  max-width:      var(--rc-max-w, 1400px);
+  margin:         0 auto;
+  padding-top:    var(--rc-pt-mobile, 48px);
+  padding-bottom: var(--rc-pb-mobile, 56px);
+}
+@media (min-width: 641px) {
+  .rc__inner {
+    padding-top:    var(--rc-pt-desktop, 64px);
+    padding-bottom: var(--rc-pb-desktop, 64px);
   }
+}
 
-  /* ── Wrapper ────────────────────────────────────── */
-  .rc {
-    padding: var(--rc-pt-mobile, 48px) 0 var(--rc-pb-mobile, 56px);
-    background: var(--rc-bg, #fff);
+/* ── Header — identique sbt ── */
+.rc__header {
+  display:        flex;
+  flex-direction: column;
+  align-items:    flex-start;
+  gap:            12px;
+  padding:        0 var(--rc-pad) 28px;
+}
+.rc__header--center { align-items: center; text-align: center; }
+.rc__header--right  { align-items: flex-end; text-align: right; }
+
+.rc__header-text { display: flex; flex-direction: column; gap: 4px; }
+
+.rc__eyebrow {
+  font-size:      var(--rc-eyebrow-fs, 11px);
+  font-weight:    600;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color:          var(--rc-eyebrow, #0787ea);
+}
+
+.rc__title {
+  font-family:    var(--font-body, 'Inter', sans-serif);
+  font-size:      var(--rc-title-fs-m, 22px);
+  font-weight:    var(--rc-title-fw, 800);
+  letter-spacing: -0.03em;
+  color:          var(--rc-title, #0a0a0a);
+  margin:         0;
+  position:       relative;
+  padding-bottom: 10px;
+}
+@media (min-width: 641px) {
+  .rc__title { font-size: var(--rc-title-fs-d, 32px); }
+}
+.rc__title::after {
+  content:       '';
+  position:      absolute;
+  bottom:        0;
+  left:          0;
+  width:         var(--rc-sep-w, 36px);
+  height:        var(--rc-sep-h, 3px);
+  background:    var(--rc-sep-color, #0787ea);
+  border-radius: 2px;
+  opacity:       var(--rc-sep-op, 1);
+}
+.rc__header--center .rc__title::after { left: 50%; transform: translateX(-50%); }
+.rc__header--right  .rc__title::after { left: auto; right: 0; }
+
+.rc__subtitle {
+  font-size:   var(--rc-subtitle-fs, 14px);
+  color:       color-mix(in srgb, var(--rc-text, #0a0a0a) 60%, transparent);
+  margin:      0;
+  max-width:   52ch;
+  line-height: 1.55;
+}
+
+/* ── Grille ── */
+.rc__grid {
+  display:               grid;
+  grid-template-columns: repeat(var(--rc-cols-mobile, 1), 1fr);
+  gap:                   var(--rc-gap, 12px);
+  padding:               0 var(--rc-pad);
+  list-style:            none;
+  margin:                0;
+}
+@media (min-width: 600px) {
+  .rc__grid { grid-template-columns: repeat(var(--rc-cols-tablet, 2), 1fr); }
+}
+@media (min-width: 1024px) {
+  .rc__grid { grid-template-columns: repeat(var(--rc-cols-desktop, 3), 1fr); }
+}
+
+/* ── Item — fade-in stagger ── */
+.rc__item {
+  opacity:    0;
+  transform:  translateY(14px);
+  transition: opacity  420ms var(--rc-ease),
+              transform 420ms var(--rc-ease);
+}
+.rc__item.is-visible { opacity: 1; transform: translateY(0); }
+.rc__item:nth-child(2) { transition-delay:  60ms; }
+.rc__item:nth-child(3) { transition-delay: 120ms; }
+.rc__item:nth-child(4) { transition-delay: 180ms; }
+.rc__item:nth-child(5) { transition-delay: 240ms; }
+.rc__item:nth-child(6) { transition-delay: 300ms; }
+.rc__item:nth-child(7) { transition-delay: 360ms; }
+.rc__item:nth-child(8) { transition-delay: 420ms; }
+
+/* ── Card — aspect-ratio responsive ── */
+.rc__card {
+  --m19-cat-radius: var(--rc-card-r, 6px);
+  aspect-ratio: var(--rc-aspect-mobile, 4/3);
+  border-radius: var(--rc-card-r, 6px);
+  transition:
+    transform  var(--rc-anim-dur, 300ms) var(--rc-ease),
+    box-shadow var(--rc-anim-dur, 300ms) var(--rc-ease);
+  will-change: transform, box-shadow;
+}
+@media (min-width: 600px) {
+  .rc__card { aspect-ratio: var(--rc-aspect-tablet, 3/2); }
+}
+@media (min-width: 1024px) {
+  .rc__card { aspect-ratio: var(--rc-aspect-desktop, 3/2); }
+}
+@media (hover: hover) {
+  .rc__card:hover {
+    transform:  translateY(calc(-1 * var(--rc-hover-lift, 5px)));
+    box-shadow: 0 16px 48px rgba(0,0,0,0.12), 0 2px 8px rgba(0,0,0,0.06);
   }
+}
 
-  @media (min-width: 768px) {
-    .rc {
-      padding: var(--rc-pt-desktop, 64px) 0 var(--rc-pb-desktop, 64px);
-      --rc-pad: 24px;
-    }
+/* ── Card content — identique sbt layout ── */
+.rc__card-content {
+  padding:         var(--rc-card-pad, 18px) !important;
+  gap:             12px;
+  transition:      padding var(--rc-anim-dur, 300ms) var(--rc-ease);
+}
+@media (hover: hover) {
+  .rc__card:hover .rc__card-content {
+    padding-bottom: calc(var(--rc-card-pad, 18px) * 1.6) !important;
   }
+}
 
-  /* ── Header ─────────────────────────────────────── */
-  .rc__header {
-    padding: 0 var(--rc-pad) 20px;
-    max-width: var(--container-width, 1400px);
-    margin: 0 auto;
+.rc__card-info {
+  display:        flex;
+  flex-direction: column;
+  gap:            5px;
+  min-width:      0;
+}
+
+/* ── Label — harmonisé avec sbt__card-title ── */
+.rc__card-label {
+  font-family:    var(--font-body, 'Inter', sans-serif);
+  font-size:      clamp(1rem, 2vw, 1.4rem) !important;
+  font-weight:    700;
+  letter-spacing: -0.02em;
+  line-height:    1.2;
+  text-shadow:    0 1px 6px rgba(0,0,0,0.4);
+  white-space:    nowrap;
+  overflow:       hidden;
+  text-overflow:  ellipsis;
+  transition:     transform var(--rc-anim-dur, 300ms) var(--rc-ease);
+}
+@media (hover: hover) {
+  .rc__card:hover .rc__card-label { transform: translateY(-3px); }
+}
+
+/* ── Description sous le label ── */
+.rc__card-desc {
+  font-size:      0.7rem;
+  font-weight:    400;
+  letter-spacing: 0.01em;
+  color:          rgba(255,255,255,0.65);
+  display:        none;
+}
+@media (min-width: 600px) {
+  .rc__card-desc { display: block; }
+}
+
+/* ── Bouton — identique sbt__card-cta ── */
+.rc__card-btn {
+  flex-shrink:     0;
+  display:         flex;
+  align-items:     center;
+  justify-content: center;
+  width:           34px  !important;
+  height:          34px  !important;
+  border-radius:   50%;
+  background:      rgba(255,255,255,0.14);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border:          1px solid rgba(255,255,255,0.30);
+  color:           #fff;
+  transition:
+    background    var(--rc-anim-dur, 300ms) var(--rc-ease),
+    border-color  var(--rc-anim-dur, 300ms) var(--rc-ease),
+    transform     var(--rc-anim-dur, 300ms) var(--rc-ease-out);
+}
+@media (hover: hover) {
+  .rc__card:hover .rc__card-btn {
+    background:   #0787ea;
+    border-color: #0787ea;
+    transform:    scale(1.12);
   }
-
-  @media (min-width: 768px) {
-    .rc__header { padding-bottom: 24px; }
+  .rc__card:hover .rc__card-btn svg {
+    transform: translateX(2px);
   }
+}
 
-  .rc__title {
-    font-family: var(--font-body, 'Inter', sans-serif);
-    font-size: clamp(1.4rem, 3vw, 2.2rem);
-    font-weight: 800;
-    letter-spacing: -0.03em;
-    color: var(--rc-black);
-    margin: 0 0 6px;
-  }
+/* ── Visibilité section ── */
+{%- if section.settings.hide_on_mobile -%}
+@media (max-width: 640px) { #rc-{{ sid }} { display: none !important; } }
+{%- endif -%}
+{%- if section.settings.hide_on_desktop -%}
+@media (min-width: 641px) { #rc-{{ sid }} { display: none !important; } }
+{%- endif -%}
 
-  .rc__subtitle {
-    font-family: var(--font-body, 'Inter', sans-serif);
-    font-size: 0.875rem;
-    color: #777;
-    margin: 0;
-    line-height: 1.55;
-  }
+/* ── Reduced motion ── */
+@media (prefers-reduced-motion: reduce) {
+  .rc__card,
+  .rc__card-label,
+  .rc__card-btn,
+  .rc__item { transition: none !important; }
+  .rc__item { opacity: 1 !important; transform: none !important; }
+}
 
-  /* ── Grille — mobile-first ───────────────────────── */
-  .rc__grid {
-    display: grid;
-    grid-template-columns: repeat(var(--rc-cols-mobile, 1), 1fr);
-    gap: var(--rc-gap);
-    padding: 0 var(--rc-pad);
-    max-width: var(--container-width, 1400px);
-    margin: 0 auto;
-    list-style: none;
-  }
-
-  @media (min-width: 600px) {
-    .rc__grid { grid-template-columns: repeat(var(--rc-cols-tablet, 2), 1fr); }
-  }
-
-  @media (min-width: 1024px) {
-    .rc__grid { grid-template-columns: repeat(var(--rc-cols-desktop, 3), 1fr); }
-  }
-
-  /* ── Item — fade-in en cascade ───────────────────── */
-  .rc__item {
-    opacity: 0;
-    transform: translateY(12px);
-    transition: opacity 380ms var(--rc-ease), transform 380ms var(--rc-ease);
-  }
-
-  .rc__item.is-visible { opacity: 1; transform: translateY(0); }
-
-  .rc__item:nth-child(2) { transition-delay: 50ms; }
-  .rc__item:nth-child(3) { transition-delay: 100ms; }
-  .rc__item:nth-child(4) { transition-delay: 150ms; }
-  .rc__item:nth-child(5) { transition-delay: 200ms; }
-  .rc__item:nth-child(6) { transition-delay: 250ms; }
-  .rc__item:nth-child(7) { transition-delay: 300ms; }
-  .rc__item:nth-child(8) { transition-delay: 350ms; }
-
-  /* ── Responsive aspect-ratio for .m19-card--cat items ── */
-  .rc__item .m19-card--cat {
-    --m19-cat-aspect: var(--rc-aspect-mobile, 4/3);
-    --m19-cat-radius: var(--rc-radius, 10px);
-    aspect-ratio: var(--rc-aspect-mobile, 4/3);
-  }
-
-  @media (min-width: 600px) {
-    .rc__item .m19-card--cat { aspect-ratio: var(--rc-aspect-tablet, 3/2); }
-  }
-
-  @media (min-width: 1024px) {
-    .rc__item .m19-card--cat { aspect-ratio: var(--rc-aspect-desktop, 3/2); }
-  }
-
-  /* Larger label font in full section context */
-  .rc__item .m19-card__cat-label {
-    font-size: clamp(1.1rem, 2.2vw, 1.6rem);
-  }
-
-  .rc__item .m19-card__cat-content {
-    padding: 14px 14px 16px;
-  }
-
-  .rc__item .m19-card__cat-btn {
-    width: 34px;
-    height: 34px;
-  }
+{%- if section.settings.custom_css != blank -%}
+{{ section.settings.custom_css }}
+{%- endif -%}
 </style>
 
 <script>
-  (function () {
-    'use strict';
+(function () {
+  'use strict';
+  var SID = '{{ sid }}';
 
-    var section = document.getElementById('rc-section');
+  function init() {
+    var section = document.getElementById('rc-' + SID);
     if (!section) return;
 
     var items = Array.from(section.querySelectorAll('.rc__item'));
     if (!items.length) return;
 
-    if ('IntersectionObserver' in window) {
+    if (window.IntersectionObserver) {
       var obs = new IntersectionObserver(
         function (entries) {
           entries.forEach(function (entry) {
@@ -202,13 +419,24 @@
             obs.unobserve(entry.target);
           });
         },
-        { threshold: 0.08 }
+        { threshold: 0.06, rootMargin: '0px 0px -40px 0px' }
       );
       items.forEach(function (item) { obs.observe(item); });
     } else {
       items.forEach(function (item) { item.classList.add('is-visible'); });
     }
-  })();
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', init);
+  } else {
+    init();
+  }
+
+  document.addEventListener('shopify:section:load', function (e) {
+    if (e.detail && e.detail.sectionId === SID) init();
+  });
+})();
 </script>
 
 {% schema %}
@@ -217,71 +445,57 @@
   "tag": "section",
   "class": "section-category-recommendations",
   "settings": [
+    { "type": "header", "content": "── En-tête" },
+    { "type": "text",     "id": "eyebrow",  "label": "Label eyebrow", "default": "Collections" },
+    { "type": "text",     "id": "title",    "label": "Titre",         "default": "Explorez par univers" },
+    { "type": "textarea", "id": "subtitle", "label": "Sous-titre (optionnel)" },
     {
-      "type": "header",
-      "content": "Texte d'en-tête"
+      "type": "select", "id": "header_align", "label": "Alignement header", "default": "left",
+      "options": [
+        { "value": "left",   "label": "Gauche" },
+        { "value": "center", "label": "Centre" },
+        { "value": "right",  "label": "Droite" }
+      ]
     },
+
+    { "type": "header", "content": "── Typographie header" },
+    { "type": "range", "id": "title_size_desktop", "label": "Taille titre desktop (px)", "min": 18, "max": 72, "step": 2, "default": 32, "unit": "px" },
+    { "type": "range", "id": "title_size_mobile",  "label": "Taille titre mobile (px)",  "min": 16, "max": 48, "step": 2, "default": 22, "unit": "px" },
     {
-      "type": "text",
-      "id": "title",
-      "label": "Titre de la section",
-      "default": "Explorez par univers"
+      "type": "select", "id": "title_weight", "label": "Graisse titre", "default": "800",
+      "options": [
+        { "value": "400", "label": "Regular (400)" },
+        { "value": "500", "label": "Medium (500)" },
+        { "value": "600", "label": "Semi-Bold (600)" },
+        { "value": "700", "label": "Bold (700)" },
+        { "value": "800", "label": "Extra-Bold (800)" },
+        { "value": "900", "label": "Black (900)" }
+      ]
     },
+    { "type": "range", "id": "subtitle_size", "label": "Taille sous-titre (px)", "min": 11, "max": 20, "step": 1, "default": 14, "unit": "px" },
+    { "type": "range", "id": "eyebrow_size",  "label": "Taille eyebrow (px)",   "min": 9,  "max": 14, "step": 1, "default": 11, "unit": "px" },
+
+    { "type": "header", "content": "── Séparateur titre" },
+    { "type": "checkbox", "id": "show_title_sep", "label": "Afficher séparateur", "default": true },
+    { "type": "color",    "id": "sep_color",      "label": "Couleur séparateur",  "default": "#0787ea" },
+    { "type": "range",    "id": "sep_width",       "label": "Largeur (px)",        "min": 16, "max": 100, "step": 4, "default": 36, "unit": "px" },
+    { "type": "range",    "id": "sep_height",      "label": "Épaisseur (px)",      "min": 1,  "max": 8,   "step": 1, "default": 3,  "unit": "px" },
+
+    { "type": "header", "content": "── Couleurs section" },
+    { "type": "color", "id": "bg_color",      "label": "Fond section",    "default": "#f7f7f8" },
+    { "type": "color", "id": "text_color",    "label": "Texte général",   "default": "#0a0a0a" },
+    { "type": "color", "id": "eyebrow_color", "label": "Couleur eyebrow", "default": "#0787ea" },
+    { "type": "color", "id": "title_color",   "label": "Couleur titre",   "default": "#0a0a0a" },
+
+    { "type": "header", "content": "── Grille" },
+    { "type": "range", "id": "columns_mobile",  "label": "Colonnes mobile",  "min": 1, "max": 3, "step": 1, "default": 1 },
+    { "type": "range", "id": "columns_tablet",  "label": "Colonnes tablette","min": 1, "max": 4, "step": 1, "default": 2 },
+    { "type": "range", "id": "columns_desktop", "label": "Colonnes desktop", "min": 2, "max": 6, "step": 1, "default": 3 },
+    { "type": "range", "id": "section_max_width", "label": "Largeur max (px)", "min": 960, "max": 1920, "step": 40, "default": 1400 },
+
+    { "type": "header", "content": "── Ratio des cartes" },
     {
-      "type": "textarea",
-      "id": "subtitle",
-      "label": "Sous-titre (optionnel)"
-    },
-    {
-      "type": "header",
-      "content": "Fond de section"
-    },
-    {
-      "type": "color",
-      "id": "bg_color",
-      "label": "Couleur de fond",
-      "default": "#ffffff"
-    },
-    {
-      "type": "header",
-      "content": "Grille — Mobile first"
-    },
-    {
-      "type": "range",
-      "id": "columns_mobile",
-      "label": "Colonnes mobile < 600px",
-      "min": 1,
-      "max": 3,
-      "step": 1,
-      "default": 1
-    },
-    {
-      "type": "range",
-      "id": "columns_tablet",
-      "label": "Colonnes tablette ≥ 600px",
-      "min": 1,
-      "max": 3,
-      "step": 1,
-      "default": 2
-    },
-    {
-      "type": "range",
-      "id": "columns_desktop",
-      "label": "Colonnes desktop ≥ 1024px",
-      "min": 2,
-      "max": 6,
-      "step": 1,
-      "default": 3
-    },
-    {
-      "type": "header",
-      "content": "Ratio des cartes — Mobile first"
-    },
-    {
-      "type": "select",
-      "id": "aspect_mobile",
-      "label": "Ratio mobile",
-      "default": "4/3",
+      "type": "select", "id": "aspect_mobile", "label": "Ratio mobile", "default": "4/3",
       "options": [
         { "value": "1/1",  "label": "Carré (1:1)" },
         { "value": "4/3",  "label": "Paysage (4:3)" },
@@ -292,10 +506,7 @@
       ]
     },
     {
-      "type": "select",
-      "id": "aspect_tablet",
-      "label": "Ratio tablette",
-      "default": "3/2",
+      "type": "select", "id": "aspect_tablet", "label": "Ratio tablette", "default": "3/2",
       "options": [
         { "value": "1/1",  "label": "Carré (1:1)" },
         { "value": "4/3",  "label": "Paysage (4:3)" },
@@ -306,10 +517,7 @@
       ]
     },
     {
-      "type": "select",
-      "id": "aspect_desktop",
-      "label": "Ratio desktop",
-      "default": "3/2",
+      "type": "select", "id": "aspect_desktop", "label": "Ratio desktop", "default": "3/2",
       "options": [
         { "value": "1/1",  "label": "Carré (1:1)" },
         { "value": "4/3",  "label": "Paysage (4:3)" },
@@ -319,62 +527,29 @@
         { "value": "2/3",  "label": "Portrait (2:3)" }
       ]
     },
-    {
-      "type": "header",
-      "content": "Espacements — Mobile first"
-    },
-    {
-      "type": "range",
-      "id": "padding_top_mobile",
-      "label": "Padding haut mobile (px)",
-      "min": 0,
-      "max": 120,
-      "step": 4,
-      "default": 48,
-      "unit": "px"
-    },
-    {
-      "type": "range",
-      "id": "padding_bottom_mobile",
-      "label": "Padding bas mobile (px)",
-      "min": 0,
-      "max": 120,
-      "step": 4,
-      "default": 56,
-      "unit": "px"
-    },
-    {
-      "type": "range",
-      "id": "padding_top_desktop",
-      "label": "Padding haut desktop (px)",
-      "min": 0,
-      "max": 120,
-      "step": 4,
-      "default": 64,
-      "unit": "px"
-    },
-    {
-      "type": "range",
-      "id": "padding_bottom_desktop",
-      "label": "Padding bas desktop (px)",
-      "min": 0,
-      "max": 120,
-      "step": 4,
-      "default": 64,
-      "unit": "px"
-    },
-    { "type": "range", "id": "margin_top", "label": "Marge haut section (px)", "min": 0, "max": 120, "step": 4, "default": 0, "unit": "px" },
-    { "type": "range", "id": "margin_bottom", "label": "Marge bas section (px)", "min": 0, "max": 120, "step": 4, "default": 0, "unit": "px" },
-    { "type": "header", "content": "✨ Animation" },
-    { "type": "select", "id": "animation_type", "label": "Animation au scroll", "default": "fade-up", "options": [
-        { "value": "none", "label": "Aucune" }, { "value": "fade", "label": "Fade" },
-        { "value": "fade-up", "label": "Fade + slide haut" }, { "value": "zoom", "label": "Zoom" }
-    ]},
-    { "type": "header", "content": "👁️ Visibilité" },
-    { "type": "checkbox", "id": "hide_on_mobile", "label": "Masquer sur mobile", "default": false },
+
+    { "type": "header", "content": "── Cartes — Design" },
+    { "type": "range", "id": "card_radius",           "label": "Rayon bordure (px)",   "min": 0, "max": 32, "step": 1, "default": 6,  "unit": "px" },
+    { "type": "range", "id": "card_content_padding",  "label": "Padding contenu (px)", "min": 8, "max": 40, "step": 2, "default": 18, "unit": "px" },
+
+    { "type": "header", "content": "── Effets hover" },
+    { "type": "range", "id": "hover_lift",       "label": "Élévation hover (px)",   "min": 0, "max": 16, "step": 1,  "default": 5,   "unit": "px" },
+    { "type": "range", "id": "transition_speed", "label": "Vitesse animation (ms)", "min": 100, "max": 800, "step": 50, "default": 300, "unit": "ms" },
+
+    { "type": "header", "content": "── Espacements" },
+    { "type": "range", "id": "padding_top_mobile",     "label": "Padding haut mobile (px)",   "min": 0, "max": 120, "step": 4, "default": 48, "unit": "px" },
+    { "type": "range", "id": "padding_bottom_mobile",  "label": "Padding bas mobile (px)",    "min": 0, "max": 120, "step": 4, "default": 56, "unit": "px" },
+    { "type": "range", "id": "padding_top_desktop",    "label": "Padding haut desktop (px)",  "min": 0, "max": 120, "step": 4, "default": 64, "unit": "px" },
+    { "type": "range", "id": "padding_bottom_desktop", "label": "Padding bas desktop (px)",   "min": 0, "max": 120, "step": 4, "default": 64, "unit": "px" },
+    { "type": "range", "id": "margin_top",             "label": "Marge haut (px)",            "min": 0, "max": 120, "step": 4, "default": 0,  "unit": "px" },
+    { "type": "range", "id": "margin_bottom",          "label": "Marge bas (px)",             "min": 0, "max": 120, "step": 4, "default": 0,  "unit": "px" },
+
+    { "type": "header", "content": "── Visibilité" },
+    { "type": "checkbox", "id": "hide_on_mobile",  "label": "Masquer sur mobile",  "default": false },
     { "type": "checkbox", "id": "hide_on_desktop", "label": "Masquer sur desktop", "default": false },
-    { "type": "header", "content": "⚙️ Avancé" },
-    { "type": "text", "id": "custom_css", "label": "CSS personnalisé", "info": "Appliqué sur #shopify-section-ID" }
+
+    { "type": "header", "content": "── Avancé" },
+    { "type": "textarea", "id": "custom_css", "label": "CSS personnalisé" }
   ],
   "blocks": [
     {
@@ -410,13 +585,21 @@
   "presets": [
     {
       "name": "Category Recommendations",
+      "settings": {
+        "eyebrow": "Collections",
+        "title": "Explorez par univers",
+        "columns_mobile": 1,
+        "columns_tablet": 2,
+        "columns_desktop": 3,
+        "bg_color": "#f7f7f8"
+      },
       "blocks": [
-        { "type": "card", "settings": { "label": "Photographie" } },
-        { "type": "card", "settings": { "label": "Vidéo" } },
-        { "type": "card", "settings": { "label": "Podcast" } },
-        { "type": "card", "settings": { "label": "Drone" } },
-        { "type": "card", "settings": { "label": "Stabilisateur" } },
-        { "type": "card", "settings": { "label": "Éclairage" } }
+        { "type": "card", "settings": { "label": "Photographie",   "url": "/collections/photo" } },
+        { "type": "card", "settings": { "label": "Vidéo",          "url": "/collections/video" } },
+        { "type": "card", "settings": { "label": "Éclairage",      "url": "/collections/eclairage" } },
+        { "type": "card", "settings": { "label": "Drone",          "url": "/collections/drone" } },
+        { "type": "card", "settings": { "label": "Accessoires",    "url": "/collections/accessoires" } },
+        { "type": "card", "settings": { "label": "Podcast / Micro","url": "/collections/micro" } }
       ]
     }
   ]

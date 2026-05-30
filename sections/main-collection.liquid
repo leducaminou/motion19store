@@ -1,0 +1,396 @@
+{{ 'card.css' | asset_url | stylesheet_tag }}
+<style>
+  .m19-card { contain: layout style; }
+  @media (prefers-reduced-motion: reduce) {
+    .m19-card, .m19-card__img--hover, .m19-card__action { transition: none !important; }
+  }
+</style>
+{%- comment -%} Main Collection — Motion19 OS 2.0 — v2.0 {%- endcomment -%}
+
+{%- liquid
+  assign sid          = section.id
+  assign products_pp  = section.settings.products_per_page | default: 20
+  assign show_atc     = section.settings.show_atc
+  assign show_sort    = section.settings.show_sort    | default: true
+  assign show_filters = section.settings.show_filters | default: true
+  assign show_seo     = section.settings.show_seo     | default: false
+  assign seo_content  = section.settings.seo_content
+-%}
+
+{%- comment -%} ── 1. Header editorial ── {%- endcomment -%}
+<header class="col-header" id="col-header-{{ sid }}">
+  <div class="col-header__inner">
+    <h1 class="col-header__title">{{ collection.title }}</h1>
+    {%- if collection.description != blank -%}
+      <p class="col-header__desc">{{ collection.description }}</p>
+    {%- endif -%}
+    <span class="col-header__count" aria-live="polite">
+      {{ collection.products_count }}{% if collection.products_count == 1 %} produit{% else %} produits{% endif %}
+    </span>
+  </div>
+</header>
+
+<div class="col-overlay" id="col-overlay-{{ sid }}" aria-hidden="true"></div>
+
+{%- if show_filters -%}
+<aside class="col-drawer" id="col-drawer-{{ sid }}" aria-label="Filtres" aria-hidden="true" role="dialog">
+  <div class="col-drawer__inner">
+    <div class="col-drawer__head">
+      <span class="col-drawer__title">Filtres</span>
+      <button class="col-drawer__close" type="button" aria-label="Fermer" data-col-close="{{ sid }}">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+    <div class="col-drawer__body">
+      <div class="col-filter-group is-open">
+        <button class="col-filter-group__toggle" type="button" aria-expanded="true">
+          Disponibilité
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg>
+        </button>
+        <div class="col-filter-group__body">
+          <ul class="col-filter-list">
+            <li><label class="col-filter-option"><input type="checkbox" name="filter.v.availability" value="1"> <span class="col-filter-option__label">En stock</span></label></li>
+            <li><label class="col-filter-option"><input type="checkbox" name="filter.v.availability" value="0"> <span class="col-filter-option__label">Rupture de stock</span></label></li>
+          </ul>
+        </div>
+      </div>
+      <div class="col-filter-group">
+        <button class="col-filter-group__toggle" type="button" aria-expanded="false">
+          Prix
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg>
+        </button>
+        <div class="col-filter-group__body">
+          <div class="col-filter-price__inputs">
+            <label><span>Min</span><input type="number" name="filter.v.price.gte" min="0" placeholder="0"></label>
+            <span class="col-filter-price__sep">–</span>
+            <label><span>Max</span><input type="number" name="filter.v.price.lte" min="0" placeholder="–"></label>
+          </div>
+        </div>
+      </div>
+      <div class="col-filter-group">
+        <button class="col-filter-group__toggle" type="button" aria-expanded="false">
+          Catégorie
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg>
+        </button>
+        <div class="col-filter-group__body">
+          <ul class="col-filter-list">
+            <li><label class="col-filter-option"><input type="checkbox" name="filter.p.tag" value="nouveaute"> <span class="col-filter-option__label">Nouveautés</span></label></li>
+            <li><label class="col-filter-option"><input type="checkbox" name="filter.p.tag" value="promo"> <span class="col-filter-option__label">Promotions</span></label></li>
+            <li><label class="col-filter-option"><input type="checkbox" name="filter.p.tag" value="best-seller"> <span class="col-filter-option__label">Best sellers</span></label></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <div class="col-drawer__footer">
+      <a href="{{ collection.url }}" class="col-drawer__clear" data-col-close="{{ sid }}">Réinitialiser</a>
+      <button class="col-drawer__apply" type="button" data-col-close="{{ sid }}">Voir les produits</button>
+    </div>
+  </div>
+</aside>
+{%- endif -%}
+
+{%- comment -%} ── 2. Barre sticky ── {%- endcomment -%}
+<div class="col-bar" id="col-bar-{{ sid }}" role="toolbar" aria-label="Filtres et tri">
+  <div class="col-bar__inner">
+    {%- if show_filters -%}
+    <div class="col-bar__left">
+      <button class="col-bar__filter-btn" type="button" aria-controls="col-drawer-{{ sid }}" aria-expanded="false" data-col-open="{{ sid }}">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="4" y1="6" x2="20" y2="6"/><line x1="8" y1="12" x2="16" y2="12"/><line x1="11" y1="18" x2="13" y2="18"/></svg>
+        Filtres
+      </button>
+      <span class="col-bar__count" aria-live="polite">{{ collection.products_count }} produit{% if collection.products_count != 1 %}s{% endif %}</span>
+    </div>
+    {%- endif -%}
+    <div class="col-bar__center" aria-label="Filtres actifs">
+      {%- if current_tags -%}
+        {%- for tag in current_tags -%}
+          <a href="{{ collection.url }}" class="col-pill col-pill--active">
+            {{ tag }}
+            <span class="col-pill__remove" aria-hidden="true"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></span>
+          </a>
+        {%- endfor -%}
+      {%- endif -%}
+    </div>
+    {%- if show_sort -%}
+    <div class="col-bar__right">
+      <div class="col-sort">
+        <span class="col-sort__label">Trier par</span>
+        <select class="col-sort__select" aria-label="Trier les produits" id="col-sort-{{ sid }}">
+          <option value="manual"{% if collection.sort_by == 'manual' %} selected{% endif %}>Pertinence</option>
+          <option value="created-descending"{% if collection.sort_by == 'created-descending' %} selected{% endif %}>Nouveautés</option>
+          <option value="price-ascending"{% if collection.sort_by == 'price-ascending' %} selected{% endif %}>Prix croissant</option>
+          <option value="price-descending"{% if collection.sort_by == 'price-descending' %} selected{% endif %}>Prix décroissant</option>
+          <option value="best-selling"{% if collection.sort_by == 'best-selling' %} selected{% endif %}>Populaires</option>
+          <option value="title-ascending"{% if collection.sort_by == 'title-ascending' %} selected{% endif %}>A → Z</option>
+          <option value="title-descending"{% if collection.sort_by == 'title-descending' %} selected{% endif %}>Z → A</option>
+        </select>
+      </div>
+    </div>
+    {%- endif -%}
+  </div>
+</div>
+
+{%- comment -%} ── 3. Grid produits ── {%- endcomment -%}
+<div class="col-content">
+
+  {%- if current_tags -%}
+  <div class="col-active-filters">
+    {%- for tag in current_tags -%}
+      <a href="{{ collection.url }}" class="col-pill col-pill--active">
+        {{ tag }}
+        <span class="col-pill__remove" aria-hidden="true"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></span>
+      </a>
+    {%- endfor -%}
+    <a href="{{ collection.url }}" class="col-clear-all">Tout effacer</a>
+  </div>
+  {%- endif -%}
+
+  <main class="col-main" id="col-grid-{{ sid }}">
+    {%- paginate collection.products by products_pp -%}
+    <ul class="col-grid" role="list" aria-label="Produits">
+      {%- for product in collection.products -%}
+        {%- assign img1 = product.featured_image -%}
+        {%- assign img2 = product.images[1] -%}
+        <li>
+          <article class="m19-card" aria-label="{{ product.title | escape }}">
+            <a class="m19-card__media" href="{{ product.url }}" tabindex="-1" aria-hidden="true">
+              {%- if img1 != blank -%}
+                <img
+                  class="m19-card__img m19-card__img--primary"
+                  src="{{ img1 | image_url: width: 600 }}"
+                  srcset="{{ img1 | image_url: width: 400 }} 400w, {{ img1 | image_url: width: 600 }} 600w, {{ img1 | image_url: width: 900 }} 900w"
+                  sizes="(max-width:640px) calc(50vw - 24px), (max-width:1024px) calc(33vw - 20px), (max-width:1440px) calc(25vw - 22px), calc(20vw - 22px)"
+                  alt="{{ img1.alt | default: product.title | escape }}"
+                  loading="{% if forloop.index <= 6 %}eager{% else %}lazy{% endif %}"
+                  width="{{ img1.width }}"
+                  height="{{ img1.height }}"
+                >
+                {%- if img2 != blank -%}
+                  <img
+                    class="m19-card__img m19-card__img--hover"
+                    src="{{ img2 | image_url: width: 600 }}"
+                    srcset="{{ img2 | image_url: width: 400 }} 400w, {{ img2 | image_url: width: 600 }} 600w, {{ img2 | image_url: width: 900 }} 900w"
+                    sizes="(max-width:640px) calc(50vw - 24px), (max-width:1024px) calc(33vw - 20px), (max-width:1440px) calc(25vw - 22px), calc(20vw - 22px)"
+                    alt="{{ img2.alt | default: product.title | escape }}"
+                    loading="lazy"
+                    decoding="async"
+                    width="{{ img2.width }}"
+                    height="{{ img2.height }}"
+                    aria-hidden="true"
+                  >
+                {%- endif -%}
+              {%- else -%}
+                <div class="m19-card__media-fallback" aria-hidden="true"></div>
+              {%- endif -%}
+
+              {%- if product.available == false -%}
+                <span class="m19-card__badge m19-card__badge--sale" aria-hidden="true">Épuisé</span>
+              {%- elsif product.compare_at_price > product.price -%}
+                {%- assign discount_raw = product.compare_at_price | minus: product.price | times: 100.0 | divided_by: product.compare_at_price -%}
+                {%- assign discount_r2  = discount_raw | round: 2 -%}
+                {%- assign discount_r0  = discount_raw | round -%}
+                <span class="m19-card__badge m19-card__badge--discount" aria-hidden="true">
+                  {%- if discount_r2 == discount_r0 -%}
+                    -{{ discount_r0 }}%
+                  {%- else -%}
+                    -{{ discount_r2 }}%
+                  {%- endif -%}
+                </span>
+              {%- endif -%}
+
+              {%- if show_atc and product.available -%}
+                <button class="m19-card__action" type="button" data-variant-id="{{ product.variants.first.id }}" aria-label="Ajouter {{ product.title | escape }} au panier">
+                  <svg class="m19-card__action-icon m19-card__action-icon--bag" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg>
+                  <svg class="m19-card__action-icon m19-card__action-icon--check" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>
+                </button>
+              {%- endif -%}
+            </a>
+
+            <div class="m19-card__body">
+              {%- if product.vendor != blank -%}
+                <p class="m19-card__vendor">{{ product.vendor }}</p>
+              {%- endif -%}
+              <a class="m19-card__name" href="{{ product.url }}">{{ product.title | truncate: 44 }}</a>
+              <div class="m19-card__pricing">
+                {%- if product.compare_at_price > product.price -%}
+                  <s class="m19-card__price--compare">{{ product.compare_at_price | money }}</s>
+                {%- endif -%}
+                <span class="m19-card__price{% if product.compare_at_price > product.price %} m19-card__price--sale{% endif %}">{{ product.price | money }}</span>
+              </div>
+            </div>
+          </article>
+        </li>
+      {%- else -%}
+        <li class="col-empty">Aucun produit dans cette collection.</li>
+      {%- endfor -%}
+    </ul>
+
+    {%- comment -%} ── 4. Pagination ── {%- endcomment -%}
+    {%- if paginate.pages > 1 -%}
+    <nav class="col-pagination" aria-label="Navigation pages">
+      {%- if paginate.previous -%}
+        <a href="{{ paginate.previous.url }}" class="col-pagination__item col-pagination__item--arrow" aria-label="Page précédente"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="15 18 9 12 15 6"/></svg></a>
+      {%- else -%}
+        <span class="col-pagination__item col-pagination__item--arrow" aria-disabled="true"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="15 18 9 12 15 6"/></svg></span>
+      {%- endif -%}
+      {%- for part in paginate.parts -%}
+        {%- if part.is_link -%}
+          <a href="{{ part.url }}" class="col-pagination__item">{{ part.title }}</a>
+        {%- elsif part.title == paginate.current_page -%}
+          <span class="col-pagination__item is-active" aria-current="page">{{ part.title }}</span>
+        {%- else -%}
+          <span class="col-pagination__dots">···</span>
+        {%- endif -%}
+      {%- endfor -%}
+      {%- if paginate.next -%}
+        <a href="{{ paginate.next.url }}" class="col-pagination__item col-pagination__item--arrow" aria-label="Page suivante"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="9 18 15 12 9 6"/></svg></a>
+      {%- else -%}
+        <span class="col-pagination__item col-pagination__item--arrow" aria-disabled="true"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="9 18 15 12 9 6"/></svg></span>
+      {%- endif -%}
+    </nav>
+    {%- endif -%}
+    {%- endpaginate -%}
+
+    {%- comment -%} ── 5. SEO ── {%- endcomment -%}
+    {%- if show_seo and seo_content != blank -%}
+    <div class="col-seo"><div class="col-seo__inner">{{ seo_content }}</div></div>
+    {%- endif -%}
+  </main>
+</div>
+
+<script>
+(function () {
+  'use strict';
+  var sid     = '{{ sid }}';
+  var bar     = document.getElementById('col-bar-' + sid);
+  var drawer  = document.getElementById('col-drawer-' + sid);
+  var overlay = document.getElementById('col-overlay-' + sid);
+  var openBtns  = Array.from(document.querySelectorAll('[data-col-open="' + sid + '"]'));
+  var closeBtns = Array.from(document.querySelectorAll('[data-col-close="' + sid + '"]'));
+  var reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  /* sticky shadow */
+  if (bar) {
+    var sentinel = document.createElement('div');
+    sentinel.style.cssText = 'position:absolute;top:0;left:0;width:1px;height:1px;pointer-events:none;visibility:hidden';
+    bar.parentElement.insertBefore(sentinel, bar);
+    new IntersectionObserver(function (e) { bar.classList.toggle('is-scrolled', !e[0].isIntersecting); }, { rootMargin: '-1px 0px 0px 0px', threshold: [1] }).observe(sentinel);
+  }
+
+  /* drawer */
+  function openDrawer() {
+    if (!drawer) return;
+    drawer.classList.add('is-open'); drawer.setAttribute('aria-hidden', 'false');
+    if (overlay) { overlay.classList.add('is-visible'); overlay.setAttribute('aria-hidden', 'false'); }
+    openBtns.forEach(function (b) { b.setAttribute('aria-expanded', 'true'); b.classList.add('is-active'); });
+    document.body.style.overflow = 'hidden';
+    var f = drawer.querySelector('button, a, input, select'); if (f) f.focus();
+  }
+  function closeDrawer() {
+    if (!drawer) return;
+    drawer.classList.remove('is-open'); drawer.setAttribute('aria-hidden', 'true');
+    if (overlay) { overlay.classList.remove('is-visible'); overlay.setAttribute('aria-hidden', 'true'); }
+    openBtns.forEach(function (b) { b.setAttribute('aria-expanded', 'false'); b.classList.remove('is-active'); });
+    document.body.style.overflow = '';
+  }
+  openBtns.forEach(function (b) { b.addEventListener('click', openDrawer); });
+  closeBtns.forEach(function (b) { b.addEventListener('click', closeDrawer); });
+  if (overlay) overlay.addEventListener('click', closeDrawer);
+  document.addEventListener('keydown', function (e) { if (e.key === 'Escape') closeDrawer(); });
+
+  /* accordion */
+  document.querySelectorAll('#col-drawer-' + sid + ' .col-filter-group__toggle').forEach(function (btn) {
+    btn.addEventListener('click', function () {
+      var grp = btn.closest('.col-filter-group');
+      btn.setAttribute('aria-expanded', String(grp.classList.toggle('is-open')));
+    });
+  });
+
+  /* sort — debounced navigation */
+  var sortSel = document.getElementById('col-sort-' + sid);
+  if (sortSel) {
+    var sortTimer;
+    sortSel.addEventListener('change', function () {
+      clearTimeout(sortTimer);
+      sortTimer = setTimeout(function () {
+        var u = new URL(window.location.href);
+        u.searchParams.set('sort_by', sortSel.value);
+        window.location.href = u.toString();
+      }, 80);
+    });
+  }
+
+  /* card entrance */
+  var gridEl = document.getElementById('col-grid-' + sid);
+  var cards  = gridEl ? Array.from(gridEl.querySelectorAll('.m19-card')) : [];
+  if (!reducedMotion && 'IntersectionObserver' in window && cards.length) {
+    var obs = new IntersectionObserver(function (entries) {
+      entries.forEach(function (entry) {
+        if (!entry.isIntersecting) return;
+        var c = entry.target; var idx = cards.indexOf(c);
+        requestAnimationFrame(function () {
+          c.style.transitionDelay = (Math.min(idx % 5, 4) * 50) + 'ms';
+          c.classList.add('is-visible');
+        });
+        obs.unobserve(c);
+      });
+    }, { rootMargin: '0px 0px -5% 0px', threshold: 0.06 });
+    cards.forEach(function (c) { obs.observe(c); });
+  } else {
+    cards.forEach(function (c) { c.classList.add('is-visible'); });
+  }
+
+  /* ATC */
+  if (gridEl) {
+    gridEl.addEventListener('click', function (e) {
+      var btn = e.target.closest('.m19-card__action');
+      if (!btn || btn.disabled) return;
+      e.preventDefault(); e.stopPropagation();
+      var id = btn.dataset.variantId; if (!id) return;
+      btn.disabled = true; btn.classList.add('m19-card__action--loading');
+      fetch('/cart/add.js', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+        body: JSON.stringify({ id: parseInt(id, 10), quantity: 1 })
+      })
+        .then(function (r) { return r.json(); })
+        .then(function (d) {
+          btn.classList.remove('m19-card__action--loading');
+          if (d.status) { btn.disabled = false; return; }
+          btn.classList.add('is-added');
+          /* Update all cart badge counters and dispatch unified event */
+          fetch('/cart.js')
+            .then(function (r) { return r.json(); })
+            .then(function (c) {
+              document.querySelectorAll('[data-cart-count]').forEach(function (el) {
+                el.textContent = c.item_count;
+              });
+              document.dispatchEvent(new CustomEvent('cart:updated', { detail: { item_count: c.item_count } }));
+            });
+          setTimeout(function () { btn.classList.remove('is-added'); btn.disabled = false; }, 2200);
+        })
+        .catch(function () { btn.classList.remove('m19-card__action--loading'); btn.disabled = false; });
+    });
+  }
+})();
+</script>
+
+{% schema %}
+{
+  "name": "Collection principale",
+  "tag": "div",
+  "class": "section-main-collection",
+  "settings": [
+    { "type": "header", "content": "Produits" },
+    { "type": "range",    "id": "products_per_page", "label": "Produits par page", "min": 8, "max": 48, "step": 4, "default": 16 },
+    { "type": "checkbox", "id": "show_atc",          "label": "Bouton panier rapide", "default": true },
+    { "type": "header", "content": "Interface" },
+    { "type": "checkbox", "id": "show_sort",    "label": "Afficher le tri",      "default": true },
+    { "type": "checkbox", "id": "show_filters", "label": "Afficher les filtres", "default": true },
+    { "type": "header", "content": "SEO" },
+    { "type": "checkbox", "id": "show_seo",    "label": "Activer zone SEO",   "default": false },
+    { "type": "richtext", "id": "seo_content", "label": "Contenu SEO bas de page" }
+  ],
+  "presets": [{ "name": "Collection principale" }]
+}
+{% endschema %}

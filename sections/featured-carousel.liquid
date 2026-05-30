@@ -1,51 +1,80 @@
 {{ 'card.css' | asset_url | stylesheet_tag }}
-{%- comment -%} Featured Carousel — Motion19 — OS 2.0 v3 {%- endcomment -%}
+{%- comment -%} Featured Carousel — Motion19 — OS 2.0 v5 (Swiper, full customisable) {%- endcomment -%}
 
 {%- liquid
   assign sid = section.id
 
-  assign bg_color      = section.settings.bg_color           | default: '#f7f7f8'
-  assign card_bg       = section.settings.card_bg            | default: '#ffffff'
-  assign text_color    = section.settings.text_color         | default: '#0a0a0a'
-  assign title_color   = section.settings.title_color        | default: '#0a0a0a'
-  assign eyebrow_col   = section.settings.eyebrow_color      | default: '#0787ea'
-  assign dot_active    = section.settings.dot_active_color   | default: '#0a0a0a'
-  assign dot_inactive  = section.settings.dot_inactive_color | default: 'rgba(10,10,10,0.18)'
-  assign arrow_color   = section.settings.arrow_color        | default: '#0a0a0a'
+  assign bg_color       = section.settings.bg_color            | default: '#f7f7f8'
+  assign card_bg        = section.settings.card_bg             | default: '#ffffff'
+  assign text_color     = section.settings.text_color          | default: '#0a0a0a'
+  assign title_color    = section.settings.title_color         | default: '#0a0a0a'
+  assign eyebrow_col    = section.settings.eyebrow_color       | default: '#0787ea'
+  assign subtitle_col   = section.settings.subtitle_color      | default: '#666666'
+  assign dot_active     = section.settings.dot_active_color    | default: '#0a0a0a'
+  assign dot_inactive   = section.settings.dot_inactive_color  | default: 'rgba(10,10,10,0.18)'
+  assign arrow_color    = section.settings.arrow_color         | default: '#0a0a0a'
 
-  assign autoplay      = section.settings.autoplay_enabled
-  assign ap_delay      = section.settings.autoplay_delay     | default: 4000
-  assign show_arr      = section.settings.show_arrows
-  assign show_nav      = section.settings.show_dots
-  assign nav_pos       = section.settings.nav_position       | default: 'bottom'
-  assign arr_size      = section.settings.arrow_size         | default: 36
-  assign dot_size      = section.settings.dot_size           | default: 6
+  assign title_size     = section.settings.title_font_size     | default: 32
+  assign title_weight   = section.settings.title_font_weight   | default: '800'
+  assign eyebrow_size   = section.settings.eyebrow_font_size   | default: 11
+  assign subtitle_size  = section.settings.subtitle_font_size  | default: 14
 
-  assign pt_m          = section.settings.padding_top_mobile    | default: 40
-  assign pb_m          = section.settings.padding_bottom_mobile | default: 36
-  assign pt_d          = section.settings.padding_top_desktop   | default: 52
-  assign pb_d          = section.settings.padding_bottom_desktop | default: 36
-  assign mt            = section.settings.margin_top            | default: 0
-  assign mb            = section.settings.margin_bottom         | default: 0
-  assign gap_cards     = section.settings.cards_gap             | default: 14
-  assign max_width     = section.settings.section_max_width     | default: 1400
-  assign header_align  = section.settings.header_align          | default: 'left'
+  assign img_ratio      = section.settings.image_ratio         | default: '4 / 5'
+  assign img_fit        = section.settings.image_fit           | default: 'contain'
+  assign card_radius    = section.settings.card_border_radius  | default: 6
+  assign card_border_c  = section.settings.card_border_color   | default: '#e8e8e8'
+  assign card_name_col  = section.settings.card_name_color     | default: '#0a0a0a'
+  assign card_price_col = section.settings.card_price_color    | default: '#0a0a0a'
 
-  assign sep_enabled   = section.settings.separator_enabled     | default: false
-  assign sep_text      = section.settings.separator_text
-  assign sep_style     = section.settings.separator_style       | default: 'line'
+  assign badge_bg       = section.settings.badge_bg_color      | default: '#ffffff'
+  assign badge_text_c   = section.settings.badge_text_color    | default: '#0a0a0a'
 
-  assign coll_handle   = section.settings.collection    | default: ''
-  assign max_products  = section.settings.max_products  | default: 12
-  assign show_badge    = section.settings.show_badge
-  assign badge_text    = section.settings.badge_text    | default: 'Meilleur vente'
-  assign show_atc      = section.settings.show_atc
+  assign autoplay       = section.settings.autoplay_enabled
+  assign ap_delay       = section.settings.autoplay_delay      | default: 4000
+  assign carousel_spd   = section.settings.carousel_speed      | default: 500
+  assign loop_enabled   = section.settings.loop_enabled
+  assign show_arr       = section.settings.show_arrows
+  assign show_nav       = section.settings.show_dots
+  assign arr_size       = section.settings.arrow_size          | default: 36
+  assign arr_radius     = section.settings.arrow_border_radius | default: 6
+  assign dot_size       = section.settings.dot_size            | default: 6
+  assign dot_gap_val    = section.settings.dot_gap             | default: 8
+
+  assign pt_m           = section.settings.padding_top_mobile     | default: 40
+  assign pb_m           = section.settings.padding_bottom_mobile  | default: 36
+  assign pt_d           = section.settings.padding_top_desktop    | default: 52
+  assign pb_d           = section.settings.padding_bottom_desktop | default: 36
+  assign mt             = section.settings.margin_top             | default: 0
+  assign mb             = section.settings.margin_bottom          | default: 0
+  assign gap_cards      = section.settings.cards_gap              | default: 14
+  assign max_width      = section.settings.section_max_width      | default: 1400
+  assign header_align   = section.settings.header_align           | default: 'left'
+
+  assign sep_enabled    = section.settings.separator_enabled      | default: false
+  assign sep_text       = section.settings.separator_text
+  assign sep_style      = section.settings.separator_style        | default: 'line'
+
+  assign coll_handle    = section.settings.collection    | default: ''
+  assign max_products   = section.settings.max_products  | default: 12
+  assign show_badge     = section.settings.show_badge
+  assign badge_text     = section.settings.badge_text    | default: 'Meilleur vente'
+  assign show_atc       = section.settings.show_atc
 
   if coll_handle != blank and collections[coll_handle] != blank
     assign products_list = collections[coll_handle].products
   else
     assign products_list = collections.all.products
   endif
+
+  assign card_border_w = '1px'
+  unless section.settings.card_show_border
+    assign card_border_w = '0px'
+  endunless
+
+  assign card_shadow_val = 'var(--m19-shadow-card)'
+  unless section.settings.card_show_shadow
+    assign card_shadow_val = 'none'
+  endunless
 -%}
 
 <section
@@ -53,24 +82,41 @@
   class="fc"
   aria-labelledby="fc-title-{{ sid }}"
   style="
-    --fc-bg:          {{ bg_color }};
-    --fc-card-bg:     {{ card_bg }};
-    --fc-text:        {{ text_color }};
-    --fc-title:       {{ title_color }};
-    --fc-eyebrow:     {{ eyebrow_col }};
-    --fc-dot-active:  {{ dot_active }};
-    --fc-dot-inactive:{{ dot_inactive }};
-    --fc-arrow-color: {{ arrow_color }};
-    --fc-pt-m:        {{ pt_m }}px;
-    --fc-pb-m:        {{ pb_m }}px;
-    --fc-pt-d:        {{ pt_d }}px;
-    --fc-pb-d:        {{ pb_d }}px;
-    --fc-mt:          {{ mt }}px;
-    --fc-mb:          {{ mb }}px;
-    --fc-gap:         {{ gap_cards }}px;
-    --fc-max-w:       {{ max_width }}px;
-    --fc-arrow-size:  {{ arr_size }}px;
-    --fc-dot-size:    {{ dot_size }}px;
+    --fc-bg:             {{ bg_color }};
+    --fc-card-bg:        {{ card_bg }};
+    --fc-text:           {{ text_color }};
+    --fc-title:          {{ title_color }};
+    --fc-eyebrow:        {{ eyebrow_col }};
+    --fc-subtitle-col:   {{ subtitle_col }};
+    --fc-dot-active:     {{ dot_active }};
+    --fc-dot-inactive:   {{ dot_inactive }};
+    --fc-arrow-color:    {{ arrow_color }};
+    --fc-title-size:     {{ title_size }}px;
+    --fc-title-weight:   {{ title_weight }};
+    --fc-eyebrow-size:   {{ eyebrow_size }}px;
+    --fc-subtitle-size:  {{ subtitle_size }}px;
+    --fc-img-ratio:      {{ img_ratio }};
+    --fc-img-fit:        {{ img_fit }};
+    --fc-card-radius:    {{ card_radius }}px;
+    --fc-card-border-c:  {{ card_border_c }};
+    --fc-card-border-w:  {{ card_border_w }};
+    --fc-card-shadow:    {{ card_shadow_val }};
+    --fc-name-color:     {{ card_name_col }};
+    --fc-price-color:    {{ card_price_col }};
+    --fc-badge-bg:       {{ badge_bg }};
+    --fc-badge-text:     {{ badge_text_c }};
+    --fc-pt-m:           {{ pt_m }}px;
+    --fc-pb-m:           {{ pb_m }}px;
+    --fc-pt-d:           {{ pt_d }}px;
+    --fc-pb-d:           {{ pb_d }}px;
+    --fc-mt:             {{ mt }}px;
+    --fc-mb:             {{ mb }}px;
+    --fc-gap:            {{ gap_cards }}px;
+    --fc-max-w:          {{ max_width }}px;
+    --fc-arrow-size:     {{ arr_size }}px;
+    --fc-arrow-radius:   {{ arr_radius }}px;
+    --fc-dot-size:       {{ dot_size }}px;
+    --fc-dot-gap:        {{ dot_gap_val }}px;
   "
 >
   <div class="fc__inner">
@@ -113,22 +159,22 @@
       </div>
     {%- endif -%}
 
-    {%- comment -%} ── Carousel viewport (full-width flush) ── {%- endcomment -%}
+    {%- comment -%} ── Swiper carousel ── {%- endcomment -%}
     <div class="fc__viewport-wrap">
-      <div class="fc__viewport" id="fc-viewport-{{ sid }}">
-        <ul class="fc__track" id="fc-track-{{ sid }}" role="list" aria-label="Produits">
+      <div class="swiper fc__swiper" id="fc-swiper-{{ sid }}">
+        <ul class="swiper-wrapper fc__track" role="list" aria-label="Produits">
           {%- for product in products_list limit: max_products -%}
             {%- assign img1 = product.featured_image -%}
             {%- assign img2 = product.images[1] -%}
-            <li class="fc__item">
-              <article class="m19-card" aria-label="{{ product.title | escape }}">
-                <a class="m19-card__media m19-card__media--square" href="{{ product.url }}" tabindex="-1" aria-hidden="true">
+            <li class="swiper-slide fc__item">
+              <article class="m19-card is-visible" aria-label="{{ product.title | escape }}">
+                <a class="m19-card__media" href="{{ product.url }}" tabindex="-1" aria-hidden="true">
                   {%- if img1 != blank -%}
                     <img
                       class="m19-card__img m19-card__img--primary"
                       src="{{ img1 | image_url: width: 600 }}"
                       srcset="{{ img1 | image_url: width: 400 }} 400w, {{ img1 | image_url: width: 600 }} 600w, {{ img1 | image_url: width: 800 }} 800w"
-                      sizes="(max-width:768px) calc((100vw - 48px) / 1.5), (max-width:1280px) calc((100vw - 76px) / 3.5), calc((100vw - 106px) / 5.5)"
+                      sizes="(max-width:640px) calc((100vw - 48px) / 1.3), (max-width:1024px) calc((100vw - 76px) / 3.3), (max-width:1280px) calc((100vw - 96px) / 4.3), calc((100vw - 106px) / 5.3)"
                       alt="{{ img1.alt | default: product.title | escape }}"
                       loading="{% if forloop.index <= 4 %}eager{% else %}lazy{% endif %}"
                       width="{{ img1.width }}"
@@ -193,17 +239,28 @@
       <div class="fc__footer">
         <div class="fc__footer-left">
           {%- if show_nav -%}
-            <div class="fc__dots" id="fc-dots-{{ sid }}" role="tablist" aria-label="Position carousel"></div>
+            <div class="fc__dots" id="fc-dots-{{ sid }}" role="tablist" aria-label="Position carousel">
+              {%- assign dot_count = products_list | slice: 0, max_products | size -%}
+              {%- for i in (1..dot_count) -%}
+                <button
+                  class="fc__dot{% if forloop.first %} fc__dot--active{% endif %}"
+                  type="button"
+                  role="tab"
+                  aria-label="Page {{ forloop.index }}"
+                  aria-selected="{% if forloop.first %}true{% else %}false{% endif %}"
+                ></button>
+              {%- endfor -%}
+            </div>
           {%- endif -%}
         </div>
         <div class="fc__footer-right">
           {%- if show_arr -%}
             <div class="fc__arrows">
               <button class="fc__arrow" id="fc-prev-{{ sid }}" aria-label="Produits précédents" type="button">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="15 18 9 12 15 6"/></svg>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="15 18 9 12 15 6"/></svg>
               </button>
               <button class="fc__arrow" id="fc-next-{{ sid }}" aria-label="Produits suivants" type="button">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="9 18 15 12 9 6"/></svg>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="9 18 15 12 9 6"/></svg>
               </button>
             </div>
           {%- endif -%}
@@ -215,47 +272,61 @@
 
 <style>
 /* ═══════════════════════════════════════════════════
-   Featured Carousel — fc
-   Responsive: ≤768px → 1.5 cards | 769-1280px → 3.5 cards | ≥1281px → 5.5 cards
+   Featured Carousel — fc (Swiper) — fully customisable
+   mobile  ≤640px       → 1 + 0.3 partiel
+   tablette 641-1024px  → 3 + 0.3 partiel
+   moyen   1025-1280px  → 4 + 0.3 partiel
+   grand   ≥1281px      → 5 + 0.3 partiel
    ═══════════════════════════════════════════════════ */
+
+/* min(100vw, max-w) évite le débordement sur très grands écrans */
 .fc {
-  --fc-pad:    16px;
-  --fc-ease:   cubic-bezier(0.4, 0, 0.2, 1);
-  /* Default card width: mobile 1.5 cards visible */
-  --fc-card-w: calc((100vw - (2 * var(--fc-pad)) - var(--fc-gap)) / 1.5);
+  --fc-pad:      16px;
+  --fc-ease:     cubic-bezier(0.4, 0, 0.2, 1);
+  --fc-usable-w: min(100vw, var(--fc-max-w, 1400px));
+  --fc-card-w:   calc((var(--fc-usable-w) - (2 * var(--fc-pad)) - (1 * var(--fc-gap, 14px))) / 1.3);
 
   background:    var(--fc-bg, #f7f7f8);
   color:         var(--fc-text, #0a0a0a);
   margin-top:    var(--fc-mt, 0);
   margin-bottom: var(--fc-mb, 0);
+  overflow-x:    clip;
 }
 
-/* ── 769px → 1280px : 3.5 cards ── */
-@media (min-width: 769px) {
+/* ── tablette : 641px → 1024px — 3 + 0.3 ── */
+@media (min-width: 641px) {
   .fc {
-    --fc-pad: 24px;
-    --fc-card-w: calc((100vw - (2 * var(--fc-pad)) - (2.5 * var(--fc-gap))) / 3.5);
+    --fc-pad:    24px;
+    --fc-card-w: calc((var(--fc-usable-w) - (2 * var(--fc-pad)) - (3 * var(--fc-gap, 14px))) / 3.3);
   }
 }
 
-/* ── ≥1281px : 5.5 cards ── */
+/* ── moyen : 1025px → 1280px — 4 + 0.3 ── */
+@media (min-width: 1025px) {
+  .fc {
+    --fc-pad:    32px;
+    --fc-card-w: calc((var(--fc-usable-w) - (2 * var(--fc-pad)) - (4 * var(--fc-gap, 14px))) / 4.3);
+  }
+}
+
+/* ── grand : ≥1281px — 5 + 0.3 ── */
 @media (min-width: 1281px) {
   .fc {
-    --fc-pad: 40px;
-    --fc-card-w: calc((100vw - (2 * var(--fc-pad)) - (4.5 * var(--fc-gap))) / 5.5);
+    --fc-pad:    40px;
+    --fc-card-w: calc((var(--fc-usable-w) - (2 * var(--fc-pad)) - (5 * var(--fc-gap, 14px))) / 5.3);
   }
 }
 
-/* ── Inner container — matches new-products max-width ── */
+/* ── Inner container ── */
 .fc__inner {
   max-width: var(--fc-max-w, 1400px);
   margin: 0 auto;
-  padding-top: var(--fc-pt-m, 40px);
+  padding-top:    var(--fc-pt-m, 40px);
   padding-bottom: var(--fc-pb-m, 36px);
 }
-@media (min-width: 769px) {
+@media (min-width: 641px) {
   .fc__inner {
-    padding-top: var(--fc-pt-d, 52px);
+    padding-top:    var(--fc-pt-d, 52px);
     padding-bottom: var(--fc-pb-d, 36px);
   }
 }
@@ -271,7 +342,7 @@
 .fc__header--center { align-items: center; text-align: center; }
 .fc__header--right  { align-items: flex-end; text-align: right; }
 
-@media (min-width: 769px) {
+@media (min-width: 641px) {
   .fc__header {
     flex-direction: row;
     align-items: flex-end;
@@ -284,203 +355,228 @@
 .fc__header-text { display: flex; flex-direction: column; gap: 4px; }
 
 .fc__eyebrow {
-  font-size: 0.7rem; font-weight: 600; letter-spacing: 0.16em;
-  text-transform: uppercase; color: var(--fc-eyebrow, #0787ea);
+  font-size:      var(--fc-eyebrow-size, 11px);
+  font-weight:    600;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color:          var(--fc-eyebrow, #0787ea);
 }
 .fc__title {
-  font-family: var(--font-body, 'Inter', sans-serif);
-  font-size: clamp(1.4rem, 3vw, 2.2rem);
-  font-weight: 800; letter-spacing: -0.03em;
-  color: var(--fc-title, #0a0a0a); margin: 0;
+  font-family:    var(--font-body, 'Inter', sans-serif);
+  font-size:      var(--fc-title-size, 32px);
+  font-weight:    var(--fc-title-weight, 800);
+  letter-spacing: -0.03em;
+  color:          var(--fc-title, #0a0a0a);
+  margin:         0;
 }
 .fc__subtitle {
-  font-size: 0.875rem; color: color-mix(in srgb, var(--fc-text, #0a0a0a) 60%, transparent);
-  margin: 0; max-width: 52ch; line-height: 1.55;
-}
-.fc__desc {
-  font-size: 0.875rem; color: color-mix(in srgb, var(--fc-text, #0a0a0a) 55%, transparent);
-  margin: 0; max-width: 60ch; line-height: 1.6; margin-top: 4px;
+  font-size:   var(--fc-subtitle-size, 14px);
+  color:       var(--fc-subtitle-col, #666);
+  margin:      0;
+  max-width:   52ch;
+  line-height: 1.55;
 }
 
 /* Tabs */
 .fc__tabs { display: flex; gap: 6px; flex-wrap: wrap; }
 .fc__tab {
-  padding: 6px 16px;
-  font-size: 0.8rem; font-weight: 600; letter-spacing: 0.03em;
-  border-radius: 0.75rem; border: 1.5px solid var(--fc-text, #0a0a0a);
-  background: transparent; color: var(--fc-text, #0a0a0a);
-  cursor: pointer;
-  transition: background 180ms var(--fc-ease), color 180ms var(--fc-ease);
+  padding:        6px 16px;
+  font-size:      0.8rem;
+  font-weight:    600;
+  letter-spacing: 0.03em;
+  border-radius:  0.375rem;
+  border:         1.5px solid var(--fc-text, #0a0a0a);
+  background:     transparent;
+  color:          var(--fc-text, #0a0a0a);
+  cursor:         pointer;
+  transition:     background 180ms var(--fc-ease), color 180ms var(--fc-ease);
 }
 .fc__tab--active { background: var(--fc-text, #0a0a0a); color: var(--fc-bg, #f7f7f8); }
 
 /* Separator */
 .fc__sep {
-  margin: 0 var(--fc-pad) 20px;
-  display: flex;
-  align-items: center;
-  gap: 16px;
-  color: color-mix(in srgb, var(--fc-text, #0a0a0a) 35%, transparent);
-  font-size: 0.78rem;
+  margin:         0 var(--fc-pad) 20px;
+  display:        flex;
+  align-items:    center;
+  gap:            16px;
+  color:          color-mix(in srgb, var(--fc-text, #0a0a0a) 35%, transparent);
+  font-size:      0.78rem;
   letter-spacing: 0.08em;
   text-transform: uppercase;
 }
 .fc__sep--line::before,
-.fc__sep--line::after {
-  content: '';
-  flex: 1;
-  height: 1px;
-  background: currentColor;
-}
+.fc__sep--line::after   { content: ''; flex: 1; height: 1px; background: currentColor; }
 .fc__sep--dashed::before,
-.fc__sep--dashed::after {
-  content: '';
-  flex: 1;
-  height: 1px;
-  border-top: 1px dashed currentColor;
-}
-.fc__sep--dots::before { display: none; }
-.fc__sep--dots { justify-content: center; }
+.fc__sep--dashed::after { content: ''; flex: 1; height: 1px; border-top: 1px dashed currentColor; }
+.fc__sep--dots::before  { display: none; }
+.fc__sep--dots          { justify-content: center; }
 
-/* ── Viewport wrap — clip only on X so card shadows are fully visible on Y ── */
+/* ── Viewport wrap ── */
 .fc__viewport-wrap {
-  overflow-x: clip;
-  overflow-y: visible;
+  overflow:       hidden;
+  padding-top:    8px;
+  margin-top:     -8px;
+  padding-bottom: 32px;
+  margin-bottom:  -32px;
 }
 
-/* ── Viewport ── */
-.fc__viewport {
-  padding-left: var(--fc-pad);
-  overflow-x: visible;
-  overflow-y: visible;
-  cursor: grab;
-  user-select: none;
-  -webkit-user-select: none;
+/* ── Swiper ── */
+.fc__swiper {
+  overflow: visible;
+  padding:  20px var(--fc-pad) 28px;
 }
-.fc__viewport:active { cursor: grabbing; }
 
-/* ── Track ── */
-.fc__track {
-  display: flex;
-  gap: var(--fc-gap, 14px);
-  padding-top: 20px;
-  padding-bottom: 28px;
-  padding-right: var(--fc-pad);
-  margin: 0;
-  padding-left: 0;
+.fc__swiper .fc__track {
+  margin:     0;
+  padding:    0;
   list-style: none;
+  gap:        var(--fc-gap, 14px);
 }
 
-/* ── Items — identical height/proportions ── */
-.fc__item {
-  flex: 0 0 var(--fc-card-w);
-  min-width: 0;
-  display: flex;
+/* ── Slide ── */
+.fc__swiper .fc__item {
+  width:          var(--fc-card-w) !important;
+  flex-shrink:    0;
+  height:         auto;
+  display:        flex;
   flex-direction: column;
 }
-.fc__item .m19-card {
-  flex: 1;
-  height: 100%;
-  background: var(--fc-card-bg, #fff);
+
+.fc__swiper .fc__item .m19-card {
+  flex:          1;
+  height:        100%;
+  background:    var(--fc-card-bg, #fff);
+  border-radius: var(--fc-card-radius, 6px);
+  border-color:  var(--fc-card-border-c, #e8e8e8);
+  border-width:  var(--fc-card-border-w, 1px);
+  box-shadow:    var(--fc-card-shadow, var(--m19-shadow-card));
 }
 
+/* Image */
+.fc__swiper .fc__item .m19-card__media {
+  aspect-ratio: var(--fc-img-ratio, 4 / 5);
+}
+.fc__swiper .fc__item .m19-card__img {
+  object-fit: var(--fc-img-fit, contain);
+}
+
+/* Card name & price */
+.fc__swiper .fc__item .m19-card__name  { color: var(--fc-name-color, #0a0a0a); }
+.fc__swiper .fc__item .m19-card__price { color: var(--fc-price-color, #0a0a0a); }
+
 /* Badge */
-.fc__item .fc__badge {
-  background: #fff;
-  color: #0a0a0a;
-  border: 1px solid rgba(10, 10, 10, 0.75);
-  border-radius: 0.75rem;
-  font-family: var(--font-body, 'Inter', sans-serif);
-  font-size: 8px;
-  font-weight: 600;
+.fc__swiper .fc__item .fc__badge {
+  background:     var(--fc-badge-bg, #fff);
+  color:          var(--fc-badge-text, #0a0a0a);
+  border:         1px solid rgba(10, 10, 10, 0.75);
+  border-radius:  0.375rem;
+  font-size:      8px;
+  font-weight:    600;
   letter-spacing: 0.1em;
   text-transform: none;
-  padding: 3px 7px;
-  line-height: 1;
-  top: 10px;
-  left: 10px;
-  box-shadow: none;
+  padding:        3px 7px;
+  line-height:    1;
+  top:            10px;
+  left:           10px;
+  box-shadow:     none;
 }
 
 .fc__empty { padding: 24px; font-size: 0.875rem; color: #aaa; }
 
-/* ── Footer — dots LEFT, arrows RIGHT ── */
+/* ── Footer ── */
 .fc__footer {
-  display: flex;
-  align-items: center;
+  display:         flex;
+  align-items:     center;
   justify-content: space-between;
-  padding: 18px var(--fc-pad) 0;
-  gap: 16px;
+  padding:         18px var(--fc-pad) 0;
+  gap:             16px;
 }
 
-/* Mobile ≤767px : masquer dots, centrer flèches */
-@media (max-width: 767px) {
+/* Mobile ≤640px : dots centrés, flèches masquées */
+@media (max-width: 640px) {
   .fc__footer        { justify-content: center; }
-  .fc__footer-left   { display: none; }
-  .fc__footer-right  { margin: 0 auto; }
+  .fc__footer-right  { display: none !important; }
+  .fc__footer-left   { margin: 0 auto; }
 }
 
 .fc__footer-left  { display: flex; align-items: center; }
 .fc__footer-right { display: flex; align-items: center; }
 
-/* ── Arrows — minimal, no bg, no border, no shadow ── */
+/* ── Arrows ── */
 .fc__arrows { display: flex; gap: 4px; }
 .fc__arrow {
-  display: flex;
-  align-items: center;
+  display:         flex;
+  align-items:     center;
   justify-content: center;
-  width: var(--fc-arrow-size, 36px);
-  height: var(--fc-arrow-size, 36px);
-  border-radius: 0.75rem;
-  border: none;
-  background: none;
-  color: var(--fc-arrow-color, #0a0a0a);
-  cursor: pointer;
-  transition: background 180ms var(--fc-ease), color 180ms var(--fc-ease);
-  padding: 0;
+  width:           var(--fc-arrow-size, 36px);
+  height:          var(--fc-arrow-size, 36px);
+  border-radius:   var(--fc-arrow-radius, 6px);
+  border:          none;
+  background:      none;
+  color:           var(--fc-arrow-color, #0a0a0a);
+  cursor:          pointer;
+  padding:         0;
+  transition:      background 180ms var(--fc-ease), color 180ms var(--fc-ease);
 }
-.fc__arrow:hover {
-  background: rgba(10, 10, 10, 0.07);
+.fc__arrow svg {
+  width:  calc(var(--fc-arrow-size, 36px) * 0.45);
+  height: calc(var(--fc-arrow-size, 36px) * 0.45);
+  display: block;
 }
-.fc__arrow:disabled { opacity: 0.28; cursor: default; pointer-events: none; }
-.fc__arrow:focus-visible { outline: 2px solid #0787ea; outline-offset: 2px; }
+.fc__arrow:hover          { background: rgba(10, 10, 10, 0.07); }
+.fc__arrow:disabled       { opacity: 0.28; cursor: default; pointer-events: none; }
+.fc__arrow:focus-visible  { outline: 2px solid #0787ea; outline-offset: 2px; }
 
 /* ── Dots ── */
-.fc__dots { display: flex; align-items: center; gap: 8px; }
+.fc__dots { display: flex; align-items: center; gap: var(--fc-dot-gap, 8px); }
 
 .fc__dot {
-  width: var(--fc-dot-size, 6px);
-  height: var(--fc-dot-size, 6px);
-  padding: 0;
-  border: none;
-  border-radius: 50%;
-  background: var(--fc-dot-inactive, rgba(10,10,10,0.18));
-  cursor: pointer;
-  transition: width 280ms var(--fc-ease), border-radius 280ms var(--fc-ease), background 280ms var(--fc-ease), transform 280ms ease, opacity 280ms ease;
+  width:           var(--fc-dot-size, 6px);
+  height:          var(--fc-dot-size, 6px);
+  padding:         0;
+  border:          none;
+  border-radius:   50%;
+  background:      var(--fc-dot-inactive, rgba(10,10,10,0.18));
+  cursor:          pointer;
+  transition:      width 280ms var(--fc-ease), border-radius 280ms var(--fc-ease),
+                   background 280ms var(--fc-ease), transform 280ms ease, opacity 280ms ease;
 }
-.fc__dot--active {
-  width: calc(var(--fc-dot-size, 6px) * 3.5);
-  border-radius: 3px;
-  background: var(--fc-dot-active, #0a0a0a);
-}
-.fc__dot--small  { transform: scale(0.6); opacity: 0.5; }
-.fc__dot--hidden { display: none; }
+.fc__dot--active  { width: calc(var(--fc-dot-size, 6px) * 3.5); border-radius: 3px; background: var(--fc-dot-active, #0a0a0a); }
+.fc__dot--small   { transform: scale(0.6); opacity: 0.5; }
+.fc__dot--hidden  { display: none; }
 .fc__dot:focus-visible { outline: 2px solid #0787ea; outline-offset: 2px; }
+
+/* ── Masquer la navigation Swiper native ── */
+.fc__swiper .swiper-pagination,
+.fc__swiper .swiper-button-next,
+.fc__swiper .swiper-button-prev { display: none !important; }
+
+{%- if section.settings.hide_on_mobile -%}
+@media (max-width: 640px) { #fc-{{ sid }} { display: none !important; } }
+{%- endif -%}
+{%- if section.settings.hide_on_desktop -%}
+@media (min-width: 641px) { #fc-{{ sid }} { display: none !important; } }
+{%- endif -%}
+{%- if section.settings.custom_css != blank -%}
+{{ section.settings.custom_css }}
+{%- endif -%}
 </style>
 
 <script>
 (function () {
   'use strict';
-  var sid     = '{{ sid }}';
-  var autoplay = {{ autoplay | json }};
-  var apDelay  = {{ ap_delay }};
+  var sid         = '{{ sid }}';
+  var autoplay    = {{ autoplay | json }};
+  var apDelay     = {{ ap_delay }};
+  var loopEnabled = {{ loop_enabled | json }};
+  var speed       = {{ carousel_spd }};
 
   function init() {
     var section  = document.getElementById('fc-' + sid);
-    if (!section || !window.EmblaCarousel) return;
+    if (!section || typeof Swiper === 'undefined') return;
 
-    var viewport = document.getElementById('fc-viewport-' + sid);
-    if (!viewport) return;
+    var swiperEl = document.getElementById('fc-swiper-' + sid);
+    if (!swiperEl) return;
 
     var dotsWrap = document.getElementById('fc-dots-' + sid);
     var btnPrev  = document.getElementById('fc-prev-' + sid);
@@ -488,48 +584,38 @@
     var tabs     = Array.from(section.querySelectorAll('.fc__tab'));
     var dots     = [];
 
-    var plugins = [];
-    if (autoplay && window.EmblaCarouselAutoScroll) {
-      plugins.push(window.EmblaCarouselAutoScroll({
-        direction: 'forward',
-        speed: 1.5,
-        startDelay: apDelay,
-        playOnInit: true,
-        stopOnMouseEnter: true,
-        stopOnInteraction: true,
-        stopOnFocusIn: true
-      }));
+    var swiperOpts = {
+      slidesPerView: 'auto',
+      spaceBetween:  0,
+      loop:          loopEnabled,
+      speed:         speed,
+      grabCursor:    true
+    };
+
+    if (autoplay) {
+      swiperOpts.autoplay = {
+        delay:                apDelay,
+        disableOnInteraction: true,
+        pauseOnMouseEnter:    true
+      };
     }
 
-    var embla = window.EmblaCarousel(viewport, {
-      loop:           true,
-      align:          'start',
-      slidesToScroll: 1,
-      dragFree:       false,
-      containScroll:  false
-    }, plugins);
+    var swiper = new Swiper(swiperEl, swiperOpts);
 
-    /* ── Dots ── */
-    function buildDots() {
-      if (!dotsWrap) return;
-      dotsWrap.innerHTML = '';
-      dots = [];
-      embla.scrollSnapList().forEach(function (_, i) {
-        var btn = document.createElement('button');
-        btn.type = 'button';
-        btn.className = 'fc__dot';
-        btn.setAttribute('role', 'tab');
-        btn.setAttribute('aria-label', 'Page ' + (i + 1));
-        btn.addEventListener('click', function () { embla.scrollTo(i); });
-        dotsWrap.appendChild(btn);
-        dots.push(btn);
+    /* ── Dots (pré-rendus en Liquid) ── */
+    dots = dotsWrap ? Array.from(dotsWrap.querySelectorAll('.fc__dot')) : [];
+
+    dots.forEach(function (btn, idx) {
+      btn.addEventListener('click', function (e) {
+        e.preventDefault();
+        swiper.slideToLoop(idx);
       });
-      updateDots();
-    }
+    });
 
     function updateDots() {
-      var maxV = 5;
-      var idx  = embla.selectedScrollSnap();
+      if (!dots.length) return;
+      var maxV  = 5;
+      var idx   = swiper.realIndex;
       dots.forEach(function (d, i) {
         var active = i === idx;
         d.className = 'fc__dot' + (active ? ' fc__dot--active' : '');
@@ -549,13 +635,11 @@
       }
     }
 
-    embla.on('select', updateDots);
-    embla.on('reInit', buildDots);
-    buildDots();
+    swiper.on('slideChange', updateDots);
 
     /* ── Arrows ── */
-    if (btnPrev) btnPrev.addEventListener('click', function () { embla.scrollPrev(); });
-    if (btnNext) btnNext.addEventListener('click', function () { embla.scrollNext(); });
+    if (btnPrev) btnPrev.addEventListener('click', function (e) { e.preventDefault(); swiper.slidePrev(); });
+    if (btnNext) btnNext.addEventListener('click', function (e) { e.preventDefault(); swiper.slideNext(); });
 
     /* ── ATC ── */
     section.addEventListener('click', function (e) {
@@ -567,9 +651,9 @@
       if (!id) return;
       btn.disabled = true;
       fetch('/cart/add.js', {
-        method: 'POST',
+        method:  'POST',
         headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
-        body: JSON.stringify({ id: parseInt(id, 10), quantity: 1 })
+        body:    JSON.stringify({ id: parseInt(id, 10), quantity: 1 })
       })
         .then(function (r) { return r.json(); })
         .then(function (d) {
@@ -595,24 +679,23 @@
         tab.setAttribute('tabindex', '0');
         var label = tab.dataset.badge || '{{ badge_text }}';
         section.querySelectorAll('.fc__badge').forEach(function (b) { b.textContent = label; });
-        embla.scrollTo(0);
+        swiper.slideToLoop(0);
       });
     });
-
-    /* Reveal cards */
-    function showAllCards() {
-      viewport.querySelectorAll('.m19-card').forEach(function (c) { c.classList.add('is-visible'); });
-    }
-    showAllCards();
-    embla.on('init',   showAllCards);
-    embla.on('reInit', showAllCards);
-    embla.on('select', showAllCards);
   }
 
-  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init);
-  else init();
+  function safeInit() {
+    if (typeof Swiper !== 'undefined') { init(); return; }
+    var interval = setInterval(function () {
+      if (typeof Swiper !== 'undefined') { clearInterval(interval); init(); }
+    }, 50);
+    setTimeout(function () { clearInterval(interval); }, 5000);
+  }
+
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', safeInit);
+  else safeInit();
   document.addEventListener('shopify:section:load', function (e) {
-    if (e.detail && e.detail.sectionId === sid) init();
+    if (e.detail && e.detail.sectionId === sid) safeInit();
   });
 })();
 </script>
@@ -624,15 +707,29 @@
   "class": "section-featured-carousel",
   "settings": [
     { "type": "header", "content": "Contenu" },
-    { "type": "text",     "id": "eyebrow",  "label": "Label eyebrow" },
-    { "type": "text",     "id": "title",    "label": "Titre",     "default": "Nos coups de cœur" },
-    { "type": "textarea", "id": "subtitle", "label": "Sous-titre" },
+    { "type": "text",     "id": "eyebrow",   "label": "Label eyebrow" },
+    { "type": "text",     "id": "title",     "label": "Titre",      "default": "Nos coups de cœur" },
+    { "type": "textarea", "id": "subtitle",  "label": "Sous-titre" },
+
+    { "type": "header", "content": "Typographie" },
+    { "type": "range", "id": "title_font_size", "label": "Taille titre (px)", "min": 16, "max": 56, "step": 1, "default": 32, "unit": "px" },
+    {
+      "type": "select", "id": "title_font_weight", "label": "Graisse titre", "default": "800",
+      "options": [
+        { "value": "400", "label": "Normal (400)" },
+        { "value": "500", "label": "Moyen (500)" },
+        { "value": "600", "label": "Semi-gras (600)" },
+        { "value": "700", "label": "Gras (700)" },
+        { "value": "800", "label": "Extra-gras (800)" }
+      ]
+    },
+    { "type": "range", "id": "eyebrow_font_size",  "label": "Taille eyebrow (px)",  "min": 8,  "max": 18, "step": 1, "default": 11, "unit": "px" },
+    { "type": "range", "id": "subtitle_font_size", "label": "Taille sous-titre (px)","min": 10, "max": 24, "step": 1, "default": 14, "unit": "px" },
+    { "type": "color", "id": "subtitle_color", "label": "Couleur sous-titre", "default": "#666666" },
+
     { "type": "header", "content": "Structure" },
     {
-      "type": "select",
-      "id": "header_align",
-      "label": "Alignement header",
-      "default": "left",
+      "type": "select", "id": "header_align", "label": "Alignement header", "default": "left",
       "options": [
         { "value": "left",   "label": "Gauche" },
         { "value": "center", "label": "Centre" },
@@ -643,64 +740,101 @@
     { "type": "checkbox", "id": "separator_enabled", "label": "Afficher séparateur", "default": false },
     { "type": "text",     "id": "separator_text",    "label": "Texte séparateur" },
     {
-      "type": "select",
-      "id": "separator_style",
-      "label": "Style séparateur",
-      "default": "line",
+      "type": "select", "id": "separator_style", "label": "Style séparateur", "default": "line",
       "options": [
         { "value": "line",   "label": "Ligne" },
         { "value": "dashed", "label": "Tirets" },
         { "value": "dots",   "label": "Centré" }
       ]
     },
+
     { "type": "header", "content": "Produits" },
     { "type": "collection", "id": "collection",   "label": "Collection", "info": "Vide = toutes" },
     { "type": "range",      "id": "max_products", "label": "Nb max produits", "min": 4, "max": 24, "step": 2, "default": 12 },
+
     { "type": "header", "content": "Onglets" },
     { "type": "checkbox", "id": "show_tabs", "label": "Afficher les onglets", "default": true },
+
+    { "type": "header", "content": "Carte produit" },
+    {
+      "type": "select", "id": "image_ratio", "label": "Proportion image", "default": "4 / 5",
+      "options": [
+        { "value": "1 / 1",  "label": "Carré (1:1)" },
+        { "value": "4 / 5",  "label": "Portrait (4:5)" },
+        { "value": "3 / 4",  "label": "Haut (3:4)" },
+        { "value": "16 / 9", "label": "Large (16:9)" }
+      ]
+    },
+    {
+      "type": "select", "id": "image_fit", "label": "Recadrage image", "default": "contain",
+      "options": [
+        { "value": "contain", "label": "Contenir" },
+        { "value": "cover",   "label": "Couvrir" }
+      ]
+    },
+    { "type": "range",    "id": "card_border_radius", "label": "Rayon bordure carte (px)", "min": 0,  "max": 32, "step": 1, "default": 6 },
+    { "type": "checkbox", "id": "card_show_border",   "label": "Bordure carte",            "default": true },
+    { "type": "color",    "id": "card_border_color",  "label": "Couleur bordure",          "default": "#e8e8e8" },
+    { "type": "checkbox", "id": "card_show_shadow",   "label": "Ombre carte",              "default": true },
+    { "type": "color",    "id": "card_name_color",    "label": "Couleur nom produit",      "default": "#0a0a0a" },
+    { "type": "color",    "id": "card_price_color",   "label": "Couleur prix",             "default": "#0a0a0a" },
+
     { "type": "header", "content": "Badges & Panier" },
-    { "type": "checkbox", "id": "show_badge", "label": "Afficher badge",  "default": true },
-    { "type": "text",     "id": "badge_text", "label": "Texte badge",     "default": "Meilleur vente" },
-    { "type": "checkbox", "id": "show_atc",   "label": "Bouton panier",   "default": true },
+    { "type": "checkbox", "id": "show_badge",       "label": "Afficher badge",       "default": true },
+    { "type": "text",     "id": "badge_text",        "label": "Texte badge",          "default": "Meilleur vente" },
+    { "type": "color",    "id": "badge_bg_color",    "label": "Fond badge",           "default": "#ffffff" },
+    { "type": "color",    "id": "badge_text_color",  "label": "Texte badge",          "default": "#0a0a0a" },
+    { "type": "checkbox", "id": "show_atc",          "label": "Bouton panier",        "default": true },
+
     { "type": "header", "content": "Navigation" },
-    { "type": "checkbox", "id": "show_arrows",     "label": "Flèches navigation",  "default": true },
-    { "type": "checkbox", "id": "show_dots",        "label": "Dots navigation",     "default": true },
-    { "type": "range",    "id": "arrow_size",       "label": "Taille boutons nav (px)", "min": 28, "max": 56, "step": 2, "default": 36 },
-    { "type": "range",    "id": "dot_size",         "label": "Taille dots (px)",    "min": 4,  "max": 12, "step": 1,  "default": 6 },
+    { "type": "checkbox", "id": "show_arrows",        "label": "Flèches",            "default": true },
+    { "type": "checkbox", "id": "show_dots",          "label": "Dots",               "default": true },
+    { "type": "range",    "id": "arrow_size",         "label": "Taille flèches (px)","min": 28, "max": 64, "step": 2,  "default": 36 },
+    { "type": "range",    "id": "arrow_border_radius","label": "Rayon flèches (px)", "min": 0,  "max": 32, "step": 1,  "default": 6 },
+    { "type": "range",    "id": "dot_size",           "label": "Taille dots (px)",   "min": 4,  "max": 14, "step": 1,  "default": 6 },
+    { "type": "range",    "id": "dot_gap",            "label": "Espacement dots (px)","min": 4, "max": 20, "step": 1,  "default": 8 },
+
     { "type": "header", "content": "Carousel" },
-    { "type": "checkbox", "id": "autoplay_enabled", "label": "Autoplay",       "default": false },
-    { "type": "range",    "id": "autoplay_delay",   "label": "Délai autoplay (ms)", "min": 2000, "max": 9000, "step": 500, "default": 4000 },
-    { "type": "header", "content": "Couleurs — Fond" },
-    { "type": "color", "id": "bg_color",     "label": "Fond section",   "default": "#f7f7f8" },
-    { "type": "color", "id": "card_bg",      "label": "Fond cards",     "default": "#ffffff" },
-    { "type": "color", "id": "text_color",   "label": "Couleur texte",  "default": "#0a0a0a" },
-    { "type": "color", "id": "title_color",  "label": "Couleur titres", "default": "#0a0a0a" },
-    { "type": "color", "id": "eyebrow_color","label": "Couleur eyebrow","default": "#0787ea" },
+    { "type": "checkbox", "id": "loop_enabled",    "label": "Boucle infinie",      "default": true },
+    { "type": "checkbox", "id": "autoplay_enabled","label": "Autoplay",            "default": false },
+    { "type": "range",    "id": "autoplay_delay",  "label": "Délai autoplay (ms)", "min": 2000, "max": 9000, "step": 500,  "default": 4000 },
+    { "type": "range",    "id": "carousel_speed",  "label": "Vitesse animation (ms)","min": 100,"max": 1500, "step": 50,  "default": 500 },
+
+    { "type": "header", "content": "Couleurs — Section" },
+    { "type": "color", "id": "bg_color",      "label": "Fond section",    "default": "#f7f7f8" },
+    { "type": "color", "id": "card_bg",       "label": "Fond cartes",     "default": "#ffffff" },
+    { "type": "color", "id": "text_color",    "label": "Texte général",   "default": "#0a0a0a" },
+    { "type": "color", "id": "title_color",   "label": "Titre section",   "default": "#0a0a0a" },
+    { "type": "color", "id": "eyebrow_color", "label": "Eyebrow",         "default": "#0787ea" },
+
     { "type": "header", "content": "Couleurs — Navigation" },
-    { "type": "color", "id": "dot_active_color",   "label": "Dot actif",       "default": "#0a0a0a" },
-    { "type": "color", "id": "dot_inactive_color", "label": "Dot inactif",     "default": "rgba(10,10,10,0.18)" },
-    { "type": "color", "id": "arrow_color",        "label": "Couleur flèches", "default": "#0a0a0a" },
+    { "type": "color", "id": "arrow_color",        "label": "Icône flèches",  "default": "#0a0a0a" },
+    { "type": "color", "id": "dot_active_color",   "label": "Dot actif",      "default": "#0a0a0a" },
+    { "type": "color", "id": "dot_inactive_color", "label": "Dot inactif",    "default": "#cccccc" },
+
     { "type": "header", "content": "Espacement" },
     { "type": "range", "id": "padding_top_mobile",     "label": "Padding haut mobile",    "min": 0, "max": 120, "step": 4, "default": 40,  "unit": "px" },
     { "type": "range", "id": "padding_bottom_mobile",  "label": "Padding bas mobile",     "min": 0, "max": 120, "step": 4, "default": 36,  "unit": "px" },
     { "type": "range", "id": "padding_top_desktop",    "label": "Padding haut desktop",   "min": 0, "max": 120, "step": 4, "default": 52,  "unit": "px" },
     { "type": "range", "id": "padding_bottom_desktop", "label": "Padding bas desktop",    "min": 0, "max": 120, "step": 4, "default": 36,  "unit": "px" },
-    { "type": "range", "id": "margin_top",    "label": "Marge haut",   "min": 0, "max": 120, "step": 4, "default": 0,  "unit": "px" },
-    { "type": "range", "id": "margin_bottom", "label": "Marge bas",    "min": 0, "max": 120, "step": 4, "default": 0,  "unit": "px" },
-    { "type": "range", "id": "cards_gap",     "label": "Espacement cards (px)", "min": 4, "max": 40, "step": 2, "default": 14, "unit": "px" },
+    { "type": "range", "id": "margin_top",    "label": "Marge haut",            "min": 0, "max": 120, "step": 4, "default": 0,   "unit": "px" },
+    { "type": "range", "id": "margin_bottom", "label": "Marge bas",             "min": 0, "max": 120, "step": 4, "default": 0,   "unit": "px" },
+    { "type": "range", "id": "cards_gap",     "label": "Espacement cartes (px)","min": 0, "max": 48,  "step": 2, "default": 14,  "unit": "px" },
+
     { "type": "header", "content": "Visibilité" },
-    { "type": "checkbox", "id": "hide_on_mobile",  "label": "Masquer mobile",  "default": false },
-    { "type": "checkbox", "id": "hide_on_desktop", "label": "Masquer desktop", "default": false },
+    { "type": "checkbox", "id": "hide_on_mobile",  "label": "Masquer sur mobile",  "default": false },
+    { "type": "checkbox", "id": "hide_on_desktop", "label": "Masquer sur desktop", "default": false },
+
     { "type": "header", "content": "Avancé" },
-    { "type": "text", "id": "custom_css", "label": "CSS personnalisé" }
+    { "type": "textarea", "id": "custom_css", "label": "CSS personnalisé" }
   ],
   "blocks": [
     {
       "type": "tab",
       "name": "Onglet filtre",
       "settings": [
-        { "type": "text", "id": "label", "label": "Texte onglet", "default": "Top" },
-        { "type": "text", "id": "badge", "label": "Badge produit", "default": "Meilleur vente" }
+        { "type": "text", "id": "label", "label": "Texte onglet",   "default": "Top" },
+        { "type": "text", "id": "badge", "label": "Badge produit",  "default": "Meilleur vente" }
       ]
     }
   ],

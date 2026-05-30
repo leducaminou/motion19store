@@ -1,0 +1,836 @@
+{%- comment -%} Why Us — Motion19 — OS 2.0 v3.0 — Editorial Premium Creator {%- endcomment -%}
+
+{%- liquid
+  assign sid = section.id
+  assign s   = section.settings
+
+  assign sec_bg        = s.section_bg        | default: '#0f0f0f'
+  assign text_c        = s.text_color        | default: '#9a9a9a'
+  assign eyebrow_c     = s.eyebrow_color     | default: '#6b9fff'
+  assign title_c       = s.title_color       | default: '#f0f0f0'
+  assign sep_c         = s.sep_color         | default: '#6b9fff'
+  assign card_bg_def   = s.card_bg           | default: '#141414'
+  assign card_brd_def  = s.card_border_color | default: 'rgba(255,255,255,0.07)'
+
+  assign max_w        = s.section_max_width       | default: 1400
+  assign pt_m         = s.padding_top_mobile      | default: 64
+  assign pb_m         = s.padding_bottom_mobile   | default: 64
+  assign pt_d         = s.padding_top_desktop     | default: 100
+  assign pb_d         = s.padding_bottom_desktop  | default: 100
+  assign grid_gap     = s.grid_gap                | default: 14
+  assign card_r       = s.card_radius             | default: 18
+  assign card_pad_v   = s.card_padding            | default: 32
+  assign header_align = s.header_align            | default: 'left'
+  assign sep_visible  = s.show_title_sep
+  assign sep_w        = s.sep_width               | default: 40
+  assign text_max_w   = s.text_max_width          | default: 520
+  assign anim_on      = s.enable_animations
+
+  assign title_fs_d  = s.title_size_desktop | default: 38
+  assign title_fs_m  = s.title_size_mobile  | default: 26
+  assign title_fw    = s.title_weight       | default: '700'
+  assign subtitle_fs = s.subtitle_size      | default: 15
+  assign eyebrow_fs  = s.eyebrow_size       | default: 11
+
+  if sep_visible == false
+    assign sep_op = 0
+  else
+    assign sep_op = 1
+  endif
+-%}
+
+<section
+  id="wu-{{ sid }}"
+  class="wu{% if anim_on %} wu--anim{% endif %}"
+  aria-labelledby="wu-title-{{ sid }}"
+  style="
+    --wu-bg:       {{ sec_bg }};
+    --wu-text:     {{ text_c }};
+    --wu-eyebrow:  {{ eyebrow_c }};
+    --wu-title:    {{ title_c }};
+    --wu-sep:      {{ sep_c }};
+    --wu-sep-op:   {{ sep_op }};
+    --wu-sep-w:    {{ sep_w }}px;
+    --wu-card-bg:  {{ card_bg_def }};
+    --wu-card-brd: {{ card_brd_def }};
+    --wu-max-w:    {{ max_w }}px;
+    --wu-pt-m:     {{ pt_m }}px;
+    --wu-pb-m:     {{ pb_m }}px;
+    --wu-pt-d:     {{ pt_d }}px;
+    --wu-pb-d:     {{ pb_d }}px;
+    --wu-gap:      {{ grid_gap }}px;
+    --wu-r:        {{ card_r }}px;
+    --wu-pad:      {{ card_pad_v }}px;
+    --wu-txt-maxw: {{ text_max_w }}px;
+    --wu-title-m:  {{ title_fs_m }}px;
+    --wu-title-d:  {{ title_fs_d }}px;
+    --wu-title-fw: {{ title_fw }};
+    --wu-sub-fs:   {{ subtitle_fs }}px;
+    --wu-eb-fs:    {{ eyebrow_fs }}px;
+  "
+>
+  <div class="wu__inner">
+
+    {%- comment -%}── Section header ──{%- endcomment -%}
+    <header class="wu__header wu__header--{{ header_align }}">
+      {%- if s.eyebrow != blank -%}
+        <span class="wu__eyebrow">{{ s.eyebrow }}</span>
+      {%- endif -%}
+      <h2 class="wu__title" id="wu-title-{{ sid }}">
+        {{ s.title | default: 'Équipez-vous comme un studio professionnel.' }}
+      </h2>
+      {%- if s.subtitle != blank -%}
+        <p class="wu__subtitle">{{ s.subtitle }}</p>
+      {%- endif -%}
+    </header>
+
+    {%- comment -%}── Editorial grid ──{%- endcomment -%}
+    <div class="wu__grid" role="list">
+
+      {%- if section.blocks.size > 0 -%}
+        {%- for block in section.blocks -%}
+          {%- assign variant   = block.settings.layout_variant | default: 'medium' -%}
+          {%- assign accent_b  = block.settings.accent_color   | default: eyebrow_c -%}
+          <article
+            class="wu__card wu__card--{{ variant }}"
+            {{ block.shopify_attributes }}
+            role="listitem"
+            style="
+              {%- if block.settings.surface_color != blank %}--wu-c-bg: {{ block.settings.surface_color }};{% endif %}
+              {%- if block.settings.text_color_card != blank %}--wu-c-txt: {{ block.settings.text_color_card }};{% endif %}
+              {%- if block.settings.border_color_card != blank %}--wu-c-brd: {{ block.settings.border_color_card }};{% endif %}
+              --wu-c-accent: {{ accent_b }};
+            "
+          >
+            {%- if block.settings.bg_image != blank -%}
+              <div class="wu__card-bg" aria-hidden="true">
+                <img
+                  src="{{ block.settings.bg_image | image_url: width: 800 }}"
+                  alt=""
+                  loading="lazy"
+                  decoding="async"
+                  width="{{ block.settings.bg_image.width }}"
+                  height="{{ block.settings.bg_image.height }}"
+                >
+              </div>
+            {%- endif -%}
+
+            {%- if block.settings.enable_glow -%}
+              <span class="wu__card-glow" aria-hidden="true" style="background:radial-gradient(ellipse at 20% 20%,color-mix(in srgb,{{ accent_b }} 22%,transparent),transparent 65%);"></span>
+            {%- endif -%}
+
+            <div class="wu__card-content">
+              {%- if block.settings.eyebrow != blank or block.settings.badge_text != blank -%}
+                <div class="wu__card-top">
+                  {%- if block.settings.eyebrow != blank -%}
+                    <span class="wu__card-eyebrow" style="color:{{ accent_b }};">{{ block.settings.eyebrow }}</span>
+                  {%- endif -%}
+                  {%- if block.settings.badge_text != blank -%}
+                    <span class="wu__card-badge" style="color:{{ accent_b }};border-color:color-mix(in srgb,{{ accent_b }} 28%,transparent);">{{ block.settings.badge_text }}</span>
+                  {%- endif -%}
+                </div>
+              {%- endif -%}
+
+              {%- unless block.settings.hide_icon -%}
+                <div class="wu__card-icon" aria-hidden="true" style="color:{{ accent_b }};">
+                  {%- if block.settings.icon_image != blank -%}
+                    <img src="{{ block.settings.icon_image | image_url: width: 48 }}" alt="" width="22" height="22" loading="lazy" decoding="async">
+                  {%- else -%}
+                    {%- case block.settings.icon -%}
+                      {%- when 'camera' -%}<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
+                      {%- when 'mic' -%}<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg>
+                      {%- when 'workflow' -%}<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+                      {%- when 'selection' -%}<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+                      {%- when 'zap' -%}<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+                      {%- when 'layers' -%}<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/></svg>
+                      {%- when 'cube' -%}<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="m21 16-9 5-9-5V8l9-5 9 5v8z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg>
+                      {%- when 'star' -%}<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                      {%- else -%}<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                    {%- endcase -%}
+                  {%- endif -%}
+                </div>
+              {%- endunless -%}
+
+              <div class="wu__card-body">
+                {%- if block.settings.title != blank -%}
+                  <h3 class="wu__card-title">{{ block.settings.title }}</h3>
+                {%- endif -%}
+                {%- if block.settings.description != blank -%}
+                  <p class="wu__card-desc">{{ block.settings.description }}</p>
+                {%- endif -%}
+                {%- if block.settings.stat_value != blank -%}
+                  <div class="wu__card-stat" style="color:{{ accent_b }};">
+                    <span class="wu__card-stat-val">{{ block.settings.stat_value }}</span>
+                    {%- if block.settings.stat_label != blank -%}
+                      <span class="wu__card-stat-lbl">{{ block.settings.stat_label }}</span>
+                    {%- endif -%}
+                  </div>
+                {%- endif -%}
+              </div>
+
+              {%- if block.settings.card_image != blank -%}
+                <div class="wu__card-img">
+                  <img
+                    src="{{ block.settings.card_image | image_url: width: 700 }}"
+                    srcset="{{ block.settings.card_image | image_url: width: 400 }} 400w, {{ block.settings.card_image | image_url: width: 700 }} 700w"
+                    sizes="(max-width:640px) 100vw, 50vw"
+                    alt="{{ block.settings.card_image.alt | default: '' | escape }}"
+                    loading="lazy"
+                    decoding="async"
+                    width="{{ block.settings.card_image.width }}"
+                    height="{{ block.settings.card_image.height }}"
+                  >
+                </div>
+              {%- endif -%}
+
+              {%- if block.settings.cta_label != blank -%}
+                <a class="wu__card-cta" href="{{ block.settings.cta_url | default: '#' }}" style="color:{{ accent_b }};" aria-label="{{ block.settings.cta_label | escape }}">
+                  <span>{{ block.settings.cta_label }}</span>
+                  <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+                </a>
+              {%- endif -%}
+            </div>
+          </article>
+        {%- endfor -%}
+
+      {%- else -%}
+        {%- comment -%}── Preview defaults ──{%- endcomment -%}
+        {%- assign dv  = 'featured,medium,medium,wide' | split: ',' -%}
+        {%- assign deb = 'Creator-grade,Performance,Workflow,Curated Selection' | split: ',' -%}
+        {%- assign dt  = 'Équipez-vous comme un studio professionnel.,Pensé pour les longues sessions créatives.,Moins de friction. Plus de création.,Chaque produit est sélectionné manuellement.' | split: ',' -%}
+        {%- assign dd  = 'Caméras, audio, lumière et accessoires sélectionnés pour les workflows modernes de création.,Streaming, tournage, montage et podcast avec des équipements fiables sous pression.,Des outils cohérents entre eux pour accélérer chaque étape de production.,Pas de catalogue inutile. Seulement des équipements réellement pertinents pour les créateurs modernes.' | split: ',' -%}
+        {%- assign da  = '#6b9fff,#a78bfa,#34d399,#fb923c' | split: ',' -%}
+        {%- assign di  = 'camera,zap,workflow,selection' | split: ',' -%}
+        {%- assign dsv = '500+,,,' | split: ',' -%}
+        {%- assign dsl = 'produits pro,,,' | split: ',' -%}
+
+        {%- for i in (0..3) -%}
+          <article class="wu__card wu__card--{{ dv[i] }}" role="listitem" style="--wu-c-accent:{{ da[i] }};">
+            <span class="wu__card-glow" aria-hidden="true" style="background:radial-gradient(ellipse at 20% 20%,color-mix(in srgb,{{ da[i] }} 20%,transparent),transparent 65%);"></span>
+            <div class="wu__card-content">
+              <div class="wu__card-top">
+                <span class="wu__card-eyebrow" style="color:{{ da[i] }};">{{ deb[i] }}</span>
+              </div>
+              <div class="wu__card-icon" aria-hidden="true" style="color:{{ da[i] }};">
+                {%- case di[i] -%}
+                  {%- when 'camera' -%}<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
+                  {%- when 'zap' -%}<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+                  {%- when 'workflow' -%}<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+                  {%- when 'selection' -%}<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+                {%- endcase -%}
+              </div>
+              <div class="wu__card-body">
+                <h3 class="wu__card-title">{{ dt[i] }}</h3>
+                <p class="wu__card-desc">{{ dd[i] }}</p>
+                {%- if dsv[i] != blank -%}
+                  <div class="wu__card-stat" style="color:{{ da[i] }};">
+                    <span class="wu__card-stat-val">{{ dsv[i] }}</span>
+                    {%- if dsl[i] != blank -%}<span class="wu__card-stat-lbl">{{ dsl[i] }}</span>{%- endif -%}
+                  </div>
+                {%- endif -%}
+              </div>
+            </div>
+          </article>
+        {%- endfor -%}
+      {%- endif -%}
+
+    </div>
+  </div>
+</section>
+
+<style>
+/* ─────────────────────────────────────────────────────
+   Why Us v3.0 — .wu — Editorial Premium Creator
+   ───────────────────────────────────────────────────── */
+
+.wu {
+  --wu-ease:    cubic-bezier(0.22, 1, 0.36, 1);
+  --wu-ease-io: cubic-bezier(0.4, 0, 0.2, 1);
+
+  background: var(--wu-bg, #0f0f0f);
+  color:      var(--wu-text, #9a9a9a);
+  overflow-x: clip;
+  contain:    layout style;
+}
+
+/* ── Inner ── */
+.wu__inner {
+  max-width:      var(--wu-max-w, 1400px);
+  margin:         0 auto;
+  padding:        var(--wu-pt-m, 64px) clamp(16px, 4vw, 40px) var(--wu-pb-m, 64px);
+}
+@media (min-width: 1025px) {
+  .wu__inner {
+    padding-top:    var(--wu-pt-d, 100px);
+    padding-bottom: var(--wu-pb-d, 100px);
+  }
+}
+
+/* ── Header ── */
+.wu__header {
+  display:        flex;
+  flex-direction: column;
+  gap:            12px;
+  margin-bottom:  clamp(40px, 5vw, 64px);
+  max-width:      var(--wu-txt-maxw, 520px);
+}
+.wu__header--center { align-items: center; text-align: center; max-width: 100%; }
+.wu__header--right  { align-items: flex-end; text-align: right; max-width: 100%; margin-left: auto; }
+
+.wu__eyebrow {
+  display:        inline-block;
+  font-size:      var(--wu-eb-fs, 11px);
+  font-weight:    600;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color:          var(--wu-eyebrow, #6b9fff);
+}
+
+.wu__title {
+  font-size:      var(--wu-title-m, 26px);
+  font-weight:    var(--wu-title-fw, 700);
+  letter-spacing: -0.03em;
+  line-height:    1.12;
+  color:          var(--wu-title, #f0f0f0);
+  margin:         0;
+  padding-bottom: 14px;
+  position:       relative;
+}
+@media (min-width: 768px) {
+  .wu__title { font-size: var(--wu-title-d, 38px); }
+}
+.wu__title::after {
+  content:       '';
+  position:      absolute;
+  bottom:        0; left: 0;
+  width:         var(--wu-sep-w, 40px);
+  height:        2px;
+  background:    var(--wu-sep, #6b9fff);
+  border-radius: 2px;
+  opacity:       var(--wu-sep-op, 1);
+}
+.wu__header--center .wu__title::after { left: 50%; transform: translateX(-50%); }
+.wu__header--right  .wu__title::after { left: auto; right: 0; }
+
+.wu__subtitle {
+  font-size:   var(--wu-sub-fs, 15px);
+  line-height: 1.65;
+  color:       var(--wu-text, #9a9a9a);
+  margin:      0;
+}
+
+/* ─────────────────────────────────────────────────────
+   Editorial Grid
+   ───────────────────────────────────────────────────── */
+.wu__grid {
+  display: grid;
+  gap:     var(--wu-gap, 14px);
+  grid-template-columns: 1fr;
+}
+
+@media (min-width: 641px) {
+  .wu__grid { grid-template-columns: repeat(2, 1fr); }
+  .wu__card--wide     { grid-column: 1 / -1; }
+  .wu__card--featured { grid-column: 1 / -1; }
+}
+
+@media (min-width: 1025px) {
+  .wu__grid { grid-template-columns: repeat(4, 1fr); }
+
+  .wu__card--featured { grid-column: span 2; grid-row: span 2; }
+  .wu__card--large    { grid-column: span 2; }
+  .wu__card--wide     { grid-column: 1 / -1; }
+  .wu__card--medium   { grid-column: span 1; }
+  .wu__card--small    { grid-column: span 1; }
+}
+
+/* ─────────────────────────────────────────────────────
+   Card Base
+   ───────────────────────────────────────────────────── */
+.wu__card {
+  --wu-c-bg:     var(--wu-card-bg, #141414);
+  --wu-c-brd:    var(--wu-card-brd, rgba(255,255,255,0.07));
+  --wu-c-accent: var(--wu-eyebrow, #6b9fff);
+  --wu-c-txt:    var(--wu-text, #9a9a9a);
+
+  position:      relative;
+  background:    var(--wu-c-bg);
+  border:        1px solid var(--wu-c-brd);
+  border-radius: var(--wu-r, 18px);
+  padding:       var(--wu-pad, 32px);
+  overflow:      hidden;
+  display:       flex;
+  flex-direction:column;
+  min-height:    200px;
+  contain:       layout style;
+
+  transition:
+    border-color 300ms var(--wu-ease-io),
+    transform    300ms var(--wu-ease),
+    box-shadow   300ms var(--wu-ease);
+}
+
+/* ── Animated reveal ── */
+.wu--anim .wu__card {
+  opacity:   0;
+  transform: translateY(20px);
+  transition:
+    opacity      480ms var(--wu-ease),
+    transform    480ms var(--wu-ease),
+    border-color 300ms var(--wu-ease-io),
+    box-shadow   300ms var(--wu-ease);
+}
+.wu--anim .wu__card.is-visible {
+  opacity:   1;
+  transform: translateY(0);
+}
+.wu__card:nth-child(2) { transition-delay:  60ms; }
+.wu__card:nth-child(3) { transition-delay: 120ms; }
+.wu__card:nth-child(4) { transition-delay: 180ms; }
+.wu__card:nth-child(5) { transition-delay: 240ms; }
+.wu__card:nth-child(6) { transition-delay: 300ms; }
+
+/* ── Hover ── */
+@media (hover: hover) {
+  .wu__card:hover {
+    border-color: color-mix(in srgb, var(--wu-c-accent) 30%, transparent);
+    box-shadow:
+      0 0 0 1px color-mix(in srgb, var(--wu-c-accent) 12%, transparent),
+      0 20px 48px rgba(0,0,0,0.4),
+      0 4px 12px rgba(0,0,0,0.2);
+    transform: translateY(-3px);
+  }
+  .wu__card:hover .wu__card-icon svg {
+    transform: translateY(-2px);
+  }
+}
+.wu__card:focus-within {
+  outline: 2px solid color-mix(in srgb, var(--wu-c-accent) 60%, transparent);
+  outline-offset: 2px;
+}
+
+/* ── Background image ── */
+.wu__card-bg {
+  position:      absolute;
+  inset:         0;
+  z-index:       0;
+  pointer-events:none;
+}
+.wu__card-bg img {
+  width:   100%;
+  height:  100%;
+  object-fit: cover;
+  opacity: 0.18;
+  display: block;
+}
+
+/* ── Glow layer ── */
+.wu__card-glow {
+  position:      absolute;
+  inset:         0;
+  z-index:       0;
+  pointer-events:none;
+  border-radius: inherit;
+}
+
+/* ── Content (above bg/glow) ── */
+.wu__card-content {
+  position:       relative;
+  z-index:        1;
+  display:        flex;
+  flex-direction: column;
+  gap:            16px;
+  height:         100%;
+}
+
+/* ── Top row: eyebrow + badge ── */
+.wu__card-top {
+  display:    flex;
+  align-items:center;
+  gap:        10px;
+  flex-wrap:  wrap;
+}
+
+.wu__card-eyebrow {
+  font-size:      10px;
+  font-weight:    700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color:          var(--wu-c-accent);
+  opacity:        0.85;
+}
+
+.wu__card-badge {
+  font-size:     10px;
+  font-weight:   600;
+  letter-spacing:0.06em;
+  padding:       3px 9px;
+  border:        1px solid;
+  border-radius: 99px;
+  color:         var(--wu-c-accent);
+  background:    color-mix(in srgb, var(--wu-c-accent) 8%, transparent);
+  white-space:   nowrap;
+}
+
+/* ── Icon ── */
+.wu__card-icon {
+  color: var(--wu-c-accent);
+  flex-shrink: 0;
+}
+.wu__card-icon svg {
+  display: block;
+  transition: transform 280ms var(--wu-ease);
+}
+
+/* ── Body ── */
+.wu__card-body {
+  display:        flex;
+  flex-direction: column;
+  gap:            8px;
+  flex:           1;
+}
+
+.wu__card-title {
+  font-size:      clamp(15px, 1.3vw, 20px);
+  font-weight:    700;
+  letter-spacing: -0.02em;
+  line-height:    1.2;
+  color:          var(--wu-c-txt, var(--wu-title, #f0f0f0));
+  margin:         0;
+}
+/* Featured cards get larger title */
+.wu__card--featured .wu__card-title {
+  font-size: clamp(20px, 2vw, 30px);
+}
+
+.wu__card-desc {
+  font-size:   clamp(13px, 1vw, 14.5px);
+  line-height: 1.65;
+  color:       var(--wu-text, #9a9a9a);
+  margin:      0;
+}
+
+/* ── Stats ── */
+.wu__card-stat {
+  display:    flex;
+  align-items:baseline;
+  gap:        6px;
+  margin-top: 4px;
+  color:      var(--wu-c-accent);
+}
+.wu__card-stat-val {
+  font-size:      clamp(28px, 3vw, 40px);
+  font-weight:    800;
+  letter-spacing: -0.04em;
+  line-height:    1;
+}
+.wu__card-stat-lbl {
+  font-size:   12px;
+  font-weight: 500;
+  opacity:     0.7;
+  line-height: 1.3;
+}
+
+/* ── Card image ── */
+.wu__card-img {
+  border-radius: calc(var(--wu-r, 18px) - 6px);
+  overflow:      hidden;
+  margin-top:    auto;
+}
+.wu__card-img img {
+  width:      100%;
+  height:     auto;
+  display:    block;
+  object-fit: cover;
+}
+
+/* ── CTA ── */
+.wu__card-cta {
+  display:         inline-flex;
+  align-items:     center;
+  gap:             6px;
+  font-size:       12px;
+  font-weight:     600;
+  letter-spacing:  0.04em;
+  color:           var(--wu-c-accent);
+  text-decoration: none;
+  margin-top:      auto;
+  padding-top:     4px;
+  width:           fit-content;
+  transition:      gap 240ms var(--wu-ease);
+}
+.wu__card-cta svg {
+  flex-shrink: 0;
+  transition: transform 240ms var(--wu-ease);
+}
+.wu__card-cta:focus-visible {
+  outline:        2px solid currentColor;
+  outline-offset: 3px;
+  border-radius:  2px;
+}
+@media (hover: hover) {
+  .wu__card:hover .wu__card-cta { gap: 9px; }
+  .wu__card:hover .wu__card-cta svg { transform: translateX(3px); }
+}
+
+/* ─────────────────────────────────────────────────────
+   Reduced motion
+   ───────────────────────────────────────────────────── */
+@media (prefers-reduced-motion: reduce) {
+  .wu--anim .wu__card { opacity: 1 !important; transform: none !important; transition: none !important; }
+  .wu__card, .wu__card-icon svg, .wu__card-cta, .wu__card-cta svg { transition: none !important; }
+}
+
+{%- if s.hide_on_mobile -%}
+  @media (max-width: 640px) { #wu-{{ sid }} { display: none !important; } }
+{%- endif -%}
+{%- if s.hide_on_desktop -%}
+  @media (min-width: 641px) { #wu-{{ sid }} { display: none !important; } }
+{%- endif -%}
+{%- if s.custom_css != blank -%}{{ s.custom_css }}{%- endif -%}
+</style>
+
+<script>
+(function () {
+  'use strict';
+  var sec = document.getElementById('wu-{{ sid }}');
+  if (!sec) return;
+
+  var cards = Array.from(sec.querySelectorAll('.wu__card'));
+  if (!cards.length) return;
+
+  function reveal() {
+    if ('IntersectionObserver' in window) {
+      var obs = new IntersectionObserver(function (entries) {
+        entries.forEach(function (e) {
+          if (!e.isIntersecting) return;
+          requestAnimationFrame(function () { e.target.classList.add('is-visible'); });
+          obs.unobserve(e.target);
+        });
+      }, { rootMargin: '0px 0px -6% 0px', threshold: 0.05 });
+      cards.forEach(function (c) { obs.observe(c); });
+    } else {
+      cards.forEach(function (c) { c.classList.add('is-visible'); });
+    }
+  }
+
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    cards.forEach(function (c) { c.classList.add('is-visible'); });
+    return;
+  }
+
+  reveal();
+
+  document.addEventListener('shopify:section:load', function (e) {
+    if (e.detail && e.detail.sectionId === '{{ sid }}') {
+      cards.forEach(function (c) { c.classList.add('is-visible'); });
+    }
+  }, { once: false });
+}());
+</script>
+
+{% schema %}
+{
+  "name": "Why Us — Éditorial",
+  "tag": "section",
+  "class": "section-why-us",
+  "settings": [
+    { "type": "header", "content": "━━ En-tête" },
+    { "type": "text",     "id": "eyebrow",  "label": "Label eyebrow",  "default": "Pourquoi nous" },
+    { "type": "text",     "id": "title",    "label": "Titre principal", "default": "Équipez-vous comme un studio professionnel." },
+    { "type": "textarea", "id": "subtitle", "label": "Sous-titre",      "default": "Caméras, audio, lumière et accessoires sélectionnés pour les workflows modernes de création." },
+    {
+      "type": "select", "id": "header_align", "label": "Alignement header", "default": "left",
+      "options": [
+        { "value": "left",   "label": "Gauche" },
+        { "value": "center", "label": "Centre" },
+        { "value": "right",  "label": "Droite" }
+      ]
+    },
+    { "type": "range", "id": "text_max_width", "label": "Largeur max texte intro (px)", "min": 320, "max": 800, "step": 20, "default": 520, "unit": "px" },
+
+    { "type": "header", "content": "━━ Typographie" },
+    { "type": "range", "id": "title_size_desktop", "label": "Taille titre desktop (px)", "min": 22, "max": 72, "step": 2, "default": 38, "unit": "px" },
+    { "type": "range", "id": "title_size_mobile",  "label": "Taille titre mobile (px)",  "min": 18, "max": 44, "step": 2, "default": 26, "unit": "px" },
+    {
+      "type": "select", "id": "title_weight", "label": "Graisse titre", "default": "700",
+      "options": [
+        { "value": "400", "label": "Regular" },
+        { "value": "500", "label": "Medium" },
+        { "value": "600", "label": "Semi-Bold" },
+        { "value": "700", "label": "Bold" },
+        { "value": "800", "label": "Extra-Bold" },
+        { "value": "900", "label": "Black" }
+      ]
+    },
+    { "type": "range", "id": "subtitle_size", "label": "Taille sous-titre (px)", "min": 12, "max": 20, "step": 1, "default": 15, "unit": "px" },
+    { "type": "range", "id": "eyebrow_size",  "label": "Taille eyebrow (px)",   "min": 9,  "max": 14, "step": 1, "default": 11, "unit": "px" },
+
+    { "type": "header", "content": "━━ Séparateur" },
+    { "type": "checkbox", "id": "show_title_sep", "label": "Afficher le séparateur", "default": true },
+    { "type": "color",    "id": "sep_color",       "label": "Couleur séparateur",     "default": "#6b9fff" },
+    { "type": "range",    "id": "sep_width",        "label": "Largeur (px)",           "min": 16, "max": 120, "step": 4, "default": 40, "unit": "px" },
+
+    { "type": "header", "content": "━━ Couleurs section" },
+    { "type": "color", "id": "section_bg",      "label": "Fond de la section", "default": "#0f0f0f" },
+    { "type": "color", "id": "text_color",      "label": "Texte corps",        "default": "#9a9a9a" },
+    { "type": "color", "id": "eyebrow_color",   "label": "Eyebrow / accent",   "default": "#6b9fff" },
+    { "type": "color", "id": "title_color",     "label": "Titre principal",    "default": "#f0f0f0" },
+    { "type": "color", "id": "card_bg",         "label": "Fond carte défaut",  "default": "#141414" },
+    { "type": "color", "id": "card_border_color","label": "Bordure carte défaut","default": "#ffffff" },
+
+    { "type": "header", "content": "━━ Cartes — Design" },
+    { "type": "range", "id": "card_radius",  "label": "Rayon carte (px)",   "min": 0, "max": 32, "step": 2, "default": 18, "unit": "px" },
+    { "type": "range", "id": "card_padding", "label": "Padding carte (px)",  "min": 16, "max": 56, "step": 4, "default": 32, "unit": "px" },
+    { "type": "range", "id": "grid_gap",     "label": "Espacement grille (px)", "min": 4, "max": 32, "step": 2, "default": 14, "unit": "px" },
+
+    { "type": "header", "content": "━━ Animations" },
+    { "type": "checkbox", "id": "enable_animations", "label": "Activer le reveal au scroll", "default": true, "info": "Respecte prefers-reduced-motion" },
+
+    { "type": "header", "content": "━━ Espacement section" },
+    { "type": "range", "id": "section_max_width",     "label": "Largeur max (px)",          "min": 960, "max": 1920, "step": 40, "default": 1400 },
+    { "type": "range", "id": "padding_top_mobile",    "label": "Padding haut — mobile",     "min": 0, "max": 160, "step": 4, "default": 64, "unit": "px" },
+    { "type": "range", "id": "padding_bottom_mobile", "label": "Padding bas — mobile",      "min": 0, "max": 160, "step": 4, "default": 64, "unit": "px" },
+    { "type": "range", "id": "padding_top_desktop",   "label": "Padding haut — desktop",    "min": 0, "max": 200, "step": 4, "default": 100, "unit": "px" },
+    { "type": "range", "id": "padding_bottom_desktop","label": "Padding bas — desktop",     "min": 0, "max": 200, "step": 4, "default": 100, "unit": "px" },
+
+    { "type": "header", "content": "━━ Visibilité" },
+    { "type": "checkbox", "id": "hide_on_mobile",  "label": "Masquer sur mobile",  "default": false },
+    { "type": "checkbox", "id": "hide_on_desktop", "label": "Masquer sur desktop", "default": false },
+
+    { "type": "header", "content": "━━ Avancé" },
+    { "type": "textarea", "id": "custom_css", "label": "CSS personnalisé (injecté en bas)" }
+  ],
+  "blocks": [
+    {
+      "type": "feature_card",
+      "name": "Carte éditoriale",
+      "settings": [
+        {
+          "type": "select",
+          "id": "layout_variant",
+          "label": "Taille / Disposition",
+          "default": "medium",
+          "options": [
+            { "value": "featured", "label": "Featured (2×2 — grande héro)" },
+            { "value": "large",    "label": "Large (2 colonnes)" },
+            { "value": "wide",     "label": "Wide (pleine largeur)" },
+            { "value": "medium",   "label": "Medium (1 colonne)" },
+            { "value": "small",    "label": "Small (1 colonne, compacte)" }
+          ]
+        },
+        { "type": "header",   "content": "Contenu" },
+        { "type": "text",     "id": "eyebrow",      "label": "Eyebrow / catégorie" },
+        { "type": "text",     "id": "badge_text",   "label": "Badge (tag pill, optionnel)" },
+        { "type": "text",     "id": "title",        "label": "Titre" },
+        { "type": "textarea", "id": "description",  "label": "Description" },
+        { "type": "text",     "id": "stat_value",   "label": "Valeur stat (ex: 500+)" },
+        { "type": "text",     "id": "stat_label",   "label": "Label stat (ex: produits pro)" },
+
+        { "type": "header", "content": "Icône" },
+        {
+          "type": "select",
+          "id": "icon",
+          "label": "Icône",
+          "default": "selection",
+          "options": [
+            { "value": "camera",    "label": "Caméra" },
+            { "value": "mic",       "label": "Microphone" },
+            { "value": "workflow",  "label": "Workflow / Signal" },
+            { "value": "selection", "label": "Sélection / Check" },
+            { "value": "zap",       "label": "Rapidité / Éclair" },
+            { "value": "layers",    "label": "Layers / Stack" },
+            { "value": "cube",      "label": "Cube 3D" },
+            { "value": "star",      "label": "Étoile / Premium" }
+          ]
+        },
+        { "type": "image_picker", "id": "icon_image", "label": "Icône personnalisée (remplace le SVG)" },
+        { "type": "checkbox",     "id": "hide_icon",  "label": "Masquer l'icône", "default": false },
+
+        { "type": "header", "content": "Images" },
+        { "type": "image_picker", "id": "card_image", "label": "Image de contenu" },
+        { "type": "image_picker", "id": "bg_image",   "label": "Image de fond (overlay auto)" },
+
+        { "type": "header", "content": "Couleurs carte" },
+        { "type": "color", "id": "accent_color",     "label": "Couleur accent",        "default": "#6b9fff" },
+        { "type": "color", "id": "surface_color",    "label": "Fond carte (override)" },
+        { "type": "color", "id": "text_color_card",  "label": "Texte carte (override)" },
+        { "type": "color", "id": "border_color_card","label": "Bordure (override)" },
+
+        { "type": "header", "content": "Effets" },
+        { "type": "checkbox", "id": "enable_glow",   "label": "Glow accent (halo lumineux)", "default": true },
+
+        { "type": "header", "content": "CTA" },
+        { "type": "text", "id": "cta_label", "label": "Texte du lien" },
+        { "type": "url",  "id": "cta_url",   "label": "URL du lien" }
+      ]
+    }
+  ],
+  "max_blocks": 8,
+  "presets": [
+    {
+      "name": "Why Us — Éditorial",
+      "settings": {
+        "eyebrow":   "Pourquoi nous choisir",
+        "title":     "Équipez-vous comme un studio professionnel.",
+        "subtitle":  "Sélection rigoureuse, workflow fluide, équipements fiables — tout ce qu'il faut pour créer sans compromis.",
+        "section_bg": "#0f0f0f",
+        "title_color": "#f0f0f0",
+        "enable_animations": true
+      },
+      "blocks": [
+        {
+          "type": "feature_card",
+          "settings": {
+            "layout_variant": "featured",
+            "eyebrow":      "Creator-grade",
+            "title":        "Équipez-vous comme un studio professionnel.",
+            "description":  "Caméras, audio, lumière et accessoires sélectionnés pour les workflows modernes de création.",
+            "stat_value":   "500+",
+            "stat_label":   "produits pro",
+            "icon":         "camera",
+            "accent_color": "#6b9fff",
+            "enable_glow":  true
+          }
+        },
+        {
+          "type": "feature_card",
+          "settings": {
+            "layout_variant": "medium",
+            "eyebrow":      "Performance",
+            "title":        "Pensé pour les longues sessions créatives.",
+            "description":  "Streaming, tournage, montage et podcast avec des équipements fiables sous pression.",
+            "icon":         "zap",
+            "accent_color": "#a78bfa",
+            "enable_glow":  true
+          }
+        },
+        {
+          "type": "feature_card",
+          "settings": {
+            "layout_variant": "medium",
+            "eyebrow":      "Workflow",
+            "title":        "Moins de friction. Plus de création.",
+            "description":  "Des outils cohérents entre eux pour accélérer chaque étape de production.",
+            "icon":         "workflow",
+            "accent_color": "#34d399",
+            "enable_glow":  true
+          }
+        },
+        {
+          "type": "feature_card",
+          "settings": {
+            "layout_variant": "wide",
+            "eyebrow":      "Curated Selection",
+            "title":        "Chaque produit est sélectionné manuellement.",
+            "description":  "Pas de catalogue inutile. Seulement des équipements réellement pertinents pour les créateurs modernes.",
+            "icon":         "selection",
+            "accent_color": "#fb923c",
+            "enable_glow":  false
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

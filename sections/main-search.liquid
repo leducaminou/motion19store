@@ -1,0 +1,209 @@
+{{ 'card.css' | asset_url | stylesheet_tag }}
+
+{%- liquid
+  assign sid         = section.id
+  assign products_pp = section.settings.products_per_page | default: 20
+  assign show_atc    = section.settings.show_atc
+-%}
+
+<header class="col-header" id="col-header-{{ sid }}">
+  <div class="col-header__inner">
+    {%- if search.performed -%}
+      {%- if search.results_count > 0 -%}
+        <h1 class="col-header__title">{{ search.results_count }} résultat{% if search.results_count > 1 %}s{% endif %} pour « {{ search.terms | escape }} »</h1>
+      {%- else -%}
+        <h1 class="col-header__title">Aucun résultat pour « {{ search.terms | escape }} »</h1>
+        <p class="col-header__desc">Essayez avec d'autres mots-clés ou parcourez nos collections.</p>
+      {%- endif -%}
+    {%- else -%}
+      <h1 class="col-header__title">Recherche</h1>
+    {%- endif -%}
+
+    <form class="srch-form" action="{{ routes.search_url }}" method="get" role="search">
+      <svg class="srch-form__icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+      </svg>
+      <input type="search" name="q" value="{{ search.terms | escape }}" placeholder="Rechercher un produit..." class="srch-form__input" aria-label="Rechercher" autocomplete="off">
+      <input type="hidden" name="type" value="product">
+      <button type="submit" class="srch-form__btn" aria-label="Lancer la recherche">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M5 12h14M12 5l7 7-7 7"/>
+        </svg>
+      </button>
+    </form>
+  </div>
+</header>
+
+<div class="col-content">
+  <main class="col-main" id="col-grid-{{ sid }}">
+    {%- if search.performed -%}
+      {%- paginate search.results by products_pp -%}
+      <ul class="col-grid" role="list" aria-label="Résultats de recherche">
+        {%- for item in search.results -%}
+          {%- if item.object_type == 'product' -%}
+            {%- assign product = item -%}
+            {%- assign img1 = product.featured_image -%}
+            {%- assign img2 = product.images[1] -%}
+            <li>
+              <article class="m19-card" aria-label="{{ product.title | escape }}">
+                <a class="m19-card__media" href="{{ product.url }}" tabindex="-1" aria-hidden="true">
+                  {%- if img1 != blank -%}
+                    <img
+                      class="m19-card__img m19-card__img--primary"
+                      src="{{ img1 | image_url: width: 600 }}"
+                      srcset="{{ img1 | image_url: width: 400 }} 400w, {{ img1 | image_url: width: 600 }} 600w, {{ img1 | image_url: width: 900 }} 900w"
+                      sizes="(max-width:640px) calc(50vw - 24px), (max-width:1024px) calc(33vw - 20px), (max-width:1440px) calc(25vw - 22px), calc(20vw - 22px)"
+                      alt="{{ img1.alt | default: product.title | escape }}"
+                      loading="{% if forloop.index <= 6 %}eager{% else %}lazy{% endif %}"
+                      width="{{ img1.width }}"
+                      height="{{ img1.height }}"
+                    >
+                    {%- if img2 != blank -%}
+                      <img
+                        class="m19-card__img m19-card__img--hover"
+                        src="{{ img2 | image_url: width: 600 }}"
+                        alt="{{ img2.alt | default: product.title | escape }}"
+                        loading="lazy"
+                        width="{{ img2.width }}"
+                        height="{{ img2.height }}"
+                        aria-hidden="true"
+                      >
+                    {%- endif -%}
+                  {%- else -%}
+                    <div class="m19-card__media-fallback" aria-hidden="true"></div>
+                  {%- endif -%}
+
+                  {%- if product.available == false -%}
+                    <span class="m19-card__badge m19-card__badge--sale" aria-hidden="true">Épuisé</span>
+                  {%- elsif product.compare_at_price > product.price -%}
+                    {%- assign discount_raw = product.compare_at_price | minus: product.price | times: 100.0 | divided_by: product.compare_at_price -%}
+                    {%- assign discount_r2  = discount_raw | round: 2 -%}
+                    {%- assign discount_r0  = discount_raw | round -%}
+                    <span class="m19-card__badge m19-card__badge--discount" aria-hidden="true">
+                      {%- if discount_r2 == discount_r0 -%}
+                        -{{ discount_r0 }}%
+                      {%- else -%}
+                        -{{ discount_r2 }}%
+                      {%- endif -%}
+                    </span>
+                  {%- endif -%}
+
+                  {%- if show_atc and product.available -%}
+                    <button class="m19-card__action" type="button" data-variant-id="{{ product.variants.first.id }}" aria-label="Ajouter {{ product.title | escape }} au panier">
+                      <svg class="m19-card__action-icon m19-card__action-icon--bag" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg>
+                      <svg class="m19-card__action-icon m19-card__action-icon--check" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>
+                    </button>
+                  {%- endif -%}
+                </a>
+
+                <div class="m19-card__body">
+                  {%- if product.vendor != blank -%}
+                    <p class="m19-card__vendor">{{ product.vendor }}</p>
+                  {%- endif -%}
+                  <a class="m19-card__name" href="{{ product.url }}">{{ product.title | truncate: 44 }}</a>
+                  <div class="m19-card__pricing">
+                    {%- if product.compare_at_price > product.price -%}
+                      <s class="m19-card__price--compare">{{ product.compare_at_price | money }}</s>
+                    {%- endif -%}
+                    <span class="m19-card__price{% if product.compare_at_price > product.price %} m19-card__price--sale{% endif %}">{{ product.price | money }}</span>
+                  </div>
+                </div>
+              </article>
+            </li>
+          {%- endif -%}
+        {%- else -%}
+          <li class="col-empty">Aucun produit ne correspond à votre recherche.</li>
+        {%- endfor -%}
+      </ul>
+
+      {%- if paginate.pages > 1 -%}
+      <nav class="col-pagination" aria-label="Navigation pages">
+        {%- if paginate.previous -%}
+          <a href="{{ paginate.previous.url }}" class="col-pagination__item col-pagination__item--arrow" aria-label="Page précédente"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="15 18 9 12 15 6"/></svg></a>
+        {%- else -%}
+          <span class="col-pagination__item col-pagination__item--arrow" aria-disabled="true"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="15 18 9 12 15 6"/></svg></span>
+        {%- endif -%}
+        {%- for part in paginate.parts -%}
+          {%- if part.is_link -%}
+            <a href="{{ part.url }}" class="col-pagination__item">{{ part.title }}</a>
+          {%- elsif part.title == paginate.current_page -%}
+            <span class="col-pagination__item is-active" aria-current="page">{{ part.title }}</span>
+          {%- else -%}
+            <span class="col-pagination__dots">···</span>
+          {%- endif -%}
+        {%- endfor -%}
+        {%- if paginate.next -%}
+          <a href="{{ paginate.next.url }}" class="col-pagination__item col-pagination__item--arrow" aria-label="Page suivante"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="9 18 15 12 9 6"/></svg></a>
+        {%- else -%}
+          <span class="col-pagination__item col-pagination__item--arrow" aria-disabled="true"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="9 18 15 12 9 6"/></svg></span>
+        {%- endif -%}
+      </nav>
+      {%- endif -%}
+      {%- endpaginate -%}
+    {%- endif -%}
+  </main>
+</div>
+
+<script>
+(function () {
+  'use strict';
+  var sid    = '{{ sid }}';
+  var gridEl = document.getElementById('col-grid-' + sid);
+  var cards  = gridEl ? Array.from(gridEl.querySelectorAll('.m19-card')) : [];
+
+  if ('IntersectionObserver' in window && cards.length) {
+    var obs = new IntersectionObserver(function (entries) {
+      entries.forEach(function (entry) {
+        if (!entry.isIntersecting) return;
+        var c = entry.target; var idx = cards.indexOf(c);
+        c.style.transitionDelay = (Math.min(idx % 5, 4) * 55) + 'ms';
+        c.classList.add('is-visible'); obs.unobserve(c);
+      });
+    }, { rootMargin: '0px 0px -5% 0px', threshold: 0.06 });
+    cards.forEach(function (c) { obs.observe(c); });
+  } else { cards.forEach(function (c) { c.classList.add('is-visible'); }); }
+
+  if (gridEl) {
+    gridEl.addEventListener('click', function (e) {
+      var btn = e.target.closest('.m19-card__action');
+      if (!btn || btn.disabled) return;
+      e.preventDefault(); e.stopPropagation();
+      var id = btn.dataset.variantId; if (!id) return;
+      btn.disabled = true; btn.classList.add('m19-card__action--loading');
+      fetch('/cart/add.js', { method: 'POST', headers: { 'Content-Type': 'application/json', Accept: 'application/json' }, body: JSON.stringify({ id: parseInt(id, 10), quantity: 1 }) })
+        .then(function (r) { return r.json(); })
+        .then(function (d) {
+          btn.classList.remove('m19-card__action--loading');
+          if (d.status) { btn.disabled = false; return; }
+          btn.classList.add('is-added');
+          var counter = document.querySelector('[data-cart-count]');
+          if (counter) fetch('/cart.js').then(function (r) { return r.json(); }).then(function (c) { counter.textContent = c.item_count; });
+          setTimeout(function () { btn.classList.remove('is-added'); btn.disabled = false; }, 2200);
+        })
+        .catch(function () { btn.classList.remove('m19-card__action--loading'); btn.disabled = false; });
+    });
+  }
+})();
+</script>
+
+{% schema %}
+{
+  "name": "Recherche",
+  "tag": "div",
+  "class": "section-main-search",
+  "settings": [
+    { "type": "header", "content": "Produits" },
+    {
+      "type": "range",
+      "id": "products_per_page",
+      "label": "Produits par page",
+      "min": 8,
+      "max": 48,
+      "step": 4,
+      "default": 20
+    },
+    { "type": "checkbox", "id": "show_atc", "label": "Bouton panier rapide", "default": true }
+  ],
+  "presets": [{ "name": "Recherche" }]
+}
+{% endschema %}
