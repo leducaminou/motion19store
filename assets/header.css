@@ -4,12 +4,12 @@
    ============================================================ */
 
 :root {
-  --h-primary:    #0787ea;
+  --h-primary:    var(--color-primary);
   --h-black:      #000000;
-  --h-white:      #ffffff;
-  --h-border:     #e5e5e5;
-  --h-text:       #1a1a1a;
-  --h-text-muted: #666666;
+  --h-white:      var(--color-bg);
+  --h-border:     var(--color-border);
+  --h-text:       var(--color-text);
+  --h-text-muted: var(--color-text-light);
   --h-bg-search:  #f4f4f4;
   --h-top-h:      40px;
   --h-main-h:     64px;

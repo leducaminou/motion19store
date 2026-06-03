@@ -70,8 +70,8 @@
   /* ── Variables ──────────────────────────────────────── */
   .cb2 {
     --cb2-ease:  cubic-bezier(0.4, 0, 0.2, 1);
-    --cb2-white: #ffffff;
-    --cb2-blue:  #0787ea;
+    --cb2-white: var(--color-bg);
+    --cb2-blue:  var(--color-primary);
     --cb2-pad-x: clamp(24px, 5.5vw, 88px);
     --cb2-h:     clamp(400px, 58vh, 640px);
   }
@@ -81,7 +81,7 @@
     display: grid;
     grid-template-columns: 1fr 1fr;
     height: var(--cb2-h);
-    background: #0a0a0a;
+    background: var(--color-bg-dark);
     overflow: hidden;
     width: 100%;
   }
@@ -165,7 +165,7 @@
   @media (hover: hover) {
     .cb2__btn:hover {
       background: var(--cb2-white);
-      color: #0a0a0a;
+      color: var(--color-bg-dark);
       box-shadow: 0 6px 24px rgba(255, 255, 255, 0.14);
     }
   }

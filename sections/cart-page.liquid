@@ -10,8 +10,8 @@
   assign lbl_city     = s.city_label    | default: 'Ville'
   assign lbl_phone    = s.phone_label   | default: 'Numéro de téléphone'
   assign wa_color     = s.wa_color      | default: '#25D366'
-  assign btn_text     = s.btn_text_color| default: '#ffffff'
-  assign page_bg      = s.page_bg       | default: '#ffffff'
+  assign btn_text     = s.btn_text_color| default: 'var(--color-bg)'
+  assign page_bg      = s.page_bg       | default: 'var(--color-bg)'
   assign card_bg      = s.card_bg       | default: '#f8f8f8'
   assign border_c     = s.border_color  | default: '#e5e5e7'
   assign text_c       = s.text_color    | default: '#1d1d1f'
@@ -375,7 +375,7 @@
   .cp-modal-overlay.is-open { display: flex; }
 
   .cp-modal {
-    background: #ffffff;
+    background: var(--color-bg);
     width: 100%;
     max-width: 480px;
     border-radius: 20px 20px 0 0;
@@ -546,7 +546,7 @@
     width: 100%;
     padding: 14px 18px;
     background: #25D366;
-    color: #ffffff;
+    color: var(--color-bg);
     border: none;
     border-radius: 10px;
     font-size: 0.92rem;

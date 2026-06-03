@@ -58,7 +58,7 @@
             style="
               {% if col_bg != blank %}background-color: {{ col_bg }};{% endif %}
               border-radius: {{ card_radius }}px;
-              {% if card_border %}border: 1px solid var(--color-border, #e5e5e5);{% endif %}
+              {% if card_border %}border: 1px solid var(--color-border, var(--color-border));{% endif %}
               {% if block.settings.col_padding > 0 %}padding: {{ block.settings.col_padding }}px;{% endif %}
               {% if block.settings.hide_on_mobile %}--cg-col-hide-mob: none;{% endif %}
             "
@@ -182,7 +182,7 @@
     display: inline-flex; align-items: center; gap: 10px;
     font-family: var(--font-body, 'Inter', sans-serif);
     font-size: 0.68rem; font-weight: 600; letter-spacing: 0.2em;
-    text-transform: uppercase; color: var(--color-primary, #0787ea);
+    text-transform: uppercase; color: var(--color-primary, var(--color-primary));
     margin: 0 0 12px;
   }
   .cg__header--center .cg__eyebrow { justify-content: center; }
@@ -195,12 +195,12 @@
     font-family: var(--font-body, 'Inter', sans-serif);
     font-size: clamp(1.6rem, 3.5vw, 2.8rem);
     font-weight: 800; line-height: 1.08; letter-spacing: -0.03em;
-    color: var(--color-text, #1a1a1a); margin: 0 0 14px;
+    color: var(--color-text, var(--color-text)); margin: 0 0 14px;
   }
   .cg__section-subtitle {
     font-family: var(--font-body, 'Inter', sans-serif);
     font-size: clamp(0.88rem, 1.4vw, 1rem);
-    line-height: 1.7; color: var(--color-text-light, #666); margin: 0;
+    line-height: 1.7; color: var(--color-text-light, var(--color-text-light)); margin: 0;
   }
 
   /* ── Grid layout ─────────────────────────────────── */
@@ -260,7 +260,7 @@
 
   .cg__img-label {
     position: absolute; top: 12px; left: 12px; z-index: 2;
-    background: var(--color-primary, #0787ea); color: #fff;
+    background: var(--color-primary, var(--color-primary)); color: #fff;
     font-size: 0.68rem; font-weight: 700; letter-spacing: 0.08em;
     text-transform: uppercase; padding: 4px 10px; border-radius: 0.75rem;
   }
@@ -270,7 +270,7 @@
 
   .cg__eyebrow-inner {
     font-size: 0.65rem; font-weight: 600; letter-spacing: 0.18em;
-    text-transform: uppercase; color: var(--color-primary, #0787ea);
+    text-transform: uppercase; color: var(--color-primary, var(--color-primary));
     margin: 0 0 8px;
   }
 
@@ -278,13 +278,13 @@
     font-family: var(--font-body, 'Inter', sans-serif);
     font-size: clamp(1rem, 2vw, 1.25rem);
     font-weight: 700; line-height: 1.2; letter-spacing: -0.02em;
-    color: var(--color-text, #1a1a1a); margin: 0 0 10px;
+    color: var(--color-text, var(--color-text)); margin: 0 0 10px;
   }
 
   .cg__col-text {
     font-family: var(--font-body, 'Inter', sans-serif);
     font-size: 0.9rem; line-height: 1.7;
-    color: var(--color-text-light, #666); margin: 0 0 12px;
+    color: var(--color-text-light, var(--color-text-light)); margin: 0 0 12px;
   }
 
   .cg__col-richtext { font-size: 0.9rem; line-height: 1.7; margin: 0 0 12px; }
@@ -305,13 +305,13 @@
   .cg__btn--md { font-size: 0.8rem;  padding: 12px 24px; }
   .cg__btn--lg { font-size: 0.87rem; padding: 15px 30px; }
 
-  .cg__btn--primary { background: var(--color-primary,#0787ea); color:#fff; }
-  .cg__btn--primary:hover { background: #0672c7; }
-  .cg__btn--outline { background: transparent; color: var(--color-text,#1a1a1a); border-color: var(--color-text,#1a1a1a); }
-  .cg__btn--outline:hover { background: var(--color-text,#1a1a1a); color: #fff; }
-  .cg__btn--ghost { background: transparent; color: var(--color-primary,#0787ea); }
+  .cg__btn--primary { background: var(--color-primary,var(--color-primary)); color:#fff; }
+  .cg__btn--primary:hover { background: var(--color-primary-hover); }
+  .cg__btn--outline { background: transparent; color: var(--color-text,var(--color-text)); border-color: var(--color-text,var(--color-text)); }
+  .cg__btn--outline:hover { background: var(--color-text,var(--color-text)); color: #fff; }
+  .cg__btn--ghost { background: transparent; color: var(--color-primary,var(--color-primary)); }
   .cg__btn--ghost:hover { text-decoration: underline; }
-  .cg__btn--light { background: #f5f5f7; color: #0a0a0a; }
+  .cg__btn--light { background: #f5f5f7; color: var(--color-bg-dark); }
   .cg__btn--light:hover { background: #e8e8ea; }
 </style>
 

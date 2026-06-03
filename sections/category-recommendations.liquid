@@ -8,9 +8,9 @@
 
 {%- liquid
   assign sid             = section.id
-  assign rc_text_col     = section.settings.text_color          | default: '#0a0a0a'
-  assign rc_eyebrow_col  = section.settings.eyebrow_color       | default: '#0787ea'
-  assign rc_title_col    = section.settings.title_color         | default: '#0a0a0a'
+  assign rc_text_col     = section.settings.text_color          | default: 'var(--color-bg-dark)'
+  assign rc_eyebrow_col  = section.settings.eyebrow_color       | default: 'var(--color-primary)'
+  assign rc_title_col    = section.settings.title_color         | default: 'var(--color-bg-dark)'
   assign rc_header_align = section.settings.header_align        | default: 'left'
   assign rc_title_fs_d   = section.settings.title_size_desktop  | default: 32
   assign rc_title_fs_m   = section.settings.title_size_mobile   | default: 22
@@ -22,7 +22,7 @@
   else
     assign rc_sep_op = 1
   endif
-  assign rc_sep_color    = section.settings.sep_color           | default: '#0787ea'
+  assign rc_sep_color    = section.settings.sep_color           | default: 'var(--color-primary)'
   assign rc_sep_w        = section.settings.sep_width           | default: 36
   assign rc_sep_h        = section.settings.sep_height          | default: 3
   assign rc_card_r       = section.settings.card_radius         | default: 6
@@ -45,7 +45,7 @@
     --rc-aspect-mobile:  {{ section.settings.aspect_mobile  | default: '4/3' }};
     --rc-aspect-tablet:  {{ section.settings.aspect_tablet  | default: '3/2' }};
     --rc-aspect-desktop: {{ section.settings.aspect_desktop | default: '3/2' }};
-    --rc-bg:             {{ section.settings.bg_color | default: '#ffffff' }};
+    --rc-bg:             {{ section.settings.bg_color | default: 'var(--color-bg)' }};
     --rc-text:           {{ rc_text_col }};
     --rc-eyebrow:        {{ rc_eyebrow_col }};
     --rc-title:          {{ rc_title_col }};
@@ -162,8 +162,8 @@
   --rc-ease:      cubic-bezier(0.4, 0, 0.2, 1);
   --rc-ease-out:  cubic-bezier(0.16, 1, 0.3, 1);
 
-  background:    var(--rc-bg, #f7f7f8);
-  color:         var(--rc-text, #0a0a0a);
+  background:    var(--rc-bg, var(--color-bg-soft));
+  color:         var(--rc-text, var(--color-bg-dark));
   margin-top:    var(--rc-mt, 0);
   margin-bottom: var(--rc-mb, 0);
   overflow-x:    clip;
@@ -205,7 +205,7 @@
   font-weight:    600;
   letter-spacing: 0.16em;
   text-transform: uppercase;
-  color:          var(--rc-eyebrow, #0787ea);
+  color:          var(--rc-eyebrow, var(--color-primary));
 }
 
 .rc__title {
@@ -213,7 +213,7 @@
   font-size:      var(--rc-title-fs-m, 22px);
   font-weight:    var(--rc-title-fw, 800);
   letter-spacing: -0.03em;
-  color:          var(--rc-title, #0a0a0a);
+  color:          var(--rc-title, var(--color-bg-dark));
   margin:         0;
   position:       relative;
   padding-bottom: 10px;
@@ -228,7 +228,7 @@
   left:          0;
   width:         var(--rc-sep-w, 36px);
   height:        var(--rc-sep-h, 3px);
-  background:    var(--rc-sep-color, #0787ea);
+  background:    var(--rc-sep-color, var(--color-primary));
   border-radius: 2px;
   opacity:       var(--rc-sep-op, 1);
 }
@@ -237,7 +237,7 @@
 
 .rc__subtitle {
   font-size:   var(--rc-subtitle-fs, 14px);
-  color:       color-mix(in srgb, var(--rc-text, #0a0a0a) 60%, transparent);
+  color:       color-mix(in srgb, var(--rc-text, var(--color-bg-dark)) 60%, transparent);
   margin:      0;
   max-width:   52ch;
   line-height: 1.55;
@@ -367,8 +367,8 @@
 }
 @media (hover: hover) {
   .rc__card:hover .rc__card-btn {
-    background:   #0787ea;
-    border-color: #0787ea;
+    background:   var(--color-primary);
+    border-color: var(--color-primary);
     transform:    scale(1.12);
   }
   .rc__card:hover .rc__card-btn svg {

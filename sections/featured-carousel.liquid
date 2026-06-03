@@ -4,15 +4,15 @@
 {%- liquid
   assign sid = section.id
 
-  assign bg_color       = section.settings.bg_color            | default: '#f7f7f8'
-  assign card_bg        = section.settings.card_bg             | default: '#ffffff'
-  assign text_color     = section.settings.text_color          | default: '#0a0a0a'
-  assign title_color    = section.settings.title_color         | default: '#0a0a0a'
-  assign eyebrow_col    = section.settings.eyebrow_color       | default: '#0787ea'
-  assign subtitle_col   = section.settings.subtitle_color      | default: '#666666'
-  assign dot_active     = section.settings.dot_active_color    | default: '#0a0a0a'
+  assign bg_color       = section.settings.bg_color            | default: 'var(--color-bg-soft)'
+  assign card_bg        = section.settings.card_bg             | default: 'var(--color-bg)'
+  assign text_color     = section.settings.text_color          | default: 'var(--color-bg-dark)'
+  assign title_color    = section.settings.title_color         | default: 'var(--color-bg-dark)'
+  assign eyebrow_col    = section.settings.eyebrow_color       | default: 'var(--color-primary)'
+  assign subtitle_col   = section.settings.subtitle_color      | default: 'var(--color-text-light)'
+  assign dot_active     = section.settings.dot_active_color    | default: 'var(--color-bg-dark)'
   assign dot_inactive   = section.settings.dot_inactive_color  | default: 'rgba(10,10,10,0.18)'
-  assign arrow_color    = section.settings.arrow_color         | default: '#0a0a0a'
+  assign arrow_color    = section.settings.arrow_color         | default: 'var(--color-bg-dark)'
 
   assign title_size     = section.settings.title_font_size     | default: 32
   assign title_weight   = section.settings.title_font_weight   | default: '800'
@@ -22,12 +22,12 @@
   assign img_ratio      = section.settings.image_ratio         | default: '4 / 5'
   assign img_fit        = section.settings.image_fit           | default: 'contain'
   assign card_radius    = section.settings.card_border_radius  | default: 6
-  assign card_border_c  = section.settings.card_border_color   | default: '#e8e8e8'
-  assign card_name_col  = section.settings.card_name_color     | default: '#0a0a0a'
-  assign card_price_col = section.settings.card_price_color    | default: '#0a0a0a'
+  assign card_border_c  = section.settings.card_border_color   | default: 'var(--color-border)'
+  assign card_name_col  = section.settings.card_name_color     | default: 'var(--color-bg-dark)'
+  assign card_price_col = section.settings.card_price_color    | default: 'var(--color-bg-dark)'
 
-  assign badge_bg       = section.settings.badge_bg_color      | default: '#ffffff'
-  assign badge_text_c   = section.settings.badge_text_color    | default: '#0a0a0a'
+  assign discount_bg     = section.settings.discount_badge_bg   | default: '#d74e09'
+  assign discount_txt    = section.settings.discount_badge_text | default: '#ffffff'
 
   assign autoplay       = section.settings.autoplay_enabled
   assign ap_delay       = section.settings.autoplay_delay      | default: 4000
@@ -56,8 +56,6 @@
 
   assign coll_handle    = section.settings.collection    | default: ''
   assign max_products   = section.settings.max_products  | default: 12
-  assign show_badge     = section.settings.show_badge
-  assign badge_text     = section.settings.badge_text    | default: 'Meilleur vente'
   assign show_atc       = section.settings.show_atc
 
   if coll_handle != blank and collections[coll_handle] != blank
@@ -103,8 +101,8 @@
     --fc-card-shadow:    {{ card_shadow_val }};
     --fc-name-color:     {{ card_name_col }};
     --fc-price-color:    {{ card_price_col }};
-    --fc-badge-bg:       {{ badge_bg }};
-    --fc-badge-text:     {{ badge_text_c }};
+    --m19-card-discount-bg:  {{ discount_bg }};
+    --m19-card-discount-txt: {{ discount_txt }};
     --fc-pt-m:           {{ pt_m }}px;
     --fc-pb-m:           {{ pb_m }}px;
     --fc-pt-d:           {{ pt_d }}px;
@@ -195,8 +193,9 @@
                     <div class="m19-card__media-fallback" aria-hidden="true"></div>
                   {%- endif -%}
 
-                  {%- if show_badge -%}
-                    <span class="m19-card__badge fc__badge" aria-hidden="true">{{ badge_text }}</span>
+                  {%- if product.compare_at_price > product.price -%}
+                    {%- assign fc_savings = product.compare_at_price | minus: product.price | times: 100.0 | divided_by: product.compare_at_price | round -%}
+                    <span class="m19-card__badge--discount" aria-label="Économie de {{ fc_savings }}%">-{{ fc_savings }}%</span>
                   {%- endif -%}
 
                   {%- if show_atc -%}
@@ -286,8 +285,8 @@
   --fc-usable-w: min(100vw, var(--fc-max-w, 1400px));
   --fc-card-w:   calc((var(--fc-usable-w) - (2 * var(--fc-pad)) - (1 * var(--fc-gap, 14px))) / 1.3);
 
-  background:    var(--fc-bg, #f7f7f8);
-  color:         var(--fc-text, #0a0a0a);
+  background:    var(--fc-bg, var(--color-bg-soft));
+  color:         var(--fc-text, var(--color-bg-dark));
   margin-top:    var(--fc-mt, 0);
   margin-bottom: var(--fc-mb, 0);
   overflow-x:    clip;
@@ -359,14 +358,14 @@
   font-weight:    600;
   letter-spacing: 0.16em;
   text-transform: uppercase;
-  color:          var(--fc-eyebrow, #0787ea);
+  color:          var(--fc-eyebrow, var(--color-primary));
 }
 .fc__title {
   font-family:    var(--font-body, 'Inter', sans-serif);
   font-size:      var(--fc-title-size, 32px);
   font-weight:    var(--fc-title-weight, 800);
   letter-spacing: -0.03em;
-  color:          var(--fc-title, #0a0a0a);
+  color:          var(--fc-title, var(--color-bg-dark));
   margin:         0;
 }
 .fc__subtitle {
@@ -385,13 +384,13 @@
   font-weight:    600;
   letter-spacing: 0.03em;
   border-radius:  0.375rem;
-  border:         1.5px solid var(--fc-text, #0a0a0a);
+  border:         1.5px solid var(--fc-text, var(--color-bg-dark));
   background:     transparent;
-  color:          var(--fc-text, #0a0a0a);
+  color:          var(--fc-text, var(--color-bg-dark));
   cursor:         pointer;
   transition:     background 180ms var(--fc-ease), color 180ms var(--fc-ease);
 }
-.fc__tab--active { background: var(--fc-text, #0a0a0a); color: var(--fc-bg, #f7f7f8); }
+.fc__tab--active { background: var(--fc-text, var(--color-bg-dark)); color: var(--fc-bg, var(--color-bg-soft)); }
 
 /* Separator */
 .fc__sep {
@@ -399,7 +398,7 @@
   display:        flex;
   align-items:    center;
   gap:            16px;
-  color:          color-mix(in srgb, var(--fc-text, #0a0a0a) 35%, transparent);
+  color:          color-mix(in srgb, var(--fc-text, var(--color-bg-dark)) 35%, transparent);
   font-size:      0.78rem;
   letter-spacing: 0.08em;
   text-transform: uppercase;
@@ -447,7 +446,7 @@
   height:        100%;
   background:    var(--fc-card-bg, #fff);
   border-radius: var(--fc-card-radius, 6px);
-  border-color:  var(--fc-card-border-c, #e8e8e8);
+  border-color:  var(--fc-card-border-c, var(--color-border));
   border-width:  var(--fc-card-border-w, 1px);
   box-shadow:    var(--fc-card-shadow, var(--m19-shadow-card));
 }
@@ -461,25 +460,9 @@
 }
 
 /* Card name & price */
-.fc__swiper .fc__item .m19-card__name  { color: var(--fc-name-color, #0a0a0a); }
-.fc__swiper .fc__item .m19-card__price { color: var(--fc-price-color, #0a0a0a); }
+.fc__swiper .fc__item .m19-card__name  { color: var(--fc-name-color, var(--color-bg-dark)); }
+.fc__swiper .fc__item .m19-card__price { color: var(--fc-price-color, var(--color-bg-dark)); }
 
-/* Badge */
-.fc__swiper .fc__item .fc__badge {
-  background:     var(--fc-badge-bg, #fff);
-  color:          var(--fc-badge-text, #0a0a0a);
-  border:         1px solid rgba(10, 10, 10, 0.75);
-  border-radius:  0.375rem;
-  font-size:      8px;
-  font-weight:    600;
-  letter-spacing: 0.1em;
-  text-transform: none;
-  padding:        3px 7px;
-  line-height:    1;
-  top:            10px;
-  left:           10px;
-  box-shadow:     none;
-}
 
 .fc__empty { padding: 24px; font-size: 0.875rem; color: #aaa; }
 
@@ -513,7 +496,7 @@
   border-radius:   var(--fc-arrow-radius, 6px);
   border:          none;
   background:      none;
-  color:           var(--fc-arrow-color, #0a0a0a);
+  color:           var(--fc-arrow-color, var(--color-bg-dark));
   cursor:          pointer;
   padding:         0;
   transition:      background 180ms var(--fc-ease), color 180ms var(--fc-ease);
@@ -525,7 +508,7 @@
 }
 .fc__arrow:hover          { background: rgba(10, 10, 10, 0.07); }
 .fc__arrow:disabled       { opacity: 0.28; cursor: default; pointer-events: none; }
-.fc__arrow:focus-visible  { outline: 2px solid #0787ea; outline-offset: 2px; }
+.fc__arrow:focus-visible  { outline: 2px solid var(--color-primary); outline-offset: 2px; }
 
 /* ── Dots ── */
 .fc__dots { display: flex; align-items: center; gap: var(--fc-dot-gap, 8px); }
@@ -541,10 +524,10 @@
   transition:      width 280ms var(--fc-ease), border-radius 280ms var(--fc-ease),
                    background 280ms var(--fc-ease), transform 280ms ease, opacity 280ms ease;
 }
-.fc__dot--active  { width: calc(var(--fc-dot-size, 6px) * 3.5); border-radius: 3px; background: var(--fc-dot-active, #0a0a0a); }
+.fc__dot--active  { width: calc(var(--fc-dot-size, 6px) * 3.5); border-radius: 3px; background: var(--fc-dot-active, var(--color-bg-dark)); }
 .fc__dot--small   { transform: scale(0.6); opacity: 0.5; }
 .fc__dot--hidden  { display: none; }
-.fc__dot:focus-visible { outline: 2px solid #0787ea; outline-offset: 2px; }
+.fc__dot:focus-visible { outline: 2px solid var(--color-primary); outline-offset: 2px; }
 
 /* ── Masquer la navigation Swiper native ── */
 .fc__swiper .swiper-pagination,
@@ -636,6 +619,7 @@
     }
 
     swiper.on('slideChange', updateDots);
+    updateDots();
 
     /* ── Arrows ── */
     if (btnPrev) btnPrev.addEventListener('click', function (e) { e.preventDefault(); swiper.slidePrev(); });
@@ -677,8 +661,6 @@
         tab.classList.add('fc__tab--active');
         tab.setAttribute('aria-selected', 'true');
         tab.setAttribute('tabindex', '0');
-        var label = tab.dataset.badge || '{{ badge_text }}';
-        section.querySelectorAll('.fc__badge').forEach(function (b) { b.textContent = label; });
         swiper.slideToLoop(0);
       });
     });
@@ -779,12 +761,11 @@
     { "type": "color",    "id": "card_name_color",    "label": "Couleur nom produit",      "default": "#0a0a0a" },
     { "type": "color",    "id": "card_price_color",   "label": "Couleur prix",             "default": "#0a0a0a" },
 
-    { "type": "header", "content": "Badges & Panier" },
-    { "type": "checkbox", "id": "show_badge",       "label": "Afficher badge",       "default": true },
-    { "type": "text",     "id": "badge_text",        "label": "Texte badge",          "default": "Meilleur vente" },
-    { "type": "color",    "id": "badge_bg_color",    "label": "Fond badge",           "default": "#ffffff" },
-    { "type": "color",    "id": "badge_text_color",  "label": "Texte badge",          "default": "#0a0a0a" },
-    { "type": "checkbox", "id": "show_atc",          "label": "Bouton panier",        "default": true },
+    { "type": "header",   "content": "Badge réduction & Panier" },
+    { "type": "paragraph","content": "Le badge est affiché automatiquement si le produit a un prix barré. Il affiche le taux de réduction (-X%)." },
+    { "type": "color",    "id": "discount_badge_bg",   "label": "Fond badge réduction",  "default": "#d74e09" },
+    { "type": "color",    "id": "discount_badge_text", "label": "Texte badge réduction", "default": "#ffffff" },
+    { "type": "checkbox", "id": "show_atc",            "label": "Bouton panier",         "default": true },
 
     { "type": "header", "content": "Navigation" },
     { "type": "checkbox", "id": "show_arrows",        "label": "Flèches",            "default": true },

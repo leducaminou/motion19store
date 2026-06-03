@@ -43,10 +43,10 @@
 .embla-dot--active {
   width: 22px;
   border-radius: 3px;
-  background: #0a0a0a;
+  background: var(--color-bg-dark);
 }
 
 .embla-dot:focus-visible {
-  outline: 2px solid #0787ea;
+  outline: 2px solid var(--color-primary);
   outline-offset: 2px;
 }

@@ -2,10 +2,10 @@
 
 {%- liquid
   assign sid         = section.id
-  assign bg_color    = section.settings.bg_color    | default: '#f7f7f8'
-  assign text_color  = section.settings.text_color  | default: '#0a0a0a'
-  assign title_color = section.settings.title_color | default: '#0a0a0a'
-  assign eyebrow_col = section.settings.eyebrow_color | default: '#0787ea'
+  assign bg_color    = section.settings.bg_color    | default: 'var(--color-bg-soft)'
+  assign text_color  = section.settings.text_color  | default: 'var(--color-bg-dark)'
+  assign title_color = section.settings.title_color | default: 'var(--color-bg-dark)'
+  assign eyebrow_col = section.settings.eyebrow_color | default: 'var(--color-primary)'
   assign pt_m        = section.settings.padding_top_mobile    | default: 56
   assign pb_m        = section.settings.padding_bottom_mobile | default: 56
   assign pt_d        = section.settings.padding_top_desktop   | default: 72
@@ -126,10 +126,10 @@
 .acsc {
   --acsc-pad:  24px;
   --acsc-ease: cubic-bezier(0.4, 0, 0.2, 1);
-  --acsc-blue: #0787ea;
+  --acsc-blue: var(--color-primary);
 
-  background: var(--acsc-bg, #f7f7f8);
-  color: var(--acsc-text, #0a0a0a);
+  background: var(--acsc-bg, var(--color-bg-soft));
+  color: var(--acsc-text, var(--color-bg-dark));
   margin-top: var(--acsc-mt, 0);
   margin-bottom: var(--acsc-mb, 0);
   padding: var(--acsc-pt-m, 56px) 0 var(--acsc-pb-m, 56px);
@@ -159,19 +159,19 @@
 .acsc__eyebrow {
   font-size: 0.7rem; font-weight: 600;
   letter-spacing: 0.16em; text-transform: uppercase;
-  color: var(--acsc-eyebrow, #0787ea);
+  color: var(--acsc-eyebrow, var(--color-primary));
 }
 
 .acsc__title {
   font-family: var(--font-body, 'Inter', sans-serif);
   font-size: clamp(1.6rem, 3vw, 2.4rem);
   font-weight: 800; letter-spacing: -0.03em; line-height: 1.1;
-  color: var(--acsc-title, #0a0a0a); margin: 0;
+  color: var(--acsc-title, var(--color-bg-dark)); margin: 0;
 }
 
 .acsc__subtitle {
   font-family: var(--font-body, 'Inter', sans-serif);
-  font-size: 0.9rem; color: #666; line-height: 1.65; margin: 0; max-width: 52ch;
+  font-size: 0.9rem; color: var(--color-text-light); line-height: 1.65; margin: 0; max-width: 52ch;
 }
 
 /* CTAs */
@@ -188,17 +188,17 @@
 }
 .acsc__btn svg { flex-shrink: 0; transition: transform 200ms ease; }
 .acsc__btn:hover svg { transform: translateX(4px); }
-.acsc__btn:focus-visible { outline: 2px solid #0787ea; outline-offset: 3px; }
+.acsc__btn:focus-visible { outline: 2px solid var(--color-primary); outline-offset: 3px; }
 
-.acsc__btn--primary { background: var(--acsc-blue, #0787ea); color: #fff; border-color: var(--acsc-blue, #0787ea); }
-.acsc__btn--outline { background: transparent; color: var(--acsc-text, #0a0a0a); border-color: currentColor; }
-.acsc__btn--dark    { background: #0a0a0a; color: #f5f5f7; border-color: #0a0a0a; }
-.acsc__btn--ghost   { background: transparent; color: var(--acsc-text, #0a0a0a); border-color: rgba(10,10,10,0.25); }
+.acsc__btn--primary { background: var(--acsc-blue, var(--color-primary)); color: #fff; border-color: var(--acsc-blue, var(--color-primary)); }
+.acsc__btn--outline { background: transparent; color: var(--acsc-text, var(--color-bg-dark)); border-color: currentColor; }
+.acsc__btn--dark    { background: var(--color-bg-dark); color: #f5f5f7; border-color: var(--color-bg-dark); }
+.acsc__btn--ghost   { background: transparent; color: var(--acsc-text, var(--color-bg-dark)); border-color: rgba(10,10,10,0.25); }
 
 @media (hover: hover) {
-  .acsc__btn--primary:hover { background: #0672c7; box-shadow: 0 8px 24px rgba(7,135,234,.35); transform: scale(1.02); }
-  .acsc__btn--outline:hover { background: var(--acsc-text, #0a0a0a); color: var(--acsc-bg, #f7f7f8); transform: scale(1.02); }
-  .acsc__btn--dark:hover    { background: #1a1a1a; transform: scale(1.02); }
+  .acsc__btn--primary:hover { background: var(--color-primary-hover); box-shadow: 0 8px 24px rgba(7,135,234,.35); transform: scale(1.02); }
+  .acsc__btn--outline:hover { background: var(--acsc-text, var(--color-bg-dark)); color: var(--acsc-bg, var(--color-bg-soft)); transform: scale(1.02); }
+  .acsc__btn--dark:hover    { background: var(--color-text); transform: scale(1.02); }
   .acsc__btn--ghost:hover   { background: rgba(10,10,10,0.06); transform: scale(1.02); }
 }
 
@@ -211,7 +211,7 @@
 .acsc__feature {
   display: flex; align-items: flex-start; gap: 14px;
   padding: 16px 18px;
-  background: var(--acsc-bg, #f7f7f8);
+  background: var(--acsc-bg, var(--color-bg-soft));
   border: 1px solid rgba(10,10,10,0.06);
   border-radius: 12px;
   transition: transform 200ms var(--acsc-ease), box-shadow 200ms var(--acsc-ease);
@@ -231,13 +231,13 @@
   flex-shrink: 0;
   display: flex; align-items: center; justify-content: center;
   width: 40px; height: 40px; border-radius: 10px;
-  background: rgba(7,135,234,0.1); color: #0787ea;
+  background: rgba(7,135,234,0.1); color: var(--color-primary);
 }
 
 .acsc__feature-info { display: flex; flex-direction: column; gap: 3px; }
 .acsc__feature-title {
   font-family: var(--font-body, 'Inter', sans-serif);
-  font-size: 0.88rem; font-weight: 700; color: var(--acsc-text, #0a0a0a); line-height: 1.3;
+  font-size: 0.88rem; font-weight: 700; color: var(--acsc-text, var(--color-bg-dark)); line-height: 1.3;
 }
 .acsc__feature-desc {
   font-family: var(--font-body, 'Inter', sans-serif);

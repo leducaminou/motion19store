@@ -5,31 +5,31 @@
 
   assign section_bg = section.settings.section_bg
   if section_bg == blank
-    assign section_bg = '#f7f7f8'
+    assign section_bg = 'var(--color-bg-soft)'
   endif
   assign text_color = section.settings.text_color
   if text_color == blank
-    assign text_color = '#0a0a0a'
+    assign text_color = 'var(--color-bg-dark)'
   endif
   assign eyebrow_col = section.settings.eyebrow_color
   if eyebrow_col == blank
-    assign eyebrow_col = '#0787ea'
+    assign eyebrow_col = 'var(--color-primary)'
   endif
   assign title_color = section.settings.title_color
   if title_color == blank
-    assign title_color = '#0a0a0a'
+    assign title_color = 'var(--color-bg-dark)'
   endif
   assign sep_color = section.settings.sep_color
   if sep_color == blank
-    assign sep_color = '#0787ea'
+    assign sep_color = 'var(--color-primary)'
   endif
   assign cta_hover_color = section.settings.cta_hover_color
   if cta_hover_color == blank
-    assign cta_hover_color = '#0787ea'
+    assign cta_hover_color = 'var(--color-primary)'
   endif
   assign dot_active_color = section.settings.dot_active_color
   if dot_active_color == blank
-    assign dot_active_color = '#0a0a0a'
+    assign dot_active_color = 'var(--color-bg-dark)'
   endif
   assign card_border_c = section.settings.card_border_color
   if card_border_c == blank
@@ -376,8 +376,8 @@
   --sbt-ease-out: cubic-bezier(0.16, 1, 0.3, 1);
   --sbt-usable-w: min(100vw, var(--sbt-max-w, 1400px));
 
-  background:    var(--sbt-bg, #f7f7f8);
-  color:         var(--sbt-text, #0a0a0a);
+  background:    var(--sbt-bg, var(--color-bg-soft));
+  color:         var(--sbt-text, var(--color-bg-dark));
   margin-top:    var(--sbt-mt, 0);
   margin-bottom: var(--sbt-mb, 0);
   overflow-x:    clip;
@@ -419,14 +419,14 @@
   font-weight:    600;
   letter-spacing: 0.16em;
   text-transform: uppercase;
-  color:          var(--sbt-eyebrow, #0787ea);
+  color:          var(--sbt-eyebrow, var(--color-primary));
 }
 .sbt__title {
   font-family:    var(--font-body, 'Inter', sans-serif);
   font-size:      var(--sbt-title-fs-m, 22px);
   font-weight:    var(--sbt-title-fw, 800);
   letter-spacing: -0.03em;
-  color:          var(--sbt-title, #0a0a0a);
+  color:          var(--sbt-title, var(--color-bg-dark));
   margin:         0;
   position:       relative;
   padding-bottom: 10px;
@@ -441,7 +441,7 @@
   left:          0;
   width:         var(--sbt-sep-w, 36px);
   height:        var(--sbt-sep-h, 3px);
-  background:    var(--sbt-sep-color, #0787ea);
+  background:    var(--sbt-sep-color, var(--color-primary));
   border-radius: 2px;
   opacity:       var(--sbt-sep-op, 1);
 }
@@ -450,7 +450,7 @@
 
 .sbt__subtitle {
   font-size:   var(--sbt-subtitle-fs, 14px);
-  color:       color-mix(in srgb, var(--sbt-text, #0a0a0a) 60%, transparent);
+  color:       color-mix(in srgb, var(--sbt-text, var(--color-bg-dark)) 60%, transparent);
   margin:      0;
   max-width:   52ch;
   line-height: 1.55;
@@ -647,8 +647,8 @@
   .sbt__card:focus-within .sbt__card-overlay { opacity: 1.15; }
   .sbt__card:hover .sbt__card-cta,
   .sbt__card:focus-within .sbt__card-cta {
-    background:   var(--sbt-cta-hover, #0787ea);
-    border-color: var(--sbt-cta-hover, #0787ea);
+    background:   var(--sbt-cta-hover, var(--color-primary));
+    border-color: var(--sbt-cta-hover, var(--color-primary));
     transform:    scale(1.12);
   }
   .sbt__card:hover .sbt__card-content,
@@ -731,11 +731,11 @@
 .sbt__dot--active {
   width:         21px;
   border-radius: 3px;
-  background:    var(--sbt-dot-active, #0a0a0a);
+  background:    var(--sbt-dot-active, var(--color-bg-dark));
 }
 .sbt__dot--small  { transform: scale(0.6); opacity: 0.5; }
 .sbt__dot--hidden { display: none; }
-.sbt__dot:focus-visible { outline: 2px solid #0787ea; outline-offset: 2px; }
+.sbt__dot:focus-visible { outline: 2px solid var(--color-primary); outline-offset: 2px; }
 
 /* ═══════════════════════════════════════════════════
    Reduced motion
@@ -814,6 +814,7 @@
     }
 
     swiper.on('slideChange', updateDots);
+    updateDots();
   }
 
   function safeInit() {

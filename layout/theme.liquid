@@ -10,6 +10,8 @@
 
     {%- if settings.favicon != blank -%}
       <link rel="icon" type="image/png" href="{{ settings.favicon | image_url: width: 32, height: 32 }}">
+    {%- else -%}
+      <link rel="icon" type="image/png" href="{{ 'favicon.png' | asset_url }}">
     {%- endif -%}
 
     <title>
@@ -27,20 +29,40 @@
 
     {{ content_for_header }}
 
-    <!-- Swiper CSS — loaded globally (homepage + product page) -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css">
+    <!-- Preload LCP hero — homepage uniquement (hero-carousel premier slide) -->
+    {%- if request.page_type == 'index' -%}
+      <link rel="preload" as="image" href="{{ 'hp-hero-1.jpg' | asset_url }}" media="(min-width: 768px)" fetchpriority="high">
+      <link rel="preload" as="image" href="{{ 'hp-hero-1-mobile.jpg' | asset_url }}" media="(max-width: 767px)" fetchpriority="high">
+    {%- endif -%}
 
-    <!-- Typography -->
+    <!-- Swiper CSS — non-bloquant (évite render-blocking sur CDN tiers) -->
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css"
+      media="print"
+      onload="this.media='all'"
+    >
+    <noscript>
+      <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css">
+    </noscript>
+
+    <!-- Typography — preconnect + display=swap déjà présent -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link
       href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Inter:wght@300;400;500;600;700&display=swap"
       rel="stylesheet"
+      media="print"
+      onload="this.media='all'"
     >
+    <noscript>
+      <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    </noscript>
 
+    <!-- Variables CSS dynamiques (doivent rester inline — dépendent des settings Customizer) -->
     <style>
       :root {
-        /* ── Couleurs — dynamiques via settings_schemas ── */
+        /* ── Couleurs — dynamiques via settings_schema ── */
         --color-primary:       {{ settings.color_primary       | default: '#0787ea' }};
         --color-primary-hover: {{ settings.color_primary_hover | default: '#0672c7' }};
         --color-text:          {{ settings.color_text          | default: '#1a1a1a' }};
@@ -67,6 +89,8 @@
         --btn-outline-border:   {{ settings.btn_outline_border     | default: '#1a1a1a' }};
         --btn-outline-text:     {{ settings.btn_outline_text       | default: '#1a1a1a' }};
         --btn-radius:           {{ settings.btn_radius             | default: 3 }}px;
+        --btn-added-bg:         {{ settings.btn_added_bg           | default: '#0a0a0a' }};
+        --btn-added-text:       {{ settings.btn_added_text         | default: '#ffffff' }};
 
         /* ── Espacement sections global ── */
         --section-pt-mobile:  {{ settings.section_pt_mobile  | default: 48 }}px;
@@ -75,7 +99,6 @@
         --section-pb-desktop: {{ settings.section_pb_desktop | default: 72 }}px;
       }
 
-      /* ── Respect de prefers-reduced-motion ── */
       {%- if settings.reduce_motion_respect != false -%}
       @media (prefers-reduced-motion: reduce) {
         *, *::before, *::after {
@@ -85,117 +108,10 @@
         }
       }
       {%- endif -%}
-
-      *,
-      *::before,
-      *::after {
-        box-sizing: border-box;
-      }
-
-      body {
-        margin: 0;
-        font-family: var(--font-body);
-        font-size: 16px;
-        line-height: 1.5;
-        color: var(--color-text);
-        background-color: var(--color-bg);
-        -webkit-font-smoothing: antialiased;
-      }
-
-      h1,
-      h2,
-      h3,
-      h4,
-      h5,
-      h6 {
-        font-family: var(--font-heading);
-        margin: 0;
-        font-weight: 700;
-      }
-
-      .container {
-        max-width: var(--container-width);
-        margin: 0 auto;
-        padding: 0 var(--container-padding);
-      }
-
-      main {
-        min-height: 80vh;
-      }
-
-      /* ── Séparateur visuel entre sections blanches ─── */
-      .section-featured-carousel + .section-category-recommendations,
-      .section-category-recommendations + .section-new-products {
-        border-top: 1px solid #e8e8e8;
-      }
-
-      /* ── Titres de section — ligne accent ─── */
-      .fc__title,
-      .np__title,
-      .bj__title,
-      .rc__title {
-        position: relative;
-        padding-bottom: 16px;
-      }
-
-      .fc__title::after,
-      .np__title::after,
-      .rc__title::after,
-      .bj__title::after {
-        content: '';
-        position: absolute;
-        bottom: 0;
-        left: 0;
-        width: 36px;
-        height: 3px;
-        background: #0787ea;
-        border-radius: 2px;
-      }
-
-      /* bo__title sur fond noir — ligne blanche */
-      .bo__title {
-        position: relative;
-        padding-bottom: 16px;
-      }
-      .bo__title::after {
-        content: '';
-        position: absolute;
-        bottom: 0;
-        left: 0;
-        width: 36px;
-        height: 3px;
-        background: rgba(255, 255, 255, 0.35);
-        border-radius: 2px;
-      }
-
-      /* ── Section fade-in animation ─── */
-      @keyframes m19FadeUp {
-        from { opacity: 0; transform: translateY(18px); }
-        to   { opacity: 1; transform: translateY(0); }
-      }
-
-      .m19-animate {
-        opacity: 0;
-        transform: translateY(18px);
-      }
-      .m19-animate.is-visible {
-        animation: m19FadeUp 0.55s cubic-bezier(0.22, 1, 0.36, 1) forwards;
-      }
-
-      /* Base layout helper classes */
-      .visually-hidden {
-        position: absolute !important;
-        overflow: hidden;
-        clip: rect(0 0 0 0);
-        height: 1px;
-        width: 1px;
-        margin: -1px;
-        padding: 0;
-        border: 0;
-      }
     </style>
 
-    {% comment %} {{ 'base.css' | asset_url | stylesheet_tag }} {% endcomment %}
+    <!-- CSS statique global (base.css) — mis en cache par le navigateur -->
+    {{ 'base.css' | asset_url | stylesheet_tag }}
   </head>
 
   <body class="template-{{ template | replace: '.', ' ' | truncatewords: 1, '' | handle }}">
@@ -318,6 +234,6 @@
         }
       })();
     </script>
-    {{ 'bundle.js' | asset_url | script_tag }}
+    <script src="{{ 'bundle.js' | asset_url }}" defer></script>
   </body>
 </html>

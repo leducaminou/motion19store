@@ -16,7 +16,7 @@
   id="bj-{{ section.id }}"
   aria-labelledby="bj-title-{{ section.id }}"
   style="
-    background: {{ section.settings.bg_color | default: '#f7f7f8' }};
+    background: {{ section.settings.bg_color | default: 'var(--color-bg-soft)' }};
     padding-top: {{ section.settings.padding_top_mobile | default: 48 }}px;
     padding-bottom: {{ section.settings.padding_bottom_mobile | default: 52 }}px;
     margin-top: {{ section.settings.margin_top | default: 0 }}px;
@@ -154,8 +154,8 @@
   /* ── Variables ── */
   .bj {
     --bj-r:    0.375rem;
-    --bj-blue: #0787ea;
-    --bj-ink:  #0a0a0a;
+    --bj-blue: var(--color-primary);
+    --bj-ink:  var(--color-bg-dark);
     --bj-card: #ebebea;
     --bj-mute: #7a7a7a;
     --bj-ease: cubic-bezier(0.4, 0, 0.2, 1);

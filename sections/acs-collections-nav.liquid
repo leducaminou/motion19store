@@ -3,10 +3,10 @@
 
 {%- liquid
   assign sid          = section.id
-  assign bg_color     = section.settings.bg_color      | default: '#ffffff'
-  assign text_color   = section.settings.text_color    | default: '#0a0a0a'
-  assign title_color  = section.settings.title_color   | default: '#0a0a0a'
-  assign eyebrow_col  = section.settings.eyebrow_color | default: '#0787ea'
+  assign bg_color     = section.settings.bg_color      | default: 'var(--color-bg)'
+  assign text_color   = section.settings.text_color    | default: 'var(--color-bg-dark)'
+  assign title_color  = section.settings.title_color   | default: 'var(--color-bg-dark)'
+  assign eyebrow_col  = section.settings.eyebrow_color | default: 'var(--color-primary)'
   assign pt_m         = section.settings.padding_top_mobile    | default: 48
   assign pb_m         = section.settings.padding_bottom_mobile | default: 56
   assign pt_d         = section.settings.padding_top_desktop   | default: 64
@@ -183,8 +183,8 @@
   --acsnav-ease:     cubic-bezier(0.4, 0, 0.2, 1);
   --acsnav-ease-out: cubic-bezier(0.16, 1, 0.3, 1);
 
-  background: var(--acsnav-bg, #ffffff);
-  color: var(--acsnav-text, #0a0a0a);
+  background: var(--acsnav-bg, var(--color-bg));
+  color: var(--acsnav-text, var(--color-bg-dark));
   margin-top: var(--acsnav-mt, 0);
   margin-bottom: var(--acsnav-mb, 0);
 }
@@ -223,14 +223,14 @@
 .acsnav__eyebrow {
   font-size: 0.7rem; font-weight: 600;
   letter-spacing: 0.16em; text-transform: uppercase;
-  color: var(--acsnav-eyebrow, #0787ea);
+  color: var(--acsnav-eyebrow, var(--color-primary));
 }
 
 .acsnav__title {
   font-family: var(--font-body, 'Inter', sans-serif);
   font-size: clamp(1.4rem, 3vw, 2.2rem);
   font-weight: 800; letter-spacing: -0.03em;
-  color: var(--acsnav-title, #0a0a0a);
+  color: var(--acsnav-title, var(--color-bg-dark));
   margin: 0;
   position: relative;
   padding-bottom: 10px;
@@ -240,7 +240,7 @@
   position: absolute;
   bottom: 0; left: 0;
   width: 36px; height: 3px;
-  background: #0787ea;
+  background: var(--color-primary);
   border-radius: 2px;
 }
 .acsnav__header--center .acsnav__title::after { left: 50%; transform: translateX(-50%); }
@@ -248,7 +248,7 @@
 
 .acsnav__subtitle {
   font-size: 0.875rem;
-  color: color-mix(in srgb, var(--acsnav-text, #0a0a0a) 60%, transparent);
+  color: color-mix(in srgb, var(--acsnav-text, var(--color-bg-dark)) 60%, transparent);
   margin: 0; max-width: 52ch; line-height: 1.55;
 }
 
@@ -256,14 +256,14 @@
   display: inline-flex; align-items: center; gap: 5px;
   flex-shrink: 0;
   font-size: 0.78rem; font-weight: 600;
-  color: var(--acsnav-text, #0a0a0a);
+  color: var(--acsnav-text, var(--color-bg-dark));
   text-decoration: none;
   border-bottom: 1.5px solid currentColor;
   padding-bottom: 1px;
   white-space: nowrap;
   transition: color 160ms ease;
 }
-.acsnav__view-all:hover { color: #0787ea; }
+.acsnav__view-all:hover { color: var(--color-primary); }
 .acsnav__view-all svg   { transition: transform 200ms var(--acsnav-ease); }
 .acsnav__view-all:hover svg { transform: translateX(3px); }
 
@@ -271,7 +271,7 @@
 .acsnav__sep {
   display: flex; align-items: center; gap: 16px;
   margin-bottom: 20px;
-  color: color-mix(in srgb, var(--acsnav-text, #0a0a0a) 30%, transparent);
+  color: color-mix(in srgb, var(--acsnav-text, var(--color-bg-dark)) 30%, transparent);
   font-size: 0.72rem; letter-spacing: 0.08em; text-transform: uppercase;
 }
 .acsnav__sep--line::before,
@@ -313,7 +313,7 @@
   text-decoration: none;
   color: #fff;
   aspect-ratio: var(--acsnav-aspect-m, 4/3);
-  background: #1a1a1a;
+  background: var(--color-text);
   cursor: pointer;
   transition: transform 360ms var(--acsnav-ease-out), box-shadow 360ms var(--acsnav-ease);
 }
@@ -326,7 +326,7 @@
     box-shadow: 0 20px 56px rgba(0,0,0,0.18), 0 4px 12px rgba(0,0,0,0.1);
   }
 }
-.acsnav__card:focus-visible { outline: 2px solid #0787ea; outline-offset: 3px; }
+.acsnav__card:focus-visible { outline: 2px solid var(--color-primary); outline-offset: 3px; }
 
 /* Media */
 .acsnav__card-media {
@@ -345,7 +345,7 @@
 }
 .acsnav__card-placeholder {
   position: absolute; inset: 0;
-  background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+  background: linear-gradient(135deg, var(--color-text) 0%, #2d2d2d 100%);
 }
 .acsnav__card-overlay {
   position: absolute; inset: 0;
@@ -422,7 +422,7 @@
 }
 @media (hover: hover) {
   .acsnav__card:hover .acsnav__card-btn {
-    background: #0787ea; border-color: #0787ea; transform: scale(1.12);
+    background: var(--color-primary); border-color: var(--color-primary); transform: scale(1.12);
   }
 }
 </style>

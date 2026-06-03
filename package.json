@@ -1,7 +1,7 @@
 {
-  "name": "motion19store",
+  "name": "motion_19_store",
   "version": "1.0.0",
-  "description": "",
+  "description": "Motion 19 Store — Shopify theme",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
@@ -9,7 +9,7 @@
     "build": "vite build"
   },
   "keywords": [],
-  "author": "",
+  "author": "Aminou Mohamadou",
   "license": "ISC",
   "devDependencies": {
     "vite": "^8.0.13"

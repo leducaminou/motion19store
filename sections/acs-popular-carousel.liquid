@@ -1,16 +1,16 @@
 {{ 'card.css' | asset_url | stylesheet_tag }}
-{%- comment -%} ACS Popular Collections Carousel — Motion19 OS 2.0 — Embla Carousel (identical to featured-carousel) {%- endcomment -%}
+{%- comment -%} ACS Popular Collections Carousel — Motion19 OS 2.0 — Swiper {%- endcomment -%}
 
 {%- liquid
   assign sid         = section.id
-  assign bg_color    = section.settings.bg_color      | default: '#f7f7f8'
-  assign card_bg     = section.settings.card_bg        | default: '#ffffff'
-  assign text_color  = section.settings.text_color    | default: '#0a0a0a'
-  assign title_color = section.settings.title_color   | default: '#0a0a0a'
-  assign eyebrow_col = section.settings.eyebrow_color | default: '#0787ea'
-  assign dot_active  = section.settings.dot_active_color   | default: '#0a0a0a'
+  assign bg_color    = section.settings.bg_color      | default: 'var(--color-bg-soft)'
+  assign card_bg     = section.settings.card_bg        | default: 'var(--color-bg)'
+  assign text_color  = section.settings.text_color    | default: 'var(--color-bg-dark)'
+  assign title_color = section.settings.title_color   | default: 'var(--color-bg-dark)'
+  assign eyebrow_col = section.settings.eyebrow_color | default: 'var(--color-primary)'
+  assign dot_active  = section.settings.dot_active_color   | default: 'var(--color-bg-dark)'
   assign dot_inactive = section.settings.dot_inactive_color | default: 'rgba(10,10,10,0.18)'
-  assign arrow_color = section.settings.arrow_color   | default: '#0a0a0a'
+  assign arrow_color = section.settings.arrow_color   | default: 'var(--color-bg-dark)'
 
   assign show_arr    = section.settings.show_arrows
   assign show_nav    = section.settings.show_dots
@@ -87,8 +87,8 @@
     {%- endif -%}
 
     <div class="acspc__viewport-wrap">
-      <div class="acspc__viewport" id="acspc-viewport-{{ sid }}">
-        <ul class="acspc__track" id="acspc-track-{{ sid }}" role="list" aria-label="Collections">
+      <div class="swiper acspc__swiper" id="acspc-swiper-{{ sid }}">
+        <ul class="swiper-wrapper acspc__track" role="list" aria-label="Collections">
           {%- if section.blocks.size > 0 -%}
             {%- for block in section.blocks -%}
               {%- liquid
@@ -99,7 +99,7 @@
                 assign card_badge = block.settings.badge
                 assign overlay_op = block.settings.overlay_opacity | default: 45 | divided_by: 100.0
               -%}
-              <li class="acspc__item" {{ block.shopify_attributes }}>
+              <li class="swiper-slide acspc__item" {{ block.shopify_attributes }}>
                 <a class="acspc__card" href="{{ card_url }}" aria-label="{{ card_title | escape }}">
                   <div class="acspc__card-media" aria-hidden="true">
                     {%- if card_img != blank -%}
@@ -133,7 +133,7 @@
           {%- else -%}
             {%- assign default_titles = 'Caméras & Vidéo,Audio & Podcast,Éclairage,Streaming,Mobile Creator,Accessoires,Setup Débutant,Studio Pro' | split: ',' -%}
             {%- for i in (1..8) -%}
-              <li class="acspc__item">
+              <li class="swiper-slide acspc__item">
                 <a class="acspc__card" href="/collections/all" aria-label="{{ default_titles[forloop.index0] }}">
                   <div class="acspc__card-media" aria-hidden="true">
                     <div class="acspc__card-placeholder"></div>
@@ -154,7 +154,19 @@
       <div class="acspc__footer">
         <div class="acspc__footer-left">
           {%- if show_nav -%}
-            <div class="acspc__dots" id="acspc-dots-{{ sid }}" role="tablist" aria-label="Position carousel"></div>
+            <div class="acspc__dots" id="acspc-dots-{{ sid }}" role="tablist" aria-label="Position carousel">
+              {%- assign acspc_dot_count = section.blocks.size -%}
+              {%- if acspc_dot_count == 0 -%}{%- assign acspc_dot_count = 8 -%}{%- endif -%}
+              {%- for i in (1..acspc_dot_count) -%}
+                <button
+                  class="acspc__dot{% if forloop.first %} acspc__dot--active{% endif %}"
+                  type="button"
+                  role="tab"
+                  aria-label="Page {{ forloop.index }}"
+                  aria-selected="{% if forloop.first %}true{% else %}false{% endif %}"
+                ></button>
+              {%- endfor -%}
+            </div>
           {%- endif -%}
         </div>
         <div class="acspc__footer-right">
@@ -185,8 +197,8 @@
   --acspc-ease-out: cubic-bezier(0.16, 1, 0.3, 1);
   --acspc-card-w: calc((100vw - (2 * var(--acspc-pad)) - var(--acspc-gap)) / 1.5);
 
-  background: var(--acspc-bg, #f7f7f8);
-  color: var(--acspc-text, #0a0a0a);
+  background: var(--acspc-bg, var(--color-bg-soft));
+  color: var(--acspc-text, var(--color-bg-dark));
   margin-top: var(--acspc-mt, 0);
   margin-bottom: var(--acspc-mb, 0);
 }
@@ -230,30 +242,30 @@
 
 .acspc__eyebrow {
   font-size: 0.7rem; font-weight: 600; letter-spacing: 0.16em;
-  text-transform: uppercase; color: var(--acspc-eyebrow, #0787ea);
+  text-transform: uppercase; color: var(--acspc-eyebrow, var(--color-primary));
 }
 
 .acspc__title {
   font-family: var(--font-body, 'Inter', sans-serif);
   font-size: clamp(1.4rem, 3vw, 2.2rem);
   font-weight: 800; letter-spacing: -0.03em;
-  color: var(--acspc-title, #0a0a0a); margin: 0;
+  color: var(--acspc-title, var(--color-bg-dark)); margin: 0;
 }
 
 .acspc__subtitle {
   font-size: 0.875rem;
-  color: color-mix(in srgb, var(--acspc-text, #0a0a0a) 60%, transparent);
+  color: color-mix(in srgb, var(--acspc-text, var(--color-bg-dark)) 60%, transparent);
   margin: 0; max-width: 52ch; line-height: 1.55;
 }
 
 .acspc__view-all {
   display: inline-flex; align-items: center; gap: 5px; flex-shrink: 0;
   font-size: 0.78rem; font-weight: 600;
-  color: var(--acspc-text, #0a0a0a); text-decoration: none;
+  color: var(--acspc-text, var(--color-bg-dark)); text-decoration: none;
   border-bottom: 1.5px solid currentColor; padding-bottom: 1px;
   white-space: nowrap; transition: color 160ms ease;
 }
-.acspc__view-all:hover { color: #0787ea; }
+.acspc__view-all:hover { color: var(--color-primary); }
 .acspc__view-all svg { transition: transform 200ms var(--acspc-ease); }
 .acspc__view-all:hover svg { transform: translateX(3px); }
 
@@ -261,14 +273,13 @@
 .acspc__sep {
   margin: 0 var(--acspc-pad) 20px;
   display: flex; align-items: center; gap: 16px;
-  color: color-mix(in srgb, var(--acspc-text, #0a0a0a) 35%, transparent);
+  color: color-mix(in srgb, var(--acspc-text, var(--color-bg-dark)) 35%, transparent);
   font-size: 0.78rem; letter-spacing: 0.08em; text-transform: uppercase;
 }
 .acspc__sep--line::before, .acspc__sep--line::after   { content: ''; flex: 1; height: 1px; background: currentColor; }
 .acspc__sep--dashed::before, .acspc__sep--dashed::after { content: ''; flex: 1; height: 1px; border-top: 1px dashed currentColor; }
 
 /* Viewport */
-/* Viewport wrap — overflow:hidden clips X; padding+negative-margin creates Y breathing room */
 .acspc__viewport-wrap {
   overflow: hidden;
   padding-top: 8px;
@@ -276,27 +287,28 @@
   padding-bottom: 32px;
   margin-bottom: -32px;
 }
-.acspc__viewport {
-  padding-left: var(--acspc-pad);
-  overflow: visible;
-  cursor: grab;
-  user-select: none; -webkit-user-select: none;
-}
-.acspc__viewport:active { cursor: grabbing; }
 
-/* Track */
-.acspc__track {
-  display: flex; gap: var(--acspc-gap, 14px);
-  padding-top: 20px; padding-bottom: 28px;
-  padding-right: var(--acspc-pad); margin: 0; padding-left: 0;
-  list-style: none;
+.acspc__swiper {
+  overflow: visible;
+  padding: 20px var(--acspc-pad) 28px;
+}
+
+.acspc__swiper .acspc__track {
+  margin: 0; padding: 0; list-style: none;
+  gap: var(--acspc-gap, 14px);
 }
 
 /* Items */
-.acspc__item {
-  flex: 0 0 var(--acspc-card-w);
-  min-width: 0;
+.acspc__swiper .acspc__item {
+  width: var(--acspc-card-w) !important;
+  flex-shrink: 0;
+  height: auto;
 }
+
+/* Masquer navigation Swiper native */
+.acspc__swiper .swiper-pagination,
+.acspc__swiper .swiper-button-next,
+.acspc__swiper .swiper-button-prev { display: none !important; }
 
 /* Card */
 .acspc__card {
@@ -316,7 +328,7 @@
     box-shadow: 0 20px 56px rgba(0,0,0,0.18), 0 4px 12px rgba(0,0,0,0.1);
   }
 }
-.acspc__card:focus-visible { outline: 2px solid #0787ea; outline-offset: 3px; }
+.acspc__card:focus-visible { outline: 2px solid var(--color-primary); outline-offset: 3px; }
 
 /* Media */
 .acspc__card-media { position: absolute; inset: 0; }
@@ -330,7 +342,7 @@
 }
 .acspc__card-placeholder {
   position: absolute; inset: 0;
-  background: linear-gradient(135deg, #e8e8e8 0%, #d0d0d0 100%);
+  background: linear-gradient(135deg, var(--color-border) 0%, #d0d0d0 100%);
 }
 .acspc__card-overlay {
   position: absolute; inset: 0;
@@ -393,12 +405,12 @@
   display: flex; align-items: center; justify-content: center;
   width: var(--acspc-arrow-size, 36px); height: var(--acspc-arrow-size, 36px);
   border-radius: 0.75rem; border: none; background: none;
-  color: var(--acspc-arrow-color, #0a0a0a); cursor: pointer; padding: 0;
+  color: var(--acspc-arrow-color, var(--color-bg-dark)); cursor: pointer; padding: 0;
   transition: background 180ms var(--acspc-ease);
 }
 .acspc__arrow:hover    { background: rgba(10,10,10,0.07); }
 .acspc__arrow:disabled { opacity: 0.28; cursor: default; pointer-events: none; }
-.acspc__arrow:focus-visible { outline: 2px solid #0787ea; outline-offset: 2px; }
+.acspc__arrow:focus-visible { outline: 2px solid var(--color-primary); outline-offset: 2px; }
 
 /* Dots */
 .acspc__dots { display: flex; align-items: center; gap: 8px; }
@@ -412,58 +424,59 @@
 .acspc__dot--active {
   width: calc(var(--acspc-dot-size, 6px) * 3.5);
   border-radius: 3px;
-  background: var(--acspc-dot-active, #0a0a0a);
+  background: var(--acspc-dot-active, var(--color-bg-dark));
 }
 .acspc__dot--small  { transform: scale(0.6); opacity: 0.5; }
 .acspc__dot--hidden { display: none; }
-.acspc__dot:focus-visible { outline: 2px solid #0787ea; outline-offset: 2px; }
+.acspc__dot:focus-visible { outline: 2px solid var(--color-primary); outline-offset: 2px; }
 </style>
 
 <script>
 (function () {
   'use strict';
   var sid = '{{ sid }}';
+  var swiper = null;
 
   function init() {
     var section  = document.getElementById('acspc-' + sid);
-    if (!section || !window.EmblaCarousel) return;
-    var viewport = document.getElementById('acspc-viewport-' + sid);
-    if (!viewport) return;
+    if (!section || typeof Swiper === 'undefined') return;
+
+    var swiperEl = document.getElementById('acspc-swiper-' + sid);
+    if (!swiperEl) return;
 
     var dotsWrap = document.getElementById('acspc-dots-' + sid);
     var btnPrev  = document.getElementById('acspc-prev-' + sid);
     var btnNext  = document.getElementById('acspc-next-' + sid);
-    var dots = [];
+    var dots     = dotsWrap ? Array.from(dotsWrap.querySelectorAll('.acspc__dot')) : [];
 
-    var embla = window.EmblaCarousel(viewport, {
-      loop: true, align: 'start', slidesToScroll: 1, dragFree: false, containScroll: false
+    swiper = new Swiper(swiperEl, {
+      slidesPerView: 'auto',
+      spaceBetween:  0,
+      loop:          true,
+      speed:         400,
+      grabCursor:    true
     });
 
-    function buildDots() {
-      if (!dotsWrap) return;
-      dotsWrap.innerHTML = ''; dots = [];
-      embla.scrollSnapList().forEach(function (_, i) {
-        var btn = document.createElement('button');
-        btn.type = 'button'; btn.className = 'acspc__dot';
-        btn.setAttribute('role', 'tab');
-        btn.setAttribute('aria-label', 'Page ' + (i + 1));
-        btn.addEventListener('click', function () { embla.scrollTo(i); });
-        dotsWrap.appendChild(btn); dots.push(btn);
+    dots.forEach(function (btn, idx) {
+      btn.addEventListener('click', function (e) {
+        e.preventDefault();
+        swiper.slideToLoop(idx);
       });
-      updateDots();
-    }
+    });
 
     function updateDots() {
-      var maxV = 5; var idx = embla.selectedScrollSnap();
+      if (!dots.length) return;
+      var maxV = 5;
+      var idx  = swiper.realIndex;
       dots.forEach(function (d, i) {
         var active = i === idx;
         d.className = 'acspc__dot' + (active ? ' acspc__dot--active' : '');
         d.setAttribute('aria-selected', active ? 'true' : 'false');
       });
       if (dots.length > maxV) {
-        var half = Math.floor(maxV / 2);
+        var half  = Math.floor(maxV / 2);
         var start = Math.max(0, idx - half);
-        var end = Math.min(dots.length, start + maxV);
+        var end   = Math.min(dots.length, start + maxV);
         if (end - start < maxV) start = Math.max(0, end - maxV);
         dots.forEach(function (d, i) {
           if (i < start || i >= end) {
@@ -474,18 +487,28 @@
       }
     }
 
-    embla.on('select', updateDots);
-    embla.on('reInit', buildDots);
-    buildDots();
+    swiper.on('slideChange', updateDots);
+    updateDots();
 
-    if (btnPrev) btnPrev.addEventListener('click', function () { embla.scrollPrev(); });
-    if (btnNext) btnNext.addEventListener('click', function () { embla.scrollNext(); });
+    if (btnPrev) btnPrev.addEventListener('click', function (e) { e.preventDefault(); swiper.slidePrev(); });
+    if (btnNext) btnNext.addEventListener('click', function (e) { e.preventDefault(); swiper.slideNext(); });
   }
 
-  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init);
-  else init();
+  function safeInit() {
+    if (typeof Swiper !== 'undefined') { init(); return; }
+    var interval = setInterval(function () {
+      if (typeof Swiper !== 'undefined') { clearInterval(interval); init(); }
+    }, 50);
+    setTimeout(function () { clearInterval(interval); }, 5000);
+  }
+
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', safeInit);
+  else safeInit();
   document.addEventListener('shopify:section:load', function (e) {
-    if (e.detail && e.detail.sectionId === sid) init();
+    if (e.detail && e.detail.sectionId === sid) {
+      if (swiper) { swiper.destroy(true, true); swiper = null; }
+      safeInit();
+    }
   });
 })();
 </script>

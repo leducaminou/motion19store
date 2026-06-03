@@ -1,0 +1,108 @@
+/* ═══════════════════════════════════════════════════════
+   base.css — Motion19 — CSS statique global
+   Extrait de theme.liquid pour réduire le HTML inline.
+   Chargé via stylesheet_tag dans <head>.
+════════════════════════════════════════════════════════ */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: var(--font-body);
+  font-size: 16px;
+  line-height: 1.5;
+  color: var(--color-text);
+  background-color: var(--color-bg);
+  -webkit-font-smoothing: antialiased;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-heading);
+  margin: 0;
+  font-weight: 700;
+}
+
+.container {
+  max-width: var(--container-width);
+  margin: 0 auto;
+  padding: 0 var(--container-padding);
+}
+
+main {
+  min-height: 80vh;
+}
+
+/* ── Séparateur visuel entre sections blanches ── */
+.section-featured-carousel + .section-category-recommendations,
+.section-category-recommendations + .section-new-products {
+  border-top: 1px solid var(--color-border);
+}
+
+/* ── Titres de section — ligne accent ── */
+.fc__title,
+.np__title,
+.bj__title,
+.rc__title {
+  position: relative;
+  padding-bottom: 16px;
+}
+
+.fc__title::after,
+.np__title::after,
+.rc__title::after,
+.bj__title::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 36px;
+  height: 3px;
+  background: var(--color-primary);
+  border-radius: 2px;
+}
+
+/* bo__title sur fond noir — ligne blanche */
+.bo__title {
+  position: relative;
+  padding-bottom: 16px;
+}
+.bo__title::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 36px;
+  height: 3px;
+  background: rgba(255, 255, 255, 0.35);
+  border-radius: 2px;
+}
+
+/* ── Section fade-in animation ── */
+@keyframes m19FadeUp {
+  from { opacity: 0; transform: translateY(18px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.m19-animate {
+  opacity: 0;
+  transform: translateY(18px);
+}
+.m19-animate.is-visible {
+  animation: m19FadeUp 0.55s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+/* ── Accessibilité ── */
+.visually-hidden {
+  position: absolute !important;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  height: 1px;
+  width: 1px;
+  margin: -1px;
+  padding: 0;
+  border: 0;
+}

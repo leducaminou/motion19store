@@ -54,21 +54,27 @@
   assign conseil_placeholder   = s.conseil_textarea_placeholder      | default: 'Décrivez rapidement votre besoin, votre setup actuel ou votre utilisation prévue…'
   assign conseil_wa_num        = s.conseil_whatsapp_number           | default: whatsapp_number | default: ''
   assign conseil_modal_r       = s.conseil_modal_radius              | default: btn_radius_val
-  assign conseil_modal_bg_c    = s.conseil_modal_bg                  | default: '#ffffff'
-  assign conseil_modal_brd_c   = s.conseil_modal_border_color        | default: '#e8e8e8'
-  assign conseil_modal_txt_c   = s.conseil_modal_text_color          | default: '#0a0a0a'
-  assign conseil_accent_c      = s.conseil_accent_color              | default: '#0787ea'
+  assign conseil_modal_bg_c    = s.conseil_modal_bg                  | default: 'var(--color-bg)'
+  assign conseil_modal_brd_c   = s.conseil_modal_border_color        | default: 'var(--color-border)'
+  assign conseil_modal_txt_c   = s.conseil_modal_text_color          | default: 'var(--color-bg-dark)'
+  assign conseil_accent_c      = s.conseil_accent_color              | default: 'var(--color-primary)'
   assign stock_in_color    = s.stock_in_color      | default: '#22c55e'
   assign stock_out_color   = s.stock_out_color     | default: '#ef4444'
-  assign sticky_bg         = s.sticky_bg_color     | default: 'rgba(255,255,255,0.92)'
-  assign badge_icon_color  = s.badge_icon_color    | default: '#0787ea'
+  assign sticky_bg         = s.sticky_bg_color        | default: 'rgba(255,255,255,0.92)'
+  assign sticky_border_c   = s.sticky_border_color    | default: 'var(--color-border)'
+  assign sticky_title_c    = s.sticky_title_color     | default: 'var(--color-text)'
+  assign sticky_price_c    = s.sticky_price_color     | default: 'var(--color-text-light)'
+  assign sticky_btn_bg     = s.sticky_btn_bg          | default: 'var(--color-bg-dark)'
+  assign sticky_btn_txt    = s.sticky_btn_text        | default: 'var(--color-bg)'
+  assign sticky_btn_hover  = s.sticky_btn_hover_bg    | default: 'var(--color-primary)'
+  assign badge_icon_color  = s.badge_icon_color    | default: 'var(--color-primary)'
   assign desc_size         = s.desc_font_size      | default: 14
   assign pill_r            = s.pill_radius         | default: 6
-  assign pill_sel_bg       = s.pill_selected_bg    | default: '#0a0a0a'
-  assign pill_sel_txt      = s.pill_selected_text  | default: '#ffffff'
-  assign sec_btn_bg_val    = s.sec_btn_bg          | default: '#ffffff'
-  assign sec_btn_txt_val   = s.sec_btn_text_color  | default: '#0a0a0a'
-  assign sec_btn_brd_val   = s.sec_btn_border      | default: '#e8e8e8'
+  assign pill_sel_bg       = s.pill_selected_bg    | default: 'var(--color-bg-dark)'
+  assign pill_sel_txt      = s.pill_selected_text  | default: 'var(--color-bg)'
+  assign sec_btn_bg_val    = s.sec_btn_bg          | default: 'var(--color-bg)'
+  assign sec_btn_txt_val   = s.sec_btn_text_color  | default: 'var(--color-bg-dark)'
+  assign sec_btn_brd_val   = s.sec_btn_border      | default: 'var(--color-border)'
   assign pad_x_mob_val     = s.padding_x_mobile    | default: 16
   assign pad_x_desk_val    = s.padding_x_desktop   | default: 40
 
@@ -152,7 +158,13 @@
     --pdp-wa-color:      {{ wa_color }};
     --pdp-stock-in:      {{ stock_in_color }};
     --pdp-stock-out:     {{ stock_out_color }};
-    --pdp-sticky-bg:     {{ sticky_bg }};
+    --pdp-sticky-bg:         {{ sticky_bg }};
+    --pdp-sticky-border:     {{ sticky_border_c }};
+    --pdp-sticky-title:      {{ sticky_title_c }};
+    --pdp-sticky-price:      {{ sticky_price_c }};
+    --pdp-sticky-btn-bg:     {{ sticky_btn_bg }};
+    --pdp-sticky-btn-txt:    {{ sticky_btn_txt }};
+    --pdp-sticky-btn-hover:  {{ sticky_btn_hover }};
     --pdp-badge-icon:    {{ badge_icon_color }};
     --pdp-desc-size:     {{ desc_size }}px;
     --pdp-pill-r:        {{ pill_r }}px;
@@ -321,30 +333,16 @@
               <button
                 class="pdp__share-btn"
                 id="pdpShareBtn"
-                onclick="pdpToggleShare(this)"
-                aria-label="Partager"
-                aria-expanded="false"
-                aria-haspopup="true"
+                onclick="pdpCopyLink(this)"
+                aria-label="Copier le lien"
               >
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <svg class="pdp__share-icon pdp__share-icon--link" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
                   <path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/><polyline points="16 6 12 2 8 6"/><line x1="12" y1="2" x2="12" y2="15"/>
                 </svg>
+                <svg class="pdp__share-icon pdp__share-icon--check" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/>
+                </svg>
               </button>
-              <div class="pdp__share-dropdown" id="pdpShareDropdown" role="menu">
-                <button class="pdp__share-item" onclick="pdpCopyLink(this)" role="menuitem">
-                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
-                  Copier le lien
-                </button>
-                <a class="pdp__share-item pdp__share-facebook" href="#" target="_blank" rel="noopener noreferrer" role="menuitem">
-                  <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
-                  Partager sur Facebook
-                </a>
-                <a class="pdp__share-item pdp__share-whatsapp" href="#" target="_blank" rel="noopener noreferrer" role="menuitem">
-                  <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
-                  Partager sur WhatsApp
-                </a>
-                <p class="pdp__share-copied" id="pdpShareCopied" aria-live="polite">✓ Lien copié !</p>
-              </div>
             </div>
           {%- endif -%}
         </div>
@@ -595,29 +593,52 @@
 
 {%- comment -%}── STICKY ATC ──{%- endcomment -%}
 {%- if show_sticky_atc -%}
-  <div class="pdp__sticky-atc" id="pdpStickyAtc" aria-hidden="true">
+  <div class="pdp__sticky-atc" id="pdpStickyAtc" aria-hidden="true" role="region" aria-label="Ajout rapide au panier">
+
+    {{- '<!-- info produit (masqué sur mobile) -->' -}}
     <div class="pdp__sticky-info">
       <img
         class="pdp__sticky-thumb"
         src="{{ first_image | image_url: width: 80 }}"
         alt="{{ product.title | escape }}"
         loading="lazy"
-        width="38"
-        height="38"
+        width="44"
+        height="44"
       >
       <div class="pdp__sticky-details">
         <p class="pdp__sticky-title">{{ product.title | truncate: 40 }}</p>
         <p class="pdp__sticky-price" id="pdpStickyPrice">{{ current_variant.price | money }}</p>
       </div>
     </div>
+
+    {{- '<!-- bouton texte — desktop uniquement -->' -}}
     <button
-      class="pdp__btn pdp__btn--primary pdp__sticky-btn"
+      class="pdp__sticky-btn pdp__sticky-btn--text"
       type="button"
       onclick="pdpAddToCart()"
       aria-label="Ajouter au panier"
     >
-      Ajouter au panier
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/>
+      </svg>
+      <span>Ajouter au panier</span>
     </button>
+
+    {{- '<!-- bouton rond icône — mobile uniquement -->' -}}
+    <button
+      class="pdp__sticky-btn pdp__sticky-btn--icon"
+      type="button"
+      onclick="pdpAddToCart()"
+      aria-label="Ajouter au panier"
+    >
+      <svg class="pdp__sticky-icon pdp__sticky-icon--bag" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/>
+      </svg>
+      <svg class="pdp__sticky-icon pdp__sticky-icon--check" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <polyline points="20 6 9 17 4 12"/>
+      </svg>
+    </button>
+
   </div>
 {%- endif -%}
 
@@ -1017,6 +1038,22 @@
         return;
       }
 
+      /* Feedback visuel is-added sur le bouton principal + les deux boutons sticky */
+      var stickyBtns = document.querySelectorAll('.pdp__sticky-btn');
+      var allBtns = [btn].concat(Array.prototype.slice.call(stickyBtns));
+      allBtns.forEach(function (b) {
+        if (!b) return;
+        b.classList.add('is-added');
+        b.disabled = true;
+      });
+      setTimeout(function () {
+        allBtns.forEach(function (b) {
+          if (!b) return;
+          b.classList.remove('is-added');
+          b.disabled = false;
+        });
+      }, 2500);
+
       /* Update cart badge and dispatch unified event */
       fetch('/cart.js')
         .then(function (r) { return r.json(); })
@@ -1094,40 +1131,17 @@
   };
 
   /* ────────────────────────────────────────────
-     SHARE DROPDOWN
+     SHARE — copie du lien
   ──────────────────────────────────────────── */
-  window.pdpToggleShare = function (btn) {
-    var dropdown = document.getElementById('pdpShareDropdown');
-    if (!dropdown) return;
-    var isOpen = dropdown.classList.toggle('is-open');
-    btn.setAttribute('aria-expanded', isOpen.toString());
-
-    if (isOpen) {
-      var url   = encodeURIComponent(window.location.href);
-      var title = encodeURIComponent(document.title);
-      var fb = dropdown.querySelector('.pdp__share-facebook');
-      var wa = dropdown.querySelector('.pdp__share-whatsapp');
-      if (fb) fb.href = 'https://www.facebook.com/sharer/sharer.php?u=' + url;
-      if (wa) wa.href = 'https://wa.me/?text=' + title + '%20' + url;
-    }
-  };
-
-  document.addEventListener('click', function (e) {
-    var btn      = document.getElementById('pdpShareBtn');
-    var dropdown = document.getElementById('pdpShareDropdown');
-    if (!btn || !dropdown) return;
-    if (!btn.contains(e.target) && !dropdown.contains(e.target)) {
-      dropdown.classList.remove('is-open');
-      btn.setAttribute('aria-expanded', 'false');
-    }
-  });
-
   window.pdpCopyLink = function (btn) {
+    if (!btn || btn.disabled) return;
     navigator.clipboard.writeText(window.location.href).then(function () {
-      var el = document.getElementById('pdpShareCopied');
-      if (!el) return;
-      el.style.display = 'block';
-      setTimeout(function () { el.style.display = 'none'; }, 2200);
+      btn.classList.add('is-copied');
+      btn.disabled = true;
+      setTimeout(function () {
+        btn.classList.remove('is-copied');
+        btn.disabled = false;
+      }, 2000);
     });
   };
 
@@ -1710,7 +1724,13 @@
     { "type": "header", "content": "Description" },
     { "type": "range", "id": "desc_font_size",      "label": "Taille police (px)", "min": 11, "max": 18, "step": 1, "default": 14, "unit": "px" },
     { "type": "header", "content": "Barre ATC sticky" },
-    { "type": "color", "id": "sticky_bg_color",     "label": "Fond barre sticky",        "default": "#ffffff" },
+    { "type": "color",    "id": "sticky_bg_color",    "label": "Fond de la barre",          "default": "#ffffff" },
+    { "type": "color",    "id": "sticky_border_color","label": "Couleur bordure",            "default": "#e5e5e5" },
+    { "type": "color",    "id": "sticky_title_color", "label": "Couleur titre produit",      "default": "#1a1a1a" },
+    { "type": "color",    "id": "sticky_price_color", "label": "Couleur prix",               "default": "#666666" },
+    { "type": "color",    "id": "sticky_btn_bg",      "label": "Fond bouton",                "default": "#0a0a0a" },
+    { "type": "color",    "id": "sticky_btn_text",    "label": "Texte bouton",               "default": "#ffffff" },
+    { "type": "color",    "id": "sticky_btn_hover_bg","label": "Fond bouton — hover",        "default": "#0787ea" },
     { "type": "header", "content": "Espacement horizontal" },
     { "type": "range", "id": "padding_x_mobile",   "label": "Padding horizontal mobile (px)",  "min": 8,  "max": 40, "step": 4, "default": 16, "unit": "px" },
     { "type": "range", "id": "padding_x_desktop",  "label": "Padding horizontal desktop (px)", "min": 16, "max": 80, "step": 4, "default": 40, "unit": "px" }

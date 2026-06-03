@@ -10,20 +10,20 @@
   assign h_desk         = section.settings.height_desktop    | default: 600
   assign img_height_mob = section.settings.img_height_mobile | default: 340
 
-  assign container_bg   = section.settings.container_bg      | default: '#0a0a0a'
+  assign container_bg   = section.settings.container_bg      | default: 'var(--color-bg-dark)'
   assign ph_desk        = section.settings.ph_desktop        | default: 80
   assign ph_tab         = section.settings.ph_tablet         | default: 48
   assign ph_mob         = section.settings.ph_mobile         | default: 24
   assign show_dots      = section.settings.show_dots_texture
   assign show_halo      = section.settings.show_halo
-  assign halo_color     = section.settings.halo_color        | default: '#0787ea'
+  assign halo_color     = section.settings.halo_color        | default: 'var(--color-primary)'
   assign halo_intensity = section.settings.halo_intensity    | default: 12
   assign show_grain     = section.settings.show_grain
   assign grain_opacity  = section.settings.grain_opacity     | default: 3
 
   assign badge_text     = section.settings.badge_text
   assign badge_style    = section.settings.badge_style       | default: 'line'
-  assign badge_color    = section.settings.badge_color       | default: '#0787ea'
+  assign badge_color    = section.settings.badge_color       | default: 'var(--color-primary)'
   assign badge_bg       = section.settings.badge_bg
   assign badge_border   = section.settings.badge_border
   assign badge_fs       = section.settings.badge_fs          | default: 11
@@ -52,8 +52,8 @@
   assign heading_sz_t   = section.settings.heading_sz_tablet  | default: 36
   assign heading_sz_m   = section.settings.heading_sz_mobile  | default: 28
   assign heading_gradient = section.settings.heading_gradient | default: false
-  assign heading_grad_from = section.settings.heading_grad_from | default: '#ffffff'
-  assign heading_grad_to   = section.settings.heading_grad_to   | default: '#0787ea'
+  assign heading_grad_from = section.settings.heading_grad_from | default: 'var(--color-bg)'
+  assign heading_grad_to   = section.settings.heading_grad_to   | default: 'var(--color-primary)'
 
   assign body_fs_d      = section.settings.body_fs_desktop   | default: 16
   assign body_fs_m      = section.settings.body_fs_mobile    | default: 14
@@ -245,7 +245,8 @@
 -%}
 
 {%- if img_loading == 'eager' -%}
-  <link rel="preload" as="image" href="{{ img_url_d }}" media="(min-width: 768px)">
+  <link rel="preload" as="image" href="{{ img_url_d }}" media="(min-width: 768px)" fetchpriority="high">
+  <link rel="preload" as="image" href="{{ img_url_m }}" media="(max-width: 767px)" fetchpriority="high">
 {%- endif -%}
 
 <section
@@ -347,7 +348,7 @@
               <a href="{{ cta1_url }}"
                  class="ebn__cta ebn__cta--{{ cta1_style }}{% if cta1_bg != blank %} ebn__cta--custom{% endif %}"
                  {% if cta1_new_tab %}target="_blank" rel="noopener noreferrer"{% endif %}
-                 {% if cta1_bg != blank %}style="--ebn-cb:{{ cta1_bg }};--ebn-ct:{{ cta1_color | default: '#ffffff' }};--ebn-chob:{{ cta1_hover_bg | default: cta1_bg }};"{% endif %}
+                 {% if cta1_bg != blank %}style="--ebn-cb:{{ cta1_bg }};--ebn-ct:{{ cta1_color | default: 'var(--color-bg)' }};--ebn-chob:{{ cta1_hover_bg | default: cta1_bg }};"{% endif %}
                  aria-label="{{ cta1_label | escape }}">
                 <span class="ebn__cta-label">{{ cta1_label | escape }}</span>
                 <span class="ebn__cta-icon" aria-hidden="true">
@@ -362,7 +363,7 @@
               <a href="{{ cta2_url }}"
                  class="ebn__cta ebn__cta--{{ cta2_style }}{% if cta2_bg != blank %} ebn__cta--custom{% endif %}"
                  {% if cta2_new_tab %}target="_blank" rel="noopener noreferrer"{% endif %}
-                 {% if cta2_bg != blank %}style="--ebn-cb:{{ cta2_bg }};--ebn-ct:{{ cta2_color | default: '#ffffff' }};--ebn-chob:{{ cta2_hover_bg | default: cta2_bg }};"{% endif %}
+                 {% if cta2_bg != blank %}style="--ebn-cb:{{ cta2_bg }};--ebn-ct:{{ cta2_color | default: 'var(--color-bg)' }};--ebn-chob:{{ cta2_hover_bg | default: cta2_bg }};"{% endif %}
                  aria-label="{{ cta2_label | escape }}">
                 <span class="ebn__cta-label">{{ cta2_label | escape }}</span>
               </a>
@@ -378,13 +379,22 @@
     <div class="ebn__col ebn__col--media" aria-hidden="true">
       <div class="ebn__media-inner">
         <picture>
-          <source media="(max-width: 479px)"  srcset="{{ img_url_m }}">
-          <source media="(max-width: 1023px)" srcset="{{ img_url_t }}">
+          <source
+            media="(max-width: 479px)"
+            srcset="{{ img_url_m }} 800w{% if img_mobile != blank %}, {{ img_mobile | image_url: width: 1200 }} 1200w{% endif %}"
+            sizes="100vw"
+          >
+          <source
+            media="(max-width: 1023px)"
+            srcset="{{ img_url_t }} 1000w{% if img_desktop != blank %}, {{ img_desktop | image_url: width: 1400 }} 1400w{% endif %}"
+            sizes="100vw"
+          >
           <img
             class="ebn__img"
             src="{{ img_url_d }}"
-            srcset="{{ img_url_d }} 1x, {{ img_url_d_2x }} 2x"
-            alt=""
+            srcset="{{ img_url_d }} 1400w, {{ img_url_d_2x }} 2000w"
+            sizes="50vw"
+            alt="{{ section.settings.img_alt | default: img_desktop.alt | escape }}"
             width="{{ img_desktop.width | default: 1400 }}"
             height="{{ img_desktop.height | default: 900 }}"
             loading="{{ img_loading }}"
@@ -412,7 +422,7 @@
 ═══════════════════════════════════════════════════ */
 
 .ebn {
-  background-color: var(--ebn-bg, #0a0a0a);
+  background-color: var(--ebn-bg, var(--color-bg-dark));
   margin-top:    var(--ebn-mt, 0px);
   margin-bottom: var(--ebn-mb, 0px);
   overflow: hidden;
@@ -440,7 +450,7 @@
 
 /* ── Colonne texte ── */
 .ebn__col--text {
-  background-color: var(--ebn-bg, #0a0a0a);
+  background-color: var(--ebn-bg, var(--color-bg-dark));
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -528,7 +538,7 @@
   font-weight: var(--ebn-badge-fw, 600);
   letter-spacing: var(--ebn-badge-ls, 0.18em);
   text-transform: uppercase;
-  color: var(--ebn-badge-color, #0787ea);
+  color: var(--ebn-badge-color, var(--color-primary));
 }
 
 /* Style: line (défaut avec tiret) */
@@ -546,7 +556,7 @@
 
 /* Style: filled */
 .ebn__badge--filled {
-  background: var(--ebn-badge-bg, var(--ebn-badge-color, #0787ea));
+  background: var(--ebn-badge-bg, var(--ebn-badge-color, var(--color-primary)));
   color: var(--ebn-badge-color, #fff);
   padding: var(--ebn-badge-py,4px) var(--ebn-badge-px,10px);
   border-radius: var(--ebn-badge-r,12px);
@@ -555,7 +565,7 @@
 /* Style: outline */
 .ebn__badge--outline {
   background: transparent;
-  border: 1.5px solid var(--ebn-badge-border, var(--ebn-badge-color, #0787ea));
+  border: 1.5px solid var(--ebn-badge-border, var(--ebn-badge-color, var(--color-primary)));
   padding: var(--ebn-badge-py,4px) var(--ebn-badge-px,10px);
   border-radius: var(--ebn-badge-r,12px);
 }
@@ -580,7 +590,7 @@
 
 /* Style: gradient */
 .ebn__badge--gradient {
-  background: linear-gradient(90deg, var(--ebn-heading-grad-from,#fff), var(--ebn-heading-grad-to,#0787ea));
+  background: linear-gradient(90deg, var(--ebn-heading-grad-from,#fff), var(--ebn-heading-grad-to,var(--color-primary)));
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -606,7 +616,7 @@
   left: 0;
   width: 36px;
   height: 3px;
-  background: var(--ebn-badge-color, #0787ea);
+  background: var(--ebn-badge-color, var(--color-primary));
   border-radius: 2px;
 }
 .ebn__content--center .ebn__title::after { left: 50%; transform: translateX(-50%); }
@@ -614,7 +624,7 @@
 
 /* Gradient titre */
 .ebn--title-gradient .ebn__title {
-  background: linear-gradient(135deg, var(--ebn-heading-grad-from,#fff) 0%, var(--ebn-heading-grad-to,#0787ea) 100%);
+  background: linear-gradient(135deg, var(--ebn-heading-grad-from,#fff) 0%, var(--ebn-heading-grad-to,var(--color-primary)) 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -633,7 +643,7 @@
 .ebn__content--right  .ebn__subtitle { max-width: unset; }
 .ebn__subtitle p            { margin: 0 0 0.6em; }
 .ebn__subtitle p:last-child { margin-bottom: 0; }
-.ebn__subtitle a            { color: var(--color-primary, #0787ea); text-decoration: underline; }
+.ebn__subtitle a            { color: var(--color-primary, var(--color-primary)); text-decoration: underline; }
 .ebn__subtitle strong       { font-weight: 600; color: var(--ebn-heading-color, #f5f5f7); }
 
 /* ── CTAs ── */
@@ -674,26 +684,26 @@
   flex-shrink: 0;
   transition: transform 200ms cubic-bezier(0.4, 0, 0.2, 1);
 }
-.ebn__cta:focus-visible { outline: 2px solid var(--color-primary, #0787ea); outline-offset: 3px; }
+.ebn__cta:focus-visible { outline: 2px solid var(--color-primary, var(--color-primary)); outline-offset: 3px; }
 
 /* Solid blanc */
-.ebn__cta--solid { background: #fff; color: #0a0a0a; border-color: #fff; }
+.ebn__cta--solid { background: #fff; color: var(--color-bg-dark); border-color: #fff; }
 @media (hover: hover) {
-  .ebn__cta--solid:hover { background: var(--color-primary, #0787ea); color: #fff; border-color: var(--color-primary, #0787ea); box-shadow: 0 8px 32px rgba(7,135,234,0.36); }
+  .ebn__cta--solid:hover { background: var(--color-primary, var(--color-primary)); color: #fff; border-color: var(--color-primary, var(--color-primary)); box-shadow: 0 8px 32px rgba(7,135,234,0.36); }
   .ebn__cta--solid:hover .ebn__cta-icon { transform: translateX(4px); }
 }
 
 /* Primary */
-.ebn__cta--primary { background: var(--color-primary, #0787ea); color: #fff; border-color: var(--color-primary, #0787ea); }
+.ebn__cta--primary { background: var(--color-primary, var(--color-primary)); color: #fff; border-color: var(--color-primary, var(--color-primary)); }
 @media (hover: hover) {
-  .ebn__cta--primary:hover { background: var(--color-primary-hover, #0672c7); box-shadow: 0 6px 20px rgba(7,135,234,0.38); transform: translateY(-1px); }
+  .ebn__cta--primary:hover { background: var(--color-primary-hover, var(--color-primary-hover)); box-shadow: 0 6px 20px rgba(7,135,234,0.38); transform: translateY(-1px); }
   .ebn__cta--primary:hover .ebn__cta-icon { transform: translateX(4px); }
 }
 
 /* Outline blanc */
 .ebn__cta--outline-white { background: transparent; color: #fff; border-color: rgba(255,255,255,0.55); }
 @media (hover: hover) {
-  .ebn__cta--outline-white:hover { background: #fff; color: #0a0a0a; border-color: #fff; transform: translateY(-1px); }
+  .ebn__cta--outline-white:hover { background: #fff; color: var(--color-bg-dark); border-color: #fff; transform: translateY(-1px); }
 }
 
 /* Ghost */
@@ -704,15 +714,15 @@
 }
 
 /* Dark */
-.ebn__cta--dark { background: #0a0a0a; color: #f5f5f7; border-color: #333; }
+.ebn__cta--dark { background: var(--color-bg-dark); color: #f5f5f7; border-color: #333; }
 @media (hover: hover) {
-  .ebn__cta--dark:hover { background: #1a1a1a; transform: translateY(-1px); }
+  .ebn__cta--dark:hover { background: var(--color-text); transform: translateY(-1px); }
   .ebn__cta--dark:hover .ebn__cta-icon { transform: translateX(4px); }
 }
 
 /* Gradient */
 .ebn__cta--gradient {
-  background: linear-gradient(135deg, var(--ebn-heading-grad-from,#0787ea), var(--ebn-heading-grad-to,#0052b4));
+  background: linear-gradient(135deg, var(--ebn-heading-grad-from,var(--color-primary)), var(--ebn-heading-grad-to,#0052b4));
   color: #fff;
   border-color: transparent;
 }
@@ -736,12 +746,12 @@
 /* Neon */
 .ebn__cta--neon {
   background: transparent;
-  color: var(--color-primary, #0787ea);
-  border-color: var(--color-primary, #0787ea);
+  color: var(--color-primary, var(--color-primary));
+  border-color: var(--color-primary, var(--color-primary));
   box-shadow: 0 0 12px rgba(7,135,234,0.3), inset 0 0 12px rgba(7,135,234,0.05);
 }
 @media (hover: hover) {
-  .ebn__cta--neon:hover { background: var(--color-primary, #0787ea); color: #fff; box-shadow: 0 0 24px rgba(7,135,234,0.6), 0 0 48px rgba(7,135,234,0.3); }
+  .ebn__cta--neon:hover { background: var(--color-primary, var(--color-primary)); color: #fff; box-shadow: 0 0 24px rgba(7,135,234,0.6), 0 0 48px rgba(7,135,234,0.3); }
 }
 
 /* Minimal */
@@ -756,8 +766,8 @@
 
 /* Pill */
 .ebn__cta--pill { border-radius: 999px; }
-.ebn__cta--pill.ebn__cta--solid { background: #fff; color: #0a0a0a; border-color: #fff; }
-@media (hover: hover) { .ebn__cta--pill.ebn__cta--solid:hover { background: var(--color-primary, #0787ea); color: #fff; border-color: var(--color-primary, #0787ea); } }
+.ebn__cta--pill.ebn__cta--solid { background: #fff; color: var(--color-bg-dark); border-color: #fff; }
+@media (hover: hover) { .ebn__cta--pill.ebn__cta--solid:hover { background: var(--color-primary, var(--color-primary)); color: #fff; border-color: var(--color-primary, var(--color-primary)); } }
 
 /* Luxury */
 .ebn__cta--luxury {
@@ -1271,6 +1281,7 @@
     { "type": "image_picker", "id": "img_desktop", "label": "Image desktop" },
     { "type": "image_picker", "id": "img_tablet",  "label": "Image tablet (optionnel — fallback desktop)" },
     { "type": "image_picker", "id": "img_mobile",  "label": "Image mobile (optionnel — fallback desktop)" },
+    { "type": "text",         "id": "img_alt",     "label": "Texte alternatif image (SEO + accessibilité)" },
     {
       "type": "select", "id": "img_style", "label": "Style image", "default": "normal",
       "options": [

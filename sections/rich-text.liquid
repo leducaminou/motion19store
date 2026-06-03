@@ -88,7 +88,7 @@
           {%- when 'divider' -%}
             <hr class="rt__divider ss-animate" {{ block.shopify_attributes }}
                 style="
-                  border-color: {{ block.settings.color | default: 'var(--color-border, #e5e5e5)' }};
+                  border-color: {{ block.settings.color | default: 'var(--color-border, var(--color-border))' }};
                   margin-top: {{ block.settings.spacing_top | default: 24 }}px;
                   margin-bottom: {{ block.settings.spacing_bottom | default: 24 }}px;
                   width: {{ block.settings.width | default: 100 }}%;
@@ -155,7 +155,7 @@
     font-weight: 600;
     letter-spacing: 0.2em;
     text-transform: uppercase;
-    color: var(--color-primary, #0787ea);
+    color: var(--color-primary, var(--color-primary));
     margin: 0 0 14px;
   }
 
@@ -175,7 +175,7 @@
     font-weight: 800;
     line-height: 1.06;
     letter-spacing: -0.03em;
-    color: var(--color-text, #1a1a1a);
+    color: var(--color-text, var(--color-text));
     margin: 0 0 18px;
   }
 
@@ -185,7 +185,7 @@
     font-size: clamp(0.9rem, 1.5vw, 1.05rem);
     font-weight: 400;
     line-height: 1.7;
-    color: var(--color-text-light, #666666);
+    color: var(--color-text-light, var(--color-text-light));
     margin: 0 0 24px;
   }
 
@@ -193,7 +193,7 @@
   .rt__body { font-size: 0.97rem; line-height: 1.75; margin: 0 0 24px; }
   .rt__body p + p { margin-top: 1em; }
   .rt__body strong { font-weight: 700; }
-  .rt__body a { color: var(--color-primary, #0787ea); text-decoration: underline; }
+  .rt__body a { color: var(--color-primary, var(--color-primary)); text-decoration: underline; }
 
   /* ── Buttons ─────────────────────────────────────── */
   .rt__btn-wrap { display: flex; justify-content: inherit; margin: 0 0 16px; }
@@ -220,24 +220,24 @@
 
   /* styles */
   .rt__btn--primary {
-    background: var(--color-primary, #0787ea);
+    background: var(--color-primary, var(--color-primary));
     color: #fff; border-color: transparent;
   }
-  .rt__btn--primary:hover { background: #0672c7; }
+  .rt__btn--primary:hover { background: var(--color-primary-hover); }
 
   .rt__btn--outline {
     background: transparent;
-    color: var(--color-text, #1a1a1a);
-    border-color: var(--color-text, #1a1a1a);
+    color: var(--color-text, var(--color-text));
+    border-color: var(--color-text, var(--color-text));
   }
-  .rt__btn--outline:hover { background: var(--color-text, #1a1a1a); color: #fff; }
+  .rt__btn--outline:hover { background: var(--color-text, var(--color-text)); color: #fff; }
 
   .rt__btn--ghost {
     background: transparent;
-    color: var(--color-primary, #0787ea);
+    color: var(--color-primary, var(--color-primary));
     border-color: transparent;
   }
-  .rt__btn--ghost:hover { border-color: var(--color-primary, #0787ea); }
+  .rt__btn--ghost:hover { border-color: var(--color-primary, var(--color-primary)); }
 
   /* ── Divider ─────────────────────────────────────── */
   .rt__divider { border: none; border-top: 1px solid; margin: 24px auto; }
@@ -246,7 +246,7 @@
   .rt__figure { margin: 0 0 20px; }
   .rt__image  { display: block; width: 100%; height: auto; border-radius: 0.75rem; }
   .rt--align-center .rt__image { margin-left: auto; margin-right: auto; }
-  .rt__caption { font-size: 0.8rem; color: var(--color-text-light, #666); margin-top: 8px; }
+  .rt__caption { font-size: 0.8rem; color: var(--color-text-light, var(--color-text-light)); margin-top: 8px; }
 </style>
 
 {% schema %}

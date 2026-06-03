@@ -19,13 +19,13 @@
 
   assign left_mode = section.settings.left_mode | default: 'image'
 
-  assign bg_color     = section.settings.bg_color         | default: '#ffffff'
-  assign text_color   = section.settings.text_color       | default: '#0a0a0a'
-  assign title_color  = section.settings.title_color      | default: '#0a0a0a'
-  assign dot_active   = section.settings.dot_active_color  | default: '#0a0a0a'
+  assign bg_color     = section.settings.bg_color         | default: 'var(--color-bg)'
+  assign text_color   = section.settings.text_color       | default: 'var(--color-bg-dark)'
+  assign title_color  = section.settings.title_color      | default: 'var(--color-bg-dark)'
+  assign dot_active   = section.settings.dot_active_color  | default: 'var(--color-bg-dark)'
   assign dot_inactive = section.settings.dot_inactive_color | default: 'rgba(10,10,10,0.18)'
   assign arrow_bg     = section.settings.arrow_bg          | default: 'rgba(0,0,0,0.25)'
-  assign arrow_color  = section.settings.arrow_color       | default: '#ffffff'
+  assign arrow_color  = section.settings.arrow_color       | default: 'var(--color-bg)'
 
   assign autoplay    = section.settings.autoplay_enabled   | default: false
   assign ap_delay    = section.settings.autoplay_delay     | default: 4000
@@ -119,14 +119,14 @@
         {%- comment -%} Static image mode {%- endcomment -%}
         <div class="sp__img-wrap">
           {%- if use_asset -%}
-            <img class="sp__img" src="{{ left_asset | asset_url }}" alt="" loading="eager" decoding="async" width="900" height="1200">
+            <img class="sp__img" src="{{ left_asset | asset_url }}" alt="{{ section.settings.left_img_alt | default: section.settings.right_title | escape }}" loading="eager" decoding="async" width="900" height="1200">
           {%- else -%}
             <img
               class="sp__img"
               src="{{ left_img | image_url: width: 900 }}"
               srcset="{{ left_img | image_url: width: 600 }} 600w, {{ left_img | image_url: width: 900 }} 900w"
               sizes="(max-width:767px) 100vw, 50vw"
-              alt="{{ left_img.alt | default: '' | escape }}"
+              alt="{{ left_img.alt | default: section.settings.left_img_alt | default: section.settings.right_title | escape }}"
               loading="eager"
               decoding="async"
               width="{{ left_img.width }}"
@@ -214,10 +214,10 @@
 <style>
 .sp {
   --sp-radius: 10px;
-  --sp-blue:   #0787ea;
-  --sp-black:  #0a0a0a;
+  --sp-blue:   var(--color-primary);
+  --sp-black:  var(--color-bg-dark);
   --sp-bg:     #f5f5f7;
-  --sp-border: #e8e8e8;
+  --sp-border: var(--color-border);
   --sp-muted:  #888888;
   --sp-star:   #f5a623;
   --sp-ease:   cubic-bezier(0.4, 0, 0.2, 1);
@@ -338,7 +338,7 @@
 .sp__left-arrow:hover { background: rgba(0,0,0,0.5); }
 .sp__left-arrow--prev { left: 14px; }
 .sp__left-arrow--next { right: 14px; }
-.sp__left-arrow:focus-visible { outline: 2px solid #0787ea; outline-offset: 3px; }
+.sp__left-arrow:focus-visible { outline: 2px solid var(--color-primary); outline-offset: 3px; }
 
 /* Dots left carousel */
 .sp__left-dots {
@@ -450,14 +450,18 @@
   background: var(--sp-blue); color: #fff; border: none;
   cursor: pointer; transition: background 160ms ease, transform 200ms var(--sp-ease);
 }
-@media (hover: hover) { .sp__btn--atc:hover { background: #0672c7; } }
+@media (hover: hover) { .sp__btn--atc:hover { background: var(--color-primary-hover); } }
 .sp__btn--atc:active { transform: scale(0.92); }
 .sp__btn--atc:disabled { background: var(--sp-border); cursor: default; pointer-events: none; }
 .sp__btn--atc:focus-visible { outline: 2px solid var(--sp-blue); outline-offset: 3px; }
 .sp__atc-icon--check { display: none; }
 .sp__btn--atc.is-added .sp__atc-icon--bag   { display: none; }
 .sp__btn--atc.is-added .sp__atc-icon--check { display: block; }
-.sp__btn--atc.is-added { background: #22c55e; }
+.sp__btn--atc.is-added {
+  background:     var(--btn-added-bg, var(--color-bg-dark, #0a0a0a));
+  color:          var(--btn-added-text, #ffffff);
+  pointer-events: none;
+}
 
 .sp__empty { font-size: 0.85rem; color: var(--sp-muted); padding: 24px 0; text-align: center; }
 
@@ -647,7 +651,8 @@
     { "type": "header", "content": "Colonne gauche" },
     { "type": "select", "id": "left_mode", "label": "Mode colonne gauche", "default": "image",
       "options": [{ "value": "image", "label": "Image statique" }, { "value": "carousel", "label": "Carousel d'images" }] },
-    { "type": "image_picker", "id": "left_image", "label": "Image statique (médiathèque — prioritaire)" },
+    { "type": "image_picker", "id": "left_image",   "label": "Image statique (médiathèque — prioritaire)" },
+    { "type": "text",         "id": "left_img_alt", "label": "Texte alternatif image (SEO + accessibilité)", "default": "Image éditoriale" },
     { "type": "select", "id": "left_asset", "label": "Image assets (si médiathèque vide)", "default": "hp-editorial-2.jpg",
       "options": [
         { "value": "hp-editorial-2.jpg", "label": "Editorial 2" }, { "value": "hp-editorial.jpg", "label": "Editorial 1" },

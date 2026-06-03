@@ -1,9 +1,15 @@
 [
-  {
+  // {
+  //   "name": "theme_info",
+  //   "theme_name": "Motion 19 Store",
+  //   "theme_version": "1.0.0",
+  //   "theme_documentation_url": "https://motion19.com/docs"
+  // },
+   {
     "name": "theme_info",
     "theme_name": "Motion19 Store",
     "theme_author": "Aminou Mohamadou",
-    "theme_version": "2.0.0",
+    "theme_version": "1.0.0",
     "theme_documentation_url": "https://motion19.com/docs",
     "theme_support_url": "https://motion19.com/support"
   },
@@ -147,6 +153,15 @@
       {
         "type": "color", "id": "btn_outline_hover_bg",
         "label": "Fond — hover", "default": "#1a1a1a"
+      },
+      { "type": "header", "content": "Bouton panier — état ajouté" },
+      {
+        "type": "color", "id": "btn_added_bg",
+        "label": "Fond (après ajout au panier)", "default": "#0a0a0a"
+      },
+      {
+        "type": "color", "id": "btn_added_text",
+        "label": "Icône / Texte (après ajout au panier)", "default": "#ffffff"
       },
       { "type": "header", "content": "Forme & taille" },
       {

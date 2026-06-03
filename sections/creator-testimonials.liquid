@@ -4,19 +4,19 @@
 {%- liquid
   assign sid = section.id
 
-  assign bg_color      = section.settings.bg_color          | default: '#f7f7f8'
-  assign card_bg       = section.settings.card_bg           | default: '#ffffff'
-  assign text_color    = section.settings.text_color        | default: '#0a0a0a'
-  assign title_color   = section.settings.title_color       | default: '#0a0a0a'
-  assign eyebrow_col   = section.settings.eyebrow_color     | default: '#0787ea'
-  assign subtitle_col  = section.settings.subtitle_color    | default: '#666666'
+  assign bg_color      = section.settings.bg_color          | default: 'var(--color-bg-soft)'
+  assign card_bg       = section.settings.card_bg           | default: 'var(--color-bg)'
+  assign text_color    = section.settings.text_color        | default: 'var(--color-bg-dark)'
+  assign title_color   = section.settings.title_color       | default: 'var(--color-bg-dark)'
+  assign eyebrow_col   = section.settings.eyebrow_color     | default: 'var(--color-primary)'
+  assign subtitle_col  = section.settings.subtitle_color    | default: 'var(--color-text-light)'
   assign quote_color   = section.settings.quote_color       | default: '#555555'
-  assign name_color    = section.settings.name_color        | default: '#0a0a0a'
+  assign name_color    = section.settings.name_color        | default: 'var(--color-bg-dark)'
   assign role_color    = section.settings.role_color        | default: '#999999'
   assign mark_color    = section.settings.mark_color        | default: 'rgba(10,10,10,0.10)'
   assign divider_color = section.settings.divider_color     | default: 'rgba(10,10,10,0.07)'
   assign card_radius   = section.settings.card_radius       | default: 6
-  assign card_border_c = section.settings.card_border_color | default: '#e8e8e8'
+  assign card_border_c = section.settings.card_border_color | default: 'var(--color-border)'
   assign show_border   = section.settings.card_show_border
   assign show_shadow   = section.settings.card_show_shadow
 
@@ -286,8 +286,8 @@
   --ct-usable-w: min(100vw, var(--ct-max-w, 1400px));
   --ct-card-w:   calc((var(--ct-usable-w) - (2 * var(--ct-pad)) - (1 * var(--ct-gap, 14px))) / 1.3);
 
-  background:    var(--ct-bg, #f7f7f8);
-  color:         var(--ct-text, #0a0a0a);
+  background:    var(--ct-bg, var(--color-bg-soft));
+  color:         var(--ct-text, var(--color-bg-dark));
   margin-top:    var(--ct-mt, 0);
   margin-bottom: var(--ct-mb, 0);
   overflow-x:    clip;
@@ -349,19 +349,19 @@
   font-weight: 600;
   letter-spacing: 0.16em;
   text-transform: uppercase;
-  color: var(--ct-eyebrow, #0787ea);
+  color: var(--ct-eyebrow, var(--color-primary));
 }
 .ct__title {
   font-family: var(--font-body, 'Inter', sans-serif);
   font-size: clamp(1.4rem, 3vw, 2.2rem);
   font-weight: 800;
   letter-spacing: -0.03em;
-  color: var(--ct-title, #0a0a0a);
+  color: var(--ct-title, var(--color-bg-dark));
   margin: 0;
 }
 .ct__subtitle {
   font-size: 0.875rem;
-  color: var(--ct-subtitle, #666666);
+  color: var(--ct-subtitle, var(--color-text-light));
   margin: 0;
   max-width: 52ch;
   line-height: 1.55;
@@ -411,7 +411,7 @@
   padding: 28px 22px 22px;
   background: var(--ct-card-bg, #fff);
   border-radius: var(--ct-card-r, 6px);
-  border: var(--ct-card-bdr-w, 1px) solid var(--ct-card-bdr-c, #e8e8e8);
+  border: var(--ct-card-bdr-w, 1px) solid var(--ct-card-bdr-c, var(--color-border));
   box-shadow: var(--ct-card-shadow, 0 2px 16px rgba(0,0,0,0.06));
   font-family: var(--font-body, 'Inter', sans-serif);
   overflow: visible;
@@ -510,7 +510,7 @@
   font-size: 0.8rem;
   font-weight: 600;
   font-style: italic;
-  color: var(--ct-name, #0a0a0a);
+  color: var(--ct-name, var(--color-bg-dark));
   letter-spacing: -0.01em;
   white-space: nowrap;
   overflow: hidden;

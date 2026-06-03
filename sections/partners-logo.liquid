@@ -3,16 +3,16 @@
 {%- liquid
   assign sid = section.id
 
-  assign bg_color      = section.settings.bg_color       | default: '#ffffff'
-  assign text_color    = section.settings.text_color     | default: '#0a0a0a'
-  assign eyebrow_col   = section.settings.eyebrow_color  | default: '#0787ea'
+  assign bg_color      = section.settings.bg_color       | default: 'var(--color-bg)'
+  assign text_color    = section.settings.text_color     | default: 'var(--color-bg-dark)'
+  assign eyebrow_col   = section.settings.eyebrow_color  | default: 'var(--color-primary)'
   assign subtitle_col  = section.settings.subtitle_color | default: '#888888'
 
   assign logo_size     = section.settings.logo_size      | default: 96
   assign logo_radius   = section.settings.logo_radius    | default: 8
   assign card_gap      = section.settings.card_gap       | default: 16
   assign card_bg_c     = section.settings.card_bg_color  | default: '#f8f8f8'
-  assign card_brd_c    = section.settings.card_border_color | default: '#e8e8e8'
+  assign card_brd_c    = section.settings.card_border_color | default: 'var(--color-border)'
   assign show_border   = section.settings.show_card_border
   assign enable_hover  = section.settings.enable_hover
 
@@ -87,19 +87,31 @@
           {%- if section.blocks.size > 0 -%}
             {%- for block in section.blocks -%}
               {%- if block.type == 'partner_logo' -%}
-                {%- assign img = block.settings.logo_image -%}
-                {%- assign lnk = block.settings.logo_link -%}
-                {%- assign alt = block.settings.logo_alt | default: block.settings.logo_image.alt | default: 'Partenaire' -%}
-                {%- assign blk_bg  = block.settings.custom_bg    | default: card_bg_c -%}
-                {%- assign blk_brd = block.settings.custom_border | default: card_brd_c -%}
-                {%- assign blk_r   = block.settings.custom_radius | default: logo_radius -%}
+                {%- liquid
+                  assign img      = block.settings.logo_image
+                  assign lnk      = block.settings.logo_link
+                  assign alt      = block.settings.logo_alt | default: block.settings.logo_image.alt | default: 'Partenaire'
+                  assign blk_bg   = block.settings.custom_bg    | default: card_bg_c
+                  assign blk_brd  = block.settings.custom_border | default: card_brd_c
+                  assign blk_r    = block.settings.custom_radius | default: logo_radius
+                  assign new_tab  = block.settings.open_new_tab
+                  assign is_link  = false
+                  if lnk != blank
+                    assign is_link = true
+                  endif
+                -%}
                 <li
-                  class="swiper-slide pl__item{% if enable_hover %} pl__item--hoverable{% endif %}"
+                  class="swiper-slide pl__item{% if enable_hover or is_link %} pl__item--hoverable{% endif %}{% if is_link %} pl__item--linked{% endif %}"
                   {{ block.shopify_attributes }}
                   style="--pl-blk-bg:{{ blk_bg }};--pl-blk-brd:{{ blk_brd }};--pl-blk-r:{{ blk_r }}px;"
                 >
-                  {%- if lnk != blank and block.settings.enable_link -%}
-                    <a class="pl__card" href="{{ lnk }}" target="_blank" rel="noopener noreferrer" aria-label="{{ alt | escape }}">
+                  {%- if is_link -%}
+                    <a
+                      class="pl__card"
+                      href="{{ lnk }}"
+                      {% if new_tab %}target="_blank" rel="noopener noreferrer"{% endif %}
+                      aria-label="{{ alt | escape }}"
+                    >
                   {%- else -%}
                     <div class="pl__card">
                   {%- endif -%}
@@ -125,7 +137,7 @@
                       </div>
                     {%- endif -%}
 
-                  {%- if lnk != blank and block.settings.enable_link -%}
+                  {%- if is_link -%}
                     </a>
                   {%- else -%}
                     </div>
@@ -175,8 +187,8 @@
   --pl-usable-w: min(100vw, var(--pl-max-w, 1400px));
   --pl-slide-w:  calc((var(--pl-usable-w) - (2 * var(--pl-pad)) - (2 * var(--pl-gap, 16px))) / 2.4);
 
-  background:    var(--pl-bg, #ffffff);
-  color:         var(--pl-text, #0a0a0a);
+  background:    var(--pl-bg, var(--color-bg));
+  color:         var(--pl-text, var(--color-bg-dark));
   margin-top:    var(--pl-mt, 0);
   margin-bottom: var(--pl-mb, 0);
   overflow-x:    clip;
@@ -234,7 +246,7 @@
   font-weight:    700;
   letter-spacing: 0.16em;
   text-transform: uppercase;
-  color:          var(--pl-eyebrow, #0787ea);
+  color:          var(--pl-eyebrow, var(--color-primary));
 }
 
 .pl__title {
@@ -243,7 +255,7 @@
   font-weight:    800;
   letter-spacing: -0.03em;
   line-height:    1.15;
-  color:          var(--pl-text, #0a0a0a);
+  color:          var(--pl-text, var(--color-bg-dark));
   margin:         0;
 }
 
@@ -298,7 +310,7 @@
   width:           100%;
   aspect-ratio:    1 / 1;
   background:      var(--pl-blk-bg, var(--pl-card-bg, #f8f8f8));
-  border:          var(--pl-card-bdr, 0px) solid var(--pl-blk-brd, var(--pl-card-brd, #e8e8e8));
+  border:          var(--pl-card-bdr, 0px) solid var(--pl-blk-brd, var(--pl-card-brd, var(--color-border)));
   border-radius:   var(--pl-blk-r, var(--pl-radius, 8px));
   padding:         14%;
   box-sizing:      border-box;
@@ -324,12 +336,21 @@
   color: rgba(10,10,10,0.2);
 }
 
+/* ── Card cliquable ── */
+.pl__item--linked .pl__card {
+  cursor: pointer;
+}
+
 /* ── Hover ── */
 @media (hover: hover) {
   .pl__item--hoverable .pl__card:hover {
     transform:    translateY(-2px);
     border-color: rgba(10,10,10,0.16);
     background:   #fff;
+  }
+  .pl__item--linked .pl__card:focus-visible {
+    outline: 2px solid var(--color-primary);
+    outline-offset: 3px;
   }
 }
 
@@ -491,13 +512,16 @@
       "type": "partner_logo",
       "name": "Logo partenaire",
       "settings": [
-        { "type": "image_picker", "id": "logo_image",      "label": "Image logo" },
-        { "type": "text",         "id": "logo_alt",        "label": "Texte alternatif",           "default": "Partenaire" },
-        { "type": "url",          "id": "logo_link",       "label": "Lien (optionnel)" },
-        { "type": "checkbox",     "id": "enable_link",     "label": "Activer le lien",            "default": false },
-        { "type": "color",        "id": "custom_bg",       "label": "Fond card personnalisé" },
-        { "type": "color",        "id": "custom_border",   "label": "Bordure personnalisée" },
-        { "type": "range",        "id": "custom_radius",   "label": "Rayon personnalisé (px)",    "min": 0, "max": 32, "step": 1, "default": 8, "unit": "px" }
+        { "type": "image_picker", "id": "logo_image",    "label": "Image logo" },
+        { "type": "text",         "id": "logo_alt",      "label": "Texte alternatif (SEO + accessibilité)", "default": "Partenaire" },
+        { "type": "header",       "content": "Lien" },
+        { "type": "url",          "id": "logo_link",     "label": "Lien (collection, page, URL externe…)" },
+        { "type": "paragraph",    "content": "Laissez vide pour désactiver le lien." },
+        { "type": "checkbox",     "id": "open_new_tab",  "label": "Ouvrir dans un nouvel onglet", "default": false },
+        { "type": "header",       "content": "Style personnalisé" },
+        { "type": "color",        "id": "custom_bg",     "label": "Fond card" },
+        { "type": "color",        "id": "custom_border", "label": "Couleur bordure" },
+        { "type": "range",        "id": "custom_radius", "label": "Border-radius (px)", "min": 0, "max": 32, "step": 1, "default": 8, "unit": "px" }
       ]
     }
   ],
@@ -511,14 +535,14 @@
         "enable_header": true
       },
       "blocks": [
-        { "type": "partner_logo", "settings": { "logo_alt": "Sony",       "enable_link": false } },
-        { "type": "partner_logo", "settings": { "logo_alt": "Rode",       "enable_link": false } },
-        { "type": "partner_logo", "settings": { "logo_alt": "Elgato",     "enable_link": false } },
-        { "type": "partner_logo", "settings": { "logo_alt": "Blue Yeti",  "enable_link": false } },
-        { "type": "partner_logo", "settings": { "logo_alt": "Focusrite",  "enable_link": false } },
-        { "type": "partner_logo", "settings": { "logo_alt": "Godox",      "enable_link": false } },
-        { "type": "partner_logo", "settings": { "logo_alt": "Logitech",   "enable_link": false } },
-        { "type": "partner_logo", "settings": { "logo_alt": "BenQ",       "enable_link": false } }
+        { "type": "partner_logo", "settings": { "logo_alt": "Sony" } },
+        { "type": "partner_logo", "settings": { "logo_alt": "Rode" } },
+        { "type": "partner_logo", "settings": { "logo_alt": "Elgato" } },
+        { "type": "partner_logo", "settings": { "logo_alt": "Blue Yeti" } },
+        { "type": "partner_logo", "settings": { "logo_alt": "Focusrite" } },
+        { "type": "partner_logo", "settings": { "logo_alt": "Godox" } },
+        { "type": "partner_logo", "settings": { "logo_alt": "Logitech" } },
+        { "type": "partner_logo", "settings": { "logo_alt": "BenQ" } }
       ]
     }
   ]

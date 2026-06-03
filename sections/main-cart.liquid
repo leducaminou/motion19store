@@ -8,8 +8,8 @@
   assign form_title      = s.form_title             | default: 'Vos coordonnées'
   assign section_title   = s.section_title          | default: 'Votre panier'
   assign accentcolor     = s.accent_color           | default: '#25D366'
-  assign btn_text_c      = s.btn_text_color         | default: '#ffffff'
-  assign bg_c            = s.page_bg                | default: '#ffffff'
+  assign btn_text_c      = s.btn_text_color         | default: 'var(--color-bg)'
+  assign bg_c            = s.page_bg                | default: 'var(--color-bg)'
   assign card_bg_c       = s.card_bg                | default: '#f8f8f8'
   assign border_c        = s.border_color           | default: '#e5e5e7'
   assign text_c          = s.text_color             | default: '#1d1d1f'
@@ -94,7 +94,7 @@
   .mc__items {
     border: 1px solid var(--mc-border);
     border-radius: var(--mc-r-card);
-    background: #ffffff;
+    background: var(--color-bg);
     overflow: hidden;
     contain: layout style;
   }
@@ -366,7 +366,7 @@
     width: 100%;
     padding: 15px 20px;
     background: #25D366;
-    color: #ffffff;
+    color: var(--color-bg);
     border: none;
     border-radius: var(--mc-r-btn);
     font-size: 0.95rem;
