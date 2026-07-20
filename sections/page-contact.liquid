@@ -1,0 +1,356 @@
+{%- liquid
+  assign s               = section.settings
+  assign show_breadcrumb = s.show_breadcrumb
+  assign heading         = s.heading
+  assign subheading      = s.subheading
+
+  assign contact_email   = s.contact_email
+  assign contact_phone   = s.contact_phone
+  assign contact_address = s.contact_address
+
+  assign show_hours             = s.show_hours
+  assign hours_weekdays_label   = s.hours_weekdays_label
+  assign hours_weekdays_time    = s.hours_weekdays_time
+  assign hours_saturday_label   = s.hours_saturday_label
+  assign hours_saturday_time    = s.hours_saturday_time
+  assign hours_sunday_label     = s.hours_sunday_label
+  assign hours_sunday_closed    = s.hours_sunday_closed
+
+  assign show_map_link   = s.show_map_link
+  assign map_url         = s.map_url
+
+  assign show_form       = s.show_form
+  assign form_title      = s.form_title        | default: 'Envoyez-nous un message'
+  assign form_desc       = s.form_desc
+  assign lbl_name        = s.label_name        | default: 'Nom complet'
+  assign lbl_phone       = s.label_phone       | default: 'Téléphone'
+  assign lbl_message     = s.label_message     | default: 'Message'
+  assign ph_name         = s.placeholder_name  | default: 'Votre nom complet'
+  assign ph_phone        = s.placeholder_phone | default: '+237 6XX XX XX XX'
+  assign ph_message      = s.placeholder_msg   | default: 'Décrivez votre demande...'
+  assign btn_text        = s.wa_btn_text        | default: 'Envoyer sur WhatsApp'
+  assign wa_number       = s.wa_number         | default: '237656999989' | remove: '+' | remove: ' ' | remove: '-'
+  assign wa_color        = s.wa_color          | default: '#25D366'
+  assign wa_msg_intro    = s.wa_msg_intro       | default: '👋 Bonjour Motion19,'
+
+  assign bg_color        = s.bg_color          | default: '#ffffff'
+  assign pt_d            = s.pt_d              | default: 72
+  assign pb_d            = s.pb_d              | default: 80
+  assign pt_m            = s.pt_m              | default: 48
+  assign pb_m            = s.pb_m              | default: 64
+-%}
+
+<div
+  class="pgc"
+  id="section-{{ section.id }}"
+  style="
+    background: {{ bg_color }};
+    --pgc-pt-d: {{ pt_d }}px;
+    --pgc-pb-d: {{ pb_d }}px;
+    --pgc-pt-m: {{ pt_m }}px;
+    --pgc-pb-m: {{ pb_m }}px;
+    --pgc-wa:   {{ wa_color }};
+  "
+>
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "ContactPage",
+    "name": {{ heading | json }},
+    "url": "{{ canonical_url }}"
+  }
+  </script>
+
+  <div class="pgc__inner">
+
+    {%- if show_breadcrumb -%}
+      <nav class="pg__breadcrumb pg__breadcrumb--light" aria-label="Fil d'Ariane">
+        <a href="{{ shop.url }}">Accueil</a>
+        <span aria-hidden="true">›</span>
+        <span aria-current="page">{{ heading }}</span>
+      </nav>
+    {%- endif -%}
+
+    <div class="pgc__head">
+      <h1 class="pgc__title">{{ heading }}</h1>
+      {%- if subheading != blank -%}
+        <p class="pgc__subtitle">{{ subheading }}</p>
+      {%- endif -%}
+    </div>
+
+    <div class="pgc__layout">
+
+      <!-- ── Colonne infos ── -->
+      <div class="pgc__info-col">
+
+        <div class="pgc__info-section">
+          <p class="pgc__info-heading">Nos coordonnées</p>
+          <ul class="pgc__info-list">
+            {%- if contact_email != blank -%}
+              <li class="pgc__info-item">
+                <span class="pgc__info-icon" aria-hidden="true">📧</span>
+                <a href="mailto:{{ contact_email }}">{{ contact_email }}</a>
+              </li>
+            {%- endif -%}
+            {%- if contact_phone != blank -%}
+              <li class="pgc__info-item">
+                <span class="pgc__info-icon" aria-hidden="true">📞</span>
+                <a href="tel:{{ contact_phone | remove: ' ' }}">{{ contact_phone }}</a>
+              </li>
+            {%- endif -%}
+            {%- if contact_address != blank -%}
+              <li class="pgc__info-item">
+                <span class="pgc__info-icon" aria-hidden="true">📍</span>
+                <span>{{ contact_address }}</span>
+              </li>
+            {%- endif -%}
+          </ul>
+        </div>
+
+        {%- if show_hours -%}
+          <div class="pgc__info-section">
+            <p class="pgc__info-heading">Horaires d'ouverture</p>
+            <div class="pgc__hours-grid">
+              <span class="pgc__hours-day">{{ hours_weekdays_label }}</span>
+              <span class="pgc__hours-time">{{ hours_weekdays_time }}</span>
+              <span class="pgc__hours-day">{{ hours_saturday_label }}</span>
+              <span class="pgc__hours-time">{{ hours_saturday_time }}</span>
+              <span class="pgc__hours-day">{{ hours_sunday_label }}</span>
+              <span class="pgc__hours-time pgc__hours-time--closed">{{ hours_sunday_closed }}</span>
+            </div>
+          </div>
+        {%- endif -%}
+
+        {%- if show_map_link and map_url != blank -%}
+          <div class="pgc__info-section">
+            <p class="pgc__info-heading">Retrouvez-nous</p>
+            <a
+              class="pgc__map-btn"
+              href="{{ map_url }}"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="Voir sur Google Maps (nouvel onglet)"
+            >🗺️ Voir sur Google Maps</a>
+          </div>
+        {%- endif -%}
+
+      </div>
+
+      <!-- ── Colonne formulaire WhatsApp ── -->
+      {%- if show_form -%}
+        <div class="pgc__form-col">
+          <div class="pgc__form-wrap">
+
+            <h2 class="pgc__form-title">{{ form_title }}</h2>
+            {%- if form_desc != blank -%}
+              <p class="pgc__form-desc">{{ form_desc }}</p>
+            {%- endif -%}
+
+            <div class="pgc__form" id="pgc-form-{{ section.id }}">
+
+              <div class="pgc__field">
+                <label class="pgc__label" for="pgc-name-{{ section.id }}">
+                  {{ lbl_name }} <span class="pgc__required" aria-hidden="true">*</span>
+                </label>
+                <input
+                  class="pgc__input"
+                  type="text"
+                  id="pgc-name-{{ section.id }}"
+                  name="pgc_name"
+                  autocomplete="name"
+                  placeholder="{{ ph_name }}"
+                  aria-required="true"
+                >
+                <span class="pgc__field-error" id="pgc-name-err-{{ section.id }}" aria-live="polite"></span>
+              </div>
+
+              <div class="pgc__field">
+                <label class="pgc__label" for="pgc-phone-{{ section.id }}">
+                  {{ lbl_phone }} <span class="pgc__required" aria-hidden="true">*</span>
+                </label>
+                <input
+                  class="pgc__input"
+                  type="tel"
+                  id="pgc-phone-{{ section.id }}"
+                  name="pgc_phone"
+                  autocomplete="tel"
+                  placeholder="{{ ph_phone }}"
+                  aria-required="true"
+                >
+                <span class="pgc__field-error" id="pgc-phone-err-{{ section.id }}" aria-live="polite"></span>
+              </div>
+
+              <div class="pgc__field">
+                <label class="pgc__label" for="pgc-msg-{{ section.id }}">
+                  {{ lbl_message }} <span class="pgc__required" aria-hidden="true">*</span>
+                </label>
+                <textarea
+                  class="pgc__textarea"
+                  id="pgc-msg-{{ section.id }}"
+                  name="pgc_message"
+                  rows="5"
+                  placeholder="{{ ph_message }}"
+                  aria-required="true"
+                ></textarea>
+                <span class="pgc__field-error" id="pgc-msg-err-{{ section.id }}" aria-live="polite"></span>
+              </div>
+
+              <button
+                class="pgc__submit pgc__submit--wa"
+                type="button"
+                onclick="pgcSend_{{ section.id | replace: '-', '_' }}()"
+                aria-label="{{ btn_text }}"
+              >
+                <svg class="pgc__wa-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width="20" height="20" aria-hidden="true">
+                  <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/>
+                  <path d="M12 0C5.373 0 0 5.373 0 12c0 2.126.555 4.122 1.526 5.854L0 24l6.267-1.497A11.956 11.956 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 21.818a9.806 9.806 0 01-5.006-1.366l-.36-.214-3.721.888.94-3.619-.234-.371A9.778 9.778 0 012.182 12C2.182 6.57 6.57 2.182 12 2.182S21.818 6.57 21.818 12 17.43 21.818 12 21.818z"/>
+                </svg>
+                {{ btn_text }}
+              </button>
+
+            </div>
+          </div>
+        </div>
+      {%- endif -%}
+
+    </div>
+  </div>
+</div>
+
+<script>
+(function () {
+  var SID    = {{ section.id | json }};
+  var WA_NUM = {{ wa_number | json }};
+  var INTRO  = {{ wa_msg_intro | json }};
+
+  var sid = SID.replace(/-/g, '_');
+
+  window['pgcSend_' + sid] = function () {
+    var nameEl  = document.getElementById('pgc-name-'  + SID);
+    var phoneEl = document.getElementById('pgc-phone-' + SID);
+    var msgEl   = document.getElementById('pgc-msg-'   + SID);
+
+    var nameErrEl  = document.getElementById('pgc-name-err-'  + SID);
+    var phoneErrEl = document.getElementById('pgc-phone-err-' + SID);
+    var msgErrEl   = document.getElementById('pgc-msg-err-'   + SID);
+
+    var name  = nameEl.value.trim();
+    var phone = phoneEl.value.trim();
+    var msg   = msgEl.value.trim();
+    var valid = true;
+
+    [nameErrEl, phoneErrEl, msgErrEl].forEach(function (el) {
+      if (el) { el.textContent = ''; el.style.display = 'none'; }
+    });
+    [nameEl, phoneEl, msgEl].forEach(function (el) {
+      el.classList.remove('is-error');
+    });
+
+    if (!name) {
+      nameEl.classList.add('is-error');
+      nameErrEl.textContent = 'Ce champ est requis.';
+      nameErrEl.style.display = 'block';
+      valid = false;
+    }
+    if (!phone) {
+      phoneEl.classList.add('is-error');
+      phoneErrEl.textContent = 'Ce champ est requis.';
+      phoneErrEl.style.display = 'block';
+      valid = false;
+    }
+    if (!msg) {
+      msgEl.classList.add('is-error');
+      msgErrEl.textContent = 'Ce champ est requis.';
+      msgErrEl.style.display = 'block';
+      valid = false;
+    }
+    if (!valid) return;
+
+    var lines = [
+      INTRO,
+      '',
+      '👤 *Nom :* ' + name,
+      '📞 *Tél :* ' + phone,
+      '',
+      '💬 *Message :*',
+      msg
+    ];
+
+    var url = 'https://wa.me/' + WA_NUM + '?text=' + encodeURIComponent(lines.join('\n'));
+    window.open(url, '_blank', 'noopener,noreferrer');
+  };
+})();
+</script>
+
+{% schema %}
+{
+  "name": "Page — Contact",
+  "tag": "section",
+  "class": "section-page-contact",
+  "settings": [
+    { "type": "header", "content": "── Contenu" },
+    { "type": "checkbox", "id": "show_breadcrumb", "label": "Fil d'Ariane", "default": true },
+    { "type": "text",     "id": "heading",   "label": "Titre H1",   "default": "Contactez-nous" },
+    { "type": "textarea", "id": "subheading","label": "Sous-titre", "default": "Vous avez une question, besoin d'un conseil ou d'une assistance technique ? L'équipe Motion19 est là pour vous accompagner dans tous vos projets photo, vidéo et drone." },
+
+    { "type": "header", "content": "── Coordonnées" },
+    { "type": "text", "id": "contact_email",   "label": "Email",   "default": "hello@motion19.com" },
+    { "type": "text", "id": "contact_phone",   "label": "Téléphone", "default": "+237 656 99 99 89" },
+    { "type": "text", "id": "contact_address", "label": "Adresse", "default": "1203 Bvd de la Liberté, Akwa Douala, Cameroun" },
+
+    { "type": "header", "content": "── Horaires" },
+    { "type": "checkbox", "id": "show_hours",            "label": "Afficher les horaires", "default": true },
+    { "type": "text",     "id": "hours_weekdays_label",  "label": "Jours — Semaine",   "default": "Lundi – Vendredi" },
+    { "type": "text",     "id": "hours_weekdays_time",   "label": "Horaires — Semaine","default": "8h00 – 18h00" },
+    { "type": "text",     "id": "hours_saturday_label",  "label": "Jours — Samedi",    "default": "Samedi" },
+    { "type": "text",     "id": "hours_saturday_time",   "label": "Horaires — Samedi", "default": "9h00 – 15h00" },
+    { "type": "text",     "id": "hours_sunday_label",    "label": "Jours — Dimanche",  "default": "Dimanche" },
+    { "type": "text",     "id": "hours_sunday_closed",   "label": "Statut — Dimanche", "default": "Fermé" },
+
+    { "type": "header", "content": "── Carte" },
+    { "type": "checkbox", "id": "show_map_link", "label": "Lien Google Maps", "default": true },
+    { "type": "url",      "id": "map_url",       "label": "URL Google Maps" },
+
+    { "type": "header", "content": "── Formulaire WhatsApp" },
+    { "type": "checkbox", "id": "show_form",  "label": "Afficher le formulaire", "default": true },
+    { "type": "text",     "id": "form_title", "label": "Titre formulaire", "default": "Envoyez-nous un message" },
+    { "type": "textarea", "id": "form_desc",  "label": "Description",      "default": "Réponse rapide via WhatsApp." },
+
+    { "type": "header", "content": "── Labels & placeholders" },
+    { "type": "text", "id": "label_name",        "label": "Label Nom",            "default": "Nom complet" },
+    { "type": "text", "id": "label_phone",       "label": "Label Téléphone",      "default": "Téléphone" },
+    { "type": "text", "id": "label_message",     "label": "Label Message",        "default": "Message" },
+    { "type": "text", "id": "placeholder_name",  "label": "Placeholder Nom",      "default": "Votre nom complet" },
+    { "type": "text", "id": "placeholder_phone", "label": "Placeholder Téléphone","default": "+237 6XX XX XX XX" },
+    { "type": "text", "id": "placeholder_msg",   "label": "Placeholder Message",  "default": "Décrivez votre demande..." },
+
+    { "type": "header", "content": "── WhatsApp" },
+    { "type": "text",     "id": "wa_number",   "label": "Numéro WhatsApp (sans + ni espaces)", "default": "237656999989" },
+    { "type": "text",     "id": "wa_btn_text", "label": "Texte du bouton",                     "default": "Envoyer sur WhatsApp" },
+    { "type": "textarea", "id": "wa_msg_intro","label": "Introduction du message WhatsApp",    "default": "👋 Bonjour Motion19," },
+    { "type": "color",    "id": "wa_color",    "label": "Couleur bouton WhatsApp",             "default": "#25D366" },
+
+    { "type": "header", "content": "── Couleurs & espacements" },
+    { "type": "color", "id": "bg_color", "label": "Fond section", "default": "#ffffff" },
+    { "type": "range", "id": "pt_d", "label": "Padding haut desktop", "min": 0, "max": 120, "step": 8, "default": 72, "unit": "px" },
+    { "type": "range", "id": "pb_d", "label": "Padding bas desktop",  "min": 0, "max": 120, "step": 8, "default": 80, "unit": "px" },
+    { "type": "range", "id": "pt_m", "label": "Padding haut mobile",  "min": 0, "max": 80,  "step": 8, "default": 48, "unit": "px" },
+    { "type": "range", "id": "pb_m", "label": "Padding bas mobile",   "min": 0, "max": 80,  "step": 8, "default": 64, "unit": "px" }
+  ],
+  "presets": [
+    {
+      "name": "Page — Contact",
+      "settings": {
+        "heading": "Contactez-nous",
+        "show_breadcrumb": true,
+        "show_hours": true,
+        "show_map_link": true,
+        "show_form": true,
+        "wa_number": "237656999989",
+        "wa_color": "#25D366"
+      }
+    }
+  ]
+}
+{% endschema %}

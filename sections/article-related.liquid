@@ -1,0 +1,172 @@
+{%- comment -%}
+  Article Related — Motion19 — OS 2.0
+  Préfixe .ars | Articles connexes après le corps de l'article
+  Logique : filtre par tag en commun, fallback sans filtre, exclut l'article courant
+  Dépend de : snippets/blog-card.liquid · assets/blog.css
+{%- endcomment -%}
+
+{%- liquid
+  assign sid          = section.id
+  assign count        = section.settings.articles_count | default: 3
+  assign img_ratio    = section.settings.image_ratio    | default: '16 / 9'
+  assign columns      = section.settings.columns        | default: 3
+  assign heading_text = section.settings.heading        | default: 'À lire aussi'
+  assign bg_col       = section.settings.bg_color       | default: 'var(--color-bg-soft)'
+  assign pt_d         = section.settings.padding_top_d  | default: 60
+  assign pb_d         = section.settings.padding_bottom_d | default: 60
+
+  assign heading_col  = section.settings.heading_color  | default: 'var(--color-bg-dark)'
+  assign heading_sz   = section.settings.heading_size   | default: 28
+  assign heading_fw   = section.settings.heading_fw     | default: '700'
+-%}
+
+{%- unless section.settings.enabled == false -%}
+
+  {%- comment -%}
+    ar_handles : string délimitée virgule ex: ",handle-1,handle-2,"
+    On stocke handle, (avec virgule finale) → check_h = "handle," → pas de faux positif
+  {%- endcomment -%}
+  {%- assign ar_handles = ',' -%}
+  {%- assign ar_count   = 0 -%}
+
+  {%- comment -%} Passe 1 : tag en commun {%- endcomment -%}
+  {%- for a in blog.articles -%}
+    {%- if ar_count >= count -%}{%- break -%}{%- endif -%}
+    {%- if a.handle == article.handle -%}{%- continue -%}{%- endif -%}
+    {%- assign has_tag = false -%}
+    {%- for tag in article.tags -%}
+      {%- if a.tags contains tag -%}
+        {%- assign has_tag = true -%}
+        {%- break -%}
+      {%- endif -%}
+    {%- endfor -%}
+    {%- if has_tag -%}
+      {%- assign ar_handles = ar_handles | append: a.handle | append: ',' -%}
+      {%- assign ar_count   = ar_count | plus: 1 -%}
+    {%- endif -%}
+  {%- endfor -%}
+
+  {%- comment -%} Passe 2 : fallback pour compléter si pas assez {%- endcomment -%}
+  {%- if ar_count < count -%}
+    {%- for a in blog.articles -%}
+      {%- if ar_count >= count -%}{%- break -%}{%- endif -%}
+      {%- if a.handle == article.handle -%}{%- continue -%}{%- endif -%}
+      {%- assign check_h = a.handle | append: ',' -%}
+      {%- unless ar_handles contains check_h -%}
+        {%- assign ar_handles = ar_handles | append: check_h -%}
+        {%- assign ar_count   = ar_count | plus: 1 -%}
+      {%- endunless -%}
+    {%- endfor -%}
+  {%- endif -%}
+
+  {%- comment -%} ── Rendu ── {%- endcomment -%}
+  {%- if ar_count > 0 -%}
+
+    <section
+      class="ars"
+      aria-labelledby="ars-title-{{ sid }}"
+      style="
+        --ars-bg:    {{ bg_col }};
+        --ars-pt-d:  {{ pt_d }}px;
+        --ars-pb-d:  {{ pb_d }}px;
+        --ars-cols:  {{ columns }};
+        --ars-h-col: {{ heading_col }};
+        --ars-h-sz:  {{ heading_sz }}px;
+        --ars-h-fw:  {{ heading_fw }};
+        background:     {{ bg_col }};
+        padding-top:    {{ pt_d }}px;
+        padding-bottom: {{ pb_d }}px;
+      "
+    >
+      <div class="ars__inner">
+
+        <h2 class="ars__heading" id="ars-title-{{ sid }}"
+          style="font-size: {{ heading_sz }}px; font-weight: {{ heading_fw }}; color: {{ heading_col }};">
+          {{- heading_text | escape -}}
+        </h2>
+
+        <ul class="ars__grid" role="list" style="--ars-cols: {{ columns }};">
+          {%- for a in blog.articles -%}
+            {%- assign check_h = a.handle | append: ',' -%}
+            {%- if ar_handles contains check_h -%}
+              <li>
+                {%- render 'blog-card',
+                  article:     a,
+                  image_ratio: img_ratio,
+                  lazy_load:   true,
+                  index:       forloop.index | plus: 99
+                -%}
+              </li>
+            {%- endif -%}
+          {%- endfor -%}
+        </ul>
+
+      </div>
+    </section>
+
+  {%- endif -%}
+
+{%- endunless -%}
+
+{% schema %}
+{
+  "name": "Articles connexes",
+  "tag": "section",
+  "class": "section-article-related",
+  "settings": [
+    { "type": "checkbox", "id": "enabled", "label": "Afficher les articles connexes", "default": true },
+
+    { "type": "header", "content": "── Contenu" },
+    { "type": "text",  "id": "heading",        "label": "Titre section",          "default": "À lire aussi" },
+    { "type": "range", "id": "articles_count", "label": "Nombre d'articles",      "min": 2, "max": 4, "step": 1, "default": 3 },
+    {
+      "type": "select", "id": "columns", "label": "Colonnes desktop", "default": "3",
+      "options": [
+        { "value": "2", "label": "2 colonnes" },
+        { "value": "3", "label": "3 colonnes" },
+        { "value": "4", "label": "4 colonnes" }
+      ]
+    },
+    {
+      "type": "select", "id": "image_ratio", "label": "Proportion image carte", "default": "16 / 9",
+      "options": [
+        { "value": "16 / 9", "label": "Paysage (16:9)" },
+        { "value": "4 / 3",  "label": "Classique (4:3)" },
+        { "value": "3 / 2",  "label": "Photo (3:2)" },
+        { "value": "1 / 1",  "label": "Carré (1:1)" }
+      ]
+    },
+
+    { "type": "header", "content": "── Typographie titre" },
+    { "type": "range", "id": "heading_size",  "label": "Taille titre (px)",  "min": 18, "max": 40, "step": 1, "default": 28, "unit": "px" },
+    {
+      "type": "select", "id": "heading_fw", "label": "Graisse titre", "default": "700",
+      "options": [
+        { "value": "400", "label": "Regular 400" },
+        { "value": "500", "label": "Medium 500" },
+        { "value": "600", "label": "SemiBold 600" },
+        { "value": "700", "label": "Bold 700" },
+        { "value": "800", "label": "ExtraBold 800" }
+      ]
+    },
+    { "type": "color", "id": "heading_color", "label": "Couleur titre", "default": "#0a0a0a" },
+
+    { "type": "header", "content": "── Couleurs & espacement" },
+    { "type": "color", "id": "bg_color",       "label": "Fond section",       "default": "#f7f7f8" },
+    { "type": "range", "id": "padding_top_d",  "label": "Padding haut (px)",  "min": 0, "max": 80, "step": 4, "default": 60, "unit": "px" },
+    { "type": "range", "id": "padding_bottom_d","label": "Padding bas (px)",  "min": 0, "max": 80, "step": 4, "default": 60, "unit": "px" }
+  ],
+  "presets": [
+    {
+      "name": "Articles connexes",
+      "settings": {
+        "enabled": true,
+        "heading": "À lire aussi",
+        "articles_count": 3,
+        "columns": "3",
+        "image_ratio": "16 / 9"
+      }
+    }
+  ]
+}
+{% endschema %}

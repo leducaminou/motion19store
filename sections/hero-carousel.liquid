@@ -97,7 +97,7 @@
           {%- assign df_ov_dir  = default_ov_dirs[i0] -%}
           {%- assign df_cta1s   = default_cta1_styles[i0] -%}
           <div
-            class="swiper-slide hcr__slide hcr__slide--ph-{{ df_align }} hcr__slide--pv-{{ df_valign }} hcr__slide--tha-{{ df_align }} hcr__slide--tva-{{ df_valign }} hcr__slide--mh-{{ df_align }} hcr__slide--mv-bottom{% if forloop.first %} is-selected{% endif %}"
+            class="swiper-slide hcr__slide hcr__slide--ph-{{ df_align }} hcr__slide--pv-{{ df_valign }} hcr__slide--tha-{{ df_align }} hcr__slide--tva-{{ df_valign }} hcr__slide--mh-{{ df_align }} hcr__slide--mv-bottom"
             role="group"
             aria-roledescription="slide"
             aria-label="{{ forloop.index }} / 3"
@@ -243,21 +243,69 @@
           endif
 
           assign forloop_index0 = forloop.index0
+
+          assign ey_col    = b.settings.eyebrow_color  | default: '#e0e0e0'
+          assign ey_sz     = b.settings.eyebrow_sz     | default: 11
+          assign ey_fw     = b.settings.eyebrow_fw     | default: '600'
+          assign ey_ls     = b.settings.eyebrow_ls     | default: '0.18em'
+          assign ey_tt     = b.settings.eyebrow_tt     | default: 'uppercase'
+          assign ey_line_w = b.settings.eyebrow_line_w | default: 22
+          assign ey_line_t = b.settings.eyebrow_line_t | default: 2
+
+          assign sh_col  = b.settings.subhead_color | default: '#b3b3b3'
+          assign sh_sz_d = b.settings.subhead_sz_d  | default: 17
+          assign sh_sz_m = b.settings.subhead_sz_m  | default: 14
+          assign sh_fw   = b.settings.subhead_fw    | default: '500'
+          assign sh_ls   = b.settings.subhead_ls    | default: '0.04em'
+          assign sh_tt   = b.settings.subhead_tt    | default: 'uppercase'
+
+          assign d_fw = b.settings.desc_fw | default: '400'
+          assign d_lh = b.settings.desc_lh | default: '1.65'
+
+          assign bdg_col = b.settings.badge_color | default: '#ffffff'
+          assign bdg_bg_r = 255
+          assign bdg_bg_g = 255
+          assign bdg_bg_b = 255
+          if b.settings.badge_bg_color != blank
+            assign bdg_bg_r = b.settings.badge_bg_color.red
+            assign bdg_bg_g = b.settings.badge_bg_color.green
+            assign bdg_bg_b = b.settings.badge_bg_color.blue
+          endif
+          assign bdg_bg_op = b.settings.badge_bg_opacity | default: 10 | divided_by: 100.0
+
+          assign bdg_br_r = 255
+          assign bdg_br_g = 255
+          assign bdg_br_b = 255
+          if b.settings.badge_border_color != blank
+            assign bdg_br_r = b.settings.badge_border_color.red
+            assign bdg_br_g = b.settings.badge_border_color.green
+            assign bdg_br_b = b.settings.badge_border_color.blue
+          endif
+          assign bdg_br_op = b.settings.badge_border_opacity | default: 30 | divided_by: 100.0
+
+          assign bdg_sz = b.settings.badge_sz     | default: 10
+          assign bdg_fw = b.settings.badge_fw     | default: '700'
+          assign bdg_ls = b.settings.badge_ls     | default: '0.14em'
+          assign bdg_r_raw = b.settings.badge_radius | default: 50
+          if bdg_r_raw == 50
+            assign bdg_r = '999'
+          else
+            assign bdg_r = bdg_r_raw
+          endif
+
+          assign btn_sz = b.settings.btn_sz | default: 13
+          assign btn_fw = b.settings.btn_fw | default: '600'
+          assign btn_ls = b.settings.btn_ls | default: '0.06em'
+          assign btn_tt = b.settings.btn_tt | default: 'uppercase'
         -%}
 
-        {%- comment -%} Preload LCP image premier slide {%- endcomment -%}
-        {%- if forloop.index == 1 -%}
-          {%- if img_d != blank -%}
-            <link rel="preload" as="image" href="{{ img_d | image_url: width: 1800 }}" media="(min-width: 768px)">
-            <link rel="preload" as="image" href="{{ img_d | image_url: width: 800 }}" media="(max-width: 767px)">
-          {%- else -%}
-            <link rel="preload" as="image" href="{{ 'hp-hero-1.jpg' | asset_url }}" media="(min-width: 768px)">
-            <link rel="preload" as="image" href="{{ 'hp-hero-1-mobile.jpg' | asset_url }}" media="(max-width: 767px)">
-          {%- endif -%}
+        {%- comment -%} Preload LCP image premier slide via image_tag preload argument {%- endcomment -%}
+        {%- if forloop.index == 1 and img_d != blank -%}
+          {{- img_d | image_url: width: 1800 | image_tag: loading: 'eager', fetchpriority: 'high', preload: true, widths: '800, 1200, 1800, 2400', sizes: '100vw', alt: img_d.alt, style: 'display:none', class: 'hcr__preload-hint' -}}
         {%- endif -%}
 
         <div
-          class="swiper-slide hcr__slide hcr__slide--ph-{{ pos_h_d }} hcr__slide--pv-{{ pos_v_d }} hcr__slide--tha-{{ pos_h_t }} hcr__slide--tva-{{ pos_v_t }} hcr__slide--mh-{{ pos_h_m }} hcr__slide--mv-{{ pos_v_m }}{% if forloop.first %} is-selected{% endif %}"
+          class="swiper-slide hcr__slide hcr__slide--ph-{{ pos_h_d }} hcr__slide--pv-{{ pos_v_d }} hcr__slide--tha-{{ pos_h_t }} hcr__slide--tva-{{ pos_v_t }} hcr__slide--mh-{{ pos_h_m }} hcr__slide--mv-{{ pos_v_m }}"
           role="group"
           aria-roledescription="slide"
           aria-label="{{ forloop.index }} / {{ section.blocks.size }}"
@@ -297,6 +345,32 @@
             --hcr-s-pr-m:    {{ pr_m }}px;
             --hcr-s-gap-d:   {{ gap_d }}px;
             --hcr-s-gap-m:   {{ gap_m }}px;
+            --hcr-s-ey-col:  {{ ey_col }};
+            --hcr-s-ey-sz:   {{ ey_sz }}px;
+            --hcr-s-ey-fw:   {{ ey_fw }};
+            --hcr-s-ey-ls:   {{ ey_ls }};
+            --hcr-s-ey-tt:   {{ ey_tt }};
+            --hcr-s-ey-lw:   {{ ey_line_w }}px;
+            --hcr-s-ey-lt:   {{ ey_line_t }}px;
+            --hcr-s-sh-col:  {{ sh_col }};
+            --hcr-s-sh-sz-d: {{ sh_sz_d }}px;
+            --hcr-s-sh-sz-m: {{ sh_sz_m }}px;
+            --hcr-s-sh-fw:   {{ sh_fw }};
+            --hcr-s-sh-ls:   {{ sh_ls }};
+            --hcr-s-sh-tt:   {{ sh_tt }};
+            --hcr-s-d-fw:    {{ d_fw }};
+            --hcr-s-d-lh:    {{ d_lh }};
+            --hcr-s-bdg-col: {{ bdg_col }};
+            --hcr-s-bdg-bg:  rgba({{ bdg_bg_r }},{{ bdg_bg_g }},{{ bdg_bg_b }},{{ bdg_bg_op }});
+            --hcr-s-bdg-br:  rgba({{ bdg_br_r }},{{ bdg_br_g }},{{ bdg_br_b }},{{ bdg_br_op }});
+            --hcr-s-bdg-sz:  {{ bdg_sz }}px;
+            --hcr-s-bdg-fw:  {{ bdg_fw }};
+            --hcr-s-bdg-ls:  {{ bdg_ls }};
+            --hcr-s-bdg-r:   {{ bdg_r }}px;
+            --hcr-s-btn-sz:  {{ btn_sz }}px;
+            --hcr-s-btn-fw:  {{ btn_fw }};
+            --hcr-s-btn-ls:  {{ btn_ls }};
+            --hcr-s-btn-tt:  {{ btn_tt }};
           "
         >
 
@@ -674,16 +748,16 @@
   gap: 10px;
   margin: 0;
   font-family: var(--hcr-font);
-  font-size: 0.68rem;
-  font-weight: 600;
-  letter-spacing: 0.18em;
-  text-transform: uppercase;
-  color: rgba(255,255,255,0.85);
+  font-size: var(--hcr-s-ey-sz, 11px);
+  font-weight: var(--hcr-s-ey-fw, 600);
+  letter-spacing: var(--hcr-s-ey-ls, 0.18em);
+  text-transform: var(--hcr-s-ey-tt, uppercase);
+  color: var(--hcr-s-ey-col, rgba(255,255,255,0.85));
 }
 .hcr__eyebrow-line {
   display: block;
-  width: 22px;
-  height: 1.5px;
+  width: var(--hcr-s-ey-lw, 22px);
+  height: var(--hcr-s-ey-lt, 2px);
   background: currentColor;
   flex-shrink: 0;
 }
@@ -714,11 +788,11 @@
 .hcr__subheading {
   margin: 0;
   font-family: var(--hcr-font);
-  font-size: clamp(0.9rem, 1.2vw, 1.05rem);
-  font-weight: 500;
-  letter-spacing: 0.04em;
-  color: rgba(255,255,255,0.7);
-  text-transform: uppercase;
+  font-size: var(--hcr-s-sh-sz-d, 17px);
+  font-weight: var(--hcr-s-sh-fw, 500);
+  letter-spacing: var(--hcr-s-sh-ls, 0.04em);
+  color: var(--hcr-s-sh-col, rgba(255,255,255,0.7));
+  text-transform: var(--hcr-s-sh-tt, uppercase);
 }
 
 /* ── Description ── */
@@ -726,8 +800,8 @@
   margin: 0;
   font-family: var(--hcr-font);
   font-size: var(--hcr-s-d-sz-d, 17px);
-  font-weight: 400;
-  line-height: 1.65;
+  font-weight: var(--hcr-s-d-fw, 400);
+  line-height: var(--hcr-s-d-lh, 1.65);
   color: var(--hcr-s-d-col, rgba(255,255,255,0.75));
   max-width: var(--hcr-s-d-mw, 560px);
 }
@@ -750,10 +824,10 @@
   align-items: center;
   gap: 10px;
   font-family: var(--hcr-font);
-  font-size: 0.82rem;
-  font-weight: 600;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
+  font-size: var(--hcr-s-btn-sz, 13px);
+  font-weight: var(--hcr-s-btn-fw, 600);
+  letter-spacing: var(--hcr-s-btn-ls, 0.06em);
+  text-transform: var(--hcr-s-btn-tt, uppercase);
   text-decoration: none;
   padding: var(--hcr-s-btn-py, 14px) var(--hcr-s-btn-px, 28px);
   border-radius: var(--hcr-s-btn-r, 2px);
@@ -889,7 +963,8 @@
       var(--hcr-s-pb-m, 64px)
       calc(var(--hcr-s-pl-d, 80px) * 0.6);
   }
-  .hcr__desc    { font-size: var(--hcr-s-d-sz-m, 15px); }
+  .hcr__desc       { font-size: var(--hcr-s-d-sz-m, 15px); }
+  .hcr__subheading { font-size: var(--hcr-s-sh-sz-m, 14px); }
 
   .hcr__slide--tha-left   .hcr__content { justify-content: flex-start; }
   .hcr__slide--tha-center .hcr__content { justify-content: center; }
@@ -931,7 +1006,8 @@
   .hcr__slide--mv-center .hcr__content { align-items: center; }
   .hcr__slide--mv-bottom .hcr__content { align-items: flex-end; }
 
-  .hcr__desc    { font-size: var(--hcr-s-d-sz-m, 15px); }
+  .hcr__desc       { font-size: var(--hcr-s-d-sz-m, 15px); }
+  .hcr__subheading { font-size: var(--hcr-s-sh-sz-m, 14px); }
   .hcr__ctas    { flex-direction: column; gap: 10px; width: 100%; }
   .hcr__content--center .hcr__ctas { align-items: center; }
   .hcr__content--left   .hcr__ctas { align-items: flex-start; }
@@ -1060,22 +1136,22 @@
     transform 700ms cubic-bezier(0.22, 1, 0.36, 1);
 }
 
-.hcr__slide.is-selected .hcr__eyebrow    { opacity: 1; transform: none; transition-delay:  40ms; }
-.hcr__slide.is-selected .hcr__badge      { opacity: 1; transform: none; transition-delay:  40ms; }
-.hcr__slide.is-selected .hcr__heading    { opacity: 1; transform: none; transition-delay: 120ms; }
-.hcr__slide.is-selected .hcr__subheading { opacity: 1; transform: none; transition-delay: 190ms; }
-.hcr__slide.is-selected .hcr__desc       { opacity: 1; transform: none; transition-delay: 220ms; }
-.hcr__slide.is-selected .hcr__ctas       { opacity: 1; transform: none; transition-delay: 310ms; }
+.swiper-slide-active .hcr__eyebrow    { opacity: 1; transform: none; transition-delay:  40ms; }
+.swiper-slide-active .hcr__badge      { opacity: 1; transform: none; transition-delay:  40ms; }
+.swiper-slide-active .hcr__heading    { opacity: 1; transform: none; transition-delay: 120ms; }
+.swiper-slide-active .hcr__subheading { opacity: 1; transform: none; transition-delay: 190ms; }
+.swiper-slide-active .hcr__desc       { opacity: 1; transform: none; transition-delay: 220ms; }
+.swiper-slide-active .hcr__ctas       { opacity: 1; transform: none; transition-delay: 310ms; }
 
 /* ─── KEN BURNS on images ─────────────────── */
 .hcr__img {
   transition: transform var(--hcr-transition, 700ms) var(--hcr-ease),
               opacity 400ms ease;
 }
-.hcr__slide:not(.is-selected) .hcr__img {
+.hcr__slide:not(.swiper-slide-active) .hcr__img {
   transform: translate3d(0,0,0) scale(1.0);
 }
-.hcr__slide.is-selected .hcr__img {
+.swiper-slide-active .hcr__img {
   animation: hcr-kenburns var(--hcr-autoplay-spd, 5000ms) linear forwards;
 }
 @keyframes hcr-kenburns {
@@ -1089,14 +1165,14 @@
   align-items: center;
   gap: 6px;
   padding: 5px 12px;
-  font-size: 0.65rem;
-  font-weight: 700;
-  letter-spacing: 0.14em;
+  font-size: var(--hcr-s-bdg-sz, 10px);
+  font-weight: var(--hcr-s-bdg-fw, 700);
+  letter-spacing: var(--hcr-s-bdg-ls, 0.14em);
   text-transform: uppercase;
-  border-radius: 999px;
-  border: 1px solid rgba(255,255,255,0.3);
-  color: #fff;
-  background: rgba(255,255,255,0.1);
+  border-radius: var(--hcr-s-bdg-r, 999px);
+  border: 1px solid var(--hcr-s-bdg-br, rgba(255,255,255,0.3));
+  color: var(--hcr-s-bdg-col, #fff);
+  background: var(--hcr-s-bdg-bg, rgba(255,255,255,0.1));
   backdrop-filter: blur(6px);
   -webkit-backdrop-filter: blur(6px);
   align-self: flex-start;
@@ -1162,7 +1238,8 @@
 
 /* ─── REDUCED MOTION ─────────────────────── */
 @media (prefers-reduced-motion: reduce) {
-  .hcr__img { animation: none !important; transition: none !important; }
+  .hcr__img,
+  .swiper-slide-active .hcr__img { animation: none !important; transition: none !important; }
   .hcr__eyebrow, .hcr__heading, .hcr__subheading,
   .hcr__desc, .hcr__ctas, .hcr__badge {
     opacity: 1 !important; transform: none !important; transition: none !important;
@@ -1234,16 +1311,14 @@
       });
     });
 
-    /* ── is-selected (entrance animation) ── */
+    /* ── getOrigSlides — used for Shopify block:select targeting ── */
     function getOrigSlides() {
       return Array.from(swiperEl.querySelectorAll('.swiper-slide:not(.swiper-slide-duplicate)'));
     }
 
     function updateSelected() {
-      var idx = LOOP ? swiper.realIndex : swiper.activeIndex;
-      getOrigSlides().forEach(function (s, i) {
-        s.classList.toggle('is-selected', i === idx);
-      });
+      /* no-op: entrance animations now rely on .swiper-slide-active (Swiper-managed),
+         which covers both originals and loop clones */
     }
 
     /* ── Autoplay + progress bar ── */
@@ -1625,17 +1700,134 @@
         },
         { "type": "range", "id": "heading_max_width", "label": "Largeur max titre (px)", "min": 200, "max": 1200, "step": 20, "default": 900, "unit": "px" },
 
+        { "type": "header", "content": "── Typographie — Eyebrow" },
+        { "type": "color",  "id": "eyebrow_color",    "label": "Couleur",             "default": "#e0e0e0" },
+        { "type": "range",  "id": "eyebrow_sz",        "label": "Taille (px)",         "min": 8,  "max": 18, "step": 1, "default": 11, "unit": "px" },
+        {
+          "type": "select", "id": "eyebrow_fw", "label": "Graisse", "default": "600",
+          "options": [
+            { "value": "300", "label": "Light 300" },
+            { "value": "400", "label": "Regular 400" },
+            { "value": "500", "label": "Medium 500" },
+            { "value": "600", "label": "SemiBold 600" },
+            { "value": "700", "label": "Bold 700" },
+            { "value": "800", "label": "ExtraBold 800" }
+          ]
+        },
+        {
+          "type": "select", "id": "eyebrow_tt", "label": "Casse", "default": "uppercase",
+          "options": [
+            { "value": "uppercase",  "label": "MAJUSCULES" },
+            { "value": "capitalize", "label": "Capitalize" },
+            { "value": "lowercase",  "label": "minuscules" },
+            { "value": "none",       "label": "Normale" }
+          ]
+        },
+        {
+          "type": "select", "id": "eyebrow_ls", "label": "Letter-spacing", "default": "0.18em",
+          "options": [
+            { "value": "0",      "label": "Aucun" },
+            { "value": "0.06em", "label": "Léger 0.06em" },
+            { "value": "0.12em", "label": "Moyen 0.12em" },
+            { "value": "0.18em", "label": "Large 0.18em" },
+            { "value": "0.24em", "label": "Très large 0.24em" }
+          ]
+        },
+        { "type": "range", "id": "eyebrow_line_w", "label": "Longueur trait (px)",    "min": 0,  "max": 60, "step": 2, "default": 22, "unit": "px" },
+        { "type": "range", "id": "eyebrow_line_t", "label": "Épaisseur trait (px)",   "min": 0,  "max": 4,  "step": 1, "default": 2,  "unit": "px" },
+
+        { "type": "header", "content": "── Typographie — Sous-titre" },
+        { "type": "color",  "id": "subhead_color",  "label": "Couleur",             "default": "#b3b3b3" },
+        { "type": "range",  "id": "subhead_sz_d",    "label": "Taille desktop (px)", "min": 10, "max": 28, "step": 1, "default": 17, "unit": "px" },
+        { "type": "range",  "id": "subhead_sz_m",    "label": "Taille mobile (px)",  "min": 10, "max": 22, "step": 1, "default": 14, "unit": "px" },
+        {
+          "type": "select", "id": "subhead_fw", "label": "Graisse", "default": "500",
+          "options": [
+            { "value": "300", "label": "Light 300" },
+            { "value": "400", "label": "Regular 400" },
+            { "value": "500", "label": "Medium 500" },
+            { "value": "600", "label": "SemiBold 600" },
+            { "value": "700", "label": "Bold 700" }
+          ]
+        },
+        {
+          "type": "select", "id": "subhead_tt", "label": "Casse", "default": "uppercase",
+          "options": [
+            { "value": "uppercase",  "label": "MAJUSCULES" },
+            { "value": "capitalize", "label": "Capitalize" },
+            { "value": "lowercase",  "label": "minuscules" },
+            { "value": "none",       "label": "Normale" }
+          ]
+        },
+        {
+          "type": "select", "id": "subhead_ls", "label": "Letter-spacing", "default": "0.04em",
+          "options": [
+            { "value": "0",      "label": "Aucun" },
+            { "value": "0.02em", "label": "Léger 0.02em" },
+            { "value": "0.04em", "label": "Normal 0.04em" },
+            { "value": "0.08em", "label": "Large 0.08em" }
+          ]
+        },
+
         { "type": "header", "content": "── Typographie — Description" },
-        { "type": "color", "id": "desc_color",    "label": "Couleur",             "default": "#cccccc" },
-        { "type": "range", "id": "desc_sz_d",      "label": "Taille desktop (px)", "min": 12, "max": 24, "step": 1, "default": 17, "unit": "px" },
-        { "type": "range", "id": "desc_sz_m",      "label": "Taille mobile (px)",  "min": 12, "max": 20, "step": 1, "default": 15, "unit": "px" },
-        { "type": "range", "id": "desc_max_width", "label": "Largeur max (px)",    "min": 200, "max": 800, "step": 20, "default": 560, "unit": "px" },
+        { "type": "color",  "id": "desc_color",    "label": "Couleur",             "default": "#cccccc" },
+        { "type": "range",  "id": "desc_sz_d",      "label": "Taille desktop (px)", "min": 12, "max": 24, "step": 1, "default": 17, "unit": "px" },
+        { "type": "range",  "id": "desc_sz_m",      "label": "Taille mobile (px)",  "min": 12, "max": 20, "step": 1, "default": 15, "unit": "px" },
+        { "type": "range",  "id": "desc_max_width", "label": "Largeur max (px)",    "min": 200, "max": 800, "step": 20, "default": 560, "unit": "px" },
+        {
+          "type": "select", "id": "desc_fw", "label": "Graisse", "default": "400",
+          "options": [
+            { "value": "300", "label": "Light 300" },
+            { "value": "400", "label": "Regular 400" },
+            { "value": "500", "label": "Medium 500" },
+            { "value": "600", "label": "SemiBold 600" }
+          ]
+        },
+        {
+          "type": "select", "id": "desc_lh", "label": "Interligne", "default": "1.65",
+          "options": [
+            { "value": "1.2",  "label": "Compact 1.2" },
+            { "value": "1.4",  "label": "Serré 1.4" },
+            { "value": "1.55", "label": "Normal 1.55" },
+            { "value": "1.65", "label": "Confortable 1.65" },
+            { "value": "1.8",  "label": "Aéré 1.8" }
+          ]
+        },
+
+        { "type": "header", "content": "── Badge" },
+        { "type": "color",  "id": "badge_color",           "label": "Couleur texte",          "default": "#ffffff" },
+        { "type": "color",  "id": "badge_bg_color",         "label": "Couleur fond",           "default": "#ffffff" },
+        { "type": "range",  "id": "badge_bg_opacity",       "label": "Opacité fond (%)",       "min": 0, "max": 60, "step": 5, "default": 10 },
+        { "type": "color",  "id": "badge_border_color",     "label": "Couleur bordure",        "default": "#ffffff" },
+        { "type": "range",  "id": "badge_border_opacity",   "label": "Opacité bordure (%)",    "min": 0, "max": 100, "step": 5, "default": 30 },
+        { "type": "range",  "id": "badge_sz",               "label": "Taille texte (px)",      "min": 8,  "max": 16, "step": 1, "default": 10, "unit": "px" },
+        {
+          "type": "select", "id": "badge_fw", "label": "Graisse", "default": "700",
+          "options": [
+            { "value": "400", "label": "Regular 400" },
+            { "value": "500", "label": "Medium 500" },
+            { "value": "600", "label": "SemiBold 600" },
+            { "value": "700", "label": "Bold 700" },
+            { "value": "800", "label": "ExtraBold 800" }
+          ]
+        },
+        {
+          "type": "select", "id": "badge_ls", "label": "Letter-spacing", "default": "0.14em",
+          "options": [
+            { "value": "0",      "label": "Aucun" },
+            { "value": "0.06em", "label": "Léger 0.06em" },
+            { "value": "0.10em", "label": "Normal 0.10em" },
+            { "value": "0.14em", "label": "Large 0.14em" },
+            { "value": "0.20em", "label": "Très large 0.20em" }
+          ]
+        },
+        { "type": "range", "id": "badge_radius", "label": "Border-radius (px)", "min": 0, "max": 50, "step": 1, "default": 50, "unit": "px", "info": "50 = pilule, 0 = carré" },
 
         { "type": "header", "content": "── Bouton CTA" },
-        { "type": "text", "id": "cta1_label", "label": "Texte",  "default": "Explorer les collections" },
-        { "type": "url",  "id": "cta1_url",   "label": "Lien" },
+        { "type": "text",  "id": "cta1_label", "label": "Texte",  "default": "Explorer les collections" },
+        { "type": "url",   "id": "cta1_url",   "label": "Lien" },
         {
-          "type": "select", "id": "cta1_style", "label": "Style", "default": "solid-white",
+          "type": "select", "id": "cta1_style", "label": "Style visuel", "default": "solid-white",
           "options": [
             { "value": "solid-white",   "label": "Solide blanc" },
             { "value": "outline-white", "label": "Outline blanc" },
@@ -1648,9 +1840,39 @@
         },
 
         { "type": "header", "content": "── Style bouton" },
-        { "type": "range", "id": "btn_radius", "label": "Border-radius (px)",    "min": 0, "max": 40, "step": 1, "default": 2, "unit": "px" },
-        { "type": "range", "id": "btn_py",     "label": "Padding vertical (px)", "min": 6, "max": 32, "step": 1, "default": 14, "unit": "px" },
-        { "type": "range", "id": "btn_px",     "label": "Padding horizontal (px)","min": 10,"max": 60, "step": 2, "default": 28, "unit": "px" }
+        { "type": "range",  "id": "btn_radius", "label": "Border-radius (px)",     "min": 0,  "max": 40, "step": 1, "default": 2,  "unit": "px" },
+        { "type": "range",  "id": "btn_py",     "label": "Padding vertical (px)",  "min": 6,  "max": 32, "step": 1, "default": 14, "unit": "px" },
+        { "type": "range",  "id": "btn_px",     "label": "Padding horizontal (px)","min": 10, "max": 60, "step": 2, "default": 28, "unit": "px" },
+        { "type": "range",  "id": "btn_sz",     "label": "Taille texte (px)",      "min": 10, "max": 20, "step": 1, "default": 13, "unit": "px" },
+        {
+          "type": "select", "id": "btn_fw", "label": "Graisse", "default": "600",
+          "options": [
+            { "value": "400", "label": "Regular 400" },
+            { "value": "500", "label": "Medium 500" },
+            { "value": "600", "label": "SemiBold 600" },
+            { "value": "700", "label": "Bold 700" },
+            { "value": "800", "label": "ExtraBold 800" }
+          ]
+        },
+        {
+          "type": "select", "id": "btn_tt", "label": "Casse", "default": "uppercase",
+          "options": [
+            { "value": "uppercase",  "label": "MAJUSCULES" },
+            { "value": "capitalize", "label": "Capitalize" },
+            { "value": "lowercase",  "label": "minuscules" },
+            { "value": "none",       "label": "Normale" }
+          ]
+        },
+        {
+          "type": "select", "id": "btn_ls", "label": "Letter-spacing", "default": "0.06em",
+          "options": [
+            { "value": "0",      "label": "Aucun" },
+            { "value": "0.03em", "label": "Léger 0.03em" },
+            { "value": "0.06em", "label": "Normal 0.06em" },
+            { "value": "0.10em", "label": "Large 0.10em" },
+            { "value": "0.14em", "label": "Très large 0.14em" }
+          ]
+        }
       ]
     }
   ],

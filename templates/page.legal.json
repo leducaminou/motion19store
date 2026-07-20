@@ -1,0 +1,24 @@
+{
+  "sections": {
+    "page-legal": {
+      "type": "page-legal",
+      "settings": {
+        "show_breadcrumb": true,
+        "heading": "Mentions légales",
+        "editor_title": "Éditeur du site",
+        "host_title": "Hébergement",
+        "ip_title": "Propriété intellectuelle",
+        "custom_section_show": false,
+        "show_updated": true,
+        "updated_date": "Juin 2025",
+        "bg_color": "#ffffff",
+        "max_width": 760,
+        "pt_d": 72,
+        "pb_d": 80,
+        "pt_m": 48,
+        "pb_m": 64
+      }
+    }
+  },
+  "order": ["page-legal"]
+}

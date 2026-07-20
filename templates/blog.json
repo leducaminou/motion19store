@@ -1,0 +1,79 @@
+{
+  "sections": {
+    "blog-hero": {
+      "type": "blog-hero",
+      "blocks": {
+        "content-1": {
+          "type": "content",
+          "settings": {
+            "eyebrow": "Le Journal",
+            "heading": "Nos histoires",
+            "description": "Équipement, inspiration et créativité pour les créateurs.",
+            "cta1_label": "Lire le journal",
+            "cta1_style": "solid-white",
+            "pos_h_desktop": "center",
+            "pos_v_desktop": "center",
+            "pos_h_tablet": "center",
+            "pos_v_tablet": "center",
+            "pos_h_mobile": "center",
+            "pos_v_mobile": "bottom",
+            "content_text_align": "center",
+            "overlay_direction": "bottom",
+            "overlay_color": "#000000",
+            "overlay_opacity": 40,
+            "overlay_opacity_mobile": 55,
+            "heading_sz_d": 72,
+            "heading_sz_t": 52,
+            "heading_sz_m": 38,
+            "heading_fw": "800",
+            "heading_lh": "1.0",
+            "heading_ls": "-0.03",
+            "padding_top_d": 80,
+            "padding_bottom_d": 80,
+            "padding_left_d": 80,
+            "padding_right_d": 80,
+            "padding_top_m": 48,
+            "padding_bottom_m": 64,
+            "padding_left_m": 24,
+            "padding_right_m": 24,
+            "content_gap_d": 18,
+            "content_gap_m": 14
+          }
+        }
+      },
+      "block_order": ["content-1"],
+      "settings": {
+        "height_desktop": 78,
+        "height_laptop": 90,
+        "height_mobile": 50,
+        "enable_large_float": true,
+        "large_screen_margin": 40,
+        "large_screen_radius": 6,
+        "laptop_radius": 0,
+        "show_scroll_hint": false
+      }
+    },
+    "blog-grid": {
+      "type": "blog-grid",
+      "settings": {
+        "section_heading": "Nos les articles",
+        "header_align": "left",
+        "image_ratio": "16 / 9",
+        "show_excerpt": false,
+        "card_radius": 6,
+        "card_show_border": true,
+        "card_border_color": "#e8e8e8",
+        "card_show_shadow": true,
+        "cards_gap": 20,
+        "padding_top_desktop": 52,
+        "padding_bottom_desktop": 36,
+        "padding_top_mobile": 40,
+        "padding_bottom_mobile": 36,
+        "margin_top": 0,
+        "margin_bottom": 0,
+        "section_max_width": 1400
+      }
+    }
+  },
+  "order": ["blog-hero", "blog-grid"]
+}

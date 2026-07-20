@@ -1,0 +1,57 @@
+{
+  "sections": {
+    "article-header": {
+      "type": "article-header",
+      "settings": {
+        "hero_image_style": "contained",
+        "hero_image_height": 480,
+        "image_object_fit": "cover",
+        "show_breadcrumb": true,
+        "show_excerpt": true,
+        "show_reading_time": true,
+        "max_width": 800,
+        "text_align": "left",
+        "padding_top_d": 60,
+        "padding_bottom_d": 0,
+        "padding_top_m": 40,
+        "padding_bottom_m": 0,
+        "heading_sz_d": 52,
+        "heading_sz_m": 34,
+        "heading_fw": "700",
+        "heading_lh": "1.1",
+        "heading_ls": "-0.02",
+        "heading_color": "#0a0a0a",
+        "meta_color": "#888888",
+        "meta_size": 12,
+        "excerpt_color": "#555555",
+        "excerpt_size": 16,
+        "excerpt_lh": "1.65",
+        "bg_color": "#ffffff"
+      }
+    },
+    "article-body": {
+      "type": "article-body",
+      "settings": {
+        "max_width": 760,
+        "font_size": 17,
+        "line_height": "1.75",
+        "drop_cap": false,
+        "image_rounding": 8,
+        "blockquote_style": "line",
+        "blockquote_color": "#0787ea",
+        "bg_color": "#ffffff",
+        "text_color": "#0a0a0a",
+        "link_color": "#0787ea",
+        "heading_color": "#0a0a0a",
+        "show_progress_bar": true,
+        "progress_color": "#0787ea",
+        "progress_height": 3,
+        "padding_top_d": 48,
+        "padding_bottom_d": 80,
+        "padding_top_m": 32,
+        "padding_bottom_m": 60
+      }
+    },
+  },
+  "order": ["article-header", "article-body"]
+}

@@ -1,0 +1,76 @@
+{%- comment -%}
+  Snippet : blog-card.liquid
+  @param article      {article} obligatoire
+  @param image_ratio  {string}  défaut "16 / 9"
+  @param show_excerpt {boolean} défaut false
+  @param lazy_load    {boolean} défaut true
+  @param index        {number}  défaut 99
+{%- endcomment -%}
+
+{%- liquid
+  assign card_ratio    = image_ratio   | default: '16 / 9'
+  assign card_lazy     = lazy_load     | default: true
+  assign card_excerpt  = show_excerpt  | default: false
+  assign card_index    = index         | default: 99
+  assign card_loading  = 'lazy'
+  if card_lazy == false or card_index <= 5
+    assign card_loading = 'eager'
+  endif
+-%}
+
+<article class="m19-card bjc" aria-label="{{ article.title | escape }}">
+
+  <a
+    class="m19-card__media bjc__media"
+    href="{{ article.url }}"
+    tabindex="-1"
+    aria-hidden="true"
+    style="aspect-ratio: {{ card_ratio }}; display: block; overflow: hidden;"
+  >
+    {%- if article.image != blank -%}
+      <img
+        class="m19-card__img bjc__img"
+        src="{{ article.image | image_url: width: 800 }}"
+        srcset="
+          {{ article.image | image_url: width: 400 }}  400w,
+          {{ article.image | image_url: width: 800 }}  800w,
+          {{ article.image | image_url: width: 1200 }} 1200w
+        "
+        sizes="(max-width: 640px) calc(100vw - 32px),
+               (max-width: 1024px) calc((100vw - 64px) / 2),
+               (max-width: 1280px) calc((100vw - 80px) / 4),
+               calc((100vw - 96px) / 5)"
+        alt="{{ article.image.alt | default: article.title | escape }}"
+        width="{{ article.image.width }}"
+        height="{{ article.image.height }}"
+        loading="{{ card_loading }}"
+        {%- if card_index == 1 %} fetchpriority="high"{%- endif -%}
+      >
+    {%- else -%}
+      <div class="bjc__placeholder" aria-hidden="true"></div>
+    {%- endif -%}
+  </a>
+
+  <div class="m19-card__body bjc__body">
+
+    <a class="bjc__title" href="{{ article.url }}">
+      {{- article.title | escape -}}
+    </a>
+
+    {%- if card_excerpt and article.excerpt != blank -%}
+      <p class="bjc__excerpt">
+        {{- article.excerpt | strip_html | truncate: 100 -}}
+      </p>
+    {%- endif -%}
+
+    <div class="bjc__meta">
+      <span class="bjc__author">{{ article.author }}</span>
+      <span class="bjc__meta-sep" aria-hidden="true">·</span>
+      <time class="bjc__date" datetime="{{ article.published_at | date: '%Y-%m-%d' }}">
+        {{- article.published_at | date: '%d %b %Y' -}}
+      </time>
+    </div>
+
+  </div>
+
+</article>

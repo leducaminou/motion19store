@@ -27,6 +27,15 @@
 
     {% comment %} {% render 'meta-tags' %} {% endcomment %}
 
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=AW-769885484"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'AW-769885484');
+    </script>
+
     {{ content_for_header }}
 
     <!-- Preload LCP hero — homepage uniquement (hero-carousel premier slide) -->
@@ -35,7 +44,7 @@
       <link rel="preload" as="image" href="{{ 'hp-hero-1-mobile.jpg' | asset_url }}" media="(max-width: 767px)" fetchpriority="high">
     {%- endif -%}
 
-    <!-- Swiper CSS — non-bloquant (évite render-blocking sur CDN tiers) -->
+    <!-- Swiper CSS — non-bloquant -->
     <link
       rel="stylesheet"
       href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css"
@@ -50,13 +59,13 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link
-      href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Inter:wght@300;400;500;600;700&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap"
       rel="stylesheet"
       media="print"
       onload="this.media='all'"
     >
     <noscript>
-      <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+      <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     </noscript>
 
     <!-- Variables CSS dynamiques (doivent rester inline — dépendent des settings Customizer) -->
@@ -112,6 +121,16 @@
 
     <!-- CSS statique global (base.css) — mis en cache par le navigateur -->
     {{ 'base.css' | asset_url | stylesheet_tag }}
+
+    {%- if request.page_type == 'blog' or request.page_type == 'article' -%}
+      <link rel="preconnect" href="https://fonts.googleapis.com">
+      <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+      <link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700;9..40,800&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet">
+      {{ 'blog.css' | asset_url | stylesheet_tag }}
+    {%- endif -%}
+    {%- if request.page_type == 'page' -%}
+      {{ 'page.css' | asset_url | stylesheet_tag }}
+    {%- endif -%}
   </head>
 
   <body class="template-{{ template | replace: '.', ' ' | truncatewords: 1, '' | handle }}">
@@ -235,5 +254,8 @@
       })();
     </script>
     <script src="{{ 'bundle.js' | asset_url }}" defer></script>
+    {%- if request.page_type == 'blog' or request.page_type == 'article' -%}
+      <script src="{{ 'blog.js' | asset_url }}" defer></script>
+    {%- endif -%}
   </body>
 </html>

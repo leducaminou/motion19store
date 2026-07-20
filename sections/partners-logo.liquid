@@ -176,9 +176,9 @@
 /* ═══════════════════════════════════════════════════
    Partners Logo — pl — Motion19 OS 2.0
    mobile  ≤640px       → 2 + partiel
-   tablet  641–1023px   → 4 + partiel
-   medium  1024–1280px  → 5 + partiel
-   large   ≥1281px      → 6 + partiel
+   tablet  641–1023px   → 5 + partiel
+   laptop  1024–1440px  → 7 + partiel
+   xl      ≥1441px      → 9 + partiel
    ═══════════════════════════════════════════════════ */
 
 .pl {
@@ -197,21 +197,21 @@
 @media (min-width: 641px) {
   .pl {
     --pl-pad:     24px;
-    --pl-slide-w: calc((var(--pl-usable-w) - (2 * var(--pl-pad)) - (4 * var(--pl-gap, 16px))) / 4.3);
+    --pl-slide-w: calc((var(--pl-usable-w) - (2 * var(--pl-pad)) - (5 * var(--pl-gap, 16px))) / 5.3);
   }
 }
 
 @media (min-width: 1024px) {
   .pl {
     --pl-pad:     32px;
-    --pl-slide-w: calc((var(--pl-usable-w) - (2 * var(--pl-pad)) - (5 * var(--pl-gap, 16px))) / 5.3);
+    --pl-slide-w: calc((var(--pl-usable-w) - (2 * var(--pl-pad)) - (7 * var(--pl-gap, 16px))) / 7.3);
   }
 }
 
-@media (min-width: 1281px) {
+@media (min-width: 1441px) {
   .pl {
     --pl-pad:     40px;
-    --pl-slide-w: calc((var(--pl-usable-w) - (2 * var(--pl-pad)) - (6 * var(--pl-gap, 16px))) / 6.3);
+    --pl-slide-w: calc((var(--pl-usable-w) - (2 * var(--pl-pad)) - (9 * var(--pl-gap, 16px))) / 9.3);
   }
 }
 

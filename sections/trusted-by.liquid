@@ -1,0 +1,423 @@
+{%- comment -%} Trusted By — Motion19 OS 2.0 — Static logo grid {%- endcomment -%}
+
+{%- liquid
+  assign sid = section.id
+
+  assign bg_color      = section.settings.bg_color          | default: 'var(--color-bg)'
+  assign text_color    = section.settings.text_color        | default: 'var(--color-bg-dark)'
+  assign eyebrow_col   = section.settings.eyebrow_color     | default: 'var(--color-primary)'
+  assign subtitle_col  = section.settings.subtitle_color    | default: '#888888'
+
+  assign logo_size     = section.settings.logo_size         | default: 112
+  assign logo_radius   = section.settings.logo_radius       | default: 8
+  assign card_gap      = section.settings.card_gap          | default: 16
+  assign card_bg_c     = section.settings.card_bg_color     | default: '#f8f8f8'
+  assign card_brd_c    = section.settings.card_border_color | default: 'var(--color-border)'
+  assign show_border   = section.settings.show_card_border
+  assign enable_hover  = section.settings.enable_hover
+
+  assign pt_m     = section.settings.padding_top_mobile     | default: 52
+  assign pb_m     = section.settings.padding_bottom_mobile  | default: 52
+  assign pt_d     = section.settings.padding_top_desktop    | default: 72
+  assign pb_d     = section.settings.padding_bottom_desktop | default: 64
+  assign mt       = section.settings.margin_top             | default: 0
+  assign mb       = section.settings.margin_bottom          | default: 0
+  assign max_w    = section.settings.max_width              | default: 1400
+  assign h_align  = section.settings.header_align           | default: 'center'
+
+  assign show_header   = section.settings.enable_header
+  assign border_top    = section.settings.section_border_top
+  assign border_bottom = section.settings.section_border_bottom
+
+  assign card_bdr_val = '0px'
+  if show_border
+    assign card_bdr_val = '1px'
+  endif
+-%}
+
+<section
+  id="tby-{{ sid }}"
+  class="tby m19-animate"
+  aria-label="{{ section.settings.title | default: 'Ils nous font confiance' | escape }}"
+  style="
+    --tby-bg:        {{ bg_color }};
+    --tby-text:      {{ text_color }};
+    --tby-eyebrow:   {{ eyebrow_col }};
+    --tby-subtitle:  {{ subtitle_col }};
+    --tby-size:      {{ logo_size }}px;
+    --tby-radius:    {{ logo_radius }}px;
+    --tby-gap:       {{ card_gap }}px;
+    --tby-card-bg:   {{ card_bg_c }};
+    --tby-card-brd:  {{ card_brd_c }};
+    --tby-card-bdr:  {{ card_bdr_val }};
+    --tby-pt-m:      {{ pt_m }}px;
+    --tby-pb-m:      {{ pb_m }}px;
+    --tby-pt-d:      {{ pt_d }}px;
+    --tby-pb-d:      {{ pb_d }}px;
+    --tby-mt:        {{ mt }}px;
+    --tby-mb:        {{ mb }}px;
+    --tby-max-w:     {{ max_w }}px;
+    {% if border_top    %}border-top:    1px solid rgba(10,10,10,0.07);{% endif %}
+    {% if border_bottom %}border-bottom: 1px solid rgba(10,10,10,0.07);{% endif %}
+  "
+>
+  <div class="tby__inner">
+
+    {%- if show_header -%}
+      <div class="tby__header tby__header--{{ h_align }}">
+        {%- if section.settings.eyebrow != blank -%}
+          <span class="tby__eyebrow">{{ section.settings.eyebrow }}</span>
+        {%- endif -%}
+        {%- if section.settings.title != blank -%}
+          <h2 class="tby__title">{{ section.settings.title }}</h2>
+        {%- endif -%}
+        {%- if section.settings.description != blank -%}
+          <p class="tby__desc">{{ section.settings.description }}</p>
+        {%- endif -%}
+      </div>
+    {%- endif -%}
+
+    <ul class="tby__grid" role="list">
+
+      {%- if section.blocks.size > 0 -%}
+        {%- for block in section.blocks -%}
+          {%- if block.type == 'trust_logo' -%}
+            {%- liquid
+              assign img     = block.settings.logo_image
+              assign alt     = block.settings.logo_alt | default: block.settings.logo_image.alt | default: 'Client'
+              assign lnk     = block.settings.logo_link
+              assign new_tab = block.settings.open_new_tab
+              assign is_link = false
+              if lnk != blank
+                assign is_link = true
+              endif
+              assign blk_bg  = block.settings.custom_bg     | default: card_bg_c
+              assign blk_brd = block.settings.custom_border | default: card_brd_c
+              assign blk_r   = block.settings.custom_radius | default: logo_radius
+            -%}
+            <li
+              class="tby__item{% if enable_hover or is_link %} tby__item--hoverable{% endif %}{% if is_link %} tby__item--linked{% endif %}"
+              {{ block.shopify_attributes }}
+              style="--tby-blk-bg:{{ blk_bg }};--tby-blk-brd:{{ blk_brd }};--tby-blk-r:{{ blk_r }}px;"
+            >
+              {%- if is_link -%}
+                <a
+                  class="tby__card"
+                  href="{{ lnk }}"
+                  {% if new_tab %}target="_blank" rel="noopener noreferrer"{% endif %}
+                  aria-label="{{ alt | escape }}"
+                >
+              {%- else -%}
+                <div class="tby__card">
+              {%- endif -%}
+
+                {%- if img != blank -%}
+                  <img
+                    src="{{ img | image_url: width: 280 }}"
+                    srcset="
+                      {{ img | image_url: width: 140 }} 140w,
+                      {{ img | image_url: width: 220 }} 220w,
+                      {{ img | image_url: width: 280 }} 280w
+                    "
+                    sizes="{{ logo_size }}px"
+                    alt="{{ alt | escape }}"
+                    width="{{ logo_size }}"
+                    height="{{ logo_size }}"
+                    loading="lazy"
+                    decoding="async"
+                  >
+                {%- else -%}
+                  <div class="tby__card-placeholder" aria-hidden="true">
+                    <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg>
+                  </div>
+                {%- endif -%}
+
+              {%- if is_link -%}
+                </a>
+              {%- else -%}
+                </div>
+              {%- endif -%}
+            </li>
+          {%- endif -%}
+        {%- endfor -%}
+
+      {%- else -%}
+        {%- comment -%} Fallback — 6 default logos {%- endcomment -%}
+        {%- assign fallback_logos = "hp_logo_1.png,hp_logo_2.png,hp_logo_3.png,hp_logo_4.png,hp_logo_5.webp,hp_logo_6.png,hp_logo_7.png,hp_logo_8.png" | split: "," -%}
+        {%- for logo in fallback_logos -%}
+          <li class="tby__item{% if enable_hover %} tby__item--hoverable{% endif %}">
+            <div class="tby__card">
+              <img
+                src="{{ logo | asset_url }}"
+                alt="Client {{ forloop.index }}"
+                width="{{ logo_size }}"
+                height="{{ logo_size }}"
+                loading="lazy"
+                decoding="async"
+              >
+            </div>
+          </li>
+        {%- endfor -%}
+      {%- endif -%}
+
+    </ul>
+  </div>
+</section>
+
+<style>
+/* ═══════════════════════════════════════════════════
+   Trusted By — tby — Motion19 OS 2.0
+   mobile  ≤640px   → 2 par ligne
+   tablet  641px+   → 4 par ligne
+   desktop 1024px+  → 8 par ligne
+   ═══════════════════════════════════════════════════ */
+
+.tby {
+  background:    var(--tby-bg, var(--color-bg));
+  color:         var(--tby-text, var(--color-bg-dark));
+  margin-top:    var(--tby-mt, 0);
+  margin-bottom: var(--tby-mb, 0);
+}
+
+/* ── Inner ── */
+.tby {
+  --tby-pad: 16px;
+}
+
+@media (min-width: 641px)  { .tby { --tby-pad: 24px; } }
+@media (min-width: 1024px) { .tby { --tby-pad: 32px; } }
+@media (min-width: 1281px) { .tby { --tby-pad: 40px; } }
+
+.tby__inner {
+  max-width: var(--tby-max-w, 1400px);
+  margin:    0 auto;
+  padding-top:    var(--tby-pt-m, 52px);
+  padding-bottom: var(--tby-pb-m, 52px);
+}
+
+@media (min-width: 641px) {
+  .tby__inner {
+    padding-top:    var(--tby-pt-d, 72px);
+    padding-bottom: var(--tby-pb-d, 64px);
+  }
+}
+
+/* ── Header ── */
+.tby__header {
+  display:        flex;
+  flex-direction: column;
+  gap:            8px;
+  padding:        0 var(--tby-pad) 36px;
+}
+
+.tby__header--center { align-items: center; text-align: center; }
+.tby__header--left   { align-items: flex-start; }
+.tby__header--right  { align-items: flex-end; text-align: right; }
+
+.tby__eyebrow {
+  font-family:    var(--font-body, sans-serif);
+  font-size:      0.65rem;
+  font-weight:    700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color:          var(--tby-eyebrow, var(--color-primary));
+  line-height:    1;
+}
+
+.tby__title {
+  font-family:    var(--font-body, sans-serif);
+  font-size:      clamp(1.2rem, 2.5vw, 1.8rem);
+  font-weight:    800;
+  letter-spacing: -0.03em;
+  line-height:    1.15;
+  color:          var(--tby-text, var(--color-bg-dark));
+  margin:         0;
+}
+
+.tby__desc {
+  font-family: var(--font-body, sans-serif);
+  font-size:   0.83rem;
+  color:       var(--tby-subtitle, #888);
+  margin:      0;
+  max-width:   56ch;
+  line-height: 1.6;
+}
+
+/* ── Grid ── */
+.tby__grid {
+  display:               grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap:                   var(--tby-gap, 16px);
+  margin:                0;
+  padding:               0 var(--tby-pad);
+  list-style:            none;
+}
+
+@media (min-width: 641px) {
+  .tby__grid { grid-template-columns: repeat(4, 1fr); }
+}
+
+@media (min-width: 1024px) {
+  .tby__grid { grid-template-columns: repeat(8, 1fr); }
+}
+
+/* ── Item ── */
+.tby__item {
+  display:         flex;
+  align-items:     center;
+  justify-content: center;
+  contain:         layout;
+}
+
+/* ── Card ── */
+.tby__card {
+  display:         flex;
+  align-items:     center;
+  justify-content: center;
+  width:           100%;
+  aspect-ratio:    1 / 1;
+  background:      var(--tby-blk-bg, var(--tby-card-bg, #f8f8f8));
+  border:          var(--tby-card-bdr, 0px) solid var(--tby-blk-brd, var(--tby-card-brd, var(--color-border)));
+  border-radius:   var(--tby-blk-r, var(--tby-radius, 8px));
+  padding:         14%;
+  box-sizing:      border-box;
+  overflow:        hidden;
+  text-decoration: none;
+  transition:
+    transform    200ms cubic-bezier(0.4, 0, 0.2, 1),
+    border-color 200ms cubic-bezier(0.4, 0, 0.2, 1),
+    background   200ms cubic-bezier(0.4, 0, 0.2, 1),
+    box-shadow   200ms cubic-bezier(0.4, 0, 0.2, 1);
+  will-change: transform;
+}
+
+.tby__card img {
+  width:             100%;
+  height:            100%;
+  object-fit:        contain;
+  display:           block;
+  user-select:       none;
+  -webkit-user-drag: none;
+}
+
+.tby__card-placeholder {
+  display:         flex;
+  align-items:     center;
+  justify-content: center;
+  color:           rgba(10, 10, 10, 0.2);
+}
+
+/* ── Card liée (cursor + hover) ── */
+.tby__item--linked .tby__card { cursor: pointer; }
+
+@media (hover: hover) {
+  .tby__item--hoverable .tby__card:hover {
+    transform:    translateY(-3px);
+    border-color: rgba(10, 10, 10, 0.16);
+    background:   #fff;
+    box-shadow:   0 8px 24px rgba(0, 0, 0, 0.09);
+  }
+
+  .tby__item--linked .tby__card:focus-visible {
+    outline:        2px solid var(--color-primary);
+    outline-offset: 3px;
+  }
+}
+
+/* ── Reduced motion ── */
+@media (prefers-reduced-motion: reduce) {
+  .tby__card { transition: none; will-change: auto; }
+}
+</style>
+
+{% schema %}
+{
+  "name": "Ils nous font confiance",
+  "tag": "section",
+  "class": "section-trusted-by",
+  "max_blocks": 24,
+  "settings": [
+    { "type": "header",   "content": "Section" },
+    { "type": "checkbox", "id": "enable_header",        "label": "Show header",         "default": true },
+    { "type": "checkbox", "id": "section_border_top",   "label": "Top border",          "default": true },
+    { "type": "checkbox", "id": "section_border_bottom","label": "Bottom border",        "default": false },
+
+    { "type": "header",   "content": "Header" },
+    { "type": "text",     "id": "eyebrow",     "label": "Eyebrow",     "default": "ILS NOUS FONT CONFIANCE" },
+    { "type": "text",     "id": "title",       "label": "Title",       "default": "Ils nous font confiance pour leur équipement audio et vidéo." },
+    { "type": "textarea", "id": "description", "label": "Description", "default": "Des entreprises, studios de production et marques leaders ont choisi Motion19 pour équiper leurs équipes avec le meilleur matériel professionnel." },
+    {
+      "type": "select", "id": "header_align", "label": "Header alignment", "default": "center",
+      "options": [
+        { "value": "left",   "label": "Left"   },
+        { "value": "center", "label": "Center" },
+        { "value": "right",  "label": "Right"  }
+      ]
+    },
+
+    { "type": "header",   "content": "Logos — Style" },
+    { "type": "range",    "id": "logo_size",          "label": "Logo size (px)",          "min": 64,  "max": 180, "step": 4,  "default": 112, "unit": "px" },
+    { "type": "range",    "id": "logo_radius",        "label": "Card border-radius (px)", "min": 0,   "max": 32,  "step": 1,  "default": 8,   "unit": "px" },
+    { "type": "range",    "id": "card_gap",           "label": "Gap between cards (px)",  "min": 4,   "max": 40,  "step": 2,  "default": 16,  "unit": "px" },
+    { "type": "color",    "id": "card_bg_color",      "label": "Card background",         "default": "#f8f8f8" },
+    { "type": "checkbox", "id": "show_card_border",   "label": "Show card border",        "default": true },
+    { "type": "color",    "id": "card_border_color",  "label": "Border color",            "default": "#e8e8e8" },
+    { "type": "checkbox", "id": "enable_hover",       "label": "Hover effect",            "default": true },
+
+    { "type": "header",   "content": "Colors" },
+    { "type": "color",    "id": "bg_color",       "label": "Section background", "default": "#ffffff" },
+    { "type": "color",    "id": "text_color",     "label": "Title color",        "default": "#0a0a0a" },
+    { "type": "color",    "id": "eyebrow_color",  "label": "Eyebrow color",      "default": "#0787ea" },
+    { "type": "color",    "id": "subtitle_color", "label": "Description color",  "default": "#888888" },
+
+    { "type": "header",   "content": "Spacing" },
+    { "type": "range", "id": "padding_top_mobile",     "label": "Padding top — mobile (px)",    "min": 0, "max": 120, "step": 4, "default": 52, "unit": "px" },
+    { "type": "range", "id": "padding_bottom_mobile",  "label": "Padding bottom — mobile (px)", "min": 0, "max": 120, "step": 4, "default": 52, "unit": "px" },
+    { "type": "range", "id": "padding_top_desktop",    "label": "Padding top — desktop (px)",   "min": 0, "max": 120, "step": 4, "default": 72, "unit": "px" },
+    { "type": "range", "id": "padding_bottom_desktop", "label": "Padding bottom — desktop (px)","min": 0, "max": 120, "step": 4, "default": 64, "unit": "px" },
+    { "type": "range", "id": "margin_top",              "label": "Margin top (px)",              "min": 0, "max": 120, "step": 4, "default": 0,  "unit": "px" },
+    { "type": "range", "id": "margin_bottom",           "label": "Margin bottom (px)",           "min": 0, "max": 120, "step": 4, "default": 0,  "unit": "px" },
+    { "type": "range", "id": "max_width",               "label": "Section max width (px)",       "min": 960,"max": 1920,"step": 40,"default": 1400 }
+  ],
+  "blocks": [
+    {
+      "type": "trust_logo",
+      "name": "Client logo",
+      "settings": [
+        { "type": "image_picker", "id": "logo_image",    "label": "Logo image" },
+        { "type": "text",         "id": "logo_alt",      "label": "Alt text (SEO + accessibility)", "default": "Client" },
+        { "type": "header",       "content": "Link" },
+        { "type": "url",          "id": "logo_link",     "label": "Link (collection, page, external URL…)" },
+        { "type": "paragraph",    "content": "Leave empty to disable link." },
+        { "type": "checkbox",     "id": "open_new_tab",  "label": "Open in new tab", "default": false },
+        { "type": "header",       "content": "Custom style" },
+        { "type": "color",        "id": "custom_bg",     "label": "Card background" },
+        { "type": "color",        "id": "custom_border", "label": "Border color" },
+        { "type": "range",        "id": "custom_radius", "label": "Border-radius (px)", "min": 0, "max": 32, "step": 1, "default": 8, "unit": "px" }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Ils nous font confiance",
+      "settings": {
+        "eyebrow":        "ILS NOUS FONT CONFIANCE",
+        "title":          "Ils nous font confiance pour leur équipement audio et vidéo.",
+        "description":    "Des entreprises, studios de production et marques leaders ont choisi Motion19 pour équiper leurs équipes avec le meilleur matériel professionnel.",
+        "enable_header":  true,
+        "show_card_border": true
+      },
+      "blocks": [
+        { "type": "trust_logo", "settings": { "logo_alt": "Client 1" } },
+        { "type": "trust_logo", "settings": { "logo_alt": "Client 2" } },
+        { "type": "trust_logo", "settings": { "logo_alt": "Client 3" } },
+        { "type": "trust_logo", "settings": { "logo_alt": "Client 4" } },
+        { "type": "trust_logo", "settings": { "logo_alt": "Client 5" } },
+        { "type": "trust_logo", "settings": { "logo_alt": "Client 6" } },
+        { "type": "trust_logo", "settings": { "logo_alt": "Client 7" } },
+        { "type": "trust_logo", "settings": { "logo_alt": "Client 8" } }
+      ]
+    }
+  ]
+}
+{% endschema %}

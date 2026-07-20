@@ -2,7 +2,7 @@
 
 {%- render 'section-settings', section: section, prefix: 'bj' -%}
 
-{%- assign blog_handle   = section.settings.blog | default: 'news' -%}
+{%- assign blog_handle   = section.settings.blog | default: 'motion19-academy' -%}
 {%- assign journal       = blogs[blog_handle] -%}
 {%- assign all_articles  = journal.articles -%}
 {%- assign featured_art  = all_articles[0] -%}
@@ -34,7 +34,7 @@
     </div>
     <a
       class="bj__view-all"
-      href="{{ journal.url | default: '/blogs/news' }}"
+      href="{{ journal.url | default: '/blogs/motion19-academy' }}"
       aria-label="{{ view_all_lbl }} — {{ section.settings.title | default: 'Journal' }}"
     >
       {{ view_all_lbl }}

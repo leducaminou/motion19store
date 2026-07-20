@@ -1,0 +1,269 @@
+{%- liquid
+  assign show_breadcrumb      = section.settings.show_breadcrumb
+  assign heading              = section.settings.heading
+
+  assign editor_title         = section.settings.editor_title
+  assign editor_body          = section.settings.editor_body
+  assign host_title           = section.settings.host_title
+  assign host_body            = section.settings.host_body
+  assign ip_title             = section.settings.ip_title
+  assign ip_body              = section.settings.ip_body
+
+  assign custom_section_show  = section.settings.custom_section_show
+  assign custom_title         = section.settings.custom_title
+  assign custom_body          = section.settings.custom_body
+
+  assign show_updated         = section.settings.show_updated
+  assign updated_date         = section.settings.updated_date
+
+  assign bg_color             = section.settings.bg_color
+  assign max_width            = section.settings.max_width
+  assign pt_d                 = section.settings.pt_d
+  assign pb_d                 = section.settings.pb_d
+  assign pt_m                 = section.settings.pt_m
+  assign pb_m                 = section.settings.pb_m
+-%}
+
+<div
+  class="pgl section-page-legal"
+  id="section-{{ section.id }}"
+  style="background: {{ bg_color }}; --pgl-bg: {{ bg_color }}; --pgl-max-w: {{ max_width }}px; --pgl-pt-d: {{ pt_d }}px; --pgl-pb-d: {{ pb_d }}px; --pgl-pt-m: {{ pt_m }}px; --pgl-pb-m: {{ pb_m }}px;"
+>
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebPage",
+    "name": {{ heading | json }},
+    "url": "{{ canonical_url }}"
+  }
+  </script>
+
+  <div class="pgl__inner">
+
+    {%- if show_breadcrumb -%}
+      <nav class="pg__breadcrumb pg__breadcrumb--light" aria-label="Fil d'Ariane">
+        <a href="{{ shop.url }}">Accueil</a>
+        <span aria-hidden="true">›</span>
+        <span aria-current="page">{{ heading }}</span>
+      </nav>
+    {%- endif -%}
+
+    <h1 class="pgl__title">{{ heading }}</h1>
+
+    <div class="pgl__sections">
+
+      <div class="pgl__section">
+        <h2 class="pgl__section-title">{{ editor_title }}</h2>
+        <div class="pgl__section-body">{{ editor_body }}</div>
+      </div>
+
+      <div class="pgl__section">
+        <h2 class="pgl__section-title">{{ host_title }}</h2>
+        <div class="pgl__section-body">{{ host_body }}</div>
+      </div>
+
+      <div class="pgl__section">
+        <h2 class="pgl__section-title">{{ ip_title }}</h2>
+        <div class="pgl__section-body">{{ ip_body }}</div>
+      </div>
+
+      {%- if custom_section_show -%}
+        <div class="pgl__section">
+          <h2 class="pgl__section-title">{{ custom_title }}</h2>
+          <div class="pgl__section-body">{{ custom_body }}</div>
+        </div>
+      {%- endif -%}
+
+    </div>
+
+    {%- if show_updated -%}
+      <p class="pgl__updated">Dernière mise à jour : {{ updated_date }}</p>
+    {%- endif -%}
+
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Page — Mentions légales",
+  "tag": "section",
+  "class": "section-page-legal",
+  "settings": [
+    {
+      "type": "header",
+      "content": "── Contenu"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_breadcrumb",
+      "label": "Afficher le fil d'Ariane",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Titre principal",
+      "default": "Mentions légales"
+    },
+    {
+      "type": "header",
+      "content": "── Éditeur du site"
+    },
+    {
+      "type": "text",
+      "id": "editor_title",
+      "label": "Titre",
+      "default": "Éditeur du site"
+    },
+    {
+      "type": "richtext",
+      "id": "editor_body",
+      "label": "Contenu",
+      "default": "<p><strong>Motion19</strong><br>Cameroun<br>Email : <a href=\"mailto:hello@motion19.com\">hello@motion19.com</a></p>"
+    },
+    {
+      "type": "header",
+      "content": "── Hébergement"
+    },
+    {
+      "type": "text",
+      "id": "host_title",
+      "label": "Titre",
+      "default": "Hébergement"
+    },
+    {
+      "type": "richtext",
+      "id": "host_body",
+      "label": "Contenu",
+      "default": "<p>Ce site est hébergé par Shopify Inc., 151 O'Connor Street, Ground floor, Ottawa, Ontario, K2P 2L8, Canada.</p>"
+    },
+    {
+      "type": "header",
+      "content": "── Propriété intellectuelle"
+    },
+    {
+      "type": "text",
+      "id": "ip_title",
+      "label": "Titre",
+      "default": "Propriété intellectuelle"
+    },
+    {
+      "type": "richtext",
+      "id": "ip_body",
+      "label": "Contenu",
+      "default": "<p>L'ensemble du contenu de ce site (textes, images, logos) est la propriété exclusive de Motion19 et est protégé par les lois applicables sur la propriété intellectuelle.</p>"
+    },
+    {
+      "type": "header",
+      "content": "── Section personnalisable"
+    },
+    {
+      "type": "checkbox",
+      "id": "custom_section_show",
+      "label": "Afficher la section supplémentaire",
+      "default": false
+    },
+    {
+      "type": "text",
+      "id": "custom_title",
+      "label": "Titre",
+      "default": "Section supplémentaire"
+    },
+    {
+      "type": "richtext",
+      "id": "custom_body",
+      "label": "Contenu"
+    },
+    {
+      "type": "header",
+      "content": "── Date & couleurs"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_updated",
+      "label": "Afficher la date de mise à jour",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "updated_date",
+      "label": "Date de mise à jour",
+      "default": "Juin 2025"
+    },
+    {
+      "type": "color",
+      "id": "bg_color",
+      "label": "Couleur de fond",
+      "default": "#ffffff"
+    },
+    {
+      "type": "range",
+      "id": "max_width",
+      "label": "Largeur max du contenu",
+      "min": 640,
+      "max": 960,
+      "step": 20,
+      "default": 760,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "pt_d",
+      "label": "Padding haut desktop",
+      "min": 0,
+      "max": 120,
+      "step": 8,
+      "default": 72,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "pb_d",
+      "label": "Padding bas desktop",
+      "min": 0,
+      "max": 120,
+      "step": 8,
+      "default": 80,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "pt_m",
+      "label": "Padding haut mobile",
+      "min": 0,
+      "max": 80,
+      "step": 8,
+      "default": 48,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "pb_m",
+      "label": "Padding bas mobile",
+      "min": 0,
+      "max": 80,
+      "step": 8,
+      "default": 64,
+      "unit": "px"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Page — Mentions légales",
+      "settings": {
+        "show_breadcrumb": true,
+        "heading": "Mentions légales",
+        "editor_title": "Éditeur du site",
+        "host_title": "Hébergement",
+        "ip_title": "Propriété intellectuelle",
+        "custom_section_show": false,
+        "show_updated": true,
+        "updated_date": "Juin 2025",
+        "bg_color": "#ffffff",
+        "max_width": 760
+      }
+    }
+  ]
+}
+{% endschema %}

@@ -23,9 +23,96 @@
   assign show_account = section.settings.show_account | default: false
   assign hw_maxw = section.settings.header_max_width | default: 1400
   assign hw_padx = section.settings.header_padding_x | default: 20
+
+  assign nav_size          = section.settings.nav_link_size          | default: 11
+  assign nav_weight        = section.settings.nav_link_weight        | default: '500'
+  assign nav_pt            = section.settings.nav_link_pt            | default: 8
+  assign nav_px            = section.settings.nav_link_px            | default: 5
+  assign nav_radius        = section.settings.nav_link_radius        | default: 6
+  assign nav_spacing       = section.settings.nav_link_letter_spacing | default: '0.06em'
+  assign nav_transform     = section.settings.nav_link_transform     | default: 'uppercase'
+  assign nav_min_height    = section.settings.nav_link_min_height    | default: 44
+  assign nav_gap           = section.settings.nav_link_gap           | default: 5
+  assign nav_color         = section.settings.nav_link_color         | default: 'var(--color-text)'
+  assign nav_hover_color   = section.settings.nav_link_hover_color   | default: 'var(--color-primary)'
+  assign nav_hover_bg      = section.settings.nav_link_hover_bg      | default: 'rgba(7,135,234,0.055)'
+  assign nav_underline_h   = section.settings.nav_underline_height   | default: '1.5'
+  assign nav_underline_col = section.settings.nav_underline_color    | default: 'var(--color-primary)'
+  assign nav_underline_bot = section.settings.nav_underline_bottom   | default: 2
+  assign nav_menu_gap      = section.settings.nav_menu_gap           | default: 4
+
+  assign nav_family        = section.settings.nav_link_family        | default: 'inherit'
+  assign nav_line_height   = section.settings.nav_link_line_height   | default: '1.2'
+  assign nav_active_color  = section.settings.nav_link_active_color  | default: 'var(--color-primary)'
+  assign nav_active_bg     = section.settings.nav_link_active_bg     | default: 'transparent'
+  assign nav_margin_y      = section.settings.nav_link_margin_y      | default: 0
+  assign nav_margin_x      = section.settings.nav_link_margin_x      | default: 0
+
+  assign nav_dd_link_size     = section.settings.nav_dd_link_size           | default: 13
+  assign nav_dd_link_weight   = section.settings.nav_dd_link_weight         | default: '500'
+  assign nav_dd_link_color    = section.settings.nav_dd_link_color          | default: '#333333'
+  assign nav_dd_link_hcolor   = section.settings.nav_dd_link_hover_color    | default: 'var(--color-primary)'
+  assign nav_dd_link_hbg      = section.settings.nav_dd_link_hover_bg       | default: 'rgba(7,135,234,0.05)'
+  assign nav_dd_link_pt       = section.settings.nav_dd_link_pt             | default: 10
+  assign nav_dd_link_px       = section.settings.nav_dd_link_px             | default: 12
+  assign nav_dd_link_radius   = section.settings.nav_dd_link_radius         | default: 6
+  assign nav_dd_link_transform = section.settings.nav_dd_link_transform     | default: 'none'
+  assign nav_dd_link_spacing  = section.settings.nav_dd_link_letter_spacing | default: '0'
+  assign nav_dd_link_gap      = section.settings.nav_dd_link_gap            | default: 1
+
+  assign nav_dd_head_size     = section.settings.nav_dd_heading_size        | default: 10
+  assign nav_dd_head_weight   = section.settings.nav_dd_heading_weight      | default: '700'
+  assign nav_dd_head_color    = section.settings.nav_dd_heading_color       | default: '#999999'
+  assign nav_dd_head_spacing  = section.settings.nav_dd_heading_spacing     | default: '0.12em'
+  assign nav_dd_head_transform = section.settings.nav_dd_heading_transform  | default: 'uppercase'
+  assign nav_dd_head_mb       = section.settings.nav_dd_heading_mb          | default: 16
 -%}
 
 <style>
+    #shopify-section-{{ section.id }} {
+      --nav-link-size:           {{ nav_size }}px;
+      --nav-link-weight:         {{ nav_weight }};
+      --nav-link-pt:             {{ nav_pt }}px;
+      --nav-link-px:             {{ nav_px }}px;
+      --nav-link-radius:         {{ nav_radius }}px;
+      --nav-link-spacing:        {{ nav_spacing }};
+      --nav-link-transform:      {{ nav_transform }};
+      --nav-link-min-height:     {{ nav_min_height }}px;
+      --nav-link-gap:            {{ nav_gap }}px;
+      --nav-link-color:          {{ nav_color }};
+      --nav-link-hover-color:    {{ nav_hover_color }};
+      --nav-link-hover-bg:       {{ nav_hover_bg }};
+      --nav-underline-height:    {{ nav_underline_h }}px;
+      --nav-underline-color:     {{ nav_underline_col }};
+      --nav-underline-bottom:    {{ nav_underline_bot }}px;
+      --nav-menu-gap:            {{ nav_menu_gap }}px;
+
+      --nav-link-family:         {{ nav_family }};
+      --nav-link-line-height:    {{ nav_line_height }};
+      --nav-link-active-color:   {{ nav_active_color }};
+      --nav-link-active-bg:      {{ nav_active_bg }};
+      --nav-link-margin-y:       {{ nav_margin_y }}px;
+      --nav-link-margin-x:       {{ nav_margin_x }}px;
+
+      --nav-dd-link-size:        {{ nav_dd_link_size }}px;
+      --nav-dd-link-weight:      {{ nav_dd_link_weight }};
+      --nav-dd-link-color:       {{ nav_dd_link_color }};
+      --nav-dd-link-hover-color: {{ nav_dd_link_hcolor }};
+      --nav-dd-link-hover-bg:    {{ nav_dd_link_hbg }};
+      --nav-dd-link-pt:          {{ nav_dd_link_pt }}px;
+      --nav-dd-link-px:          {{ nav_dd_link_px }}px;
+      --nav-dd-link-radius:      {{ nav_dd_link_radius }}px;
+      --nav-dd-link-transform:   {{ nav_dd_link_transform }};
+      --nav-dd-link-spacing:     {{ nav_dd_link_spacing }};
+      --nav-dd-link-gap:         {{ nav_dd_link_gap }}px;
+
+      --nav-dd-head-size:        {{ nav_dd_head_size }}px;
+      --nav-dd-head-weight:      {{ nav_dd_head_weight }};
+      --nav-dd-head-color:       {{ nav_dd_head_color }};
+      --nav-dd-head-spacing:     {{ nav_dd_head_spacing }};
+      --nav-dd-head-transform:   {{ nav_dd_head_transform }};
+      --nav-dd-head-mb:          {{ nav_dd_head_mb }}px;
+    }
     .header-wrapper {
       position: relative;
       z-index: 1000;
@@ -99,29 +186,31 @@
     /* Left column */
     .nav-dd-links__heading {
       font-family: var(--font-body, 'Inter', sans-serif);
-      font-size: 10px;
-      font-weight: 700;
-      letter-spacing: 0.12em;
-      text-transform: uppercase;
-      color: #999;
-      margin: 0 0 16px;
+      font-size: var(--nav-dd-head-size, 10px);
+      font-weight: var(--nav-dd-head-weight, 700);
+      letter-spacing: var(--nav-dd-head-spacing, 0.12em);
+      text-transform: var(--nav-dd-head-transform, uppercase);
+      color: var(--nav-dd-head-color, #999);
+      margin: 0 0 var(--nav-dd-head-mb, 16px);
     }
     .nav-dd-links { list-style: none; margin: 0; padding: 0; }
-    .nav-dd-links li + li { margin-top: 1px; }
+    .nav-dd-links li + li { margin-top: var(--nav-dd-link-gap, 1px); }
     .nav-dd-links__link {
       display: flex;
       align-items: center;
       gap: 10px;
-      padding: 10px 12px;
+      padding: var(--nav-dd-link-pt, 10px) var(--nav-dd-link-px, 12px);
       text-decoration: none;
-      color: #333;
+      color: var(--nav-dd-link-color, #333);
       font-family: var(--font-body, 'Inter', sans-serif);
-      font-size: 13.5px;
-      font-weight: 500;
-      border-radius: 0.375rem;
+      font-size: var(--nav-dd-link-size, 13.5px);
+      font-weight: var(--nav-dd-link-weight, 500);
+      border-radius: var(--nav-dd-link-radius, 6px);
+      text-transform: var(--nav-dd-link-transform, none);
+      letter-spacing: var(--nav-dd-link-spacing, 0);
       transition: color 0.18s, background 0.18s, padding-left 0.18s;
     }
-    .nav-dd-links__link:hover { color: var(--color-primary); background: rgba(7,135,234,0.05); padding-left: 18px; }
+    .nav-dd-links__link:hover { color: var(--nav-dd-link-hover-color, var(--color-primary)); background: var(--nav-dd-link-hover-bg, rgba(7,135,234,0.05)); padding-left: 18px; }
     .nav-dd-links__link svg { width: 14px; height: 14px; flex-shrink: 0; opacity: 0.35; transition: opacity 0.18s; }
     .nav-dd-links__link:hover svg { opacity: 0.7; }
 
@@ -1433,7 +1522,160 @@
     { "type": "color", "id": "uc_dot_active",   "label": "Dot actif (promo + catégories)",  "default": "#0787ea" },
     { "type": "color", "id": "uc_dot_inactive", "label": "Dot inactif",                     "default": "rgba(10,10,10,0.15)" },
     { "type": "color", "id": "uc_arrow_bg",     "label": "Fond flèche carousel",            "default": "#ffffff" },
-    { "type": "color", "id": "uc_arrow_color",  "label": "Couleur flèche carousel",         "default": "#0a0a0a" }
+    { "type": "color", "id": "uc_arrow_color",  "label": "Couleur flèche carousel",         "default": "#0a0a0a" },
+
+    { "type": "header", "content": "━━ Navigation — Texte & Taille" },
+    { "type": "range",  "id": "nav_link_size",   "label": "Taille du texte (px)",     "min": 9, "max": 18, "step": 1, "default": 11, "unit": "px" },
+    {
+      "type": "select", "id": "nav_link_weight", "label": "Graisse du texte", "default": "500",
+      "options": [
+        { "value": "400", "label": "Regular 400" },
+        { "value": "500", "label": "Medium 500" },
+        { "value": "600", "label": "SemiBold 600" },
+        { "value": "700", "label": "Bold 700" },
+        { "value": "800", "label": "ExtraBold 800" }
+      ]
+    },
+    {
+      "type": "select", "id": "nav_link_transform", "label": "Casse du texte", "default": "uppercase",
+      "options": [
+        { "value": "uppercase",  "label": "MAJUSCULES" },
+        { "value": "capitalize", "label": "Première lettre" },
+        { "value": "lowercase",  "label": "minuscules" },
+        { "value": "none",       "label": "Normal" }
+      ]
+    },
+    {
+      "type": "select", "id": "nav_link_letter_spacing", "label": "Espacement lettres", "default": "0.06em",
+      "options": [
+        { "value": "0",      "label": "Aucun" },
+        { "value": "0.03em", "label": "Léger 0.03em" },
+        { "value": "0.06em", "label": "Moyen 0.06em" },
+        { "value": "0.10em", "label": "Large 0.10em" },
+        { "value": "0.14em", "label": "Très large 0.14em" }
+      ]
+    },
+    {
+      "type": "select", "id": "nav_link_line_height", "label": "Hauteur de ligne", "default": "1.2",
+      "options": [
+        { "value": "1",    "label": "Compacte 1" },
+        { "value": "1.2",  "label": "Normale 1.2" },
+        { "value": "1.4",  "label": "Confortable 1.4" },
+        { "value": "1.6",  "label": "Spacieuse 1.6" }
+      ]
+    },
+    {
+      "type": "select", "id": "nav_link_family", "label": "Police du menu", "default": "inherit",
+      "options": [
+        { "value": "inherit",           "label": "Hériter (thème)" },
+        { "value": "Inter, sans-serif", "label": "Inter" },
+        { "value": "Outfit, sans-serif","label": "Outfit" },
+        { "value": "DM Sans, sans-serif","label": "DM Sans" },
+        { "value": "Manrope, sans-serif","label": "Manrope" },
+        { "value": "Syne, sans-serif",  "label": "Syne" }
+      ]
+    },
+
+    { "type": "header", "content": "━━ Navigation — Espacement" },
+    { "type": "range", "id": "nav_link_pt",         "label": "Padding vertical (px)",    "min": 0,  "max": 24, "step": 1, "default": 8,  "unit": "px" },
+    { "type": "range", "id": "nav_link_px",         "label": "Padding horizontal (px)",  "min": 0,  "max": 32, "step": 1, "default": 5,  "unit": "px" },
+    { "type": "range", "id": "nav_link_margin_y",   "label": "Margin vertical (px)",     "min": 0,  "max": 16, "step": 1, "default": 0,  "unit": "px" },
+    { "type": "range", "id": "nav_link_margin_x",   "label": "Margin horizontal (px)",   "min": 0,  "max": 16, "step": 1, "default": 0,  "unit": "px" },
+    { "type": "range", "id": "nav_link_radius",     "label": "Rayon bordure (px)",       "min": 0,  "max": 20, "step": 1, "default": 6,  "unit": "px" },
+    { "type": "range", "id": "nav_link_min_height", "label": "Hauteur min touch (px)",   "min": 32, "max": 56, "step": 2, "default": 44, "unit": "px" },
+    { "type": "range", "id": "nav_link_gap",        "label": "Espace icône / texte (px)","min": 2,  "max": 12, "step": 1, "default": 5,  "unit": "px" },
+    { "type": "range", "id": "nav_menu_gap",        "label": "Espace entre liens (px)",  "min": 0,  "max": 24, "step": 1, "default": 4,  "unit": "px" },
+
+    { "type": "header", "content": "━━ Navigation — Couleurs" },
+    { "type": "color", "id": "nav_link_color",        "label": "Couleur texte",           "default": "#1a1a1a" },
+    { "type": "color", "id": "nav_link_hover_color",  "label": "Couleur texte — hover",   "default": "#0787ea" },
+    { "type": "color", "id": "nav_link_hover_bg",     "label": "Fond — hover",            "default": "#e8f3fc" },
+    { "type": "color", "id": "nav_link_active_color", "label": "Couleur texte — actif",   "default": "#0787ea" },
+    { "type": "color", "id": "nav_link_active_bg",    "label": "Fond — actif",            "default": "#e8f3fc" },
+
+    { "type": "header", "content": "━━ Navigation — Soulignement" },
+    {
+      "type": "select", "id": "nav_underline_height", "label": "Épaisseur soulignement", "default": "1.5",
+      "options": [
+        { "value": "0",   "label": "Aucun" },
+        { "value": "1",   "label": "Fin 1px" },
+        { "value": "1.5", "label": "Normal 1.5px" },
+        { "value": "2",   "label": "Épais 2px" },
+        { "value": "3",   "label": "Très épais 3px" }
+      ]
+    },
+    { "type": "color", "id": "nav_underline_color",  "label": "Couleur soulignement",    "default": "#0787ea" },
+    { "type": "range", "id": "nav_underline_bottom", "label": "Distance du bas (px)",    "min": 0, "max": 12, "step": 1, "default": 2, "unit": "px" },
+
+    { "type": "header", "content": "━━ Menu secondaire (dropdown) — Heading" },
+    { "type": "range",  "id": "nav_dd_heading_size",    "label": "Taille du titre (px)",      "min": 8,  "max": 16, "step": 1, "default": 10, "unit": "px" },
+    {
+      "type": "select", "id": "nav_dd_heading_weight",  "label": "Graisse du titre", "default": "700",
+      "options": [
+        { "value": "400", "label": "Regular 400" },
+        { "value": "500", "label": "Medium 500" },
+        { "value": "600", "label": "SemiBold 600" },
+        { "value": "700", "label": "Bold 700" },
+        { "value": "800", "label": "ExtraBold 800" }
+      ]
+    },
+    {
+      "type": "select", "id": "nav_dd_heading_transform", "label": "Casse du titre", "default": "uppercase",
+      "options": [
+        { "value": "uppercase",  "label": "MAJUSCULES" },
+        { "value": "capitalize", "label": "Première lettre" },
+        { "value": "lowercase",  "label": "minuscules" },
+        { "value": "none",       "label": "Normal" }
+      ]
+    },
+    {
+      "type": "select", "id": "nav_dd_heading_spacing", "label": "Espacement lettres titre", "default": "0.12em",
+      "options": [
+        { "value": "0",      "label": "Aucun" },
+        { "value": "0.06em", "label": "Léger 0.06em" },
+        { "value": "0.12em", "label": "Moyen 0.12em" },
+        { "value": "0.18em", "label": "Large 0.18em" }
+      ]
+    },
+    { "type": "color",  "id": "nav_dd_heading_color",   "label": "Couleur du titre",          "default": "#999999" },
+    { "type": "range",  "id": "nav_dd_heading_mb",       "label": "Marge bas titre (px)",      "min": 4,  "max": 32, "step": 2, "default": 16, "unit": "px" },
+
+    { "type": "header", "content": "━━ Menu secondaire (dropdown) — Liens" },
+    { "type": "range",  "id": "nav_dd_link_size",   "label": "Taille du texte (px)",     "min": 10, "max": 18, "step": 1, "default": 13, "unit": "px" },
+    {
+      "type": "select", "id": "nav_dd_link_weight", "label": "Graisse du texte", "default": "500",
+      "options": [
+        { "value": "400", "label": "Regular 400" },
+        { "value": "500", "label": "Medium 500" },
+        { "value": "600", "label": "SemiBold 600" },
+        { "value": "700", "label": "Bold 700" }
+      ]
+    },
+    {
+      "type": "select", "id": "nav_dd_link_transform", "label": "Casse du texte", "default": "none",
+      "options": [
+        { "value": "uppercase",  "label": "MAJUSCULES" },
+        { "value": "capitalize", "label": "Première lettre" },
+        { "value": "lowercase",  "label": "minuscules" },
+        { "value": "none",       "label": "Normal" }
+      ]
+    },
+    {
+      "type": "select", "id": "nav_dd_link_letter_spacing", "label": "Espacement lettres", "default": "0",
+      "options": [
+        { "value": "0",      "label": "Aucun" },
+        { "value": "0.03em", "label": "Léger 0.03em" },
+        { "value": "0.06em", "label": "Moyen 0.06em" },
+        { "value": "0.10em", "label": "Large 0.10em" }
+      ]
+    },
+    { "type": "range", "id": "nav_dd_link_pt",     "label": "Padding vertical (px)",    "min": 4,  "max": 20, "step": 1, "default": 10, "unit": "px" },
+    { "type": "range", "id": "nav_dd_link_px",     "label": "Padding horizontal (px)",  "min": 4,  "max": 32, "step": 1, "default": 12, "unit": "px" },
+    { "type": "range", "id": "nav_dd_link_radius", "label": "Rayon bordure (px)",       "min": 0,  "max": 16, "step": 1, "default": 6,  "unit": "px" },
+    { "type": "range", "id": "nav_dd_link_gap",    "label": "Espace entre liens (px)",  "min": 0,  "max": 8,  "step": 1, "default": 1,  "unit": "px" },
+    { "type": "color", "id": "nav_dd_link_color",        "label": "Couleur texte",          "default": "#333333" },
+    { "type": "color", "id": "nav_dd_link_hover_color",  "label": "Couleur texte — hover",  "default": "#0787ea" },
+    { "type": "color", "id": "nav_dd_link_hover_bg",     "label": "Fond — hover",           "default": "#e8f3fc" }
   ],
   "blocks": [
     {

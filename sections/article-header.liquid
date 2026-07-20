@@ -1,0 +1,258 @@
+{%- comment -%}
+  Article Header — Motion19 — OS 2.0
+  Préfixe .arh | En-tête page article : breadcrumb / H1 / auteur+date / excerpt / image
+  Dépend de : assets/blog.css · assets/blog.js (data-reading-time)
+{%- endcomment -%}
+
+{%- liquid
+  assign sid = section.id
+
+  assign text_align       = section.settings.text_align         | default: 'left'
+  assign max_width        = section.settings.max_width          | default: 800
+  assign show_breadcrumb  = section.settings.show_breadcrumb    | default: true
+  assign show_excerpt     = section.settings.show_excerpt       | default: true
+  assign show_reading     = section.settings.show_reading_time  | default: true
+  assign hero_style       = section.settings.hero_image_style   | default: 'contained'
+  assign hero_h           = section.settings.hero_image_height  | default: 480
+  assign obj_fit          = section.settings.image_object_fit   | default: 'cover'
+
+  assign pt_d = section.settings.padding_top_d    | default: 60
+  assign pb_d = section.settings.padding_bottom_d | default: 0
+  assign pt_m = section.settings.padding_top_m    | default: 40
+  assign pb_m = section.settings.padding_bottom_m | default: 0
+
+  assign h_sz_d  = section.settings.heading_sz_d  | default: 52
+  assign h_sz_m  = section.settings.heading_sz_m  | default: 34
+  assign h_fw    = section.settings.heading_fw     | default: '700'
+  assign h_lh    = section.settings.heading_lh     | default: '1.1'
+  assign h_ls    = section.settings.heading_ls     | default: '-0.02'
+  assign h_col   = section.settings.heading_color  | default: 'var(--color-bg-dark)'
+
+  assign meta_col  = section.settings.meta_color    | default: '#888888'
+  assign meta_sz   = section.settings.meta_size     | default: 12
+
+  assign exc_col = section.settings.excerpt_color  | default: '#555555'
+  assign exc_sz  = section.settings.excerpt_size   | default: 16
+  assign exc_lh  = section.settings.excerpt_lh     | default: '1.65'
+
+  assign bg_col  = section.settings.bg_color       | default: 'var(--color-bg)'
+-%}
+
+{%- comment -%} ── SEO / Open Graph / Schema.org ── {%- endcomment -%}
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Article",
+  "headline": {{ article.title | json }},
+  "datePublished": "{{ article.published_at | date: '%Y-%m-%dT%H:%M:%S' }}",
+  "dateModified": "{{ article.updated_at | date: '%Y-%m-%dT%H:%M:%S' }}",
+  "author": {
+    "@type": "Person",
+    "name": {{ article.author | json }}
+  }{%- if article.image != blank -%},
+  "image": "{{ article.image | image_url: width: 1200 }}"
+  {%- endif -%}
+}
+</script>
+
+<header
+  class="arh arh--align-{{ text_align }}"
+  style="
+    --arh-max-w:    {{ max_width }}px;
+    --arh-h-sz-d:   {{ h_sz_d }}px;
+    --arh-h-sz-m:   {{ h_sz_m }}px;
+    --arh-h-fw:     {{ h_fw }};
+    --arh-h-lh:     {{ h_lh }};
+    --arh-h-ls:     {{ h_ls }}em;
+    --arh-h-col:    {{ h_col }};
+    --arh-meta-sz:  {{ meta_sz }}px;
+    --arh-meta-col: {{ meta_col }};
+    --arh-exc-sz:   {{ exc_sz }}px;
+    --arh-exc-lh:   {{ exc_lh }};
+    --arh-exc-col:  {{ exc_col }};
+    --arh-pt-d:     {{ pt_d }}px;
+    --arh-pb-d:     {{ pb_d }}px;
+    --arh-pt-m:     {{ pt_m }}px;
+    --arh-pb-m:     {{ pb_m }}px;
+    background:     {{ bg_col }};
+  "
+>
+  <div class="arh__inner">
+
+    {%- comment -%} ── Breadcrumb ── {%- endcomment -%}
+    {%- if show_breadcrumb -%}
+      <nav class="arh__breadcrumb" aria-label="Fil d'Ariane">
+        <a href="{{ shop.url }}">Accueil</a>
+        <span aria-hidden="true">›</span>
+        <a href="{{ blog.url }}">{{ blog.title }}</a>
+        <span aria-hidden="true">›</span>
+        <span aria-current="page">{{ article.title | truncate: 40 }}</span>
+      </nav>
+    {%- endif -%}
+
+    {%- comment -%} ── Titre H1 ── {%- endcomment -%}
+    <h1 class="arh__heading">{{ article.title }}</h1>
+
+    {%- comment -%} ── Auteur + Date + Temps de lecture (même ligne) ── {%- endcomment -%}
+    <div class="arh__meta">
+      <span class="arh__author">{{ article.author }}</span>
+      <span class="arh__meta-sep" aria-hidden="true">·</span>
+      <time class="arh__date" datetime="{{ article.published_at | date: '%Y-%m-%d' }}">
+        {{- article.published_at | date: '%d %B %Y' -}}
+      </time>
+      {%- if show_reading -%}
+        <span class="arh__meta-sep" aria-hidden="true">·</span>
+        <span class="arh__reading-time" data-reading-time aria-label="Temps de lecture estimé"></span>
+      {%- endif -%}
+    </div>
+
+    {%- comment -%} ── Excerpt ── {%- endcomment -%}
+    {%- if show_excerpt and article.excerpt != blank -%}
+      <p class="arh__excerpt">{{ article.excerpt | strip_html }}</p>
+    {%- endif -%}
+
+  </div>
+
+  {%- comment -%} ── Image principale ── {%- endcomment -%}
+  {%- unless hero_style == 'none' or article.image == blank -%}
+    <div
+      class="arh__image-wrap arh__image-wrap--{{ hero_style }}"
+      style="--arh-img-h: {{ hero_h }}px;"
+    >
+      <img
+        class="arh__image"
+        src="{{ article.image | image_url: width: 1400 }}"
+        srcset="
+          {{ article.image | image_url: width: 800 }}  800w,
+          {{ article.image | image_url: width: 1400 }} 1400w,
+          {{ article.image | image_url: width: 2000 }} 2000w
+        "
+        sizes="100vw"
+        alt="{{ article.image.alt | default: article.title | escape }}"
+        width="{{ article.image.width }}"
+        height="{{ article.image.height }}"
+        loading="eager"
+        fetchpriority="high"
+        style="object-fit: {{ obj_fit }};"
+      >
+    </div>
+  {%- endunless -%}
+
+</header>
+
+{% schema %}
+{
+  "name": "Article — En-tête",
+  "tag": "section",
+  "class": "section-article-header",
+  "settings": [
+    { "type": "header", "content": "── Image principale" },
+    {
+      "type": "select", "id": "hero_image_style", "label": "Affichage image", "default": "contained",
+      "options": [
+        { "value": "contained",  "label": "Contenue (centrée, max-width)" },
+        { "value": "full-width", "label": "Pleine largeur" },
+        { "value": "none",       "label": "Masquée" }
+      ]
+    },
+    { "type": "range",  "id": "hero_image_height", "label": "Hauteur image (px)", "min": 300, "max": 700, "step": 20, "default": 480, "unit": "px" },
+    {
+      "type": "select", "id": "image_object_fit", "label": "Recadrage image", "default": "cover",
+      "options": [
+        { "value": "cover",   "label": "Cover (rempli)" },
+        { "value": "contain", "label": "Contain (entier)" }
+      ]
+    },
+
+    { "type": "header", "content": "── Contenu" },
+    { "type": "checkbox", "id": "show_breadcrumb",   "label": "Fil d'Ariane",           "default": true },
+    { "type": "checkbox", "id": "show_excerpt",      "label": "Afficher l'extrait",      "default": true },
+    { "type": "checkbox", "id": "show_reading_time", "label": "Temps de lecture estimé", "default": true },
+
+    { "type": "header", "content": "── Mise en page" },
+    { "type": "range",  "id": "max_width", "label": "Largeur max contenu (px)", "min": 640, "max": 1000, "step": 20, "default": 800, "unit": "px" },
+    {
+      "type": "select", "id": "text_align", "label": "Alignement texte", "default": "left",
+      "options": [
+        { "value": "left",   "label": "Gauche" },
+        { "value": "center", "label": "Centre" }
+      ]
+    },
+
+    { "type": "header", "content": "── Espacement" },
+    { "type": "range", "id": "padding_top_d",    "label": "Padding haut desktop (px)", "min": 0, "max": 120, "step": 4, "default": 60, "unit": "px" },
+    { "type": "range", "id": "padding_bottom_d", "label": "Padding bas desktop (px)",  "min": 0, "max": 80,  "step": 4, "default": 0,  "unit": "px" },
+    { "type": "range", "id": "padding_top_m",    "label": "Padding haut mobile (px)",  "min": 0, "max": 80,  "step": 4, "default": 40, "unit": "px" },
+    { "type": "range", "id": "padding_bottom_m", "label": "Padding bas mobile (px)",   "min": 0, "max": 60,  "step": 4, "default": 0,  "unit": "px" },
+
+    { "type": "header", "content": "── Typographie — Titre H1" },
+    { "type": "range",  "id": "heading_sz_d", "label": "Taille desktop (px)", "min": 28, "max": 80, "step": 2, "default": 52, "unit": "px" },
+    { "type": "range",  "id": "heading_sz_m", "label": "Taille mobile (px)",  "min": 22, "max": 52, "step": 2, "default": 34, "unit": "px" },
+    {
+      "type": "select", "id": "heading_fw", "label": "Graisse", "default": "700",
+      "options": [
+        { "value": "400", "label": "Regular 400" },
+        { "value": "500", "label": "Medium 500" },
+        { "value": "600", "label": "SemiBold 600" },
+        { "value": "700", "label": "Bold 700" },
+        { "value": "800", "label": "ExtraBold 800" }
+      ]
+    },
+    {
+      "type": "select", "id": "heading_lh", "label": "Interligne", "default": "1.1",
+      "options": [
+        { "value": "0.95", "label": "Très serré 0.95" },
+        { "value": "1.0",  "label": "Serré 1.0" },
+        { "value": "1.1",  "label": "Normal 1.1" },
+        { "value": "1.2",  "label": "Aéré 1.2" }
+      ]
+    },
+    {
+      "type": "select", "id": "heading_ls", "label": "Letter-spacing", "default": "-0.02",
+      "options": [
+        { "value": "-0.03", "label": "-0.03em" },
+        { "value": "-0.02", "label": "-0.02em" },
+        { "value": "-0.01", "label": "-0.01em" },
+        { "value": "0",     "label": "0" }
+      ]
+    },
+    { "type": "color", "id": "heading_color", "label": "Couleur titre", "default": "#0a0a0a" },
+
+    { "type": "header", "content": "── Typographie — Auteur / Date" },
+    { "type": "color", "id": "meta_color", "label": "Couleur",    "default": "#888888" },
+    { "type": "range", "id": "meta_size",  "label": "Taille (px)","min": 10, "max": 14, "step": 1, "default": 12, "unit": "px" },
+
+    { "type": "header", "content": "── Typographie — Extrait" },
+    { "type": "color", "id": "excerpt_color", "label": "Couleur",      "default": "#555555" },
+    { "type": "range", "id": "excerpt_size",  "label": "Taille (px)",  "min": 14, "max": 20, "step": 1, "default": 16, "unit": "px" },
+    {
+      "type": "select", "id": "excerpt_lh", "label": "Interligne", "default": "1.65",
+      "options": [
+        { "value": "1.4",  "label": "Serré 1.4" },
+        { "value": "1.55", "label": "Normal 1.55" },
+        { "value": "1.65", "label": "Confortable 1.65" },
+        { "value": "1.75", "label": "Aéré 1.75" }
+      ]
+    },
+
+    { "type": "header", "content": "── Couleurs" },
+    { "type": "color", "id": "bg_color", "label": "Fond section", "default": "#ffffff" }
+  ],
+  "presets": [
+    {
+      "name": "Article — En-tête",
+      "settings": {
+        "hero_image_style": "contained",
+        "hero_image_height": 480,
+        "show_breadcrumb": true,
+        "show_excerpt": true,
+        "show_reading_time": true,
+        "max_width": 800,
+        "text_align": "left",
+        "heading_sz_d": 52,
+        "heading_sz_m": 34
+      }
+    }
+  ]
+}
+{% endschema %}

@@ -1,15 +1,12 @@
 /**
  * bundle.js — Motion19 Store
  * Swiper : chargé en lazy (script tag injecté) dès qu'un .swiper
- * entre dans le viewport. Embla bundlé directement (utilisé moins
- * souvent et déjà tree-shaken par Vite).
+ * entre dans le viewport. Embla bundlé directement (utilisé dans header).
  */
 
-import EmblaCarousel   from 'embla-carousel';
-import EmblaAutoScroll from 'embla-carousel-auto-scroll';
+import EmblaCarousel from 'embla-carousel';
 
-window.EmblaCarousel   = EmblaCarousel;
-window.EmblaAutoScroll = EmblaAutoScroll;
+window.EmblaCarousel = EmblaCarousel;
 
 /* ── Swiper — injecté en lazy via <script> ── */
 (function () {

@@ -26,7 +26,11 @@
   assign show_qty         = s.show_qty              | default: true
   assign show_total       = s.show_total            | default: true
   assign show_description = s.show_description      | default: true
-  assign show_badges      = s.show_badges           | default: true
+  assign show_badges        = s.show_badges           | default: true
+  assign badge1_title       = s.badge1_title          | default: 'Livraison Express'
+  assign badge1_subtitle    = s.badge1_subtitle        | default: 'Gratuite dès 99$'
+  assign badge2_title       = s.badge2_title          | default: 'Garantie Totale'
+  assign badge2_subtitle    = s.badge2_subtitle        | default: 'Protection incluse'
   assign show_sticky_atc  = s.show_sticky_atc       | default: true
   assign show_whatsapp    = s.show_whatsapp         | default: true
   assign show_conseil     = s.show_conseil          | default: true
@@ -295,6 +299,7 @@
                 onclick="pdpSetImage(this,'{{ image | image_url: width: 1200 }}','{{ image.alt | default: product.title | escape }}',{{ forloop.index0 }})"
                 onkeydown="if(event.key==='Enter'||event.key===' ')pdpSetImage(this,'{{ image | image_url: width: 1200 }}','{{ image.alt | default: product.title | escape }}',{{ forloop.index0 }})"
                 data-index="{{ forloop.index0 }}"
+                data-srcset="{{ image | image_url: width: 640 }} 640w, {{ image | image_url: width: 960 }} 960w, {{ image | image_url: width: 1200 }} 1200w"
                 aria-label="Image {{ forloop.index }}"
                 aria-pressed="{% if forloop.first %}true{% else %}false{% endif %}"
               >
@@ -549,15 +554,15 @@
                 <div class="pdp__badge-icon" aria-hidden="true">
                   <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
                 </div>
-                <p class="pdp__badge-title">Livraison Express</p>
-                <p class="pdp__badge-subtitle">Gratuite dès 99$</p>
+                <p class="pdp__badge-title">{{ badge1_title }}</p>
+                {%- if badge1_subtitle != blank -%}<p class="pdp__badge-subtitle">{{ badge1_subtitle }}</p>{%- endif -%}
               </div>
               <div class="pdp__badge">
                 <div class="pdp__badge-icon" aria-hidden="true">
                   <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
                 </div>
-                <p class="pdp__badge-title">Garantie Totale</p>
-                <p class="pdp__badge-subtitle">Protection incluse</p>
+                <p class="pdp__badge-title">{{ badge2_title }}</p>
+                {%- if badge2_subtitle != blank -%}<p class="pdp__badge-subtitle">{{ badge2_subtitle }}</p>{%- endif -%}
               </div>
             {%- endif -%}
           </div>
@@ -1065,6 +1070,26 @@
         });
       if (window.M19Cart) window.M19Cart.refreshBadge();
 
+      /* Google Ads — conversion "Ajout au panier" */
+      if (typeof gtag === 'function') {
+        var gadsPayload = {
+          'send_to': 'AW-769885484',
+          'value': (pdpUnitCents * qty) / 100,
+          'currency': pdpCurrency
+        };
+        {% if customer %}
+        gadsPayload['user_data'] = {
+          'email_address': '{{ customer.email | downcase | strip | escape }}',
+          'phone_number': '{{ customer.phone | strip | escape }}',
+          'address': {
+            'first_name': '{{ customer.first_name | downcase | strip | escape }}',
+            'last_name': '{{ customer.last_name | downcase | strip | escape }}'
+          }
+        };
+        {% endif %}
+        gtag('event', 'conversion', gadsPayload);
+      }
+
       /* Show modal */
       var qtyEl = document.getElementById('pdpCartModalQty');
       if (qtyEl) qtyEl.textContent = 'Quantité : ' + qty;
@@ -1104,8 +1129,20 @@
   });
 
   /* ────────────────────────────────────────────
-     DESKTOP GALLERY
+     DESKTOP GALLERY — preload on hover
   ──────────────────────────────────────────── */
+  (function () {
+    document.querySelectorAll('.pdp__gallery-thumb').forEach(function (thumb) {
+      thumb.addEventListener('mouseenter', function () {
+        var src = thumb.getAttribute('onclick');
+        var match = src && src.match(/pdpSetImage\(this,'([^']+)'/);
+        if (match && match[1]) {
+          var preload = new Image();
+          preload.src = match[1];
+        }
+      }, { passive: true });
+    });
+  })();
   window.pdpSetImage = function (thumb, src, alt, index) {
     var wrap = document.getElementById('pdpMainWrap');
     var img  = document.getElementById('pdpMainImg');
@@ -1118,13 +1155,23 @@
     thumb.classList.add('is-active');
     thumb.setAttribute('aria-pressed', 'true');
 
+    img.onload = null;
     img.classList.add('is-switching');
+
     setTimeout(function () {
-      img.src = src;
-      img.alt = alt;
+      img.onload = function () {
+        img.classList.remove('is-switching');
+        img.onload = null;
+      };
+      img.srcset = thumb.dataset.srcset || '';
+      img.src    = src;
+      img.alt    = alt;
       img.dataset.index = index;
-      img.classList.remove('is-switching');
-    }, 160);
+      if (img.complete) {
+        img.classList.remove('is-switching');
+        img.onload = null;
+      }
+    }, 50);
 
     wrap.onclick = function () { pdpOpenLightbox(index); };
     wrap.setAttribute('aria-label', 'Agrandir l\'image ' + (index + 1));
@@ -1288,66 +1335,77 @@
     var waBtn = document.getElementById('pdpWaBtn');
     if (waBtn) {
       {%- if whatsapp_number != blank -%}
-        var waMsg = encodeURIComponent('Bonjour, je suis intéressé(e) par : {{ product.title | escape }} — ' + window.location.href);
-        waBtn.href = 'https://wa.me/{{ whatsapp_number | remove: '+' | remove: ' ' | remove: '-' }}?text=' + waMsg;
+        var waMsg = encodeURIComponent('Bonjour, je voudrais en savoir plus sur ce produit : {{ product.title | escape }} — ' + window.location.href);
+        waBtn.href = 'https://wa.me/{{ whatsapp_number | remove: "+" | remove: " " | remove: "-" }}?text=' + waMsg;
       {%- else -%}
-        var waMsg = encodeURIComponent('Bonjour, je suis intéressé(e) par : {{ product.title | escape }} — ' + window.location.href);
-        waBtn.href = 'https://wa.me/?text=' + waMsg;
+        waBtn.style.display = 'none';
       {%- endif -%}
     }
 
   });
 
   /* ────────────────────────────────────────────
-     SWIPER INIT
+     SWIPER INIT — polling (Swiper may load after DOMContentLoaded)
   ──────────────────────────────────────────── */
-  document.addEventListener('DOMContentLoaded', function () {
-    if (typeof Swiper === 'undefined') return;
+  (function pdpSwiperPoll() {
+    var waited = 0;
+    (function tryInit() {
+      if (typeof Swiper === 'undefined') {
+        if (waited < 5000) { waited += 50; setTimeout(tryInit, 50); }
+        return;
+      }
 
-    var thumbsStrip = new Swiper('#pdpThumbsStrip', {
-      slidesPerView: 'auto',
-      spaceBetween: {{ thumb_gap }},
-      watchSlidesProgress: true,
-      freeMode: !reducedMotion,
-      observer: true,
-      observeParents: true,
-      resizeObserver: true,
-    });
+      var thumbsStripEl = document.getElementById('pdpThumbsStrip');
+      var thumbsStrip   = null;
+      if (thumbsStripEl) {
+        thumbsStrip = new Swiper(thumbsStripEl, {
+          slidesPerView: 'auto',
+          spaceBetween: {{ thumb_gap }},
+          watchSlidesProgress: true,
+          freeMode: !reducedMotion,
+          observer: true,
+          observeParents: true,
+          resizeObserver: true,
+        });
+      }
 
-    var mainSwiper = new Swiper('#pdpSwiper', {
-      slidesPerView: 1,
-      speed: reducedMotion ? 0 : 380,
-      grabCursor: true,
-      observer: true,
-      observeParents: true,
-      resizeObserver: true,
-      watchSlidesProgress: true,
-      thumbs: { swiper: thumbsStrip },
-      on: {
-        slideChange: function () {
-          var i = this.realIndex + 1;
-          var t = this.slides.length;
-          var ctr = document.getElementById('pdpSwiperCounter');
-          if (ctr) ctr.textContent = i + ' / ' + t;
-          var prevBtn = document.getElementById('pdpPrev');
-          var nextBtn = document.getElementById('pdpNext');
-          if (prevBtn) prevBtn.disabled = i === 1;
-          if (nextBtn) nextBtn.disabled = i === t;
+      var mainOpts = {
+        slidesPerView: 1,
+        speed: reducedMotion ? 0 : 380,
+        grabCursor: true,
+        observer: true,
+        observeParents: true,
+        resizeObserver: true,
+        watchSlidesProgress: true,
+        on: {
+          slideChange: function () {
+            var i   = this.realIndex + 1;
+            var cnt = this.slides.length;
+            var ctr = document.getElementById('pdpSwiperCounter');
+            if (ctr) ctr.textContent = i + ' / ' + cnt;
+            var prevBtn = document.getElementById('pdpPrev');
+            var nextBtn = document.getElementById('pdpNext');
+            if (prevBtn) prevBtn.disabled = i === 1;
+            if (nextBtn) nextBtn.disabled = i === cnt;
+          },
+          init: function () {
+            var prevBtn = document.getElementById('pdpPrev');
+            var nextBtn = document.getElementById('pdpNext');
+            if (prevBtn) prevBtn.disabled = true;
+            if (nextBtn) nextBtn.disabled = this.slides.length <= 1;
+          },
         },
-        init: function () {
-          var prevBtn = document.getElementById('pdpPrev');
-          var nextBtn = document.getElementById('pdpNext');
-          if (prevBtn) prevBtn.disabled = true;
-          if (nextBtn) nextBtn.disabled = this.slides.length <= 1;
-        },
-      },
-    });
+      };
+      if (thumbsStrip) mainOpts.thumbs = { swiper: thumbsStrip };
 
-    var prevBtn = document.getElementById('pdpPrev');
-    var nextBtn = document.getElementById('pdpNext');
-    if (prevBtn) prevBtn.addEventListener('click', function () { mainSwiper.slidePrev(); }, { passive: true });
-    if (nextBtn) nextBtn.addEventListener('click', function () { mainSwiper.slideNext(); }, { passive: true });
-  });
+      var mainSwiper = new Swiper('#pdpSwiper', mainOpts);
+
+      var prevBtn = document.getElementById('pdpPrev');
+      var nextBtn = document.getElementById('pdpNext');
+      if (prevBtn) prevBtn.addEventListener('click', function () { mainSwiper.slidePrev(); }, { passive: true });
+      if (nextBtn) nextBtn.addEventListener('click', function () { mainSwiper.slideNext(); }, { passive: true });
+    }());
+  }());
 
   /* ATC spin keyframe */
   if (!document.getElementById('pdpSpinStyle')) {
@@ -1617,6 +1675,12 @@
       "label": "Badges de confiance",
       "default": true
     },
+    { "type": "header", "content": "Badge 1" },
+    { "type": "text", "id": "badge1_title",    "label": "Titre badge 1",     "default": "Livraison Express" },
+    { "type": "text", "id": "badge1_subtitle", "label": "Sous-titre badge 1", "default": "Gratuite dès 99$" },
+    { "type": "header", "content": "Badge 2" },
+    { "type": "text", "id": "badge2_title",    "label": "Titre badge 2",     "default": "Garantie Totale" },
+    { "type": "text", "id": "badge2_subtitle", "label": "Sous-titre badge 2", "default": "Protection incluse" },
     {
       "type": "checkbox",
       "id": "show_sticky_atc",

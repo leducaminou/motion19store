@@ -1,0 +1,836 @@
+{%- liquid
+  assign show_breadcrumb   = section.settings.show_breadcrumb
+  assign hero_heading      = section.settings.hero_heading
+  assign hero_subheading   = section.settings.hero_subheading
+  assign hero_bg           = section.settings.hero_bg
+  assign hero_overlay      = section.settings.hero_overlay
+  assign hero_height_d     = section.settings.hero_height_d
+  assign hero_height_m     = section.settings.hero_height_m
+  assign hero_sz_d         = section.settings.hero_sz_d
+  assign hero_sz_m         = section.settings.hero_sz_m
+  assign hero_fw           = section.settings.hero_fw
+  assign hero_title_col    = section.settings.hero_title_col
+
+  assign show_mission      = section.settings.show_mission
+  assign mission_label     = section.settings.mission_label
+  assign mission_title     = section.settings.mission_title
+  assign mission_body      = section.settings.mission_body
+  assign mission_bg        = section.settings.mission_bg
+  assign mission_pt_d      = section.settings.mission_pt_d
+  assign mission_pb_d      = section.settings.mission_pb_d
+  assign mission_pt_m      = section.settings.mission_pt_m
+  assign mission_pb_m      = section.settings.mission_pb_m
+
+  assign show_products     = section.settings.show_products
+  assign products_title    = section.settings.products_title
+  assign products_bg       = section.settings.products_bg
+  assign products_pt_d     = section.settings.products_pt_d
+  assign products_pb_d     = section.settings.products_pb_d
+  assign products_pt_m     = section.settings.products_pt_m
+  assign products_pb_m     = section.settings.products_pb_m
+
+  assign show_why          = section.settings.show_why
+  assign why_title         = section.settings.why_title
+  assign why_bg            = section.settings.why_bg
+  assign why_pt_d          = section.settings.why_pt_d
+  assign why_pb_d          = section.settings.why_pb_d
+  assign why_pt_m          = section.settings.why_pt_m
+  assign why_pb_m          = section.settings.why_pb_m
+
+  assign show_cta          = section.settings.show_cta
+  assign cta_eyebrow       = section.settings.cta_eyebrow
+  assign cta_title         = section.settings.cta_title
+  assign cta_body          = section.settings.cta_body
+  assign cta_btn_text      = section.settings.cta_btn_text
+  assign cta_btn_url       = section.settings.cta_btn_url
+  assign cta_btn2_text     = section.settings.cta_btn2_text
+  assign cta_btn2_url      = section.settings.cta_btn2_url
+  assign cta_bg            = section.settings.cta_bg
+  assign show_contact_info = section.settings.show_contact_info
+  assign cta_address       = section.settings.cta_address
+  assign cta_phone         = section.settings.cta_phone
+  assign cta_email         = section.settings.cta_email
+  assign cta_pt_d          = section.settings.cta_pt_d
+  assign cta_pb_d          = section.settings.cta_pb_d
+  assign cta_pt_m          = section.settings.cta_pt_m
+  assign cta_pb_m          = section.settings.cta_pb_m
+-%}
+
+<div class="pga section-page-about" id="section-{{ section.id }}">
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Organization",
+    "name": "Motion19",
+    "url": "{{ shop.url }}",
+    "logo": "{{ settings.logo | image_url: width: 200 }}",
+    "description": "{{ page.description | escape }}",
+    "address": {
+      "@type": "PostalAddress",
+      "streetAddress": "1203 Bvd de la Liberté, Akwa",
+      "addressLocality": "Douala",
+      "addressCountry": "CM"
+    },
+    "contactPoint": {
+      "@type": "ContactPoint",
+      "telephone": "+237-656-99-99-89",
+      "contactType": "customer service"
+    }
+  }
+  </script>
+
+  <!-- ── Hero ── -->
+  <div
+    class="pg__hero"
+    style="--pg-hero-h: {{ hero_height_d }}px; --pg-hero-h-m: {{ hero_height_m }}px; --pg-hero-fw: {{ hero_fw }}; --pg-hero-sz-d: {{ hero_sz_d }}px; --pg-hero-sz-m: {{ hero_sz_m }}px; --pg-hero-title-col: {{ hero_title_col }};"
+  >
+    {%- if hero_bg != blank -%}
+      <div class="pg__hero-bg">
+        <img
+          src="{{ hero_bg | image_url: width: 1600 }}"
+          alt="{{ hero_heading | escape }}"
+          width="{{ hero_bg.width }}"
+          height="{{ hero_bg.height }}"
+          loading="eager"
+          fetchpriority="high"
+        >
+      </div>
+      <div class="pg__hero-overlay" style="opacity: {{ hero_overlay | divided_by: 100.0 }};"></div>
+    {%- endif -%}
+    <div class="pg__hero-content" style="max-width: var(--container-width); padding-inline: var(--container-padding); margin-inline: auto;">
+      {%- if show_breadcrumb -%}
+        <nav class="pg__breadcrumb" aria-label="Fil d'Ariane">
+          <a href="{{ shop.url }}">Accueil</a>
+          <span aria-hidden="true">›</span>
+          <span aria-current="page">{{ hero_heading }}</span>
+        </nav>
+      {%- endif -%}
+      <h1 class="pg__hero-title">{{ hero_heading }}</h1>
+      {%- if hero_subheading != blank -%}
+        <p class="pg__hero-subtitle">{{ hero_subheading }}</p>
+      {%- endif -%}
+    </div>
+  </div>
+
+  <!-- ── Mission ── -->
+  {%- if show_mission -%}
+    <div
+      class="pga__mission"
+      style="background: {{ mission_bg }}; --pga-mission-pt-d: {{ mission_pt_d }}px; --pga-mission-pb-d: {{ mission_pb_d }}px; --pga-mission-pt-m: {{ mission_pt_m }}px; --pga-mission-pb-m: {{ mission_pb_m }}px;"
+    >
+      <div class="pga__mission-inner" style="max-width: var(--container-width); padding-inline: var(--container-padding); margin-inline: auto;">
+        <div class="pga__mission-text">
+          <p class="pga__section-label">{{ mission_label }}</p>
+          <div class="pga__accent-line"></div>
+          <h2 class="pga__section-title">{{ mission_title }}</h2>
+          <div class="pga__section-body">{{ mission_body }}</div>
+        </div>
+      </div>
+    </div>
+  {%- endif -%}
+
+  <!-- ── Ce que nous proposons ── -->
+  {%- if show_products -%}
+    <div
+      class="pga__products"
+      style="background: {{ products_bg }}; --pga-products-pt-d: {{ products_pt_d }}px; --pga-products-pb-d: {{ products_pb_d }}px; --pga-products-pt-m: {{ products_pt_m }}px; --pga-products-pb-m: {{ products_pb_m }}px;"
+    >
+      <div class="pga__products-inner">
+        <div class="pga__products-head">
+          <h2 class="pga__products-title">{{ products_title }}</h2>
+        </div>
+        <div class="pga__prod-grid">
+          {%- for i in (1..6) -%}
+            {%- liquid
+              assign prod_icon  = 'prod' | append: i | append: '_icon'
+              assign prod_label = 'prod' | append: i | append: '_label'
+              assign prod_url   = 'prod' | append: i | append: '_url'
+              assign icon_val   = section.settings[prod_icon]
+              assign label_val  = section.settings[prod_label]
+              assign url_val    = section.settings[prod_url]
+            -%}
+            {%- if label_val != blank -%}
+              <a class="pga__prod-card" href="{{ url_val | default: shop.url }}">
+                {%- if icon_val != blank -%}
+                  <span class="pga__prod-icon" aria-hidden="true">{{ icon_val }}</span>
+                {%- endif -%}
+                <span class="pga__prod-label">{{ label_val }}</span>
+              </a>
+            {%- endif -%}
+          {%- endfor -%}
+        </div>
+      </div>
+    </div>
+  {%- endif -%}
+
+  <!-- ── Pourquoi nous choisir ── -->
+  {%- if show_why -%}
+    <div
+      class="pga__why"
+      style="background: {{ why_bg }}; --pga-why-pt-d: {{ why_pt_d }}px; --pga-why-pb-d: {{ why_pb_d }}px; --pga-why-pt-m: {{ why_pt_m }}px; --pga-why-pb-m: {{ why_pb_m }}px;"
+    >
+      <div class="pga__why-inner">
+        <div class="pga__why-head">
+          <p class="pga__section-label">Nos engagements</p>
+          <div class="pga__accent-line"></div>
+          <h2 class="pga__section-title">{{ why_title }}</h2>
+        </div>
+        <ul class="pga__checklist">
+          {%- for i in (1..4) -%}
+            {%- liquid
+              assign why_title_key = 'why' | append: i | append: '_title'
+              assign why_desc_key  = 'why' | append: i | append: '_desc'
+              assign why_title_val = section.settings[why_title_key]
+              assign why_desc_val  = section.settings[why_desc_key]
+            -%}
+            {%- if why_title_val != blank -%}
+              <li class="pga__checklist-item">
+                <span class="pga__check-icon" aria-hidden="true"></span>
+                <div class="pga__checklist-text">
+                  <p class="pga__checklist-title">{{ why_title_val }}</p>
+                  {%- if why_desc_val != blank -%}
+                    <p class="pga__checklist-desc">{{ why_desc_val }}</p>
+                  {%- endif -%}
+                </div>
+              </li>
+            {%- endif -%}
+          {%- endfor -%}
+        </ul>
+      </div>
+    </div>
+  {%- endif -%}
+
+  <!-- ── CTA Engagement ── -->
+  {%- if show_cta -%}
+    <div
+      class="pga__cta"
+      style="--pga-cta-bg: {{ cta_bg }}; --pga-cta-pt-d: {{ cta_pt_d }}px; --pga-cta-pb-d: {{ cta_pb_d }}px; --pga-cta-pt-m: {{ cta_pt_m }}px; --pga-cta-pb-m: {{ cta_pb_m }}px;"
+    >
+      <div class="pga__cta-inner">
+        {%- if cta_eyebrow != blank -%}
+          <p class="pga__cta-eyebrow">{{ cta_eyebrow }}</p>
+        {%- endif -%}
+        <h2 class="pga__cta-title">{{ cta_title }}</h2>
+        {%- if cta_body != blank -%}
+          <p class="pga__cta-body">{{ cta_body }}</p>
+        {%- endif -%}
+        <div class="pga__cta-actions">
+          {%- if cta_btn_text != blank -%}
+            <a href="{{ cta_btn_url | default: shop.url }}" class="btn btn--primary">{{ cta_btn_text }}</a>
+          {%- endif -%}
+          {%- if cta_btn2_text != blank -%}
+            <a href="{{ cta_btn2_url | default: shop.url | append: '/pages/contact' }}" class="btn btn--outline-white">{{ cta_btn2_text }}</a>
+          {%- endif -%}
+        </div>
+        {%- if show_contact_info -%}
+          <div class="pga__contact-info">
+            {%- if cta_address != blank -%}
+              <span class="pga__contact-info-item">{{ cta_address }}</span>
+            {%- endif -%}
+            {%- if cta_phone != blank -%}
+              <span class="pga__contact-info-item">{{ cta_phone }}</span>
+            {%- endif -%}
+            {%- if cta_email != blank -%}
+              <span class="pga__contact-info-item">{{ cta_email }}</span>
+            {%- endif -%}
+          </div>
+        {%- endif -%}
+      </div>
+    </div>
+  {%- endif -%}
+
+</div>
+
+{% schema %}
+{
+  "name": "Page — À propos",
+  "tag": "section",
+  "class": "section-page-about",
+  "settings": [
+    {
+      "type": "header",
+      "content": "── Hero"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_breadcrumb",
+      "label": "Afficher le fil d'Ariane",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "hero_heading",
+      "label": "Titre principal",
+      "default": "À propos de Motion19"
+    },
+    {
+      "type": "textarea",
+      "id": "hero_subheading",
+      "label": "Sous-titre",
+      "default": "Motion19, c'est l'histoire d'une passion pour l'image et le son, née au cœur de Douala."
+    },
+    {
+      "type": "image_picker",
+      "id": "hero_bg",
+      "label": "Image de fond"
+    },
+    {
+      "type": "range",
+      "id": "hero_overlay",
+      "label": "Opacité de l'overlay",
+      "min": 0,
+      "max": 90,
+      "step": 5,
+      "default": 55,
+      "unit": "%"
+    },
+    {
+      "type": "range",
+      "id": "hero_height_d",
+      "label": "Hauteur desktop",
+      "min": 240,
+      "max": 600,
+      "step": 20,
+      "default": 380,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "hero_height_m",
+      "label": "Hauteur mobile",
+      "min": 160,
+      "max": 400,
+      "step": 20,
+      "default": 240,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "hero_sz_d",
+      "label": "Taille titre desktop",
+      "min": 32,
+      "max": 80,
+      "step": 2,
+      "default": 56,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "hero_sz_m",
+      "label": "Taille titre mobile",
+      "min": 24,
+      "max": 52,
+      "step": 2,
+      "default": 36,
+      "unit": "px"
+    },
+    {
+      "type": "select",
+      "id": "hero_fw",
+      "label": "Graisse du titre",
+      "options": [
+        { "value": "600", "label": "Semi-bold" },
+        { "value": "700", "label": "Bold" },
+        { "value": "800", "label": "Extra-bold" }
+      ],
+      "default": "800"
+    },
+    {
+      "type": "color",
+      "id": "hero_title_col",
+      "label": "Couleur du titre",
+      "default": "#ffffff"
+    },
+    {
+      "type": "header",
+      "content": "── Mission"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_mission",
+      "label": "Afficher la mission",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "mission_label",
+      "label": "Étiquette",
+      "default": "Notre histoire"
+    },
+    {
+      "type": "text",
+      "id": "mission_title",
+      "label": "Titre",
+      "default": "Notre mission"
+    },
+    {
+      "type": "richtext",
+      "id": "mission_body",
+      "label": "Contenu"
+    },
+    {
+      "type": "color",
+      "id": "mission_bg",
+      "label": "Couleur de fond",
+      "default": "#ffffff"
+    },
+    {
+      "type": "range",
+      "id": "mission_pt_d",
+      "label": "Padding haut desktop",
+      "min": 0,
+      "max": 120,
+      "step": 8,
+      "default": 72,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "mission_pb_d",
+      "label": "Padding bas desktop",
+      "min": 0,
+      "max": 120,
+      "step": 8,
+      "default": 72,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "mission_pt_m",
+      "label": "Padding haut mobile",
+      "min": 0,
+      "max": 80,
+      "step": 8,
+      "default": 48,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "mission_pb_m",
+      "label": "Padding bas mobile",
+      "min": 0,
+      "max": 80,
+      "step": 8,
+      "default": 48,
+      "unit": "px"
+    },
+    {
+      "type": "header",
+      "content": "── Ce que nous proposons"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_products",
+      "label": "Afficher la grille produits",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "products_title",
+      "label": "Titre de section",
+      "default": "Ce que nous proposons"
+    },
+    {
+      "type": "color",
+      "id": "products_bg",
+      "label": "Couleur de fond",
+      "default": "#f7f7f8"
+    },
+    {
+      "type": "range",
+      "id": "products_pt_d",
+      "label": "Padding haut desktop",
+      "min": 0,
+      "max": 120,
+      "step": 8,
+      "default": 72,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "products_pb_d",
+      "label": "Padding bas desktop",
+      "min": 0,
+      "max": 120,
+      "step": 8,
+      "default": 72,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "products_pt_m",
+      "label": "Padding haut mobile",
+      "min": 0,
+      "max": 80,
+      "step": 8,
+      "default": 48,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "products_pb_m",
+      "label": "Padding bas mobile",
+      "min": 0,
+      "max": 80,
+      "step": 8,
+      "default": 48,
+      "unit": "px"
+    },
+    {
+      "type": "text",
+      "id": "prod1_icon",
+      "label": "Carte 1 — Icône",
+      "default": "📷"
+    },
+    {
+      "type": "text",
+      "id": "prod1_label",
+      "label": "Carte 1 — Libellé",
+      "default": "Caméras & Photo"
+    },
+    {
+      "type": "url",
+      "id": "prod1_url",
+      "label": "Carte 1 — Lien"
+    },
+    {
+      "type": "text",
+      "id": "prod2_icon",
+      "label": "Carte 2 — Icône",
+      "default": "🎥"
+    },
+    {
+      "type": "text",
+      "id": "prod2_label",
+      "label": "Carte 2 — Libellé",
+      "default": "Vidéo & Cinéma"
+    },
+    {
+      "type": "url",
+      "id": "prod2_url",
+      "label": "Carte 2 — Lien"
+    },
+    {
+      "type": "text",
+      "id": "prod3_icon",
+      "label": "Carte 3 — Icône",
+      "default": "🎙️"
+    },
+    {
+      "type": "text",
+      "id": "prod3_label",
+      "label": "Carte 3 — Libellé",
+      "default": "Audio & Podcast"
+    },
+    {
+      "type": "url",
+      "id": "prod3_url",
+      "label": "Carte 3 — Lien"
+    },
+    {
+      "type": "text",
+      "id": "prod4_icon",
+      "label": "Carte 4 — Icône",
+      "default": "🚁"
+    },
+    {
+      "type": "text",
+      "id": "prod4_label",
+      "label": "Carte 4 — Libellé",
+      "default": "Drones"
+    },
+    {
+      "type": "url",
+      "id": "prod4_url",
+      "label": "Carte 4 — Lien"
+    },
+    {
+      "type": "text",
+      "id": "prod5_icon",
+      "label": "Carte 5 — Icône",
+      "default": "💡"
+    },
+    {
+      "type": "text",
+      "id": "prod5_label",
+      "label": "Carte 5 — Libellé",
+      "default": "Studio & Éclairage"
+    },
+    {
+      "type": "url",
+      "id": "prod5_url",
+      "label": "Carte 5 — Lien"
+    },
+    {
+      "type": "text",
+      "id": "prod6_icon",
+      "label": "Carte 6 — Icône",
+      "default": "📡"
+    },
+    {
+      "type": "text",
+      "id": "prod6_label",
+      "label": "Carte 6 — Libellé",
+      "default": "Streaming & Live"
+    },
+    {
+      "type": "url",
+      "id": "prod6_url",
+      "label": "Carte 6 — Lien"
+    },
+    {
+      "type": "header",
+      "content": "── Pourquoi nous choisir"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_why",
+      "label": "Afficher cette section",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "why_title",
+      "label": "Titre",
+      "default": "Pourquoi choisir Motion19 ?"
+    },
+    {
+      "type": "color",
+      "id": "why_bg",
+      "label": "Couleur de fond",
+      "default": "#ffffff"
+    },
+    {
+      "type": "range",
+      "id": "why_pt_d",
+      "label": "Padding haut desktop",
+      "min": 0,
+      "max": 120,
+      "step": 8,
+      "default": 72,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "why_pb_d",
+      "label": "Padding bas desktop",
+      "min": 0,
+      "max": 120,
+      "step": 8,
+      "default": 72,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "why_pt_m",
+      "label": "Padding haut mobile",
+      "min": 0,
+      "max": 80,
+      "step": 8,
+      "default": 48,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "why_pb_m",
+      "label": "Padding bas mobile",
+      "min": 0,
+      "max": 80,
+      "step": 8,
+      "default": 48,
+      "unit": "px"
+    },
+    {
+      "type": "text",
+      "id": "why1_title",
+      "label": "Point 1 — Titre",
+      "default": "Produits authentiques"
+    },
+    {
+      "type": "textarea",
+      "id": "why1_desc",
+      "label": "Point 1 — Description",
+      "default": "Nous travaillons directement avec les distributeurs officiels des marques."
+    },
+    {
+      "type": "text",
+      "id": "why2_title",
+      "label": "Point 2 — Titre",
+      "default": "Expertise locale"
+    },
+    {
+      "type": "textarea",
+      "id": "why2_desc",
+      "label": "Point 2 — Description",
+      "default": "Une équipe passionnée, basée à Douala, qui connaît vos besoins."
+    },
+    {
+      "type": "text",
+      "id": "why3_title",
+      "label": "Point 3 — Titre",
+      "default": "Conseil personnalisé"
+    },
+    {
+      "type": "textarea",
+      "id": "why3_desc",
+      "label": "Point 3 — Description",
+      "default": "Nous vous aidons à choisir le bon équipement selon votre budget et vos projets."
+    },
+    {
+      "type": "text",
+      "id": "why4_title",
+      "label": "Point 4 — Titre",
+      "default": "Service après-vente"
+    },
+    {
+      "type": "textarea",
+      "id": "why4_desc",
+      "label": "Point 4 — Description",
+      "default": "Un support disponible pour vous accompagner après votre achat."
+    },
+    {
+      "type": "header",
+      "content": "── Engagement / CTA"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_cta",
+      "label": "Afficher le bloc CTA",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "cta_eyebrow",
+      "label": "Étiquette",
+      "default": "Notre communauté"
+    },
+    {
+      "type": "text",
+      "id": "cta_title",
+      "label": "Titre",
+      "default": "Donnez vie à chaque image."
+    },
+    {
+      "type": "textarea",
+      "id": "cta_body",
+      "label": "Corps du texte",
+      "default": "Motion19, c'est plus qu'une boutique. C'est une communauté de créateurs qui repoussent les limites de l'image."
+    },
+    {
+      "type": "text",
+      "id": "cta_btn_text",
+      "label": "Bouton 1 — Texte",
+      "default": "Voir nos produits"
+    },
+    {
+      "type": "url",
+      "id": "cta_btn_url",
+      "label": "Bouton 1 — Lien"
+    },
+    {
+      "type": "text",
+      "id": "cta_btn2_text",
+      "label": "Bouton 2 — Texte",
+      "default": "Nous contacter"
+    },
+    {
+      "type": "url",
+      "id": "cta_btn2_url",
+      "label": "Bouton 2 — Lien"
+    },
+    {
+      "type": "color",
+      "id": "cta_bg",
+      "label": "Couleur de fond",
+      "default": "#0a0a0a"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_contact_info",
+      "label": "Afficher les infos de contact",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "cta_address",
+      "label": "Adresse",
+      "default": "📍 1203 Bvd de la Liberté, Akwa Douala"
+    },
+    {
+      "type": "text",
+      "id": "cta_phone",
+      "label": "Téléphone",
+      "default": "📞 +237 656 99 99 89"
+    },
+    {
+      "type": "text",
+      "id": "cta_email",
+      "label": "Email",
+      "default": "📧 hello@motion19.com"
+    },
+    {
+      "type": "range",
+      "id": "cta_pt_d",
+      "label": "Padding haut desktop",
+      "min": 0,
+      "max": 120,
+      "step": 8,
+      "default": 80,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "cta_pb_d",
+      "label": "Padding bas desktop",
+      "min": 0,
+      "max": 120,
+      "step": 8,
+      "default": 80,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "cta_pt_m",
+      "label": "Padding haut mobile",
+      "min": 0,
+      "max": 80,
+      "step": 8,
+      "default": 64,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "cta_pb_m",
+      "label": "Padding bas mobile",
+      "min": 0,
+      "max": 80,
+      "step": 8,
+      "default": 64,
+      "unit": "px"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Page — À propos",
+      "settings": {
+        "show_breadcrumb": true,
+        "hero_heading": "À propos de Motion19",
+        "hero_subheading": "Motion19, c'est l'histoire d'une passion pour l'image et le son, née au cœur de Douala.",
+        "hero_overlay": 55,
+        "hero_height_d": 380,
+        "hero_height_m": 240,
+        "hero_sz_d": 56,
+        "hero_sz_m": 36,
+        "hero_fw": "800",
+        "hero_title_col": "#ffffff",
+        "show_mission": true,
+        "show_products": true,
+        "show_why": true,
+        "show_cta": true,
+        "cta_bg": "#0a0a0a"
+      }
+    }
+  ]
+}
+{% endschema %}

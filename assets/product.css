@@ -173,7 +173,7 @@
   padding: var(--pdp-img-pad);
   box-sizing: border-box;
   display: block;
-  transition: opacity 0.18s ease;
+  transition: opacity 0.08s ease;
 }
 
 .pdp__main-image-wrap img.is-switching { opacity: 0; }

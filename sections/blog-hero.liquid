@@ -1,0 +1,739 @@
+{%- comment -%}
+  Blog Hero — Motion19 — OS 2.0
+  Préfixe .bhr | Statique (sans Swiper) | Calqué sur hero-carousel.liquid
+  CSS : assets/blog.css | JS : assets/blog.js (bhr--ready trigger)
+{%- endcomment -%}
+
+{%- liquid
+  assign sid = section.id
+
+  assign height_desktop = section.settings.height_desktop | default: 78
+  assign height_laptop  = section.settings.height_laptop  | default: 90
+  assign height_mobile  = section.settings.height_mobile  | default: 50
+
+  assign enable_float   = section.settings.enable_large_float  | default: true
+  assign large_margin   = section.settings.large_screen_margin | default: 40
+  assign large_radius   = section.settings.large_screen_radius | default: 6
+  assign laptop_radius  = section.settings.laptop_radius       | default: 0
+
+  assign show_scroll    = section.settings.show_scroll_hint    | default: false
+-%}
+
+<section
+  id="bhr-{{ sid }}"
+  class="bhr{% if enable_float %} bhr--float{% endif %}"
+  aria-label="Blog Hero"
+  style="
+    --bhr-h-d:       {{ height_desktop }}vh;
+    --bhr-h-l:       {{ height_laptop }}vh;
+    --bhr-h-m:       {{ height_mobile }}vh;
+    --bhr-large-mg:  {{ large_margin }}px;
+    --bhr-large-r:   {{ large_radius }}px;
+    --bhr-laptop-r:  {{ laptop_radius }}px;
+    --bhr-kb-dur:    8000ms;
+  "
+>
+
+  {%- comment -%} ══ BLOC CONTENT (ou fallback) ══ {%- endcomment -%}
+
+  {%- if section.blocks.size == 0 -%}
+
+    {%- comment -%} ── Fallback visuel si aucun bloc configuré ── {%- endcomment -%}
+    <div
+      class="bhr__slide bhr__slide--ph-center bhr__slide--pv-center bhr__slide--tha-center bhr__slide--tva-center bhr__slide--mh-center bhr__slide--mv-center"
+      style="
+        --bhr-s-ov-r: 0; --bhr-s-ov-g: 0; --bhr-s-ov-b: 0; --bhr-s-ov-a: 0.45;
+        --bhr-s-ov-r-m: 0; --bhr-s-ov-g-m: 0; --bhr-s-ov-b-m: 0; --bhr-s-ov-a-m: 0.55;
+        --bhr-s-h-col: #fff;
+        --bhr-s-h-sz-d: 72px; --bhr-s-h-sz-m: 38px;
+        --bhr-s-h-fw: 800; --bhr-s-h-lh: 1.0; --bhr-s-h-ls: -0.03em; --bhr-s-h-tt: none;
+        --bhr-s-h-mw: 900px;
+        --bhr-s-d-col: rgba(255,255,255,0.75); --bhr-s-d-sz-d: 17px; --bhr-s-d-sz-m: 15px; --bhr-s-d-mw: 560px;
+        --bhr-s-d-fw: 400; --bhr-s-d-lh: 1.65;
+        --bhr-s-btn-r: 2px; --bhr-s-btn-py: 14px; --bhr-s-btn-px: 28px;
+        --bhr-s-btn-sz: 13px; --bhr-s-btn-fw: 600; --bhr-s-btn-ls: 0.06em; --bhr-s-btn-tt: uppercase;
+        --bhr-s-pt-d: 80px; --bhr-s-pb-d: 80px; --bhr-s-pl-d: 80px; --bhr-s-pr-d: 80px;
+        --bhr-s-pt-m: 48px; --bhr-s-pb-m: 64px; --bhr-s-pl-m: 24px; --bhr-s-pr-m: 24px;
+        --bhr-s-gap-d: 18px; --bhr-s-gap-m: 14px;
+        --bhr-s-ey-col: rgba(255,255,255,0.85); --bhr-s-ey-sz: 11px; --bhr-s-ey-fw: 600;
+        --bhr-s-ey-ls: 0.18em; --bhr-s-ey-tt: uppercase; --bhr-s-ey-lw: 22px; --bhr-s-ey-lt: 2px;
+      "
+    >
+      <div class="bhr__media" aria-hidden="true">
+        <img
+          class="bhr__img"
+          src="{{ 'hp-hero-blog.webp' | asset_url }}"
+          width="1800" height="1012"
+          alt=""
+          loading="eager"
+          fetchpriority="high"
+          decoding="async"
+          style="object-fit: cover; object-position: center center;"
+        >
+        <div class="bhr__overlay bhr__overlay--bottom" aria-hidden="true"></div>
+      </div>
+      <div class="bhr__content bhr__content--center" aria-hidden="false">
+        <div class="bhr__inner">
+          <p class="bhr__eyebrow">
+            <span class="bhr__eyebrow-line" aria-hidden="true"></span>
+            <span>Le Journal</span>
+          </p>
+          <h1 class="bhr__heading">Nos histoires</h1>
+          <p class="bhr__desc">Équipement, inspiration et créativité pour les créateurs.</p>
+        </div>
+      </div>
+    </div>
+
+  {%- else -%}
+
+    {%- for block in section.blocks -%}
+      {%- liquid
+        assign b = block
+
+        assign img_d    = b.settings.image_desktop
+        assign img_m    = b.settings.image_mobile
+        assign focal    = b.settings.focal_point | default: 'center center'
+        assign obj_fit  = b.settings.obj_fit     | default: 'cover'
+
+        assign badge_text = b.settings.badge_text
+        assign eyebrow  = b.settings.eyebrow
+        assign heading  = b.settings.heading   | default: 'Le Journal'
+        assign subhead  = b.settings.subheading
+        assign desc     = b.settings.description
+
+        assign ov_col   = b.settings.overlay_color
+        assign ov_op    = b.settings.overlay_opacity | default: 40 | divided_by: 100.0
+        assign ov_dir   = b.settings.overlay_direction | default: 'bottom'
+        assign ov_col_m = b.settings.overlay_color_mobile
+        assign ov_op_m  = b.settings.overlay_opacity_mobile | default: 55 | divided_by: 100.0
+
+        assign ov_r = 0
+        assign ov_g = 0
+        assign ov_b = 0
+        if ov_col != blank
+          assign ov_r = ov_col.red
+          assign ov_g = ov_col.green
+          assign ov_b = ov_col.blue
+        endif
+
+        assign ov_r_m = ov_r
+        assign ov_g_m = ov_g
+        assign ov_b_m = ov_b
+        if ov_col_m != blank
+          assign ov_r_m = ov_col_m.red
+          assign ov_g_m = ov_col_m.green
+          assign ov_b_m = ov_col_m.blue
+        endif
+
+        assign h_col = b.settings.heading_color    | default: '#ffffff'
+        assign h_sz_d = b.settings.heading_sz_d    | default: 72
+        assign h_sz_t = b.settings.heading_sz_t    | default: 52
+        assign h_sz_m = b.settings.heading_sz_m    | default: 38
+        assign h_fw   = b.settings.heading_fw      | default: '800'
+        assign h_lh   = b.settings.heading_lh      | default: '1.0'
+        assign h_ls   = b.settings.heading_ls      | default: '-0.03'
+        assign h_tt   = b.settings.heading_tt      | default: 'none'
+        assign h_mw   = b.settings.heading_max_width | default: 900
+
+        assign d_col  = b.settings.desc_color      | default: 'rgba(255,255,255,0.75)'
+        assign d_sz_d = b.settings.desc_sz_d       | default: 17
+        assign d_sz_m = b.settings.desc_sz_m       | default: 15
+        assign d_mw   = b.settings.desc_max_width  | default: 560
+        assign d_fw   = b.settings.desc_fw         | default: '400'
+        assign d_lh   = b.settings.desc_lh         | default: '1.65'
+
+        assign ey_col    = b.settings.eyebrow_color  | default: '#e0e0e0'
+        assign ey_sz     = b.settings.eyebrow_sz     | default: 11
+        assign ey_fw     = b.settings.eyebrow_fw     | default: '600'
+        assign ey_ls     = b.settings.eyebrow_ls     | default: '0.18em'
+        assign ey_tt     = b.settings.eyebrow_tt     | default: 'uppercase'
+        assign ey_line_w = b.settings.eyebrow_line_w | default: 22
+        assign ey_line_t = b.settings.eyebrow_line_t | default: 2
+
+        assign sh_col  = b.settings.subhead_color | default: '#b3b3b3'
+        assign sh_sz_d = b.settings.subhead_sz_d  | default: 17
+        assign sh_sz_m = b.settings.subhead_sz_m  | default: 14
+        assign sh_fw   = b.settings.subhead_fw    | default: '500'
+        assign sh_ls   = b.settings.subhead_ls    | default: '0.04em'
+        assign sh_tt   = b.settings.subhead_tt    | default: 'uppercase'
+
+        assign bdg_col  = b.settings.badge_color  | default: '#ffffff'
+        assign bdg_bg_r = 255
+        assign bdg_bg_g = 255
+        assign bdg_bg_b = 255
+        if b.settings.badge_bg_color != blank
+          assign bdg_bg_r = b.settings.badge_bg_color.red
+          assign bdg_bg_g = b.settings.badge_bg_color.green
+          assign bdg_bg_b = b.settings.badge_bg_color.blue
+        endif
+        assign bdg_bg_op = b.settings.badge_bg_opacity | default: 10 | divided_by: 100.0
+
+        assign bdg_br_r = 255
+        assign bdg_br_g = 255
+        assign bdg_br_b = 255
+        if b.settings.badge_border_color != blank
+          assign bdg_br_r = b.settings.badge_border_color.red
+          assign bdg_br_g = b.settings.badge_border_color.green
+          assign bdg_br_b = b.settings.badge_border_color.blue
+        endif
+        assign bdg_br_op = b.settings.badge_border_opacity | default: 30 | divided_by: 100.0
+
+        assign bdg_sz    = b.settings.badge_sz     | default: 10
+        assign bdg_fw    = b.settings.badge_fw     | default: '700'
+        assign bdg_ls    = b.settings.badge_ls     | default: '0.14em'
+        assign bdg_r_raw = b.settings.badge_radius | default: 50
+        assign bdg_r     = bdg_r_raw
+        if bdg_r_raw == 50
+          assign bdg_r = '999'
+        endif
+
+        assign pos_h_d      = b.settings.pos_h_desktop     | default: 'center'
+        assign pos_v_d      = b.settings.pos_v_desktop     | default: 'center'
+        assign pos_h_t      = b.settings.pos_h_tablet      | default: 'center'
+        assign pos_v_t      = b.settings.pos_v_tablet      | default: 'center'
+        assign pos_h_m      = b.settings.pos_h_mobile      | default: 'center'
+        assign pos_v_m      = b.settings.pos_v_mobile      | default: 'bottom'
+        assign content_align = b.settings.content_text_align | default: 'center'
+
+        assign pt_d = b.settings.padding_top_d    | default: 80
+        assign pb_d = b.settings.padding_bottom_d | default: 80
+        assign pl_d = b.settings.padding_left_d   | default: 80
+        assign pr_d = b.settings.padding_right_d  | default: 80
+        assign pt_m = b.settings.padding_top_m    | default: 48
+        assign pb_m = b.settings.padding_bottom_m | default: 64
+        assign pl_m = b.settings.padding_left_m   | default: 24
+        assign pr_m = b.settings.padding_right_m  | default: 24
+        assign gap_d = b.settings.content_gap_d   | default: 18
+        assign gap_m = b.settings.content_gap_m   | default: 14
+      -%}
+
+      {%- comment -%} Preload LCP image ── {%- endcomment -%}
+      {%- if img_d != blank -%}
+        <link rel="preload" as="image" href="{{ img_d | image_url: width: 1800 }}" media="(min-width: 768px)">
+        {%- if img_m != blank -%}
+          <link rel="preload" as="image" href="{{ img_m | image_url: width: 800 }}" media="(max-width: 767px)">
+        {%- else -%}
+          <link rel="preload" as="image" href="{{ img_d | image_url: width: 800 }}" media="(max-width: 767px)">
+        {%- endif -%}
+      {%- endif -%}
+
+      <div
+        class="bhr__slide bhr__slide--ph-{{ pos_h_d }} bhr__slide--pv-{{ pos_v_d }} bhr__slide--tha-{{ pos_h_t }} bhr__slide--tva-{{ pos_v_t }} bhr__slide--mh-{{ pos_h_m }} bhr__slide--mv-{{ pos_v_m }}"
+        {{ block.shopify_attributes }}
+        style="
+          --bhr-s-ov-r:    {{ ov_r }};
+          --bhr-s-ov-g:    {{ ov_g }};
+          --bhr-s-ov-b:    {{ ov_b }};
+          --bhr-s-ov-a:    {{ ov_op }};
+          --bhr-s-ov-r-m:  {{ ov_r_m }};
+          --bhr-s-ov-g-m:  {{ ov_g_m }};
+          --bhr-s-ov-b-m:  {{ ov_b_m }};
+          --bhr-s-ov-a-m:  {{ ov_op_m }};
+          --bhr-s-h-col:   {{ h_col }};
+          --bhr-s-h-sz-d:  {{ h_sz_d }}px;
+          --bhr-s-h-sz-m:  {{ h_sz_m }}px;
+          --bhr-s-h-fw:    {{ h_fw }};
+          --bhr-s-h-lh:    {{ h_lh }};
+          --bhr-s-h-ls:    {{ h_ls }}em;
+          --bhr-s-h-tt:    {{ h_tt }};
+          --bhr-s-h-mw:    {{ h_mw }}px;
+          --bhr-s-d-col:   {{ d_col }};
+          --bhr-s-d-sz-d:  {{ d_sz_d }}px;
+          --bhr-s-d-sz-m:  {{ d_sz_m }}px;
+          --bhr-s-d-mw:    {{ d_mw }}px;
+          --bhr-s-d-fw:    {{ d_fw }};
+          --bhr-s-d-lh:    {{ d_lh }};
+          --bhr-s-pt-d:    {{ pt_d }}px;
+          --bhr-s-pb-d:    {{ pb_d }}px;
+          --bhr-s-pl-d:    {{ pl_d }}px;
+          --bhr-s-pr-d:    {{ pr_d }}px;
+          --bhr-s-pt-m:    {{ pt_m }}px;
+          --bhr-s-pb-m:    {{ pb_m }}px;
+          --bhr-s-pl-m:    {{ pl_m }}px;
+          --bhr-s-pr-m:    {{ pr_m }}px;
+          --bhr-s-gap-d:   {{ gap_d }}px;
+          --bhr-s-gap-m:   {{ gap_m }}px;
+          --bhr-s-ey-col:  {{ ey_col }};
+          --bhr-s-ey-sz:   {{ ey_sz }}px;
+          --bhr-s-ey-fw:   {{ ey_fw }};
+          --bhr-s-ey-ls:   {{ ey_ls }};
+          --bhr-s-ey-tt:   {{ ey_tt }};
+          --bhr-s-ey-lw:   {{ ey_line_w }}px;
+          --bhr-s-ey-lt:   {{ ey_line_t }}px;
+          --bhr-s-sh-col:  {{ sh_col }};
+          --bhr-s-sh-sz-d: {{ sh_sz_d }}px;
+          --bhr-s-sh-sz-m: {{ sh_sz_m }}px;
+          --bhr-s-sh-fw:   {{ sh_fw }};
+          --bhr-s-sh-ls:   {{ sh_ls }};
+          --bhr-s-sh-tt:   {{ sh_tt }};
+          --bhr-s-bdg-col: {{ bdg_col }};
+          --bhr-s-bdg-bg:  rgba({{ bdg_bg_r }},{{ bdg_bg_g }},{{ bdg_bg_b }},{{ bdg_bg_op }});
+          --bhr-s-bdg-br:  rgba({{ bdg_br_r }},{{ bdg_br_g }},{{ bdg_br_b }},{{ bdg_br_op }});
+          --bhr-s-bdg-sz:  {{ bdg_sz }}px;
+          --bhr-s-bdg-fw:  {{ bdg_fw }};
+          --bhr-s-bdg-ls:  {{ bdg_ls }};
+          --bhr-s-bdg-r:   {{ bdg_r }}px;
+        "
+      >
+
+        {%- comment -%} ── IMAGE ── {%- endcomment -%}
+        <div class="bhr__media" aria-hidden="true">
+          {%- if img_d != blank -%}
+            {%- assign img_d_src  = img_d | image_url: width: 1800 -%}
+            {%- assign img_d_src2 = img_d | image_url: width: 2400 -%}
+            {%- assign img_d_1200 = img_d | image_url: width: 1200 -%}
+            {%- assign img_d_800  = img_d | image_url: width: 800 -%}
+
+            {%- if img_m != blank -%}
+              {%- assign img_m_src  = img_m | image_url: width: 800 -%}
+              {%- assign img_m_src2 = img_m | image_url: width: 1200 -%}
+            {%- else -%}
+              {%- assign img_m_src  = img_d_800 -%}
+              {%- assign img_m_src2 = img_d_1200 -%}
+            {%- endif -%}
+
+            <picture>
+              <source
+                media="(max-width: 767px)"
+                srcset="{{ img_m_src }} 800w, {{ img_m_src2 }} 1200w"
+                sizes="100vw"
+              >
+              <source
+                media="(max-width: 1199px)"
+                srcset="{{ img_d_1200 }} 1200w, {{ img_d_src }} 1800w"
+                sizes="100vw"
+              >
+              <img
+                class="bhr__img"
+                src="{{ img_d_src }}"
+                srcset="{{ img_d_src }} 1800w, {{ img_d_src2 }} 2400w"
+                sizes="100vw"
+                width="{{ img_d.width }}"
+                height="{{ img_d.height }}"
+                alt="{{ img_d.alt | escape }}"
+                loading="eager"
+                fetchpriority="high"
+                decoding="async"
+                style="object-fit: {{ obj_fit }}; object-position: {{ focal }};"
+              >
+            </picture>
+          {%- else -%}
+            <img
+              class="bhr__img"
+              src="{{ 'hp-hero-blog.webp' | asset_url }}"
+              width="1800" height="1012"
+              alt=""
+              loading="eager"
+              fetchpriority="high"
+              decoding="async"
+              style="object-fit: cover; object-position: center center;"
+            >
+          {%- endif -%}
+
+          <div class="bhr__overlay bhr__overlay--{{ ov_dir }}" aria-hidden="true"></div>
+        </div>
+
+        {%- comment -%} ── CONTENT ── {%- endcomment -%}
+        <div class="bhr__content bhr__content--{{ content_align }}">
+          <div class="bhr__inner">
+
+            {%- if badge_text != blank -%}
+              <span class="bhr__badge" aria-label="{{ badge_text | escape }}">
+                <span class="bhr__badge-dot" aria-hidden="true"></span>
+                {{- badge_text | escape -}}
+              </span>
+            {%- endif -%}
+
+            {%- if eyebrow != blank -%}
+              <p class="bhr__eyebrow">
+                <span class="bhr__eyebrow-line" aria-hidden="true"></span>
+                <span>{{ eyebrow | escape }}</span>
+              </p>
+            {%- endif -%}
+
+            {%- if heading != blank -%}
+              <h1 class="bhr__heading">{{ heading | escape }}</h1>
+            {%- endif -%}
+
+            {%- if subhead != blank -%}
+              <p class="bhr__subheading">{{ subhead | escape }}</p>
+            {%- endif -%}
+
+            {%- if desc != blank -%}
+              <p class="bhr__desc">{{ desc | escape }}</p>
+            {%- endif -%}
+
+          </div>
+        </div>
+
+      </div>
+
+    {%- endfor -%}
+
+  {%- endif -%}
+
+  {%- comment -%} ── Scroll hint ── {%- endcomment -%}
+  {%- if show_scroll -%}
+    <div class="bhr__scroll-hint" aria-hidden="true">
+      <span class="bhr__scroll-hint-line"></span>
+      <span class="bhr__scroll-hint-label">Scroll</span>
+    </div>
+  {%- endif -%}
+
+</section>
+
+{% schema %}
+{
+  "name": "Blog Hero",
+  "tag": "section",
+  "class": "section-blog-hero",
+  "settings": [
+    { "type": "header", "content": "── 1. Hauteurs" },
+    { "type": "range", "id": "height_desktop", "label": "Hauteur XL desktop (vh)", "min": 60, "max": 100, "step": 1, "default": 78, "unit": "vh" },
+    { "type": "range", "id": "height_laptop",  "label": "Hauteur laptop (vh)",     "min": 70, "max": 100, "step": 1, "default": 90, "unit": "vh" },
+    { "type": "range", "id": "height_mobile",  "label": "Hauteur mobile (vh)",     "min": 30, "max": 60,  "step": 1, "default": 50, "unit": "vh" },
+
+    { "type": "header", "content": "── 2. Container XL (≥ 1500px)" },
+    { "type": "checkbox", "id": "enable_large_float",  "label": "Flotter sur grand écran (1500px+)", "default": true },
+    { "type": "range",    "id": "large_screen_margin", "label": "Marge côtés (px)",         "min": 8,  "max": 120, "step": 4, "default": 40, "unit": "px" },
+    { "type": "range",    "id": "large_screen_radius", "label": "Border-radius XL (px)",    "min": 0,  "max": 48,  "step": 2, "default": 6,  "unit": "px" },
+    { "type": "range",    "id": "laptop_radius",       "label": "Border-radius laptop (px)","min": 0,  "max": 16,  "step": 2, "default": 0,  "unit": "px" },
+
+    { "type": "header", "content": "── 3. Extras" },
+    { "type": "checkbox", "id": "show_scroll_hint", "label": "Indicateur scroll (desktop)", "default": false }
+  ],
+  "blocks": [
+    {
+      "type": "content",
+      "name": "Contenu",
+      "settings": [
+        { "type": "header", "content": "── Média" },
+        { "type": "image_picker", "id": "image_desktop", "label": "Image desktop" },
+        { "type": "image_picker", "id": "image_mobile",  "label": "Image mobile (optionnel)" },
+        {
+          "type": "select", "id": "focal_point", "label": "Point focal", "default": "center center",
+          "options": [
+            { "value": "top left",      "label": "Haut gauche" },
+            { "value": "top center",    "label": "Haut centre" },
+            { "value": "top right",     "label": "Haut droite" },
+            { "value": "center left",   "label": "Centre gauche" },
+            { "value": "center center", "label": "Centre" },
+            { "value": "center right",  "label": "Centre droite" },
+            { "value": "bottom left",   "label": "Bas gauche" },
+            { "value": "bottom center", "label": "Bas centre" },
+            { "value": "bottom right",  "label": "Bas droite" }
+          ]
+        },
+        {
+          "type": "select", "id": "obj_fit", "label": "Recadrage", "default": "cover",
+          "options": [
+            { "value": "cover",   "label": "Cover" },
+            { "value": "contain", "label": "Contain" }
+          ]
+        },
+
+        { "type": "header", "content": "── Overlay desktop" },
+        { "type": "color", "id": "overlay_color",   "label": "Couleur overlay",    "default": "#000000" },
+        { "type": "range", "id": "overlay_opacity",  "label": "Opacité (%)",        "min": 0, "max": 85, "step": 5, "default": 40 },
+        {
+          "type": "select", "id": "overlay_direction", "label": "Direction gradient", "default": "bottom",
+          "options": [
+            { "value": "bottom",  "label": "Bas (dégradé vers haut)" },
+            { "value": "top",     "label": "Haut (dégradé vers bas)" },
+            { "value": "left",    "label": "Gauche" },
+            { "value": "right",   "label": "Droite" },
+            { "value": "center",  "label": "Radial centre" },
+            { "value": "full",    "label": "Plein" }
+          ]
+        },
+
+        { "type": "header", "content": "── Overlay mobile" },
+        { "type": "color", "id": "overlay_color_mobile",   "label": "Couleur mobile (vide = même)" },
+        { "type": "range", "id": "overlay_opacity_mobile", "label": "Opacité mobile (%)", "min": 0, "max": 90, "step": 5, "default": 55 },
+
+        { "type": "header", "content": "── Contenu" },
+        { "type": "text",     "id": "badge_text",   "label": "Badge (ex: Nouveau)" },
+        { "type": "text",     "id": "eyebrow",      "label": "Eyebrow / Overline", "default": "Le Journal" },
+        { "type": "text",     "id": "heading",      "label": "Titre",              "default": "Nos histoires" },
+        { "type": "text",     "id": "subheading",   "label": "Sous-titre (optionnel)" },
+        { "type": "textarea", "id": "description",  "label": "Description",        "default": "Équipement, inspiration et créativité pour les créateurs." },
+
+        { "type": "header", "content": "── Positionnement desktop" },
+        {
+          "type": "select", "id": "pos_h_desktop", "label": "Horizontal", "default": "center",
+          "options": [
+            { "value": "left",   "label": "Gauche" },
+            { "value": "center", "label": "Centre" },
+            { "value": "right",  "label": "Droite" }
+          ]
+        },
+        {
+          "type": "select", "id": "pos_v_desktop", "label": "Vertical", "default": "center",
+          "options": [
+            { "value": "top",    "label": "Haut" },
+            { "value": "center", "label": "Centre" },
+            { "value": "bottom", "label": "Bas" }
+          ]
+        },
+        {
+          "type": "select", "id": "content_text_align", "label": "Alignement texte", "default": "center",
+          "options": [
+            { "value": "left",   "label": "Gauche" },
+            { "value": "center", "label": "Centre" },
+            { "value": "right",  "label": "Droite" }
+          ]
+        },
+
+        { "type": "header", "content": "── Positionnement tablet" },
+        {
+          "type": "select", "id": "pos_h_tablet", "label": "Horizontal tablet", "default": "center",
+          "options": [
+            { "value": "left",   "label": "Gauche" },
+            { "value": "center", "label": "Centre" },
+            { "value": "right",  "label": "Droite" }
+          ]
+        },
+        {
+          "type": "select", "id": "pos_v_tablet", "label": "Vertical tablet", "default": "center",
+          "options": [
+            { "value": "top",    "label": "Haut" },
+            { "value": "center", "label": "Centre" },
+            { "value": "bottom", "label": "Bas" }
+          ]
+        },
+
+        { "type": "header", "content": "── Positionnement mobile" },
+        {
+          "type": "select", "id": "pos_h_mobile", "label": "Horizontal mobile", "default": "center",
+          "options": [
+            { "value": "left",   "label": "Gauche" },
+            { "value": "center", "label": "Centre" },
+            { "value": "right",  "label": "Droite" }
+          ]
+        },
+        {
+          "type": "select", "id": "pos_v_mobile", "label": "Vertical mobile", "default": "bottom",
+          "options": [
+            { "value": "top",    "label": "Haut" },
+            { "value": "center", "label": "Centre" },
+            { "value": "bottom", "label": "Bas" }
+          ]
+        },
+
+        { "type": "header", "content": "── Espacement contenu" },
+        { "type": "range", "id": "padding_top_d",    "label": "Padding haut desktop (px)",   "min": 0, "max": 200, "step": 4, "default": 80, "unit": "px" },
+        { "type": "range", "id": "padding_bottom_d", "label": "Padding bas desktop (px)",    "min": 0, "max": 200, "step": 4, "default": 80, "unit": "px" },
+        { "type": "range", "id": "padding_left_d",   "label": "Padding gauche desktop (px)", "min": 0, "max": 200, "step": 4, "default": 80, "unit": "px" },
+        { "type": "range", "id": "padding_right_d",  "label": "Padding droit desktop (px)",  "min": 0, "max": 200, "step": 4, "default": 80, "unit": "px" },
+        { "type": "range", "id": "padding_top_m",    "label": "Padding haut mobile (px)",    "min": 0, "max": 120, "step": 4, "default": 48, "unit": "px" },
+        { "type": "range", "id": "padding_bottom_m", "label": "Padding bas mobile (px)",     "min": 0, "max": 160, "step": 4, "default": 64, "unit": "px" },
+        { "type": "range", "id": "padding_left_m",   "label": "Padding gauche mobile (px)",  "min": 0, "max": 60,  "step": 2, "default": 24, "unit": "px" },
+        { "type": "range", "id": "padding_right_m",  "label": "Padding droit mobile (px)",   "min": 0, "max": 60,  "step": 2, "default": 24, "unit": "px" },
+        { "type": "range", "id": "content_gap_d",    "label": "Gap éléments desktop (px)",   "min": 4, "max": 48,  "step": 2, "default": 18, "unit": "px" },
+        { "type": "range", "id": "content_gap_m",    "label": "Gap éléments mobile (px)",    "min": 4, "max": 40,  "step": 2, "default": 14, "unit": "px" },
+
+        { "type": "header", "content": "── Typographie — Titre" },
+        { "type": "color", "id": "heading_color",    "label": "Couleur",             "default": "#ffffff" },
+        { "type": "range", "id": "heading_sz_d",      "label": "Taille desktop (px)", "min": 28, "max": 120, "step": 2, "default": 72, "unit": "px" },
+        { "type": "range", "id": "heading_sz_t",      "label": "Taille tablet (px)",  "min": 24, "max": 90,  "step": 2, "default": 52, "unit": "px" },
+        { "type": "range", "id": "heading_sz_m",      "label": "Taille mobile (px)",  "min": 20, "max": 64,  "step": 2, "default": 38, "unit": "px" },
+        {
+          "type": "select", "id": "heading_fw", "label": "Graisse", "default": "800",
+          "options": [
+            { "value": "300", "label": "Light 300" },
+            { "value": "400", "label": "Regular 400" },
+            { "value": "600", "label": "SemiBold 600" },
+            { "value": "700", "label": "Bold 700" },
+            { "value": "800", "label": "ExtraBold 800" },
+            { "value": "900", "label": "Black 900" }
+          ]
+        },
+        {
+          "type": "select", "id": "heading_lh", "label": "Interligne", "default": "1.0",
+          "options": [
+            { "value": "0.9",  "label": "Très serré 0.9" },
+            { "value": "0.95", "label": "Serré 0.95" },
+            { "value": "1.0",  "label": "Compact 1.0" },
+            { "value": "1.1",  "label": "Normal 1.1" },
+            { "value": "1.2",  "label": "Aéré 1.2" }
+          ]
+        },
+        {
+          "type": "select", "id": "heading_ls", "label": "Letter-spacing", "default": "-0.03",
+          "options": [
+            { "value": "-0.04", "label": "-0.04em" },
+            { "value": "-0.03", "label": "-0.03em" },
+            { "value": "-0.02", "label": "-0.02em" },
+            { "value": "0",     "label": "0" },
+            { "value": "0.02",  "label": "+0.02em" },
+            { "value": "0.05",  "label": "+0.05em" }
+          ]
+        },
+        {
+          "type": "select", "id": "heading_tt", "label": "Casse", "default": "none",
+          "options": [
+            { "value": "none",       "label": "Normale" },
+            { "value": "uppercase",  "label": "MAJUSCULES" },
+            { "value": "lowercase",  "label": "minuscules" },
+            { "value": "capitalize", "label": "Capitalize" }
+          ]
+        },
+        { "type": "range", "id": "heading_max_width", "label": "Largeur max titre (px)", "min": 200, "max": 1200, "step": 20, "default": 900, "unit": "px" },
+
+        { "type": "header", "content": "── Typographie — Eyebrow" },
+        { "type": "color", "id": "eyebrow_color",  "label": "Couleur",           "default": "#e0e0e0" },
+        { "type": "range", "id": "eyebrow_sz",      "label": "Taille (px)",       "min": 8,  "max": 18, "step": 1, "default": 11, "unit": "px" },
+        {
+          "type": "select", "id": "eyebrow_fw", "label": "Graisse", "default": "600",
+          "options": [
+            { "value": "300", "label": "Light 300" },
+            { "value": "400", "label": "Regular 400" },
+            { "value": "500", "label": "Medium 500" },
+            { "value": "600", "label": "SemiBold 600" },
+            { "value": "700", "label": "Bold 700" },
+            { "value": "800", "label": "ExtraBold 800" }
+          ]
+        },
+        {
+          "type": "select", "id": "eyebrow_tt", "label": "Casse", "default": "uppercase",
+          "options": [
+            { "value": "uppercase",  "label": "MAJUSCULES" },
+            { "value": "capitalize", "label": "Capitalize" },
+            { "value": "lowercase",  "label": "minuscules" },
+            { "value": "none",       "label": "Normale" }
+          ]
+        },
+        {
+          "type": "select", "id": "eyebrow_ls", "label": "Letter-spacing", "default": "0.18em",
+          "options": [
+            { "value": "0",      "label": "Aucun" },
+            { "value": "0.06em", "label": "Léger 0.06em" },
+            { "value": "0.12em", "label": "Moyen 0.12em" },
+            { "value": "0.18em", "label": "Large 0.18em" },
+            { "value": "0.24em", "label": "Très large 0.24em" }
+          ]
+        },
+        { "type": "range", "id": "eyebrow_line_w", "label": "Longueur trait (px)",  "min": 0, "max": 60, "step": 2, "default": 22, "unit": "px" },
+        { "type": "range", "id": "eyebrow_line_t", "label": "Épaisseur trait (px)", "min": 0, "max": 4,  "step": 1, "default": 2,  "unit": "px" },
+
+        { "type": "header", "content": "── Typographie — Sous-titre" },
+        { "type": "color", "id": "subhead_color", "label": "Couleur",             "default": "#b3b3b3" },
+        { "type": "range", "id": "subhead_sz_d",   "label": "Taille desktop (px)", "min": 10, "max": 28, "step": 1, "default": 17, "unit": "px" },
+        { "type": "range", "id": "subhead_sz_m",   "label": "Taille mobile (px)",  "min": 10, "max": 22, "step": 1, "default": 14, "unit": "px" },
+        {
+          "type": "select", "id": "subhead_fw", "label": "Graisse", "default": "500",
+          "options": [
+            { "value": "300", "label": "Light 300" },
+            { "value": "400", "label": "Regular 400" },
+            { "value": "500", "label": "Medium 500" },
+            { "value": "600", "label": "SemiBold 600" },
+            { "value": "700", "label": "Bold 700" }
+          ]
+        },
+        {
+          "type": "select", "id": "subhead_tt", "label": "Casse", "default": "uppercase",
+          "options": [
+            { "value": "uppercase",  "label": "MAJUSCULES" },
+            { "value": "capitalize", "label": "Capitalize" },
+            { "value": "lowercase",  "label": "minuscules" },
+            { "value": "none",       "label": "Normale" }
+          ]
+        },
+        {
+          "type": "select", "id": "subhead_ls", "label": "Letter-spacing", "default": "0.04em",
+          "options": [
+            { "value": "0",      "label": "Aucun" },
+            { "value": "0.02em", "label": "Léger 0.02em" },
+            { "value": "0.04em", "label": "Normal 0.04em" },
+            { "value": "0.08em", "label": "Large 0.08em" }
+          ]
+        },
+
+        { "type": "header", "content": "── Typographie — Description" },
+        { "type": "color", "id": "desc_color",    "label": "Couleur",             "default": "#cccccc" },
+        { "type": "range", "id": "desc_sz_d",      "label": "Taille desktop (px)", "min": 12, "max": 24, "step": 1, "default": 17, "unit": "px" },
+        { "type": "range", "id": "desc_sz_m",      "label": "Taille mobile (px)",  "min": 12, "max": 20, "step": 1, "default": 15, "unit": "px" },
+        { "type": "range", "id": "desc_max_width", "label": "Largeur max (px)",    "min": 200, "max": 800, "step": 20, "default": 560, "unit": "px" },
+        {
+          "type": "select", "id": "desc_fw", "label": "Graisse", "default": "400",
+          "options": [
+            { "value": "300", "label": "Light 300" },
+            { "value": "400", "label": "Regular 400" },
+            { "value": "500", "label": "Medium 500" },
+            { "value": "600", "label": "SemiBold 600" }
+          ]
+        },
+        {
+          "type": "select", "id": "desc_lh", "label": "Interligne", "default": "1.65",
+          "options": [
+            { "value": "1.2",  "label": "Compact 1.2" },
+            { "value": "1.4",  "label": "Serré 1.4" },
+            { "value": "1.55", "label": "Normal 1.55" },
+            { "value": "1.65", "label": "Confortable 1.65" },
+            { "value": "1.8",  "label": "Aéré 1.8" }
+          ]
+        },
+
+        { "type": "header", "content": "── Badge" },
+        { "type": "color", "id": "badge_color",         "label": "Couleur texte",       "default": "#ffffff" },
+        { "type": "color", "id": "badge_bg_color",       "label": "Couleur fond",        "default": "#ffffff" },
+        { "type": "range", "id": "badge_bg_opacity",     "label": "Opacité fond (%)",    "min": 0, "max": 60,  "step": 5, "default": 10 },
+        { "type": "color", "id": "badge_border_color",   "label": "Couleur bordure",     "default": "#ffffff" },
+        { "type": "range", "id": "badge_border_opacity", "label": "Opacité bordure (%)", "min": 0, "max": 100, "step": 5, "default": 30 },
+        { "type": "range", "id": "badge_sz",             "label": "Taille texte (px)",   "min": 8, "max": 16,  "step": 1, "default": 10, "unit": "px" },
+        {
+          "type": "select", "id": "badge_fw", "label": "Graisse", "default": "700",
+          "options": [
+            { "value": "400", "label": "Regular 400" },
+            { "value": "500", "label": "Medium 500" },
+            { "value": "600", "label": "SemiBold 600" },
+            { "value": "700", "label": "Bold 700" },
+            { "value": "800", "label": "ExtraBold 800" }
+          ]
+        },
+        {
+          "type": "select", "id": "badge_ls", "label": "Letter-spacing", "default": "0.14em",
+          "options": [
+            { "value": "0",      "label": "Aucun" },
+            { "value": "0.06em", "label": "Léger 0.06em" },
+            { "value": "0.10em", "label": "Normal 0.10em" },
+            { "value": "0.14em", "label": "Large 0.14em" },
+            { "value": "0.20em", "label": "Très large 0.20em" }
+          ]
+        },
+        { "type": "range", "id": "badge_radius", "label": "Border-radius (px)", "min": 0, "max": 50, "step": 1, "default": 50, "unit": "px", "info": "50 = pilule, 0 = carré" },
+
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Blog Hero",
+      "blocks": [
+        {
+          "type": "content",
+          "settings": {
+            "eyebrow": "Le Journal",
+            "heading": "Nos histoires",
+            "description": "Équipement, inspiration et créativité pour les créateurs.",
+            "pos_h_desktop": "center",
+            "pos_v_desktop": "center",
+            "pos_h_tablet": "center",
+            "pos_v_tablet": "center",
+            "pos_h_mobile": "center",
+            "pos_v_mobile": "bottom",
+            "content_text_align": "center",
+            "overlay_direction": "bottom",
+            "overlay_opacity": 40,
+            "overlay_opacity_mobile": 55,
+            "heading_sz_d": 72,
+            "heading_sz_t": 52,
+            "heading_sz_m": 38
+          }
+        }
+      ]
+    }
+  ],
+  "max_blocks": 1
+}
+{% endschema %}

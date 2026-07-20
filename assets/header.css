@@ -256,7 +256,7 @@
   list-style: none;
   margin: 0;
   padding: 0;
-  gap: 4px;
+  gap: var(--nav-menu-gap, 4px);
 }
 
 .header__nav-item { position: relative; }
@@ -265,24 +265,33 @@
   display: flex;
   align-items: center;
   text-decoration: none;
-  color: var(--h-text);
-  font-weight: 500;
-  font-size: 12.5px;
-  font-family: 'Inter', sans-serif;
-  text-transform: uppercase;
-  letter-spacing: 0.06em;
-  padding: 8px 11px;
-  border-radius: 6px;
-  min-height: 44px;
+  color: var(--nav-link-color, var(--h-text));
+  font-weight: var(--nav-link-weight, 500);
+  font-size: var(--nav-link-size, 11px);
+  font-family: var(--nav-link-family, 'Inter', sans-serif);
+  line-height: var(--nav-link-line-height, 1.2);
+  text-transform: var(--nav-link-transform, uppercase);
+  letter-spacing: var(--nav-link-spacing, 0.06em);
+  padding: var(--nav-link-pt, 8px) var(--nav-link-px, 5px);
+  margin: var(--nav-link-margin-y, 0) var(--nav-link-margin-x, 0);
+  border-radius: var(--nav-link-radius, 6px);
+  min-height: var(--nav-link-min-height, 44px);
+  gap: var(--nav-link-gap, 5px);
   position: relative;
   transition: color 0.18s ease, background 0.18s ease;
 }
 
 @media (hover: hover) {
   .header__menu-link:hover {
-    color: var(--h-primary);
-    background: rgba(7, 135, 234, 0.055);
+    color: var(--nav-link-hover-color, var(--h-primary));
+    background: var(--nav-link-hover-bg, rgba(7, 135, 234, 0.055));
   }
+}
+
+.header__menu-link.is-active,
+.header__nav-item.is-active > .header__menu-link {
+  color: var(--nav-link-active-color, var(--h-primary));
+  background: var(--nav-link-active-bg, transparent);
 }
 
 .header__menu-link:focus-visible {
@@ -293,11 +302,11 @@
 .header__menu-link::after {
   content: '';
   position: absolute;
-  bottom: 2px;
-  left: 11px;
-  right: 11px;
-  height: 1.5px;
-  background: var(--h-primary);
+  bottom: var(--nav-underline-bottom, 2px);
+  left: var(--nav-link-px, 5px);
+  right: var(--nav-link-px, 5px);
+  height: var(--nav-underline-height, 1.5px);
+  background: var(--nav-underline-color, var(--h-primary));
   border-radius: 2px;
   transform: scaleX(0);
   transition: transform 0.22s cubic-bezier(0.4,0,0.2,1);

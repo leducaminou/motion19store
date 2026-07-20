@@ -1,15 +1,10 @@
 [
-  // {
-  //   "name": "theme_info",
-  //   "theme_name": "Motion 19 Store",
-  //   "theme_version": "1.0.0",
-  //   "theme_documentation_url": "https://motion19.com/docs"
-  // },
+ 
    {
     "name": "theme_info",
     "theme_name": "Motion19 Store",
     "theme_author": "Aminou Mohamadou",
-    "theme_version": "1.0.0",
+    "theme_version": "1.0.2",
     "theme_documentation_url": "https://motion19.com/docs",
     "theme_support_url": "https://motion19.com/support"
   },
@@ -273,6 +268,56 @@
       {
         "type": "checkbox", "id": "reduce_motion_respect",
         "label": "Respecter prefers-reduced-motion", "default": true
+      }
+    ]
+  },
+  {
+    "name": "Blog — Design System",
+    "settings": [
+      { "type": "header", "content": "── Couleurs" },
+      { "type": "color", "id": "blog_card_bg",     "label": "Fond carte blog",      "default": "#ffffff" },
+      { "type": "color", "id": "blog_card_border",  "label": "Bordure carte blog",   "default": "#e8e8e8" },
+      { "type": "color", "id": "blog_meta_color",   "label": "Couleur auteur/date",  "default": "#888888" },
+      { "type": "header", "content": "── Typographie carte" },
+      {
+        "type": "range", "id": "blog_card_title_size",
+        "label": "Taille titre carte (px)", "min": 13, "max": 22, "step": 1, "default": 15, "unit": "px"
+      },
+      {
+        "type": "select", "id": "blog_card_title_weight",
+        "label": "Graisse titre carte", "default": "600",
+        "options": [
+          { "value": "400", "label": "Regular 400" },
+          { "value": "500", "label": "Medium 500" },
+          { "value": "600", "label": "SemiBold 600" },
+          { "value": "700", "label": "Bold 700" },
+          { "value": "800", "label": "ExtraBold 800" }
+        ]
+      },
+      {
+        "type": "range", "id": "blog_meta_size",
+        "label": "Taille auteur/date (px)", "min": 10, "max": 14, "step": 1, "default": 11, "unit": "px"
+      },
+      { "type": "header", "content": "── Carte" },
+      {
+        "type": "range", "id": "blog_card_radius",
+        "label": "Border-radius carte (px)", "min": 0, "max": 16, "step": 1, "default": 6, "unit": "px"
+      },
+      { "type": "checkbox", "id": "blog_card_shadow", "label": "Ombre carte", "default": true },
+      {
+        "type": "select", "id": "blog_image_ratio",
+        "label": "Proportion image carte", "default": "16 / 9",
+        "options": [
+          { "value": "16 / 9", "label": "Paysage (16:9)" },
+          { "value": "4 / 3",  "label": "Classique (4:3)" },
+          { "value": "3 / 2",  "label": "Photo (3:2)" },
+          { "value": "1 / 1",  "label": "Carré (1:1)" }
+        ]
+      },
+      { "type": "header", "content": "── Grille" },
+      {
+        "type": "range", "id": "blog_grid_gap",
+        "label": "Espacement cartes (px)", "min": 12, "max": 40, "step": 2, "default": 20, "unit": "px"
       }
     ]
   }

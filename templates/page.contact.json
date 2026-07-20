@@ -1,0 +1,34 @@
+{
+  "sections": {
+    "page-contact": {
+      "type": "page-contact",
+      "settings": {
+        "show_breadcrumb": true,
+        "heading": "Contactez-nous",
+        "subheading": "Vous avez une question, besoin d'un conseil ou d'une assistance technique ? L'équipe Motion19 est là pour vous accompagner dans tous vos projets photo, vidéo et drone.",
+        "contact_email": "hello@motion19.com",
+        "contact_phone": "+237 656 99 99 89",
+        "contact_address": "1203 Bvd de la Liberté, Akwa Douala, Cameroun",
+        "show_hours": true,
+        "hours_weekdays_label": "Lundi – Vendredi",
+        "hours_weekdays_time": "8h00 – 18h00",
+        "hours_saturday_label": "Samedi",
+        "hours_saturday_time": "9h00 – 15h00",
+        "hours_sunday_label": "Dimanche",
+        "hours_sunday_label_closed": "Fermé",
+        "show_map_link": true,
+        "show_form": true,
+        "form_title": "Envoyez-nous un message",
+        "form_desc": "Réponse sous 24–48h ouvrées.",
+        "form_btn_text": "Envoyer le message",
+        "form_success_msg": "Merci, votre message a bien été envoyé. Nous vous répondrons dans les plus brefs délais.",
+        "bg_color": "#ffffff",
+        "pt_d": 72,
+        "pb_d": 80,
+        "pt_m": 48,
+        "pb_m": 64
+      }
+    }
+  },
+  "order": ["page-contact"]
+}

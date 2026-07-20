@@ -1,0 +1,240 @@
+{%- comment -%}
+  Blog Grid — Motion19 — OS 2.0
+  Préfixe .bjg | Container calqué sur featured-carousel (.fc__inner)
+  Grille CSS : 5 cols ≥1281px / 4 cols 1025–1280px / 2 cols 641–1024px / 1 col ≤640px
+  Pagination Shopify native : 25 articles/page
+  Dépend de : snippets/blog-card.liquid · snippets/blog-pagination.liquid · assets/blog.css
+{%- endcomment -%}
+
+{%- liquid
+  assign sid = section.id
+
+  assign bg_color      = section.settings.bg_color      | default: 'var(--color-bg-soft)'
+  assign card_bg       = section.settings.card_bg        | default: '#ffffff'
+  assign text_color    = section.settings.text_color     | default: 'var(--color-bg-dark)'
+  assign title_color   = section.settings.title_color    | default: 'var(--color-bg-dark)'
+  assign eyebrow_color = section.settings.eyebrow_color  | default: 'var(--color-primary)'
+  assign meta_color    = section.settings.meta_color     | default: '#888888'
+
+  assign img_ratio     = section.settings.image_ratio    | default: '16 / 9'
+  assign show_excerpt  = section.settings.show_excerpt   | default: false
+  assign card_radius   = section.settings.card_radius    | default: 6
+  assign max_w         = section.settings.section_max_width | default: 1400
+  assign gap           = section.settings.cards_gap         | default: 20
+
+  assign card_title_sz = section.settings.blog_card_title_size   | default: settings.blog_card_title_size   | default: 15
+  assign card_title_fw = section.settings.blog_card_title_weight | default: settings.blog_card_title_weight | default: '600'
+  assign meta_sz       = section.settings.blog_meta_size         | default: settings.blog_meta_size         | default: 11
+
+  assign card_border_w = '1px'
+  unless section.settings.card_show_border
+    assign card_border_w = '0px'
+  endunless
+
+  assign card_shadow_val = 'var(--m19-shadow-card)'
+  unless section.settings.card_show_shadow
+    assign card_shadow_val = 'none'
+  endunless
+
+  assign pt_m = section.settings.padding_top_mobile     | default: 40
+  assign pb_m = section.settings.padding_bottom_mobile  | default: 36
+  assign pt_d = section.settings.padding_top_desktop    | default: 52
+  assign pb_d = section.settings.padding_bottom_desktop | default: 36
+  assign mt   = section.settings.margin_top             | default: 0
+  assign mb   = section.settings.margin_bottom          | default: 0
+
+  assign header_align = section.settings.header_align | default: 'left'
+-%}
+
+{%- if section.settings.hide_on_mobile -%}
+  <style>#bjg-{{ sid }} { display: none; } @media (min-width: 641px) { #bjg-{{ sid }} { display: block; } }</style>
+{%- elsif section.settings.hide_on_desktop -%}
+  <style>@media (min-width: 641px) { #bjg-{{ sid }} { display: none; } }</style>
+{%- endif -%}
+
+{%- if section.settings.custom_css != blank -%}
+  <style>#bjg-{{ sid }} { {{ section.settings.custom_css }} }</style>
+{%- endif -%}
+
+<section
+  id="bjg-{{ sid }}"
+  class="bjg"
+  aria-labelledby="bjg-title-{{ sid }}"
+  style="
+    --bjg-bg:              {{ bg_color }};
+    --bjg-card-bg:         {{ card_bg }};
+    --bjg-text:            {{ text_color }};
+    --bjg-title:           {{ title_color }};
+    --bjg-eyebrow:         {{ eyebrow_color }};
+    --bjg-meta:            {{ meta_color }};
+    --bjg-card-r:          {{ card_radius }}px;
+    --bjg-card-bw:         {{ card_border_w }};
+    --bjg-card-bc:         {{ section.settings.card_border_color | default: '#e8e8e8' }};
+    --bjg-card-sh:         {{ card_shadow_val }};
+    --bjg-img-ratio:       {{ img_ratio }};
+    --bjg-title-sz:        {{ section.settings.title_font_size   | default: 32 }}px;
+    --bjg-title-fw:        {{ section.settings.title_font_weight | default: '800' }};
+    --bjg-eyebrow-sz:      {{ section.settings.eyebrow_font_size | default: 11 }}px;
+    --bjg-card-title-sz:   {{ card_title_sz }}px;
+    --bjg-card-title-fw:   {{ card_title_fw }};
+    --bjg-meta-sz:         {{ meta_sz }}px;
+    --bjg-pt-m:            {{ pt_m }}px;
+    --bjg-pb-m:            {{ pb_m }}px;
+    --bjg-pt-d:            {{ pt_d }}px;
+    --bjg-pb-d:            {{ pb_d }}px;
+    --bjg-mt:              {{ mt }}px;
+    --bjg-mb:              {{ mb }}px;
+    --bjg-gap:             {{ gap }}px;
+    --bjg-max-w:           {{ max_w }}px;
+  "
+>
+  <div class="bjg__inner">
+
+    {%- comment -%} ── Header (identique fc__header) ── {%- endcomment -%}
+    <div class="bjg__header bjg__header--{{ header_align }}" id="bjg-title-{{ sid }}">
+      <div class="bjg__header-text">
+        {%- if section.settings.eyebrow != blank -%}
+          <span class="bjg__eyebrow">{{ section.settings.eyebrow | escape }}</span>
+        {%- endif -%}
+        <h1 class="bjg__title">
+          {{- section.settings.section_heading | default: 'Nos les articles' | escape -}}
+        </h1>
+      </div>
+    </div>
+
+    {%- comment -%} ── Grille + Pagination ── {%- endcomment -%}
+    {%- paginate blog.articles by 25 -%}
+
+      {%- if blog.articles_count > 0 -%}
+        <ul class="bjg__grid" role="list">
+          {%- for article in blog.articles -%}
+            <li class="bjg__item">
+              {%- render 'blog-card',
+                article:      article,
+                show_excerpt: show_excerpt,
+                image_ratio:  img_ratio,
+                lazy_load:    forloop.index > 5,
+                index:        forloop.index
+              -%}
+            </li>
+          {%- endfor -%}
+        </ul>
+
+        {%- render 'blog-pagination', paginate: paginate -%}
+
+      {%- else -%}
+        <ul class="bjg__grid" role="list">
+          <li class="bjg__empty">Aucun article publié pour le moment.</li>
+        </ul>
+      {%- endif -%}
+
+    {%- endpaginate -%}
+
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Blog — Grille articles",
+  "tag": "section",
+  "class": "section-blog-grid",
+  "settings": [
+    { "type": "header", "content": "── Contenu" },
+    { "type": "blog",   "id": "blog",            "label": "Blog" },
+    { "type": "text",   "id": "section_heading", "label": "Titre section",  "default": "Nos les articles" },
+    { "type": "text",   "id": "eyebrow",         "label": "Eyebrow (optionnel)" },
+    {
+      "type": "select", "id": "header_align", "label": "Alignement header", "default": "left",
+      "options": [
+        { "value": "left",   "label": "Gauche" },
+        { "value": "center", "label": "Centre" },
+        { "value": "right",  "label": "Droite" }
+      ]
+    },
+
+    { "type": "header", "content": "── Carte article" },
+    {
+      "type": "select", "id": "image_ratio", "label": "Proportion image carte", "default": "16 / 9",
+      "options": [
+        { "value": "16 / 9", "label": "Paysage (16:9)" },
+        { "value": "4 / 3",  "label": "Classique (4:3)" },
+        { "value": "3 / 2",  "label": "Photo (3:2)" },
+        { "value": "1 / 1",  "label": "Carré (1:1)" }
+      ]
+    },
+    { "type": "checkbox", "id": "show_excerpt",    "label": "Afficher l'extrait",  "default": false },
+    { "type": "range",    "id": "card_radius",     "label": "Border-radius carte (px)", "min": 0, "max": 16, "step": 1, "default": 6, "unit": "px" },
+    { "type": "checkbox", "id": "card_show_border","label": "Bordure carte",        "default": true },
+    { "type": "color",    "id": "card_border_color","label": "Couleur bordure",     "default": "#e8e8e8" },
+    { "type": "checkbox", "id": "card_show_shadow","label": "Ombre carte",          "default": true },
+
+    { "type": "header", "content": "── Typographie carte" },
+    { "type": "range",  "id": "blog_card_title_size",   "label": "Taille titre carte (px)",  "min": 13, "max": 22, "step": 1, "default": 15, "unit": "px" },
+    {
+      "type": "select", "id": "blog_card_title_weight", "label": "Graisse titre carte", "default": "600",
+      "options": [
+        { "value": "400", "label": "Regular 400" },
+        { "value": "500", "label": "Medium 500" },
+        { "value": "600", "label": "SemiBold 600" },
+        { "value": "700", "label": "Bold 700" },
+        { "value": "800", "label": "ExtraBold 800" }
+      ]
+    },
+    { "type": "range",  "id": "blog_meta_size",         "label": "Taille auteur/date (px)", "min": 10, "max": 14, "step": 1, "default": 11, "unit": "px" },
+
+    { "type": "header", "content": "── Couleurs section" },
+    { "type": "color", "id": "bg_color",      "label": "Fond section",      "default": "#f7f7f8" },
+    { "type": "color", "id": "card_bg",       "label": "Fond carte",        "default": "#ffffff" },
+    { "type": "color", "id": "text_color",    "label": "Texte",             "default": "#0a0a0a" },
+    { "type": "color", "id": "title_color",   "label": "Couleur titre H1",  "default": "#0a0a0a" },
+    { "type": "color", "id": "eyebrow_color", "label": "Couleur eyebrow",   "default": "#0787ea" },
+    { "type": "color", "id": "meta_color",    "label": "Auteur / date",     "default": "#888888" },
+
+    { "type": "header", "content": "── Typographie header section" },
+    { "type": "range",  "id": "title_font_size",   "label": "Taille titre section (px)", "min": 16, "max": 56, "step": 1, "default": 32, "unit": "px" },
+    {
+      "type": "select", "id": "title_font_weight", "label": "Graisse titre section", "default": "800",
+      "options": [
+        { "value": "400", "label": "Regular 400" },
+        { "value": "500", "label": "Medium 500" },
+        { "value": "600", "label": "SemiBold 600" },
+        { "value": "700", "label": "Bold 700" },
+        { "value": "800", "label": "ExtraBold 800" }
+      ]
+    },
+    { "type": "range",  "id": "eyebrow_font_size", "label": "Taille eyebrow (px)", "min": 8, "max": 16, "step": 1, "default": 11, "unit": "px" },
+
+    { "type": "header", "content": "── Espacement" },
+    { "type": "range", "id": "padding_top_mobile",     "label": "Padding haut mobile (px)",    "min": 0, "max": 120, "step": 4, "default": 40, "unit": "px" },
+    { "type": "range", "id": "padding_bottom_mobile",  "label": "Padding bas mobile (px)",     "min": 0, "max": 120, "step": 4, "default": 36, "unit": "px" },
+    { "type": "range", "id": "padding_top_desktop",    "label": "Padding haut desktop (px)",   "min": 0, "max": 120, "step": 4, "default": 52, "unit": "px" },
+    { "type": "range", "id": "padding_bottom_desktop", "label": "Padding bas desktop (px)",    "min": 0, "max": 120, "step": 4, "default": 36, "unit": "px" },
+    { "type": "range", "id": "margin_top",             "label": "Marge haut (px)",             "min": 0, "max": 120, "step": 4, "default": 0,  "unit": "px" },
+    { "type": "range", "id": "margin_bottom",          "label": "Marge bas (px)",              "min": 0, "max": 120, "step": 4, "default": 0,  "unit": "px" },
+    { "type": "range", "id": "cards_gap",              "label": "Espacement cartes (px)",      "min": 0, "max": 48,  "step": 2, "default": 20, "unit": "px" },
+    { "type": "range", "id": "section_max_width",      "label": "Largeur max conteneur (px)",  "min": 960, "max": 1920, "step": 40, "default": 1400, "unit": "px" },
+
+    { "type": "header", "content": "── Avancé" },
+    { "type": "checkbox", "id": "hide_on_mobile",  "label": "Masquer sur mobile",  "default": false },
+    { "type": "checkbox", "id": "hide_on_desktop", "label": "Masquer sur desktop", "default": false },
+    { "type": "textarea", "id": "custom_css",      "label": "CSS personnalisé (appliqué à #bjg-{id})" }
+  ],
+  "presets": [
+    {
+      "name": "Blog — Grille articles",
+      "settings": {
+        "section_heading": "Nos les articles",
+        "header_align": "left",
+        "image_ratio": "16 / 9",
+        "show_excerpt": false,
+        "card_radius": 6,
+        "card_show_border": true,
+        "card_show_shadow": true,
+        "cards_gap": 20,
+        "padding_top_desktop": 52,
+        "padding_bottom_desktop": 36
+      }
+    }
+  ]
+}
+{% endschema %}

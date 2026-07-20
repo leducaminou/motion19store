@@ -32,7 +32,7 @@
     box-shadow  300ms var(--m19-ease),
     border-color 300ms var(--m19-ease);
   position: relative;
-  will-change: transform, box-shadow;
+  will-change: transform;
 }
 
 .m19-card.is-visible {

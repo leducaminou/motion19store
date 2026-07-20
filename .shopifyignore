@@ -1,0 +1,10 @@
+src/
+node_modules/
+.claude/
+*.zip
+package.json
+package-lock.json
+vite.config.js
+texte.txt
+texte1.txt
+text2.txt

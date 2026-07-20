@@ -1,0 +1,53 @@
+{%- comment -%}
+  Snippet : blog-pagination.liquid
+  Paramètre requis :
+    paginate — objet Shopify issu de {%- paginate ... -%}
+  Affiche une pagination numérotée native avec boutons Précédent / Suivant.
+  CSS : .bjp (Blog Journal Pagination) — défini dans assets/blog.css
+{%- endcomment -%}
+
+{%- if paginate.pages > 1 -%}
+  <nav class="bjp" aria-label="Pagination des articles">
+
+    {%- if paginate.previous -%}
+      <a class="bjp__btn bjp__btn--prev" href="{{ paginate.previous.url }}" aria-label="Page précédente">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false">
+          <path d="M10 3L5 8L10 13" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        <span class="bjp__btn-label">Précédent</span>
+      </a>
+    {%- endif -%}
+
+    <ol class="bjp__pages" role="list">
+      {%- for part in paginate.parts -%}
+        {%- if part.is_link -%}
+          <li>
+            <a class="bjp__page" href="{{ part.url }}" aria-label="Page {{ part.title }}">
+              {{- part.title -}}
+            </a>
+          </li>
+        {%- elsif part.title == paginate.current_page -%}
+          <li>
+            <span class="bjp__page bjp__page--active" aria-current="page" aria-label="Page {{ part.title }}, page actuelle">
+              {{- part.title -}}
+            </span>
+          </li>
+        {%- else -%}
+          <li>
+            <span class="bjp__ellipsis" aria-hidden="true">&hellip;</span>
+          </li>
+        {%- endif -%}
+      {%- endfor -%}
+    </ol>
+
+    {%- if paginate.next -%}
+      <a class="bjp__btn bjp__btn--next" href="{{ paginate.next.url }}" aria-label="Page suivante">
+        <span class="bjp__btn-label">Suivant</span>
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false">
+          <path d="M6 3L11 8L6 13" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </a>
+    {%- endif -%}
+
+  </nav>
+{%- endif -%}

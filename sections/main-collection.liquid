@@ -8,14 +8,52 @@
 {%- comment -%} Main Collection — Motion19 OS 2.0 — v2.0 {%- endcomment -%}
 
 {%- liquid
-  assign sid          = section.id
-  assign products_pp  = section.settings.products_per_page | default: 20
+  assign sid     = section.id
+  assign rows    = section.settings.rows         | default: 5
+  assign cols_m  = section.settings.cols_mobile  | default: 2
+  assign cols_t  = section.settings.cols_tablet  | default: 3
+  assign cols_d  = section.settings.cols_desktop | default: 4
+  assign cols_xl = section.settings.cols_xl      | default: 5
+
+  assign products_pp = cols_xl | times: rows
+  if products_pp > 50
+    assign products_pp = 50
+  endif
+
+  assign lim_m  = cols_m  | times: rows | plus: 1
+  assign lim_t  = cols_t  | times: rows | plus: 1
+  assign lim_d  = cols_d  | times: rows | plus: 1
+
   assign show_atc     = section.settings.show_atc
   assign show_sort    = section.settings.show_sort    | default: true
   assign show_filters = section.settings.show_filters | default: true
   assign show_seo     = section.settings.show_seo     | default: false
   assign seo_content  = section.settings.seo_content
 -%}
+
+<style>
+  /* ── Colonnes configurées via Theme Customizer ── */
+  .col-grid { --col-cols: {{ cols_m }}; }
+  @media (min-width: 641px)  { .col-grid { --col-cols: {{ cols_t }}; } }
+  @media (min-width: 1025px) { .col-grid { --col-cols: {{ cols_d }}; } }
+  @media (min-width: 1441px) { .col-grid { --col-cols: {{ cols_xl }}; } }
+
+  /* ── Exactement {{ rows }} lignes par breakpoint ── */
+  /* mobile : cacher tout au-delà du {{ lim_m | minus: 1 }}e item */
+  .col-grid > li:nth-child(n+{{ lim_m }}) { display: none; }
+
+  @media (min-width: 641px) {
+    .col-grid > li:nth-child(n+{{ lim_m }}) { display: list-item; }
+    .col-grid > li:nth-child(n+{{ lim_t }}) { display: none; }
+  }
+  @media (min-width: 1025px) {
+    .col-grid > li:nth-child(n+{{ lim_t }}) { display: list-item; }
+    .col-grid > li:nth-child(n+{{ lim_d }}) { display: none; }
+  }
+  @media (min-width: 1441px) {
+    .col-grid > li:nth-child(n+{{ lim_d }}) { display: list-item; }
+  }
+</style>
 
 {%- comment -%} ── 1. Header editorial ── {%- endcomment -%}
 <header class="col-header" id="col-header-{{ sid }}">
@@ -381,14 +419,46 @@
   "tag": "div",
   "class": "section-main-collection",
   "settings": [
-    { "type": "header", "content": "Produits" },
-    { "type": "range",    "id": "products_per_page", "label": "Produits par page", "min": 8, "max": 48, "step": 4, "default": 16 },
-    { "type": "checkbox", "id": "show_atc",          "label": "Bouton panier rapide", "default": true },
-    { "type": "header", "content": "Interface" },
+    { "type": "header", "content": "━━ Grille — Lignes" },
+    {
+      "type": "range",
+      "id": "rows",
+      "label": "Nombre de lignes",
+      "min": 1, "max": 10, "step": 1, "default": 5,
+      "info": "Le nombre de produits par page = colonnes × lignes (breakpoint le plus large)"
+    },
+
+    { "type": "header", "content": "━━ Grille — Colonnes par breakpoint" },
+    {
+      "type": "range", "id": "cols_mobile",
+      "label": "Colonnes mobile (< 641px)",
+      "min": 1, "max": 3, "step": 1, "default": 2
+    },
+    {
+      "type": "range", "id": "cols_tablet",
+      "label": "Colonnes tablet (641–1024px)",
+      "min": 2, "max": 4, "step": 1, "default": 3
+    },
+    {
+      "type": "range", "id": "cols_desktop",
+      "label": "Colonnes desktop (1025–1440px)",
+      "min": 2, "max": 5, "step": 1, "default": 4
+    },
+    {
+      "type": "range", "id": "cols_xl",
+      "label": "Colonnes XL (≥ 1441px)",
+      "min": 3, "max": 6, "step": 1, "default": 5
+    },
+
+    { "type": "header", "content": "━━ Produits" },
+    { "type": "checkbox", "id": "show_atc", "label": "Bouton panier rapide", "default": true },
+
+    { "type": "header", "content": "━━ Interface" },
     { "type": "checkbox", "id": "show_sort",    "label": "Afficher le tri",      "default": true },
     { "type": "checkbox", "id": "show_filters", "label": "Afficher les filtres", "default": true },
-    { "type": "header", "content": "SEO" },
-    { "type": "checkbox", "id": "show_seo",    "label": "Activer zone SEO",   "default": false },
+
+    { "type": "header", "content": "━━ SEO" },
+    { "type": "checkbox", "id": "show_seo",    "label": "Activer zone SEO",       "default": false },
     { "type": "richtext", "id": "seo_content", "label": "Contenu SEO bas de page" }
   ],
   "presets": [{ "name": "Collection principale" }]

@@ -613,10 +613,7 @@
   padding: 0;
   width: 100%;
 }
-
-@media (min-width: 641px)  { .col-grid { --col-cols: 3; } }
-@media (min-width: 1025px) { .col-grid { --col-cols: 4; } }
-@media (min-width: 1441px) { .col-grid { --col-cols: 5; } }
+/* Les valeurs de --col-cols par breakpoint sont injectées par main-collection.liquid */
 
 /* Chaque <li> ne dépasse jamais sa cellule */
 .col-grid > li {

@@ -1,0 +1,136 @@
+{%- comment -%}
+  Article Body — Motion19 — OS 2.0
+  Préfixe .arb | Corps riche de l'article + barre de progression lecture
+  Dépend de : assets/blog.css · assets/blog.js (progress bar + reading time)
+{%- endcomment -%}
+
+{%- liquid
+  assign sid = section.id
+
+  assign max_width        = section.settings.max_width         | default: 760
+  assign font_size        = section.settings.font_size         | default: 17
+  assign line_height      = section.settings.line_height       | default: '1.75'
+  assign drop_cap         = section.settings.drop_cap          | default: false
+  assign image_rounding   = section.settings.image_rounding    | default: 8
+  assign bq_style         = section.settings.blockquote_style  | default: 'line'
+  assign bq_color         = section.settings.blockquote_color  | default: 'var(--color-primary)'
+  assign bg_col           = section.settings.bg_color          | default: 'var(--color-bg)'
+  assign text_col         = section.settings.text_color        | default: 'var(--color-bg-dark)'
+  assign link_col         = section.settings.link_color        | default: 'var(--color-primary)'
+  assign h_col            = section.settings.heading_color     | default: 'var(--color-bg-dark)'
+  assign show_progress    = section.settings.show_progress_bar | default: true
+  assign progress_col     = section.settings.progress_color    | default: 'var(--color-primary)'
+  assign progress_h       = section.settings.progress_height   | default: 3
+  assign pt_d             = section.settings.padding_top_d     | default: 48
+  assign pb_d             = section.settings.padding_bottom_d  | default: 80
+  assign pt_m             = section.settings.padding_top_m     | default: 32
+  assign pb_m             = section.settings.padding_bottom_m  | default: 60
+-%}
+
+<div
+  class="arb arb--bq-{{ bq_style }}{% if drop_cap %} arb--drop-cap{% endif %}"
+  style="
+    --arb-max-w:  {{ max_width }}px;
+    --arb-fs:     {{ font_size }}px;
+    --arb-lh:     {{ line_height }};
+    --arb-img-r:  {{ image_rounding }}px;
+    --arb-bq-col: {{ bq_color }};
+    --arb-bg:     {{ bg_col }};
+    --arb-text:   {{ text_col }};
+    --arb-link:   {{ link_col }};
+    --arb-h-col:  {{ h_col }};
+    --arb-prog-c: {{ progress_col }};
+    --arb-prog-h: {{ progress_h }}px;
+    --arb-pt-d:   {{ pt_d }}px;
+    --arb-pb-d:   {{ pb_d }}px;
+    --arb-pt-m:   {{ pt_m }}px;
+    --arb-pb-m:   {{ pb_m }}px;
+    background:   {{ bg_col }};
+  "
+  data-article-body
+>
+
+  {%- comment -%} ── Barre de progression lecture (fixed, top) ── {%- endcomment -%}
+  {%- if show_progress -%}
+    <div class="arb__progress" aria-hidden="true" role="progressbar" aria-valuemin="0" aria-valuemax="100">
+      <div class="arb__progress-bar"></div>
+    </div>
+  {%- endif -%}
+
+  {%- comment -%} ── Contenu riche ── {%- endcomment -%}
+  <div class="arb__inner">
+    {{ article.content }}
+  </div>
+
+</div>
+
+{% schema %}
+{
+  "name": "Article — Corps",
+  "tag": "section",
+  "class": "section-article-body",
+  "settings": [
+    { "type": "header", "content": "── Mise en page" },
+    { "type": "range", "id": "max_width", "label": "Largeur max texte (px)", "min": 600, "max": 960, "step": 20, "default": 760, "unit": "px" },
+
+    { "type": "header", "content": "── Typographie corps" },
+    { "type": "range",  "id": "font_size",   "label": "Taille texte (px)",  "min": 15, "max": 20, "step": 1, "default": 17, "unit": "px" },
+    {
+      "type": "select", "id": "line_height", "label": "Interligne", "default": "1.75",
+      "options": [
+        { "value": "1.55", "label": "Compact 1.55" },
+        { "value": "1.65", "label": "Normal 1.65" },
+        { "value": "1.75", "label": "Confortable 1.75" },
+        { "value": "1.85", "label": "Aéré 1.85" },
+        { "value": "2.0",  "label": "Très aéré 2.0" }
+      ]
+    },
+    { "type": "checkbox", "id": "drop_cap", "label": "Lettrine (drop cap)", "default": false },
+
+    { "type": "header", "content": "── Images dans le contenu" },
+    { "type": "range", "id": "image_rounding", "label": "Arrondi images (px)", "min": 0, "max": 16, "step": 1, "default": 8, "unit": "px" },
+
+    { "type": "header", "content": "── Blockquote" },
+    {
+      "type": "select", "id": "blockquote_style", "label": "Style blockquote", "default": "line",
+      "options": [
+        { "value": "line",   "label": "Ligne gauche" },
+        { "value": "filled", "label": "Fond rempli" },
+        { "value": "italic", "label": "Citation italique centrée" }
+      ]
+    },
+    { "type": "color", "id": "blockquote_color", "label": "Couleur accent blockquote", "default": "#0787ea" },
+
+    { "type": "header", "content": "── Couleurs" },
+    { "type": "color", "id": "bg_color",      "label": "Fond section",   "default": "#ffffff" },
+    { "type": "color", "id": "text_color",    "label": "Texte corps",    "default": "#0a0a0a" },
+    { "type": "color", "id": "link_color",    "label": "Liens",          "default": "#0787ea" },
+    { "type": "color", "id": "heading_color", "label": "Titres H2–H6",  "default": "#0a0a0a" },
+
+    { "type": "header", "content": "── Espacement" },
+    { "type": "range", "id": "padding_top_d",    "label": "Padding haut desktop (px)",  "min": 0, "max": 80,  "step": 4, "default": 48, "unit": "px" },
+    { "type": "range", "id": "padding_bottom_d", "label": "Padding bas desktop (px)",   "min": 0, "max": 120, "step": 4, "default": 80, "unit": "px" },
+    { "type": "range", "id": "padding_top_m",    "label": "Padding haut mobile (px)",   "min": 0, "max": 60,  "step": 4, "default": 32, "unit": "px" },
+    { "type": "range", "id": "padding_bottom_m", "label": "Padding bas mobile (px)",    "min": 0, "max": 80,  "step": 4, "default": 60, "unit": "px" },
+
+    { "type": "header", "content": "── Barre de progression lecture" },
+    { "type": "checkbox", "id": "show_progress_bar", "label": "Afficher la barre de progression", "default": true },
+    { "type": "color",    "id": "progress_color",     "label": "Couleur barre", "default": "#0787ea" },
+    { "type": "range",    "id": "progress_height",    "label": "Épaisseur barre (px)", "min": 2, "max": 5, "step": 1, "default": 3, "unit": "px" }
+  ],
+  "presets": [
+    {
+      "name": "Article — Corps",
+      "settings": {
+        "max_width": 760,
+        "font_size": 17,
+        "line_height": "1.75",
+        "image_rounding": 8,
+        "blockquote_style": "line",
+        "show_progress_bar": true,
+        "drop_cap": false
+      }
+    }
+  ]
+}
+{% endschema %}
